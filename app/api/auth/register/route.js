@@ -1,41 +1,117 @@
 import { NextResponse } from "next/server";
-import { MongoClient } from "mongodb";
-
-import { hashPassword } from "@/lib/auth/hash.js";
-
-const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "vipo";
-let _client;
-
-async function db() {
-  _client ||= new MongoClient(uri);
-  if (!_client.topology?.isConnected()) {
-    await _client.connect();
-  }
-  return _client.db(dbName);
-}
+import { cookies } from "next/headers";
+import bcrypt from "bcryptjs";
+import { getDb } from "@/lib/db";
+import { ObjectId } from "mongodb";
+import { commissionPerReferral } from "@/app/config/commissions";
 
 export async function POST(req) {
   try {
-    const { fullName, phone, password, role } = await req.json();
-    if (!fullName || !phone || !password || !role) {
+    const body = await req.json();
+    const { fullName, phone, email, password, role, referrerId } = body;
+    
+    // Support both phone and email registration
+    if (!password || !role) {
       return NextResponse.json({ ok: false, error: "missing fields" }, { status: 400 });
     }
-    if (!["admin", "agent"].includes(role)) {
+    
+    if (!phone && !email) {
+      return NextResponse.json({ ok: false, error: "phone or email required" }, { status: 400 });
+    }
+    
+    if (!["admin", "agent", "customer"].includes(role)) {
       return NextResponse.json({ ok: false, error: "invalid role" }, { status: 400 });
     }
-    const dbo = await db();
-    const users = dbo.collection("users");
-    const exists = await users.findOne({ phone });
+    
+    const db = await getDb();
+    const users = db.collection("users");
+    
+    // Check if user exists
+    const query = email ? { email: email.toLowerCase().trim() } : { phone };
+    const exists = await users.findOne(query);
     if (exists) {
       return NextResponse.json({ ok: false, error: "user exists" }, { status: 409 });
     }
-    const passwordHash = await hashPassword(password);
-    const doc = { fullName, phone, role, passwordHash, createdAt: new Date() };
+    
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, 10);
+    
+    // Get referrer ID from cookie or body (fallback to localStorage)
+    const cookieStore = cookies();
+    const cookieRef = cookieStore.get("refSource")?.value || null;
+    const finalReferrerId = cookieRef || referrerId || null;
+    
+    // Create user document
+    const doc = {
+      fullName: fullName || "",
+      phone: phone || null,
+      email: email ? email.toLowerCase().trim() : null,
+      password: passwordHash,
+      role,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    
+    // Add referredBy if valid referrer exists
+    if (finalReferrerId) {
+      try {
+        const refUserId = new ObjectId(finalReferrerId);
+        const refUser = await users.findOne({ _id: refUserId }, { projection: { _id: 1 } });
+        if (refUser) {
+          doc.referredBy = refUser._id;
+        }
+      } catch (err) {
+        console.log("Invalid referrer ID:", finalReferrerId);
+      }
+    }
+    
     const r = await users.insertOne(doc);
-    return NextResponse.json({ ok: true, userId: r.insertedId.toString() }, { status: 201 });
+    const newUserId = r.insertedId;
+    
+    // Prevent self-referral (if somehow user referred themselves)
+    if (doc.referredBy && String(doc.referredBy) === String(newUserId)) {
+      await users.updateOne({ _id: newUserId }, { $unset: { referredBy: "" } });
+      doc.referredBy = null;
+    }
+    
+    // Update referrer's counter and commission (Stage 12)
+    if (doc.referredBy) {
+      try {
+        await users.updateOne(
+          { _id: doc.referredBy },
+          { 
+            $inc: { 
+              referralsCount: 1,
+              referralCount: 1,
+              commissionBalance: commissionPerReferral 
+            } 
+          }
+        );
+        
+        // Log successful referral application
+        console.log("REFERRAL_APPLIED", {
+          referrerId: String(doc.referredBy),
+          newUserId: String(newUserId),
+          delta: commissionPerReferral
+        });
+      } catch (refErr) {
+        // Don't block registration if referrer update fails
+        console.error("REFERRAL_APPLY_FAILED", {
+          referrerId: String(doc.referredBy),
+          newUserId: String(newUserId),
+          reason: refErr.message
+        });
+      }
+    }
+    
+    // Clear refSource cookie after successful registration
+    const res = NextResponse.json({ ok: true, userId: String(newUserId) }, { status: 201 });
+    res.cookies.set("refSource", "", { path: "/", maxAge: 0 });
+    
+    return res;
   } catch (e) {
-    console.error(e);
+    console.error("REGISTER_ERROR:", e);
     return NextResponse.json({ ok: false, error: "server error" }, { status: 500 });
   }
 }

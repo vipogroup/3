@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת התחברות מהירה</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            width: 100%;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid #4CAF50;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            border: 1px solid #f44336;
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            border: 1px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 בדיקת התחברות מהירה</h1>
+        
+        <div class="test-card">
+            <h3>👑 בדיקת Admin</h3>
+            <p><strong>אימייל:</strong> admin@test.com</p>
+            <p><strong>סיסמה:</strong> admin</p>
+            <button onclick="testLogin('admin@test.com', 'admin', 'admin')" id="adminBtn">
+                בדוק Admin
+            </button>
+            <div id="adminResult"></div>
+        </div>
+
+        <div class="test-card">
+            <h3>👑 בדיקת Admin מקורי</h3>
+            <p><strong>אימייל:</strong> admin@vipo.local</p>
+            <p><strong>סיסמה:</strong> 12345678A</p>
+            <button onclick="testLogin('admin@vipo.local', '12345678A', 'admin-orig')" id="adminOrigBtn">
+                בדוק Admin מקורי
+            </button>
+            <div id="adminOrigResult"></div>
+        </div>
+
+        <div class="test-card">
+            <h3>🤝 בדיקת Agent</h3>
+            <p><strong>אימייל:</strong> agent@test.com</p>
+            <p><strong>סיסמה:</strong> admin</p>
+            <button onclick="testLogin('agent@test.com', 'admin', 'agent')" id="agentBtn">
+                בדוק Agent
+            </button>
+            <div id="agentResult"></div>
+        </div>
+
+        <div class="test-card">
+            <h3>🛒 בדיקת Customer</h3>
+            <p><strong>אימייל:</strong> customer@test.com</p>
+            <p><strong>סיסמה:</strong> admin</p>
+            <button onclick="testLogin('customer@test.com', 'admin', 'customer')" id="customerBtn">
+                בדוק Customer
+            </button>
+            <div id="customerResult"></div>
+        </div>
+
+        <div class="test-card">
+            <h3>🔍 בדיקת מי מחובר</h3>
+            <button onclick="checkCurrentUser()" id="checkBtn">
+                בדוק מי מחובר עכשיו
+            </button>
+            <div id="checkResult"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testLogin(email, password, type) {
+            const btn = document.getElementById(type + 'Btn');
+            const result = document.getElementById(type + 'Result');
+            
+            btn.disabled = true;
+            btn.textContent = 'בודק...';
+            result.innerHTML = '';
+
+            try {
+                // Step 1: Login
+                const loginResponse = await fetch('http://localhost:3001/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ 
+                        identifier: email, 
+                        password: password 
+                    })
+                });
+
+                const loginResult = await loginResponse.json();
+                
+                if (loginResponse.ok && loginResult.ok) {
+                    result.innerHTML = `
+                        <div class="result success">
+                            ✅ התחברות הצליחה!<br>
+                            תפקיד: ${loginResult.role || 'לא זוהה'}<br>
+                            סטטוס: ${loginResponse.status}
+                        </div>
+                    `;
+
+                    // Step 2: Check if we can access dashboard
+                    setTimeout(async () => {
+                        try {
+                            const dashboardUrl = loginResult.role === 'customer' ? '/customer' :
+                                               loginResult.role === 'agent' ? '/agent' : '/dashboard';
+                            
+                            const dashResponse = await fetch(`http://localhost:3001${dashboardUrl}`, {
+                                credentials: 'include'
+                            });
+                            
+                            if (dashResponse.ok) {
+                                result.innerHTML += `
+                                    <div class="result success">
+                                        ✅ גישה לדשבורד הצליחה!<br>
+                                        URL: ${dashboardUrl}<br>
+                                        סטטוס: ${dashResponse.status}
+                                    </div>
+                                `;
+                            } else {
+                                result.innerHTML += `
+                                    <div class="result error">
+                                        ❌ גישה לדשבורד נכשלה<br>
+                                        URL: ${dashboardUrl}<br>
+                                        סטטוס: ${dashResponse.status}
+                                    </div>
+                                `;
+                            }
+                        } catch (dashError) {
+                            result.innerHTML += `
+                                <div class="result error">
+                                    ❌ שגיאה בגישה לדשבורד: ${dashError.message}
+                                </div>
+                            `;
+                        }
+                    }, 500);
+
+                } else {
+                    result.innerHTML = `
+                        <div class="result error">
+                            ❌ התחברות נכשלה<br>
+                            שגיאה: ${loginResult.error || 'לא ידועה'}<br>
+                            סטטוס: ${loginResponse.status}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                result.innerHTML = `
+                    <div class="result error">
+                        ❌ שגיאת רשת: ${error.message}
+                    </div>
+                `;
+            }
+
+            btn.disabled = false;
+            btn.textContent = `בדוק ${type}`;
+        }
+
+        async function checkCurrentUser() {
+            const btn = document.getElementById('checkBtn');
+            const result = document.getElementById('checkResult');
+            
+            btn.disabled = true;
+            btn.textContent = 'בודק...';
+            result.innerHTML = '';
+
+            try {
+                const response = await fetch('http://localhost:3001/api/auth/me', {
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = `
+                        <div class="result success">
+                            ✅ משתמש מחובר!<br>
+                            שם: ${data.user?.fullName || 'לא זוהה'}<br>
+                            אימייל: ${data.user?.email || 'לא זוהה'}<br>
+                            תפקיד: ${data.user?.role || 'לא זוהה'}
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = `
+                        <div class="result info">
+                            ℹ️ אין משתמש מחובר<br>
+                            סטטוס: ${response.status}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                result.innerHTML = `
+                    <div class="result error">
+                        ❌ שגיאה: ${error.message}
+                    </div>
+                `;
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'בדוק מי מחובר עכשיו';
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            checkCurrentUser();
+        });
+    </script>
+</body>
+</html>

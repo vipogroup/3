@@ -1,0 +1,17 @@
+{
+  "stage": 1,
+  "checks": [
+    {
+      "name": "api.products.list",
+      "passed": false,
+      "evidence": "status=500; length=n/a",
+      "hint": "Implement GET /api/products to return an array"
+    },
+    {
+      "name": "ui.products.page",
+      "passed": true,
+      "evidence": "status=200",
+      "hint": "Ensure /products route renders without auth"
+    }
+  ]
+}

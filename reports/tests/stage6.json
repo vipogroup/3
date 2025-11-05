@@ -1,0 +1,11 @@
+{
+  "stage": 6,
+  "checks": [
+    {
+      "name": "stats.endpoint",
+      "passed": false,
+      "evidence": "status=404",
+      "hint": "Implement GET /api/stats with all required keys"
+    }
+  ]
+}

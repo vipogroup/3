@@ -1,0 +1,147 @@
+// app/api/gamification/goals/route.js
+import { NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
+import { connectMongo } from "@/lib/mongoose";
+import AgentGoal from "@/models/AgentGoal";
+import { verify } from "@/lib/auth/createToken";
+
+export const dynamic = "force-dynamic";
+
+// Helper function to get user from request
+async function getUserFromRequest(req) {
+  const token = req.cookies.get("token")?.value || "";
+  const payload = verify(token);
+  if (!payload || !payload.userId || !payload.role) {
+    return null;
+  }
+  return {
+    userId: payload.userId,
+    role: payload.role
+  };
+}
+
+// Check if user is admin
+async function isAdmin(req) {
+  const user = await getUserFromRequest(req);
+  return user && user.role === "admin";
+}
+
+export async function GET(req) {
+  try {
+    // Get user
+    const user = await getUserFromRequest(req);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    await connectMongo();
+    
+    const url = new URL(req.url);
+    const month = url.searchParams.get("month") ? parseInt(url.searchParams.get("month")) : null;
+    const year = url.searchParams.get("year") ? parseInt(url.searchParams.get("year")) : null;
+    const agentId = url.searchParams.get("agentId");
+    const includeAll = url.searchParams.get("all") === "1";
+    
+    // Build query
+    const query = {};
+    
+    // Filter by isActive unless all=1
+    if (!includeAll) {
+      query.isActive = true;
+    }
+    
+    // Filter by month/year if provided
+    if (month && month >= 1 && month <= 12) {
+      query.month = month;
+    }
+    
+    if (year && year >= 2020) {
+      query.year = year;
+    }
+    
+    // Filter by agentId
+    if (agentId === "self") {
+      // User can only see their own goals
+      query.agentId = new ObjectId(user.userId);
+    } else if (agentId) {
+      // Admin can see any agent's goals
+      if (user.role !== "admin") {
+        return NextResponse.json({ error: "Forbidden: Admin access required to view other agents' goals" }, { status: 403 });
+      }
+      query.agentId = new ObjectId(agentId);
+    } else if (user.role !== "admin") {
+      // Non-admin users can only see their own goals
+      query.agentId = new ObjectId(user.userId);
+    }
+    
+    // Fetch goals
+    const goals = await AgentGoal.find(query)
+      .sort({ year: -1, month: -1 })
+      .populate("agentId", "fullName")
+      .lean();
+    
+    return NextResponse.json(goals);
+  } catch (error) {
+    console.error("Error fetching goals:", error);
+    return NextResponse.json({ error: "Failed to fetch goals" }, { status: 500 });
+  }
+}
+
+export async function POST(req) {
+  try {
+    // Check if user is admin
+    if (!await isAdmin(req)) {
+      return NextResponse.json({ error: "Unauthorized: Admin access required" }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { agentId, month, year, targetSalesAmount, targetDeals, bonusOnHit, isActive = true } = body;
+    
+    // Validate required fields
+    if (!agentId || 
+        !month || month < 1 || month > 12 || 
+        !year || year < 2020 || 
+        typeof targetSalesAmount !== "number" || targetSalesAmount < 0 ||
+        typeof targetDeals !== "number" || targetDeals < 0) {
+      return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+    }
+    
+    // Validate bonusOnHit
+    if (!bonusOnHit || 
+        ((!bonusOnHit.fixedAmount || bonusOnHit.fixedAmount < 0) && 
+         (!bonusOnHit.percentBoostPct || bonusOnHit.percentBoostPct < 0))) {
+      return NextResponse.json({ error: "Invalid bonus configuration" }, { status: 400 });
+    }
+    
+    await connectMongo();
+    
+    // Check if a goal already exists for this agent/month/year
+    const existingGoal = await AgentGoal.findOne({
+      agentId,
+      month,
+      year
+    });
+    
+    if (existingGoal) {
+      return NextResponse.json({ 
+        error: "A goal already exists for this agent in the specified month/year" 
+      }, { status: 409 });
+    }
+    
+    // Create new goal
+    const goal = await AgentGoal.create({
+      agentId,
+      month,
+      year,
+      targetSalesAmount,
+      targetDeals,
+      bonusOnHit,
+      isActive
+    });
+    
+    return NextResponse.json(goal, { status: 201 });
+  } catch (error) {
+    console.error("Error creating goal:", error);
+    return NextResponse.json({ error: "Failed to create goal" }, { status: 500 });
+  }
+}

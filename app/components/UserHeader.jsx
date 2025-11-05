@@ -1,66 +1,59 @@
-import { headers } from "next/headers";
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-import LogoutButton from "./_LogoutButton";
+export default function UserHeader() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-async function getUser() {
-  const h = headers();
-  const host = h.get("x-forwarded-host") || h.get("host") || "localhost:3001";
-  const proto = h.get("x-forwarded-proto") || "http";
-  const base = process.env.PUBLIC_URL || `${proto}://${host}`;
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!ignore && res.ok) {
+          const data = await res.json();
+          setUser(data?.user || null);
+        }
+      } catch (_) {
+        // ignore
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    })();
+    return () => { ignore = true; };
+  }, []);
 
-  try {
-    const res = await fetch(`${base}/api/auth/me`, {
-      cache: "no-store",
-      headers: {
-        cookie: h.get("cookie") || "",
-      },
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.user || null;
-  } catch {
-    return null;
-  }
-}
-
-export default async function UserHeader() {
-  const user = await getUser();
+  const isAdmin = user?.role === "admin";
+  const isAgent = user?.role === "agent";
 
   return (
-    <header
-      style={{
-        direction: "rtl",
-        display: "flex",
-        gap: 12,
-        alignItems: "center",
-        padding: "12px 16px",
-        borderBottom: "1px solid #eee",
-        background: "#fafafa",
-      }}
-    >
-      <Link href="/" className="btn">
-        מוצרים
-      </Link>
-      <Link href="/agent" className="btn">
-        דשבורד סוכן
-      </Link>
-      <Link href="/admin" className="btn">
-        דשבורד מנהל
-      </Link>
-      <div style={{ marginInlineStart: "auto" }} />
-      {!user && (
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+    <header className="w-full text-sm flex justify-end gap-4 p-3">
+      {/* Public links always allowed */}
+      <Link href="/products">מוצרים</Link>
+
+      {/* Guest (not logged-in): show only login/register */}
+      {!user && !loading && (
+        <>
           <Link href="/login">כניסה</Link>
-          <span>·</span>
           <Link href="/register">הרשמה</Link>
-        </div>
+        </>
       )}
-      {user && (
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <span>שלום, {user.role}</span>
-          <LogoutButton />
-        </div>
+
+      {/* Agent: agent dashboard + logout */}
+      {isAgent && (
+        <>
+          <Link href="/agent">דשבורד סוכן</Link>
+          <Link href="/api/auth/logout">התנתקות</Link>
+        </>
+      )}
+
+      {/* Admin: admin dashboard + logout */}
+      {isAdmin && (
+        <>
+          <Link href="/admin">דשבורד מנהל</Link>
+          <Link href="/api/auth/logout">התנתקות</Link>
+        </>
       )}
     </header>
   );

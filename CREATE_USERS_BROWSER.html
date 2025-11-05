@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>יצירת משתמשי בדיקה</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .user-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid #4CAF50;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            border: 1px solid #f44336;
+        }
+        .warning {
+            background: rgba(255, 193, 7, 0.3);
+            border: 1px solid #ffc107;
+            color: #333;
+        }
+        .create-all {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .create-all button {
+            background: #2196F3;
+            font-size: 18px;
+            padding: 15px 30px;
+        }
+        .create-all button:hover {
+            background: #1976D2;
+        }
+        .credentials {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .credentials h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        .cred-item {
+            margin: 10px 0;
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 יצירת משתמשי בדיקה - VIPO</h1>
+        
+        <div class="create-all">
+            <button onclick="createAllUsers()" id="createAllBtn">
+                ✨ צור את כל המשתמשים
+            </button>
+        </div>
+
+        <div class="user-card">
+            <h3>👑 Admin Test</h3>
+            <p><strong>אימייל:</strong> admin@test.com</p>
+            <p><strong>סיסמה:</strong> admin</p>
+            <p><strong>תפקיד:</strong> מנהל</p>
+            <button onclick="createUser('admin')" id="adminBtn">צור Admin</button>
+            <div id="adminStatus"></div>
+        </div>
+
+        <div class="user-card">
+            <h3>🤝 Agent Test</h3>
+            <p><strong>אימייל:</strong> agent@test.com</p>
+            <p><strong>סיסמה:</strong> admin</p>
+            <p><strong>תפקיד:</strong> סוכן</p>
+            <button onclick="createUser('agent')" id="agentBtn">צור Agent</button>
+            <div id="agentStatus"></div>
+        </div>
+
+        <div class="user-card">
+            <h3>🛒 Customer Test</h3>
+            <p><strong>אימייל:</strong> customer@test.com</p>
+            <p><strong>סיסמה:</strong> admin</p>
+            <p><strong>תפקיד:</strong> לקוח</p>
+            <button onclick="createUser('customer')" id="customerBtn">צור Customer</button>
+            <div id="customerStatus"></div>
+        </div>
+
+        <div class="credentials">
+            <h2>🔐 פרטי התחברות</h2>
+            <div class="cred-item">
+                <strong>Admin:</strong> admin@test.com / admin → /dashboard
+            </div>
+            <div class="cred-item">
+                <strong>Agent:</strong> agent@test.com / admin → /agent
+            </div>
+            <div class="cred-item">
+                <strong>Customer:</strong> customer@test.com / admin → /customer
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const users = {
+            admin: {
+                fullName: 'Admin Test',
+                email: 'admin@test.com',
+                phone: '050-1234567',
+                password: 'admin',
+                role: 'admin'
+            },
+            agent: {
+                fullName: 'Agent Test',
+                email: 'agent@test.com',
+                phone: '050-1234568',
+                password: 'admin',
+                role: 'agent'
+            },
+            customer: {
+                fullName: 'Customer Test',
+                email: 'customer@test.com',
+                phone: '050-1234569',
+                password: 'admin',
+                role: 'customer'
+            }
+        };
+
+        async function createUser(userType) {
+            const btn = document.getElementById(userType + 'Btn');
+            const status = document.getElementById(userType + 'Status');
+            
+            btn.disabled = true;
+            btn.textContent = 'יוצר...';
+            status.innerHTML = '';
+
+            try {
+                const response = await fetch('http://localhost:3001/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(users[userType])
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.ok) {
+                    status.innerHTML = `<div class="status success">✅ ${userType} נוצר בהצלחה!</div>`;
+                } else if (result.error === 'user exists') {
+                    status.innerHTML = `<div class="status warning">⚠️ המשתמש כבר קיים</div>`;
+                } else {
+                    status.innerHTML = `<div class="status error">❌ שגיאה: ${result.error || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                status.innerHTML = `<div class="status error">❌ שגיאת רשת: ${error.message}</div>`;
+            }
+
+            btn.disabled = false;
+            btn.textContent = `צור ${userType}`;
+        }
+
+        async function createAllUsers() {
+            const btn = document.getElementById('createAllBtn');
+            btn.disabled = true;
+            btn.textContent = 'יוצר את כל המשתמשים...';
+
+            for (const userType of ['admin', 'agent', 'customer']) {
+                await createUser(userType);
+                await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms between requests
+            }
+
+            btn.disabled = false;
+            btn.textContent = '✨ צור את כל המשתמשים';
+        }
+
+        // Check if server is running
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/auth/register', {
+                    method: 'OPTIONS'
+                });
+                console.log('✅ Server is running on localhost:3001');
+            } catch (error) {
+                alert('⚠️ השרת לא רץ! אנא הפעל: npm run dev');
+            }
+        });
+    </script>
+</body>
+</html>

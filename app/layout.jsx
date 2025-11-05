@@ -1,4 +1,7 @@
+import "./globals.css";
+import { ThemeProvider } from "@/app/context/ThemeContext";
 import UserHeader from "@/app/components/UserHeader";
+import ReferralTracker from "@/app/components/ReferralTracker";
 
 export const metadata = {
   title: "VIPO Sales Hub",
@@ -22,11 +25,14 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <UserHeader />
-        <div className="container py-4">
-          {children}
-          <footer className="mt-12 py-8 text-center text-sm text-gray-500">© VIPO</footer>
-        </div>
+        <ThemeProvider>
+          <ReferralTracker />
+          <UserHeader />
+          <div className="container py-4">
+            {children}
+            <footer className="mt-12 py-8 text-center text-sm text-gray-500">© VIPO</footer>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
