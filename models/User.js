@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema(
     fullName: { type: String, required: true, trim: true },
     phone: { type: String, required: true, unique: true, trim: true },
     email: { type: String, sparse: true, index: true, trim: true, lowercase: true },
-    agentId: { type: String, unique: true, sparse: true },
+    agentId: { type: String, unique: true, sparse: true, default: null },
     role: {
       type: String,
       enum: ['admin', 'agent', 'customer'],
@@ -27,6 +27,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
     },
     isAgent: { type: Boolean, default: false },
+    commissionRate: { type: Number, default: 0.1 },
     passwordHash: { type: String, required: true },
 
     // Stage 8.1 – מזהה הפניה ייחודי (למערכת ההפניות)
