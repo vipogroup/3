@@ -77,8 +77,8 @@ export async function POST(req) {
 
     await connectMongo();
 
-    // Base commission rate
-    const BASE_COMMISSION_RATE = 0.05;
+    // Base commission rate - 10% of sale price
+    const BASE_COMMISSION_RATE = 0.10;
     
     // Initialize commission metadata
     const commissionMeta = {

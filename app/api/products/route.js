@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
-import { connectToDB } from '@/lib/mongoose';
-import Product from '@/models/Product';
+import { getDb } from '@/lib/db';
 
 export async function GET() {
   try {
-    await connectToDB();
-    const products = await Product.find().lean();
+    const db = await getDb();
+    const products = await db.collection('products').find().toArray();
     return NextResponse.json(products, { status: 200 });
   } catch (err) {
     console.error('GET /api/products error:', err);

@@ -18,10 +18,18 @@ export default function NewProductPage() {
     originalPrice: "",
     category: "",
     image: "",
+    videoUrl: "", // YouTube embed URL
     inStock: true,
     stockCount: "",
     rating: "4.5",
     reviews: "0",
+    purchaseType: "regular", // regular or group
+    groupPurchaseDetails: {
+      closingDays: "40",
+      shippingDays: "60",
+      minQuantity: "10",
+      currentQuantity: "0"
+    },
     features: ["", "", "", ""],
     specs: {
       "מפרט 1": "",
@@ -70,10 +78,19 @@ export default function NewProductPage() {
         category: formData.category,
         image: formData.image,
         images: [formData.image, formData.image, formData.image], // 3 copies for gallery
+        videoUrl: formData.videoUrl || null,
         inStock: formData.inStock,
         stockCount: parseInt(formData.stockCount) || 0,
         rating: parseFloat(formData.rating),
         reviews: parseInt(formData.reviews),
+        purchaseType: formData.purchaseType,
+        groupPurchaseDetails: formData.purchaseType === 'group' ? {
+          closingDays: parseInt(formData.groupPurchaseDetails.closingDays),
+          shippingDays: parseInt(formData.groupPurchaseDetails.shippingDays),
+          minQuantity: parseInt(formData.groupPurchaseDetails.minQuantity),
+          currentQuantity: parseInt(formData.groupPurchaseDetails.currentQuantity),
+          totalDays: parseInt(formData.groupPurchaseDetails.closingDays) + parseInt(formData.groupPurchaseDetails.shippingDays)
+        } : null,
         features: formData.features.filter(f => f.trim() !== ""),
         specs: Object.fromEntries(
           Object.entries(formData.specs).filter(([_, v]) => v.trim() !== "")
@@ -254,6 +271,156 @@ export default function NewProductPage() {
                     השתמש ב-Unsplash או העלה תמונה לשרת
                   </p>
                 </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-900 mb-2">
+                    קישור לסרטון YouTube (אופציונלי)
+                  </label>
+                  <input
+                    type="url"
+                    name="videoUrl"
+                    value={formData.videoUrl}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600 transition-all"
+                    placeholder="https://www.youtube.com/embed/VIDEO_ID"
+                  />
+                  <p className="text-sm text-gray-600 mt-1">
+                    🎥 הדבק קישור YouTube Embed (לחץ שתף → הטמע → העתק HTML)
+                  </p>
+                </div>
+
+                {/* Purchase Type */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-900 mb-2">
+                    סוג רכישה *
+                  </label>
+                  <select
+                    name="purchaseType"
+                    value={formData.purchaseType}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600 transition-all"
+                  >
+                    <option value="regular">רכישה רגילה און-ליין (מלאי בארץ)</option>
+                    <option value="group">רכישה קבוצתית במחיר מפעל</option>
+                  </select>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {formData.purchaseType === 'regular' 
+                      ? '🚚 משלוח מהיר - המוצר זמין במלאי בארץ'
+                      : '🏭 מחיר מפעל - הזמנה קבוצתית עם זמן המתנה'}
+                  </p>
+                </div>
+
+                {/* Group Purchase Details - Only show if group purchase selected */}
+                {formData.purchaseType === 'group' && (
+                  <>
+                    <div className="md:col-span-2 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
+                      <h3 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                        <span>🏭</span>
+                        פרטי רכישה קבוצתית
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-blue-900 mb-1">
+                            ימים עד סגירת מכירה *
+                          </label>
+                          <input
+                            type="number"
+                            value={formData.groupPurchaseDetails.closingDays}
+                            onChange={(e) => setFormData(prev => ({
+                              ...prev,
+                              groupPurchaseDetails: {
+                                ...prev.groupPurchaseDetails,
+                                closingDays: e.target.value
+                              }
+                            }))}
+                            required={formData.purchaseType === 'group'}
+                            min="1"
+                            className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-600"
+                            placeholder="40"
+                          />
+                          <p className="text-xs text-blue-700 mt-1">בדרך כלל 30-45 ימים</p>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-blue-900 mb-1">
+                            ימי משלוח לאחר סגירה *
+                          </label>
+                          <input
+                            type="number"
+                            value={formData.groupPurchaseDetails.shippingDays}
+                            onChange={(e) => setFormData(prev => ({
+                              ...prev,
+                              groupPurchaseDetails: {
+                                ...prev.groupPurchaseDetails,
+                                shippingDays: e.target.value
+                              }
+                            }))}
+                            required={formData.purchaseType === 'group'}
+                            min="1"
+                            className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-600"
+                            placeholder="60"
+                          />
+                          <p className="text-xs text-blue-700 mt-1">בדרך כלל 45-90 ימים</p>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-blue-900 mb-1">
+                            כמות מינימלית לסגירה *
+                          </label>
+                          <input
+                            type="number"
+                            value={formData.groupPurchaseDetails.minQuantity}
+                            onChange={(e) => setFormData(prev => ({
+                              ...prev,
+                              groupPurchaseDetails: {
+                                ...prev.groupPurchaseDetails,
+                                minQuantity: e.target.value
+                              }
+                            }))}
+                            required={formData.purchaseType === 'group'}
+                            min="1"
+                            className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-600"
+                            placeholder="10"
+                          />
+                          <p className="text-xs text-blue-700 mt-1">מינימום הזמנות לסגירת עסקה</p>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-blue-900 mb-1">
+                            כמות נוכחית
+                          </label>
+                          <input
+                            type="number"
+                            value={formData.groupPurchaseDetails.currentQuantity}
+                            onChange={(e) => setFormData(prev => ({
+                              ...prev,
+                              groupPurchaseDetails: {
+                                ...prev.groupPurchaseDetails,
+                                currentQuantity: e.target.value
+                              }
+                            }))}
+                            min="0"
+                            className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-600"
+                            placeholder="0"
+                          />
+                          <p className="text-xs text-blue-700 mt-1">מספר הזמנות נוכחי</p>
+                        </div>
+                      </div>
+
+                      {/* Total Days Summary */}
+                      <div className="mt-4 p-3 bg-blue-100 rounded-lg">
+                        <p className="text-sm font-bold text-blue-900">
+                          ⏱️ סה"כ זמן המתנה משוער: 
+                          <span className="text-blue-600 text-lg mr-2">
+                            {parseInt(formData.groupPurchaseDetails.closingDays) + parseInt(formData.groupPurchaseDetails.shippingDays)} ימים
+                          </span>
+                          ({parseInt(formData.groupPurchaseDetails.closingDays)} ימים סגירה + {parseInt(formData.groupPurchaseDetails.shippingDays)} ימים משלוח)
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div className="flex items-center">
                   <input

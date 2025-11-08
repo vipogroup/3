@@ -9,13 +9,15 @@ const INITIAL_PRODUCTS = [
     price: 450,
     originalPrice: 599,
     commission: 45, // 10% עמלה
+    type: "online", // סוג מוצר: online או group
     category: "אביזרי מחשב",
-    image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800",
+    image: "https://placehold.co/600x600/8B5CF6/FFFFFF?text=⌨️+RGB+Keyboard&font=roboto",
     images: [
-      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800",
-      "https://images.unsplash.com/photo-1595225476474-87563907a212?w=800",
-      "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=800"
+      "https://placehold.co/800x800/8B5CF6/FFFFFF?text=⌨️+מקלדת+RGB&font=roboto",
+      "https://placehold.co/800x800/6366F1/FFFFFF?text=⌨️+Cherry+MX&font=roboto",
+      "https://placehold.co/800x800/7C3AED/FFFFFF?text=⌨️+RGB+Lights&font=roboto"
     ],
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // סרטון דמו - להחליף בסרטון אמיתי
     inStock: true,
     stockCount: 15,
     rating: 4.8,
@@ -41,13 +43,15 @@ const INITIAL_PRODUCTS = [
     price: 280,
     originalPrice: 399,
     commission: 28,
+    type: "online",
     category: "אביזרי מחשב",
-    image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=800",
+    image: "https://placehold.co/600x600/3B82F6/FFFFFF?text=🖱️+Gaming+Mouse&font=roboto",
     images: [
-      "https://images.unsplash.com/photo-1527814050087-3793815479db?w=800",
-      "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800",
-      "https://images.unsplash.com/photo-1563297007-0686b7003af7?w=800"
+      "https://placehold.co/800x800/3B82F6/FFFFFF?text=🖱️+עכבר+גיימינג&font=roboto",
+      "https://placehold.co/800x800/2563EB/FFFFFF?text=🖱️+16000+DPI&font=roboto",
+      "https://placehold.co/800x800/1D4ED8/FFFFFF?text=🖱️+Wireless&font=roboto"
     ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_2",
     inStock: true,
     stockCount: 23,
     rating: 4.9,
@@ -73,13 +77,15 @@ const INITIAL_PRODUCTS = [
     price: 320,
     originalPrice: 449,
     commission: 32,
+    type: "online",
     category: "אודיו",
-    image: "https://images.unsplash.com/photo-1599669454699-248893623440?w=800",
+    image: "https://placehold.co/600x600/10B981/FFFFFF?text=🎧+Gaming+Headset&font=roboto",
     images: [
-      "https://images.unsplash.com/photo-1599669454699-248893623440?w=800",
-      "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800",
-      "https://images.unsplash.com/photo-1545127398-14699f92334b?w=800"
+      "https://placehold.co/800x800/10B981/FFFFFF?text=🎧+אוזניות+7.1&font=roboto",
+      "https://placehold.co/800x800/059669/FFFFFF?text=🎧+Surround&font=roboto",
+      "https://placehold.co/800x800/047857/FFFFFF?text=🎧+RGB+Lights&font=roboto"
     ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_3",
     inStock: true,
     stockCount: 18,
     rating: 4.7,
@@ -105,13 +111,19 @@ const INITIAL_PRODUCTS = [
     price: 1299,
     originalPrice: 1799,
     commission: 129.9,
+    type: "group",
+    groupEndDate: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000),
+    expectedDeliveryDays: 60,
+    groupMinQuantity: 10,
+    groupCurrentQuantity: 7,
     category: "מסכים",
-    image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800",
+    image: "https://placehold.co/600x600/F59E0B/FFFFFF?text=🖥️+Gaming+Monitor&font=roboto",
     images: [
-      "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800",
-      "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=800",
-      "https://images.unsplash.com/photo-1585792180666-f7347c490ee2?w=800"
+      "https://placehold.co/800x800/F59E0B/FFFFFF?text=🖥️+מסך+27&font=roboto",
+      "https://placehold.co/800x800/D97706/FFFFFF?text=🖥️+144Hz&font=roboto",
+      "https://placehold.co/800x800/B45309/FFFFFF?text=🖥️+QHD+2K&font=roboto"
     ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_4",
     inStock: true,
     stockCount: 8,
     rating: 4.9,
@@ -137,13 +149,15 @@ const INITIAL_PRODUCTS = [
     price: 899,
     originalPrice: 1299,
     commission: 89.9,
+    type: "online",
     category: "ריהוט",
-    image: "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800",
+    image: "https://placehold.co/600x600/EF4444/FFFFFF?text=💺+Gaming+Chair&font=roboto",
     images: [
-      "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800",
-      "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800",
-      "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=800"
+      "https://placehold.co/800x800/EF4444/FFFFFF?text=💺+כיסא+גיימינג&font=roboto",
+      "https://placehold.co/800x800/DC2626/FFFFFF?text=💺+Ergonomic&font=roboto",
+      "https://placehold.co/800x800/B91C1C/FFFFFF?text=💺+Comfort&font=roboto"
     ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_5",
     inStock: true,
     stockCount: 12,
     rating: 4.6,
@@ -169,13 +183,15 @@ const INITIAL_PRODUCTS = [
     price: 550,
     originalPrice: 799,
     commission: 55,
+    type: "online",
     category: "אביזרי מחשב",
-    image: "https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=800",
+    image: "https://placehold.co/600x600/06B6D4/FFFFFF?text=📷+4K+Webcam&font=roboto",
     images: [
-      "https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=800",
-      "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=800",
-      "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800"
+      "https://placehold.co/800x800/06B6D4/FFFFFF?text=📷+מצלמת+4K&font=roboto",
+      "https://placehold.co/800x800/0891B2/FFFFFF?text=📷+60+FPS&font=roboto",
+      "https://placehold.co/800x800/0E7490/FFFFFF?text=📷+Auto+Focus&font=roboto"
     ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_6",
     inStock: true,
     stockCount: 20,
     rating: 4.8,
@@ -195,19 +211,17 @@ const INITIAL_PRODUCTS = [
   }
 ];
 
-// מערכת ניהול מוצרים דינמית
 let PRODUCTS = [...INITIAL_PRODUCTS];
 
 // טעינה מ-localStorage (client-side only)
 if (typeof window !== 'undefined') {
-  const savedProducts = localStorage.getItem('vipo_products');
-  if (savedProducts) {
-    try {
-      PRODUCTS = JSON.parse(savedProducts);
-    } catch (e) {
-      console.error('Error loading products from localStorage:', e);
-    }
-  }
+  // Force reload from INITIAL_PRODUCTS with placeholder images
+  console.log("🔄 Loading products with placeholder images");
+  PRODUCTS = [...INITIAL_PRODUCTS];
+  // Clear old localStorage and save new products
+  localStorage.removeItem('vipo_products');
+  localStorage.setItem('vipo_products', JSON.stringify(PRODUCTS));
+  console.log("✅ Products updated with placeholder images");
 }
 
 // שמירה ב-localStorage

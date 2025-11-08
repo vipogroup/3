@@ -4,9 +4,11 @@ import UserHeader from "@/app/components/UserHeader";
 import ReferralTracker from "@/app/components/ReferralTracker";
 
 export const metadata = {
-  title: "VIPO Sales Hub",
-  description: "Agents + Products + Group Buy",
+  title: "VIPO - חנות מוצרי גיימינג ואלקטרוניקה",
+  description: "מוצרי גיימינג איכותיים במחירים משתלמים - משלוח מהיר לכל הארץ",
   manifest: "/manifest.webmanifest",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
+  themeColor: "#8b5cf6",
 };
 
 export default function RootLayout({ children }) {

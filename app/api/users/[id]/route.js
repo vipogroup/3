@@ -16,6 +16,34 @@ async function usersCollection() {
   return dbo.collection("users");
 }
 
+export async function GET(req, { params }) {
+  try {
+    const token = req.cookies.get("auth_token")?.value || req.cookies.get("token")?.value || "";
+    const decoded = verifyJwt(token);
+    if (decoded?.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = params || {};
+    if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+
+    const col = await usersCollection();
+    const user = await col.findOne(
+      { _id: new ObjectId(id) },
+      { projection: { passwordHash: 0 } }
+    );
+    
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    
+    return NextResponse.json({ user });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
 export async function PATCH(req, { params }) {
   try {
     const token = req.cookies.get("token")?.value || "";

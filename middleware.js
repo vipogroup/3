@@ -5,19 +5,27 @@ const PROTECTED_PREFIXES = ['/app', '/admin', '/agent', '/api/private', '/dashbo
 const PUBLIC_PATHS = ['/admin/login', '/login'];
 
 export async function middleware(req) {
-  const { pathname } = req.nextUrl;
+  const url = req.nextUrl;
+  const token = req.cookies.get('auth_token')?.value;
 
-  // Allow public paths even if they match protected prefixes
-  if (PUBLIC_PATHS.some(p => pathname === p)) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[LOGIN_DEBUG] middleware', { path: url.pathname, hasToken: !!token });
+  }
+
+  if (PUBLIC_PATHS.some(p => url.pathname === p)) {
+    if (token) {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
+    }
     return NextResponse.next();
   }
 
-  const needsAuth = PROTECTED_PREFIXES.some(p => pathname.startsWith(p));
+  const needsAuth = PROTECTED_PREFIXES.some(p => url.pathname.startsWith(p));
   if (!needsAuth) return NextResponse.next();
 
-  const cookie = req.headers.get('cookie') || '';
-  const token = cookie.split('; ').find(s => s.startsWith('token='))?.split('=')[1];
-  if (!token) return NextResponse.redirect(new URL('/login', req.url));
+  if (!token) {
+    url.searchParams.set('next', url.pathname);
+    return NextResponse.redirect(new URL(`/login?${url.searchParams}`, req.url));
+  }
 
   try {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');

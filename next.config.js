@@ -10,6 +10,18 @@ const nextConfig = {
         protocol: "https",
         hostname: "res.cloudinary.com",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "m.media-amazon.com",
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
     ],
     formats: ["image/avif", "image/webp"],
   },
@@ -55,7 +67,7 @@ const nextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Next.js requires unsafe-inline/eval
               "style-src 'self' 'unsafe-inline'", // Tailwind requires unsafe-inline
-              "img-src 'self' data: https://res.cloudinary.com",
+              "img-src 'self' data: https://res.cloudinary.com https://images.unsplash.com https://m.media-amazon.com https://placehold.co",
               "font-src 'self' data:",
               "connect-src 'self'",
               "frame-ancestors 'none'",

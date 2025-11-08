@@ -19,7 +19,7 @@ async function usersCollection() {
 
 export async function GET(req) {
   try {
-    const token = req.cookies.get("token")?.value || "";
+    const token = req.cookies.get("auth_token")?.value || req.cookies.get("token")?.value || "";
     const decoded = verifyJwt(token);
     if (decoded?.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -47,7 +47,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const token = req.cookies.get("token")?.value || "";
+    const token = req.cookies.get("auth_token")?.value || req.cookies.get("token")?.value || "";
     const decoded = verifyJwt(token);
     if (decoded?.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

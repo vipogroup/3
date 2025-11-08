@@ -1,53 +1,92 @@
-import { NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import { getDb } from '@/lib/db';
+export const runtime = "nodejs";
 
-const isProd = () => process.env.NODE_ENV === 'production';
-const isEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim());
+import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+import { getDb } from "@/lib/db";
 
-export async function POST(req) {
+function log(tag, obj) {
   try {
-    const { identifier, password } = await req.json();
+    console.log(`[LOGIN_DEBUG] ${tag}`, typeof obj === "string" ? obj : JSON.stringify(obj));
+  } catch {
+    console.log(`[LOGIN_DEBUG] ${tag}`, obj);
+  }
+}
+
+export async function POST(request) {
+  const startedAt = Date.now();
+  try {
+    let body = {};
+    try {
+      body = await request.json();
+    } catch (e) {
+      log("body-parse-failed", String(e));
+      return NextResponse.json({ error: "BAD_JSON" }, { status: 400 });
+    }
+
+    const identifier = body.identifier || body.email || "";
+    const password = body.password || "";
+    log("input", { identifier: !!identifier, hasPwd: !!password });
 
     if (!identifier || !password) {
-      return NextResponse.json({ error: 'BAD_CREDENTIALS' }, { status: 401 });
+      return NextResponse.json({ error: "MISSING_FIELDS" }, { status: 400 });
     }
 
-    // שלב ראשון: תומכים רק באימייל (נרחיב לטלפון בעתיד בלי לשנות חוזה)
-    if (!isEmail(identifier)) {
-      return NextResponse.json({ error: 'EMAIL_REQUIRED' }, { status: 401 });
-    }
-
-    const email = identifier.toLowerCase().trim();
     const db = await getDb();
-    const users = db.collection('users');
+    const users = db.collection("users");
+    
+    const user = await users.findOne({ 
+      $or: [
+        { email: identifier.toLowerCase().trim() },
+        { phone: identifier }
+      ]
+    });
+    log("user-found", { exists: !!user, id: user?._id });
 
-    const user = await users.findOne({ email });
-    if (!user?.password || user.isActive === false) {
-      return NextResponse.json({ error: 'BAD_CREDENTIALS' }, { status: 401 });
+    if (!user?.passwordHash) {
+      return NextResponse.json({ error: "BAD_CREDENTIALS" }, { status: 401 });
     }
 
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok) return NextResponse.json({ error: 'BAD_CREDENTIALS' }, { status: 401 });
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    log("bcrypt-cmp", { ok });
+
+    if (!ok) {
+      return NextResponse.json({ error: "BAD_CREDENTIALS" }, { status: 401 });
+    }
+
+    const secret = process.env.JWT_SECRET;
+    if (!secret || typeof secret !== "string" || !secret.length) {
+      log("jwt-secret-missing", true);
+      return NextResponse.json({ error: "SERVER_MISCONFIG_JWT" }, { status: 500 });
+    }
 
     const token = jwt.sign(
-      { sub: String(user._id), role: user.role || 'customer' },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { 
+        sub: String(user._id),
+        userId: String(user._id),
+        role: user.role || "user",
+        email: user.email,
+        fullName: user.fullName || user.email,
+        phone: user.phone
+      },
+      secret,
+      { expiresIn: "7d" }
     );
 
-    const res = NextResponse.json({ ok: true, role: user.role || 'customer' });
-    res.cookies.set('token', token, {
+    const res = NextResponse.json({ success: true, role: user.role || "admin" }, { status: 200 });
+    res.cookies.set("auth_token", token, {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: isProd(),   // לוקאל: false; פרוד: true
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60,
+      sameSite: "lax",
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 7,
     });
+
+    log("set-cookie", { ok: true, elapsedMs: Date.now() - startedAt });
     return res;
-  } catch (e) {
-    console.error('LOGIN_ERROR', e);
-    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
+  } catch (err) {
+    log("fatal", String(err?.stack || err));
+    return NextResponse.json({ error: "SERVER_ERROR" }, { status: 500 });
   }
 }

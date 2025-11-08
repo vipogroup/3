@@ -207,6 +207,12 @@ export default function AgentsList() {
                   {new Date(agent.createdAt).toLocaleDateString("he-IL")}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <a
+                    href={`/admin/agents/${agent._id}`}
+                    className="text-purple-600 hover:text-purple-800 mr-3"
+                  >
+                    📊 סטטיסטיקות
+                  </a>
                   <button
                     onClick={() => handleEdit(agent)}
                     className="text-blue-600 hover:text-blue-800 mr-3"

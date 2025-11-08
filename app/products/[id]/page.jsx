@@ -205,9 +205,13 @@ export default function ProductPage() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
+        } else if (res.status === 401) {
+          // User not logged in - this is normal
+          setUser(null);
         }
       } catch (error) {
         console.error("Failed to fetch user:", error);
+        setUser(null);
       }
     }
     fetchUser();
@@ -245,23 +249,26 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-blue-500 p-8">
+    <div className="min-h-screen bg-gray-50 p-2 sm:p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Back Button */}
-        <Link
-          href="/products"
-          className="inline-flex items-center gap-2 bg-white text-purple-600 font-semibold px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all mb-6"
-        >
-          ← חזרה לחנות
-        </Link>
+        {/* Breadcrumb */}
+        <nav className="mb-4 text-sm">
+          <ol className="flex items-center flex-wrap gap-2">
+            <li><Link href="/" className="text-blue-600 hover:text-blue-800 hover:underline">ראשי</Link></li>
+            <li className="text-gray-400">/</li>
+            <li><Link href="/products" className="text-blue-600 hover:text-blue-800 hover:underline">מוצרים</Link></li>
+            <li className="text-gray-400">/</li>
+            <li className="text-gray-600 font-medium truncate max-w-[200px]">{product.name}</li>
+          </ol>
+        </nav>
 
         {/* Product Container */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 p-3 sm:p-4 md:p-6">
             {/* Images Section */}
-            <div>
+            <div className="lg:col-span-2">
               {/* Main Image */}
-              <div className="relative h-96 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden mb-4">
+              <div className="relative aspect-square bg-white border border-gray-200 rounded-lg overflow-hidden mb-3 sticky top-4">
                 <img
                   src={product.images?.[selectedImage] || product.image || "https://via.placeholder.com/800x600?text=No+Image"}
                   alt={product.name}
@@ -281,15 +288,15 @@ export default function ProductPage() {
 
               {/* Thumbnail Images */}
               {product.images && product.images.length > 0 && (
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-3 gap-2">
                   {product.images.map((img, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`relative h-24 rounded-xl overflow-hidden border-4 transition-all ${
+                      className={`relative aspect-square rounded-md overflow-hidden border-2 transition-all ${
                         selectedImage === index
-                          ? "border-purple-600 scale-105"
-                          : "border-transparent hover:border-purple-300"
+                          ? "border-orange-500"
+                          : "border-gray-200 hover:border-gray-400"
                       }`}
                     >
                       <img src={img} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
@@ -300,88 +307,117 @@ export default function ProductPage() {
             </div>
 
             {/* Product Info Section */}
-            <div>
-              {/* Category */}
-              <div className="text-sm text-purple-600 font-semibold mb-2 uppercase">
-                {product.category}
-              </div>
-
+            <div className="lg:col-span-3">
               {/* Product Name */}
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-normal text-gray-900 mb-3 leading-tight">
                 {product.name}
               </h1>
 
+              {/* Category Badge */}
+              <Link href="/products" className="inline-block text-xs sm:text-sm text-blue-600 hover:text-orange-600 hover:underline mb-3">
+                {product.category}
+              </Link>
+
               {/* Rating */}
               {(product.rating > 0 || product.reviews > 0) && (
-                <div className="flex items-center gap-3 mb-6">
+                <div className="flex items-center gap-2 mb-4">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
                       <span
                         key={i}
-                        className={`text-2xl ${
-                          i < Math.floor(product.rating || 0) ? "text-yellow-400" : "text-gray-300"
+                        className={`text-base sm:text-lg ${
+                          i < Math.floor(product.rating || 0) ? "text-orange-400" : "text-gray-300"
                         }`}
                       >
                         ★
                       </span>
                     ))}
                   </div>
-                  <span className="text-lg text-gray-600">
+                  <span className="text-sm sm:text-base text-blue-600 hover:text-orange-600 hover:underline cursor-pointer">
                     {product.rating || 0} ({product.reviews || 0} ביקורות)
                   </span>
                 </div>
               )}
 
-              {/* Price */}
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-5xl font-bold text-purple-600">
-                  ₪{product.price}
-                </span>
-                {product.originalPrice && (
-                  <span className="text-2xl text-gray-400 line-through">
-                    ₪{product.originalPrice}
+              {/* Divider */}
+              <hr className="my-4 border-gray-200" />
+
+              {/* Price Section */}
+              <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                <div className="flex items-baseline gap-3 mb-2">
+                  {product.originalPrice && (
+                    <span className="text-sm text-gray-500 line-through">
+                      ₪{product.originalPrice.toLocaleString()}
+                    </span>
+                  )}
+                  {product.originalPrice && (
+                    <span className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                      -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm text-gray-600">מחיר:</span>
+                  <span className="text-3xl sm:text-4xl font-bold text-red-600">
+                    ₪{product.price.toLocaleString()}
                   </span>
+                </div>
+                {product.inStock && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-green-600 font-semibold text-sm">✓ במלאי</span>
+                    <span className="text-gray-600 text-xs">(נשארו {product.stockCount} יחידות)</span>
+                  </div>
                 )}
               </div>
 
               {/* Short Description */}
-              <p className="text-gray-700 text-lg mb-6 leading-relaxed">
-                {product.description}
-              </p>
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-gray-900 mb-2">אודות המוצר:</h2>
+                <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                  {product.description}
+                </p>
+              </div>
 
               {/* Features */}
               {product.features && product.features.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">תכונות עיקריות:</h3>
-                  <div className="flex flex-wrap gap-2">
+                <div className="mb-4">
+                  <h3 className="text-base font-semibold text-gray-900 mb-2">תכונות עיקריות:</h3>
+                  <ul className="space-y-2">
                     {product.features.map((feature, index) => (
-                      <span
-                        key={index}
-                        className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-medium"
-                      >
-                        ✓ {feature}
-                      </span>
+                      <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
+                        <span className="text-green-600 mt-0.5">✓</span>
+                        <span>{feature}</span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
               )}
 
+              {/* Divider */}
+              <hr className="my-4 border-gray-200" />
+
               {/* Quantity Selector */}
-              <div className="mb-6">
-                <label className="block text-lg font-bold text-gray-900 mb-2">כמות:</label>
-                <div className="flex items-center gap-4">
+              <div className="mb-4">
+                <label className="block text-sm font-semibold text-gray-900 mb-2">כמות:</label>
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold w-12 h-12 rounded-xl transition-all"
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold w-10 h-10 rounded-md transition-all"
                   >
                     -
                   </button>
-                  <span className="text-2xl font-bold text-gray-900 w-12 text-center">
-                    {quantity}
-                  </span>
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value) || 1;
+                      setQuantity(Math.max(1, Math.min(product.stockCount || 999, val)));
+                    }}
+                    className="w-16 h-10 text-center border border-gray-300 rounded-md font-semibold"
+                  />
                   <button
                     onClick={() => setQuantity(Math.min(product.stockCount || 999, quantity + 1))}
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold w-12 h-12 rounded-xl transition-all"
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold w-10 h-10 rounded-md transition-all"
                   >
                     +
                   </button>
@@ -389,16 +425,44 @@ export default function ProductPage() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-4 mb-6">
+              <div className="space-y-3 mb-6">
+                <Link
+                  href={`/checkout/${product._id}`}
+                  className="block w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold text-center py-3 rounded-lg transition-all shadow-md text-sm sm:text-base"
+                >
+                  קנה עכשיו
+                </Link>
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold text-lg py-4 rounded-xl transition-all shadow-lg hover:shadow-xl"
+                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 rounded-lg transition-all shadow-md text-sm sm:text-base"
                 >
                   🛒 הוסף לסל
                 </button>
-                <button className="bg-white border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-bold px-6 py-4 rounded-xl transition-all">
-                  ❤️
+                <button className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-lg transition-all text-sm sm:text-base">
+                  ❤️ הוסף למועדפים
                 </button>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="border border-gray-200 rounded-lg p-4 bg-blue-50 mb-4">
+                <div className="grid grid-cols-2 gap-3 text-xs sm:text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-blue-600">✓</span>
+                    <span className="text-gray-700">משלוח מהיר</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-blue-600">✓</span>
+                    <span className="text-gray-700">החזרה חינם</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-blue-600">✓</span>
+                    <span className="text-gray-700">תשלום בטוח</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-blue-600">✓</span>
+                    <span className="text-gray-700">אחריות יצרן</span>
+                  </div>
+                </div>
               </div>
 
               {/* Admin Actions */}

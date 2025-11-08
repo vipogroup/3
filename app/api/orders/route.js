@@ -5,9 +5,6 @@ import { cookies } from "next/headers";
 import { getDb } from "@/lib/db";
 import { verifyJwt } from "@/src/lib/auth/createToken.js";
 import { calcTotals } from "@/lib/orders/calc.js";
-import { connectToDB } from "@/lib/mongoose";
-import Order from "@/models/Order";
-import User from "@/models/User";
 import { requireAuth } from "@/lib/auth/requireAuth";
 
 async function ordersCollection() {
@@ -67,7 +64,9 @@ export async function POST(req) {
     const me = await requireAuth(req);
     if (!me) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    await connectToDB();
+    const db = await getDb();
+    const usersCol = db.collection("users");
+    const ordersCol = db.collection("orders");
 
     // 2) Parse body
     const body = await req.json();
@@ -89,12 +88,12 @@ export async function POST(req) {
     // 4) Resolve agent by referralId / referralCode / ObjectId
     let refAgent = null;
     if (refSource) {
-      refAgent = await User.findOne({ referralId: refSource, role: "agent" }).select("_id role");
+      refAgent = await usersCol.findOne({ referralId: refSource, role: "agent" });
       if (!refAgent) {
-        refAgent = await User.findOne({ referralCode: refSource, role: "agent" }).select("_id role");
+        refAgent = await usersCol.findOne({ referralCode: refSource, role: "agent" });
       }
       if (!refAgent && ObjectId.isValid(refSource)) {
-        const byId = await User.findById(refSource).select("_id role");
+        const byId = await usersCol.findOne({ _id: new ObjectId(refSource) });
         if (byId?.role === "agent") refAgent = byId;
       }
     }
@@ -111,8 +110,8 @@ export async function POST(req) {
       refSource = null;
     }
 
-    // 6) Create order (Mongoose)
-    const order = await Order.create({
+    // 6) Create order (Native Driver)
+    const orderDoc = {
       items,
       total,
       createdBy: me._id,
@@ -120,14 +119,19 @@ export async function POST(req) {
       refSource,
       refAgentId,
       commissionReferral,
+      createdAt: new Date(),
+      updatedAt: new Date(),
       ...rest,
-    });
+    };
+    
+    const result = await ordersCol.insertOne(orderDoc);
+    const orderId = result.insertedId;
 
     // Return both keys for compatibility with various tests
     return NextResponse.json(
       {
         ok: true,
-        orderId: order._id,
+        orderId,
         refSource,
         refAgentId,
         commission: commissionReferral,

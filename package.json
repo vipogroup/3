@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development next dev -p 3001",
+    "dev": "cross-env NODE_ENV=development next dev -p 3001 -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -14,7 +14,9 @@
     "report": "node scripts/report/collect.js",
     "ci:all": "cross-env NODE_ENV=test npm run test:api && npm run test:ui && npm run verify && npm run report",
     "reset-admin": "cross-env NODE_ENV=development node -r dotenv/config scripts/reset-admin.js",
-    "seed-users": "cross-env NODE_ENV=development node -r dotenv/config scripts/seed-users.js"
+    "seed-users": "cross-env NODE_ENV=development node -r dotenv/config scripts/seed-users.js",
+    "seed-demo": "cross-env NODE_ENV=development node scripts/seed-demo-data.mjs",
+    "clear-demo": "cross-env NODE_ENV=development node scripts/clear-demo-data.mjs"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

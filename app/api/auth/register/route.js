@@ -46,7 +46,7 @@ export async function POST(req) {
       fullName: fullName || "",
       phone: phone || null,
       email: email ? email.toLowerCase().trim() : null,
-      password: passwordHash,
+      passwordHash: passwordHash, // Fixed: use passwordHash instead of password
       role,
       isActive: true,
       createdAt: new Date(),

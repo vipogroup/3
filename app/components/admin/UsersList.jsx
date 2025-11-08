@@ -7,6 +7,7 @@ export default function UsersList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [agents, setAgents] = useState({});
 
   useEffect(() => {
     fetchUsers();
@@ -31,11 +32,37 @@ export default function UsersList() {
       const res = await fetch("/api/users");
       if (!res.ok) throw new Error("Failed to fetch users");
       const data = await res.json();
-      setUsers(data.users || []);
+      // API returns 'items' not 'users'
+      const usersList = data.items || data.users || [];
+      setUsers(usersList);
+      
+      // Fetch agent names for users with referredBy
+      const agentIds = [...new Set(usersList.filter(u => u.referredBy).map(u => u.referredBy))];
+      if (agentIds.length > 0) {
+        fetchAgents(agentIds);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function fetchAgents(agentIds) {
+    try {
+      const agentPromises = agentIds.map(id => 
+        fetch(`/api/users/${id}`).then(r => r.ok ? r.json() : null)
+      );
+      const agentResults = await Promise.all(agentPromises);
+      const agentsMap = {};
+      agentResults.forEach((result, index) => {
+        if (result && result.user) {
+          agentsMap[agentIds[index]] = result.user.fullName || result.user.email;
+        }
+      });
+      setAgents(agentsMap);
+    } catch (err) {
+      console.error("Failed to fetch agents:", err);
     }
   }
 
@@ -110,6 +137,7 @@ export default function UsersList() {
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">אימייל</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">טלפון</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">תפקיד</th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">הופנה על ידי</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">סטטוס</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">תאריך הצטרפות</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">פעולות</th>
@@ -132,6 +160,18 @@ export default function UsersList() {
                     <span className={`px-2 py-1 text-xs rounded-full ${roleOption?.color}`}>
                       {roleOption?.label}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {user.referredBy ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-green-600">🤝</span>
+                        <span className="text-sm font-medium text-green-700">
+                          {agents[user.referredBy] || "טוען..."}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 text-sm">-</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs rounded-full ${

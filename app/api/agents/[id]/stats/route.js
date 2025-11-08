@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { connectMongo } from "@/lib/mongoose";
+import { getDb } from "@/lib/db";
 import Sale from "@/models/Sale";
 import LevelRule from "@/models/LevelRule";
 import { verify } from "@/lib/auth/createToken";
@@ -125,16 +126,94 @@ export async function GET(req, { params }) {
       };
     }
     
+    // Fetch visits data from MongoDB
+    const db = await getDb();
+    const visitsCollection = db.collection("visits");
+    const usersCollection = db.collection("users");
+    
+    // Get all visits for this agent
+    const visits = await visitsCollection
+      .find({ agentId: new ObjectId(id) })
+      .sort({ ts: -1 })
+      .limit(100)
+      .toArray();
+    
+    const totalVisits = visits.length;
+    
+    // Get referrals (users referred by this agent)
+    const referrals = await usersCollection
+      .find(
+        { referredBy: new ObjectId(id) },
+        { projection: { passwordHash: 0 } }
+      )
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    const totalReferrals = referrals.length;
+    
+    // Calculate product stats
+    const productStatsMap = {};
+    
+    visits.forEach(visit => {
+      const productId = visit.productId || 'unknown';
+      if (!productStatsMap[productId]) {
+        productStatsMap[productId] = {
+          productId,
+          productName: visit.productName || 'לא ידוע',
+          visits: 0,
+          purchases: 0,
+          totalRevenue: 0
+        };
+      }
+      productStatsMap[productId].visits++;
+    });
+    
+    // Add purchase data to product stats
+    sales.forEach(sale => {
+      const productId = sale.productId || 'unknown';
+      if (productStatsMap[productId]) {
+        productStatsMap[productId].purchases++;
+        productStatsMap[productId].totalRevenue += sale.salePrice;
+      }
+    });
+    
+    const productStats = Object.values(productStatsMap);
+    
     return NextResponse.json({
       totalSales,
       totalCommission,
       count,
+      totalVisits,
+      totalReferrals,
       currentLevel,
       nextLevel,
       progress: {
         amountMTD,
         dealsMTD
-      }
+      },
+      visits: visits.map(v => ({
+        ts: v.ts,
+        productId: v.productId,
+        productName: v.productName || 'לא ידוע',
+        ip: v.ip,
+        ua: v.ua
+      })),
+      referrals: referrals.map(r => ({
+        _id: r._id,
+        fullName: r.fullName,
+        email: r.email,
+        phone: r.phone,
+        createdAt: r.createdAt
+      })),
+      sales: sales.map(s => ({
+        _id: s._id,
+        customerName: s.customerName,
+        salePrice: s.salePrice,
+        commission: s.commission,
+        status: s.status,
+        createdAt: s.createdAt
+      })),
+      productStats
     });
   } catch (error) {
     console.error("Error fetching agent stats:", error);

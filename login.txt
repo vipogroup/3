@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://res.cloudinary.com; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+content-type: application/json
+set-cookie: auth_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTBlNmY5MGIwZDBkMTcyZTQ0YmM2ZjIiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6Im0wNTg3MDA5OTM4QGdtYWlsLmNvbSIsImlhdCI6MTc2MjU1OTk4MCwiZXhwIjoxNzYzMTY0NzgwfQ.Un7CO_noYG6IHnB1saHWd9ZoZm8t3ot7xYIqa2useEA; Path=/; Expires=Fri, 14 Nov 2025 23:59:40 GMT; Max-Age=604800; HttpOnly; SameSite=lax
+Date: Fri, 07 Nov 2025 23:59:40 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"success":true}

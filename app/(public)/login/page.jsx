@@ -1,15 +1,32 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/http";
+import { api } from "../../../lib/http";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [err, setErr] = useState("");
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("vipo-login"));
+      if (stored?.email) {
+        setEmail(stored.email);
+        setRememberMe(true);
+      }
+      if (stored?.password) {
+        setPassword(stored.password);
+      }
+    } catch {
+      // ignore corrupted localStorage data
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,11 +38,15 @@ export default function LoginPage() {
       const identifier = email.trim();
       const res = await api("/api/auth/login", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ identifier, password }),
       });
 
+      console.log('[LOGIN] Response status:', res.status);
+      
       if (!res.ok) {
         const data = await res.json();
+        console.log('[LOGIN] Error response:', data);
         setErr(data.error || "שגיאה בהתחברות");
         setLoading(false);
         return;
@@ -33,23 +54,41 @@ export default function LoginPage() {
 
       // Success - get user role and redirect accordingly
       const data = await res.json();
-      
+      console.log('[LOGIN] Success response:', data);
+      console.log('[LOGIN] User role:', data.role);
+
+      if (rememberMe) {
+        localStorage.setItem(
+          "vipo-login",
+          JSON.stringify({ email: identifier, password })
+        );
+      } else {
+        localStorage.removeItem("vipo-login");
+      }
+
       setMsg("התחברת בהצלחה! מעביר לדשבורד...");
       setLoading(false);
       
       // Add a small delay to ensure cookie is set
       setTimeout(() => {
+        console.log('[LOGIN] About to redirect for role:', data.role);
+        
+        let targetPath = '/dashboard';
         if (data.role === 'customer') {
-          router.push("/customer");
+          targetPath = '/customer';
         } else if (data.role === 'agent') {
-          router.push("/agent");
+          targetPath = '/agent';
         } else if (data.role === 'admin') {
-          router.push("/dashboard");
-        } else {
-          router.push("/dashboard");
+          targetPath = '/dashboard';
         }
+        
+        console.log('[LOGIN] Redirecting to:', targetPath);
+        
+        // Use window.location for more reliable redirect
+        window.location.href = targetPath;
       }, 500);
     } catch (e) {
+      console.error('[LOGIN] Exception:', e);
       setErr("שגיאה בחיבור לשרת. אנא נסה שוב.");
       setLoading(false);
     }
@@ -106,22 +145,46 @@ export default function LoginPage() {
               >
                 סיסמה
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-                required
-                disabled={loading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
-                aria-describedby="password-help"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  required
+                  disabled={loading}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  aria-describedby="password-help"
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 left-0 flex items-center px-3 text-sm text-blue-600 hover:text-blue-700 focus:outline-none"
+                  aria-label={showPassword ? "הסתר סיסמה" : "הצג סיסמה"}
+                >
+                  {showPassword ? "הסתר" : "הצג"}
+                </button>
+              </div>
               <p id="password-help" className="text-xs text-gray-500 mt-1">
-                הסיסמה שלך חייבת להכיל לפחות 8 תווים
+                ניתן להשתמש בסיסמה של לפחות 6 תווים
               </p>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 text-sm text-gray-600">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  disabled={loading}
+                />
+                זכור אותי במכשיר זה
+              </label>
             </div>
 
             {/* Success Message */}

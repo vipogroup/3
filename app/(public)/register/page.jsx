@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/http";
+import { api } from "../../../lib/http";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -38,7 +38,18 @@ export default function RegisterPage() {
 
     const j = await res.json().catch(() => ({}));
     if (!res.ok || !j?.ok) {
-      setErr(j?.error || "הרשמה נכשלה");
+      // Better error messages
+      let errorMsg = j?.error || "הרשמה נכשלה";
+      if (errorMsg === "user exists") {
+        errorMsg = "משתמש עם האימייל או הטלפון הזה כבר קיים. נסה להתחבר במקום.";
+      } else if (errorMsg === "missing fields") {
+        errorMsg = "חסרים שדות חובה. אנא מלא את כל השדות המסומנים בכוכבית.";
+      } else if (errorMsg === "phone or email required") {
+        errorMsg = "נדרש אימייל או טלפון לפחות.";
+      } else if (errorMsg === "invalid role") {
+        errorMsg = "סוג משתמש לא תקין.";
+      }
+      setErr(errorMsg);
       setLoading(false);
       return;
     }
@@ -231,17 +242,29 @@ export default function RegisterPage() {
             {/* Error Message */}
             {err && (
               <div 
-                className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3" 
+                className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg" 
                 role="alert"
                 aria-live="polite"
               >
-                <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-                <div>
-                  <strong className="font-semibold">שגיאה בהרשמה</strong>
-                  <p className="text-sm mt-1">{err}</p>
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <div className="flex-1">
+                    <strong className="font-semibold">שגיאה בהרשמה</strong>
+                    <p className="text-sm mt-1">{err}</p>
+                  </div>
                 </div>
+                {err.includes("כבר קיים") && (
+                  <div className="mt-3">
+                    <a 
+                      href="/login"
+                      className="inline-block w-full text-center bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                    >
+                      עבור להתחברות
+                    </a>
+                  </div>
+                )}
               </div>
             )}
 

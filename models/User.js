@@ -37,6 +37,7 @@ const UserSchema = new mongoose.Schema(
     // Stage 12 – Commission/Credit System
     referralCount: { type: Number, default: 0 }, // כמות הפניות (שם חלופי)
     commissionBalance: { type: Number, default: 0 }, // יתרת עמלות בש"ח
+    totalSales: { type: Number, default: 0 }, // סה"כ מכירות שהסוכן הביא
 
     // תאימות למודל הקודם
     createdAt: { type: Date, default: Date.now },
