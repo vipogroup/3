@@ -3,6 +3,8 @@ import { randomUUID } from "crypto";
 import { connectMongo } from "@/lib/mongoose";
 import User from "@/models/User";
 import { requireAdmin } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
+import { getReqInfo } from "@/lib/requestInfo";
 
 export async function GET(request, { params }) {
   const auth = await requireAdmin({ cookie: request.headers.get("cookie") || "" });
@@ -60,11 +62,16 @@ export async function PATCH(request, { params }) {
 
   await agent.save();
 
-  console.log("[ADMIN][AGENT] update", {
+  const { ip, userAgent } = getReqInfo(request);
+  await logAudit({
+    action: "agent.updated",
+    actorType: "admin",
     actorId: auth.userId,
-    agentId: agent.agentId,
+    targetType: "agent",
     targetId: agent._id,
-    updates,
+    metadata: { updates },
+    ip,
+    userAgent,
   });
 
   return NextResponse.json({ ok: true, item: mapAgent(agent) });
@@ -87,10 +94,16 @@ export async function DELETE(request, { params }) {
 
   await agent.save();
 
-  console.log("[ADMIN][AGENT] delete", {
+  const { ip, userAgent } = getReqInfo(request);
+  await logAudit({
+    action: "agent.deleted",
+    actorType: "admin",
     actorId: auth.userId,
-    agentId: agent.agentId,
+    targetType: "agent",
     targetId: agent._id,
+    metadata: { agentId: agent.agentId },
+    ip,
+    userAgent,
   });
 
   return NextResponse.json({ ok: true });

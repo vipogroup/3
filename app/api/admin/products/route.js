@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectMongo } from "@/lib/mongoose";
 import Product from "@/models/Product";
 import { requireAdmin } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
+import { getReqInfo } from "@/lib/requestInfo";
 
 export async function GET(request) {
   const auth = await requireAdmin({ cookie: request.headers.get("cookie") || "" });
@@ -44,12 +46,16 @@ export async function POST(request) {
     images,
   });
 
-  console.log("AUDIT", {
-    action: "product.create",
+  const { ip, userAgent } = getReqInfo(request);
+  await logAudit({
+    action: "product.created",
+    actorType: "admin",
     actorId: auth.userId,
+    targetType: "product",
     targetId: product._id,
-    meta: { title, slug },
-    timestamp: new Date().toISOString(),
+    metadata: { title, slug, price },
+    ip,
+    userAgent,
   });
 
   return NextResponse.json({ ok: true, item: mapProduct(product) }, { status: 201 });

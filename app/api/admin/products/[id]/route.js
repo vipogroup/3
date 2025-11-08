@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import { connectMongo } from "@/lib/mongoose";
 import Product from "@/models/Product";
 import { requireAdmin } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
+import { getReqInfo } from "@/lib/requestInfo";
 
 export async function GET(request, { params }) {
   const auth = await requireAdmin({ cookie: request.headers.get("cookie") || "" });
@@ -41,12 +43,16 @@ export async function PATCH(request, { params }) {
   Object.assign(product, updates);
   await product.save();
 
-  console.log("AUDIT", {
-    action: "product.update",
+  const { ip, userAgent } = getReqInfo(request);
+  await logAudit({
+    action: "product.updated",
+    actorType: "admin",
     actorId: auth.userId,
+    targetType: "product",
     targetId: product._id,
-    meta: updates,
-    timestamp: new Date().toISOString(),
+    metadata: updates,
+    ip,
+    userAgent,
   });
 
   return NextResponse.json({ ok: true, item: mapProduct(product) });
@@ -65,12 +71,16 @@ export async function DELETE(request, { params }) {
 
   await product.deleteOne();
 
-  console.log("AUDIT", {
-    action: "product.delete",
+  const { ip, userAgent } = getReqInfo(request);
+  await logAudit({
+    action: "product.deleted",
+    actorType: "admin",
     actorId: auth.userId,
+    targetType: "product",
     targetId: product._id,
-    meta: { title: product.title, slug: product.slug },
-    timestamp: new Date().toISOString(),
+    metadata: { title: product.title, slug: product.slug },
+    ip,
+    userAgent,
   });
 
   return NextResponse.json({ ok: true });

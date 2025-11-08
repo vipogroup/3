@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import { connectMongo } from "@/lib/mongoose";
 import User from "@/models/User";
 import { requireAdmin } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
+import { getReqInfo } from "@/lib/requestInfo";
 
 const SUMMARY_PROJECTION = {
   fullName: 1,
@@ -34,9 +36,16 @@ export async function GET(request, { params }) {
 
   const payload = mapCustomerDetail(customer, agent);
 
-  console.log("[ADMIN][CUSTOMER] view", {
+  const { ip, userAgent } = getReqInfo(request);
+  await logAudit({
+    action: "customer.viewed",
+    actorType: "admin",
     actorId: auth.userId,
-    customerId: payload._id,
+    targetType: "customer",
+    targetId: payload._id,
+    metadata: {},
+    ip,
+    userAgent,
   });
 
   return NextResponse.json({ ok: true, item: payload });
@@ -68,15 +77,21 @@ export async function PATCH(request, { params }) {
   const agent = await resolveAgent(customer.refSource || customer.agentId);
   const payload = mapCustomerDetail(customer, agent);
 
-  console.log("[ADMIN][CUSTOMER] update", {
+  const { ip, userAgent } = getReqInfo(request);
+  await logAudit({
+    action: "customer.updated",
+    actorType: "admin",
     actorId: auth.userId,
-    customerId: payload._id,
-    changes: {
+    targetType: "customer",
+    targetId: payload._id,
+    metadata: {
       name: body.name,
       email: body.email,
       note: body.note,
       isActive: body.isActive,
     },
+    ip,
+    userAgent,
   });
 
   return NextResponse.json({ ok: true, item: payload });

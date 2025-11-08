@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import { connectMongo } from "@/lib/mongoose";
 import User from "@/models/User";
 import { requireAdmin } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
+import { getReqInfo } from "@/lib/requestInfo";
 
 export async function GET(request) {
   const auth = await requireAdmin({ cookie: request.headers.get("cookie") || "" });
@@ -115,6 +117,22 @@ export async function POST(request) {
     agentId: mapped.agentId,
     targetId: mapped._id,
     temporaryPassword: temporaryPassword ? "generated" : "existing",
+  });
+
+  const { ip, userAgent } = getReqInfo(request);
+  await logAudit({
+    action: "agent.created",
+    actorType: "admin",
+    actorId: auth.userId,
+    targetType: "agent",
+    targetId: targetUser._id,
+    metadata: {
+      email: targetUser.email,
+      agentId: targetUser.agentId,
+      commissionRate: targetUser.commissionRate,
+    },
+    ip,
+    userAgent,
   });
 
   const responsePayload = { ok: true, item: mapped };
