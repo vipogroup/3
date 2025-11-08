@@ -29,6 +29,11 @@ const UserSchema = new mongoose.Schema(
     isAgent: { type: Boolean, default: false },
     commissionRate: { type: Number, default: 0.1 },
     passwordHash: { type: String, required: true },
+    isCustomer: { type: Boolean, default: true },
+    refSource: { type: String, default: null },
+    joinedAt: { type: Date, default: Date.now },
+    orders: { type: [mongoose.Schema.Types.ObjectId], ref: "Order", default: [] },
+    adminNote: { type: String, default: "" },
 
     // Stage 8.1 – מזהה הפניה ייחודי (למערכת ההפניות)
     referralId: { type: String, unique: true, sparse: true, index: true },
