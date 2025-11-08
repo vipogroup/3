@@ -1,28 +1,21 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const OrderSchema = new mongoose.Schema(
-  {
-    status: { type: String, default: 'pending' },
+const OrderSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
+  agentId: { type: String, index: true },
+  productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+  productName: String,
+  amount: { type: Number, default: 0 },
+  totalAmount: { type: Number, default: 0 },
+  currency: { type: String, default: "ILS" },
+  status: { type: String, enum: ["paid", "refunded", "pending"], default: "paid" },
+}, { timestamps: true });
 
-    // Referral tracking
-    refSource: { type: String, default: null },           // הערך הגולמי מה-cookie
-    refAgentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    commissionReferral: { type: Number, default: 0 },     // סכום העמלה (במטבע העסקה)
+OrderSchema.virtual("commission").get(function () {
+  const baseAmount = this.amount ?? this.totalAmount ?? 0;
+  return this.status === "paid" ? Number((baseAmount * 0.10).toFixed(2)) : 0;
+});
 
-    // Core order fields
-    items: { type: Array, default: [] },
-    total: { type: Number, default: 0 },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+OrderSchema.index({ agentId: 1, createdAt: -1 });
 
-    // Minimal placeholders (extend as needed)
-    customerName: { type: String, default: null },
-    customerPhone: { type: String, default: null },
-    totalAmount: { type: Number, default: 0 },
-  },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
-);
-
-export default mongoose.models.Order || mongoose.model('Order', OrderSchema);
+export default mongoose.models.Order || mongoose.model("Order", OrderSchema);

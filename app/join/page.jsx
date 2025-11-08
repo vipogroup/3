@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Toast from "@/components/Toast";
+
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
 
 /**
  * הגדרות קבועות
@@ -17,7 +20,7 @@ const REDIRECT_URL = "/register"; // Redirect to register for better UX
 // בדיקה בסיסית לתבנית referralId: אותיות/ספרות, 8–32 תווים
 const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
 
-export default function JoinPage() {
+function JoinPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("idle");
@@ -121,5 +124,20 @@ function Msg({ title, subtitle, hint }) {
       {subtitle ? <p className="opacity-80 break-all">{subtitle}</p> : null}
       {hint ? <p className="text-sm opacity-60">{hint}</p> : null}
     </div>
+  );
+}
+
+// Wrap with Suspense to handle useSearchParams
+export default function JoinPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-[60vh] flex items-center justify-center p-6">
+        <div className="w-full max-w-md rounded-2xl shadow-lg p-6 border bg-white">
+          <Msg title="טוען..." subtitle="" hint="" />
+        </div>
+      </main>
+    }>
+      <JoinPageContent />
+    </Suspense>
   );
 }

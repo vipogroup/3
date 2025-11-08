@@ -42,3 +42,5 @@ dist/
 *.cache
 .sass-cache/
 .parcel-cache/
+
+.vercel

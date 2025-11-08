@@ -3,6 +3,7 @@ import { jwtVerify } from 'jose';
 
 const PROTECTED_PREFIXES = ['/app', '/admin', '/agent', '/api/private', '/dashboard', '/customer'];
 const PUBLIC_PATHS = ['/admin/login', '/login'];
+const AGENT_ONLY = [/^\/agent(\/|$)/];
 
 export async function middleware(req) {
   const url = req.nextUrl;
@@ -29,7 +30,17 @@ export async function middleware(req) {
 
   try {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
-    await jwtVerify(token, secret);
+    const { payload } = await jwtVerify(token, secret);
+
+    const isAgentPath = AGENT_ONLY.some((rx) => rx.test(url.pathname));
+    if (isAgentPath) {
+      const isAgent = Boolean(payload?.isAgent || payload?.role === 'agent' || payload?.role === 'admin');
+      if (!isAgent) {
+        url.searchParams.set('next', url.pathname);
+        return NextResponse.redirect(new URL(`/login?${url.searchParams}`, req.url));
+      }
+    }
+
     return NextResponse.next();
   } catch {
     return NextResponse.redirect(new URL('/login', req.url));

@@ -4,11 +4,5 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "outputDirectory": ".next",
-  "regions": ["iad1"],
-  "env": {
-    "MONGODB_URI": "@mongodb_uri",
-    "MONGODB_DB": "@mongodb_db",
-    "JWT_SECRET": "@jwt_secret",
-    "PUBLIC_URL": "@public_url"
-  }
+  "regions": ["iad1"]
 }

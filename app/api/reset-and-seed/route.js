@@ -28,6 +28,8 @@ export async function POST() {
         phone: "0521234567",
         password: "12345678A?",
         role: "agent",
+        isAgent: true,
+        agentId: "AGENT-DEMO-001",
       },
       {
         fullName: "לקוח רגיל",
@@ -63,21 +65,28 @@ export async function POST() {
     // Hash passwords and insert users
     const insertPromises = demoUsers.map(async (user) => {
       const passwordHash = await bcrypt.hash(user.password, 10);
-      
-      return users.insertOne({
+
+      const doc = {
         fullName: user.fullName,
         email: user.email.toLowerCase(),
         phone: user.phone,
         passwordHash,
         role: user.role,
         isActive: true,
+        isAgent: Boolean(user.isAgent),
         referralsCount: 0,
         referralCount: 0,
         commissionBalance: 0,
         totalSales: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+      };
+
+      if (user.agentId) {
+        doc.agentId = user.agentId;
+      }
+
+      return users.insertOne(doc);
     });
     
     await Promise.all(insertPromises);

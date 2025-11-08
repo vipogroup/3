@@ -19,24 +19,27 @@ const UserSchema = new mongoose.Schema(
     fullName: { type: String, required: true, trim: true },
     phone: { type: String, required: true, unique: true, trim: true },
     email: { type: String, sparse: true, index: true, trim: true, lowercase: true },
+    agentId: { type: String, unique: true, sparse: true },
     role: {
       type: String,
       enum: ['admin', 'agent', 'customer'],
       default: 'customer',
       required: true,
     },
+    isAgent: { type: Boolean, default: false },
     passwordHash: { type: String, required: true },
 
     // Stage 8.1 – מזהה הפניה ייחודי (למערכת ההפניות)
     referralId: { type: String, unique: true, sparse: true, index: true },
 
     // Stage 11 – Referral System (חבר-מביא-חבר)
-    referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true }, // מי הפנה
+    referredBy: { type: String, index: true }, // מזהה הסוכן שהפנה
     referralsCount: { type: Number, default: 0 }, // כמות הפניות (לסטטיסטיקה מהירה)
-    
+
     // Stage 12 – Commission/Credit System
     referralCount: { type: Number, default: 0 }, // כמות הפניות (שם חלופי)
     commissionBalance: { type: Number, default: 0 }, // יתרת עמלות בש"ח
+    commissionTotal: { type: Number, default: 0 },
     totalSales: { type: Number, default: 0 }, // סה"כ מכירות שהסוכן הביא
 
     // תאימות למודל הקודם
@@ -84,10 +87,11 @@ UserSchema.methods.toPublicUser = function () {
 };
 
 // אינדקס מפורש (למקרה שה־autoIndex כבוי בפרודקשן)
+UserSchema.index({ agentId: 1 }, { unique: true, sparse: true, name: 'uniq_agentId_sparse' });
 UserSchema.index({ referralId: 1 }, { unique: true, sparse: true, name: 'uniq_referralId_sparse' });
 UserSchema.index({ phone: 1 }, { unique: true, name: 'uniq_phone' });
 UserSchema.index({ email: 1 }, { sparse: true, name: 'idx_email_sparse' });
-UserSchema.index({ referredBy: 1 }, { name: 'idx_referredBy' });
+UserSchema.index({ referredBy: 1, _id: -1 }, { name: 'idx_referredBy_desc' });
 
 // ייצוא סטנדרטי של מודל Mongoose
 export default mongoose.models.User || mongoose.model('User', UserSchema);
