@@ -1,21 +1,23 @@
 import mongoose from "mongoose";
 
-const OrderSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
-  agentId: { type: String, index: true },
-  productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-  productName: String,
-  amount: { type: Number, default: 0 },
-  totalAmount: { type: Number, default: 0 },
-  currency: { type: String, default: "ILS" },
-  status: { type: String, enum: ["paid", "refunded", "pending"], default: "paid" },
-}, { timestamps: true });
+const OrderSchema = new mongoose.Schema(
+  {
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+    customerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    agentId: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
 
-OrderSchema.virtual("commission").get(function () {
-  const baseAmount = this.amount ?? this.totalAmount ?? 0;
-  return this.status === "paid" ? Number((baseAmount * 0.10).toFixed(2)) : 0;
-});
+    quantity: { type: Number, default: 1 },
+    price: { type: Number, required: true }, // מחיר בזמן רכישה
 
-OrderSchema.index({ agentId: 1, createdAt: -1 });
+    status: {
+      type: String,
+      enum: ["pending", "paid", "shipped", "completed", "cancelled"],
+      default: "pending",
+    },
+
+    note: { type: String, default: "" },
+  },
+  { timestamps: true }
+);
 
 export default mongoose.models.Order || mongoose.model("Order", OrderSchema);
