@@ -1,9 +1,13 @@
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { commissionPerReferral } from "@/app/config/commissions";
+import dbConnect from "@/lib/mongoose";
+import Notification from "@/models/Notification";
 
 export async function POST(req) {
   try {
@@ -105,6 +109,22 @@ export async function POST(req) {
       }
     }
     
+    // Create admin notification (Stage 2.5)
+    try {
+      await dbConnect();
+      await Notification.create({
+        type: "new_user",
+        message: `נרשם משתמש חדש: ${doc.email || doc.phone || doc.fullName || "Unknown"}`,
+        payload: {
+          userId: newUserId,
+          email: doc.email,
+          fullName: doc.fullName,
+        },
+      });
+    } catch (notifyErr) {
+      console.error("REGISTER_NOTIFICATION_ERROR", notifyErr);
+    }
+
     // Clear refSource cookie after successful registration
     const res = NextResponse.json({ ok: true, userId: String(newUserId) }, { status: 201 });
     res.cookies.set("refSource", "", { path: "/", maxAge: 0 });

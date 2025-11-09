@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import Transaction from "@/models/Transaction";
 import { getDb } from "@/lib/db";
 import { requireAdmin } from "@/lib/authz";
@@ -9,6 +11,10 @@ import { NextResponse } from "next/server";
  */
 export async function GET(req) {
   try {
+    if (process.env.NEXT_PHASE === "phase-export") {
+      return NextResponse.json({ success: false, skip: true });
+    }
+
     await getDb();
     
     // Verify admin access
