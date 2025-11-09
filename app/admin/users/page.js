@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 import { requireAdmin } from "@/lib/auth/server";
 import UsersList from "@/components/admin/UsersList";
 
