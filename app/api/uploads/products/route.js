@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import path from "path";
 import fs from "fs/promises";
-import { verifyJwt } from "@/lib/auth/createToken.js";
+import { verify as verifyJwt } from "@/lib/auth/createToken.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
