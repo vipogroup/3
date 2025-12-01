@@ -15,6 +15,10 @@ function log(tag, obj) {
 }
 
 export async function POST(request) {
+  if (!process.env.JWT_SECRET) {
+    return NextResponse.json({ error: "SERVER_MISCONFIG_JWT" }, { status: 500 });
+  }
+
   const startedAt = Date.now();
   try {
     let body = {};
@@ -27,7 +31,7 @@ export async function POST(request) {
 
     const identifier = body.identifier || body.email || "";
     const password = body.password || "";
-    log("input", { identifier: !!identifier, hasPwd: !!password });
+    log("input", { identifier, hasPwd: !!password });
 
     if (!identifier || !password) {
       return NextResponse.json({ error: "MISSING_FIELDS" }, { status: 400 });
@@ -44,11 +48,12 @@ export async function POST(request) {
     });
     log("user-found", { exists: !!user, id: user?._id });
 
-    if (!user?.passwordHash) {
+    const storedHash = user?.passwordHash || user?.password;
+    if (!storedHash) {
       return NextResponse.json({ error: "BAD_CREDENTIALS" }, { status: 401 });
     }
 
-    const ok = await bcrypt.compare(password, user.passwordHash);
+    const ok = await bcrypt.compare(password, storedHash);
     log("bcrypt-cmp", { ok });
 
     if (!ok) {

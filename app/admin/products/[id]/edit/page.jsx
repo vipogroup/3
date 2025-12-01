@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { getProductById, updateProduct } from "@/app/lib/products";
+import { refreshProductsFromApi } from "@/app/lib/products";
 
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [product, setProduct] = useState(null);
+  const [productLoading, setProductLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -44,43 +44,75 @@ export default function EditProductPage() {
   });
 
   useEffect(() => {
-    const loadedProduct = getProductById(params.id);
-    if (loadedProduct) {
-      setProduct(loadedProduct);
-      setFormData({
-        name: loadedProduct.name || "",
-        description: loadedProduct.description || "",
-        fullDescription: loadedProduct.fullDescription || "",
-        price: loadedProduct.price?.toString() || "",
-        originalPrice: loadedProduct.originalPrice?.toString() || "",
-        category: loadedProduct.category || "",
-        image: loadedProduct.image || "",
-        videoUrl: loadedProduct.videoUrl || "",
-        inStock: loadedProduct.inStock !== undefined ? loadedProduct.inStock : true,
-        stockCount: loadedProduct.stockCount?.toString() || "",
-        rating: loadedProduct.rating?.toString() || "4.5",
-        reviews: loadedProduct.reviews?.toString() || "0",
-        purchaseType: loadedProduct.purchaseType || "regular",
-        groupPurchaseDetails: loadedProduct.groupPurchaseDetails || {
-          closingDays: "40",
-          shippingDays: "60",
-          minQuantity: "10",
-          currentQuantity: "0"
-        },
-        features: loadedProduct.features || ["", "", "", ""],
-        specs: loadedProduct.specs || {
-          "מפרט 1": "",
-          "מפרט 2": "",
-          "מפרט 3": "",
-          "מפרט 4": "",
-          "מפרט 5": "",
-          "מפרט 6": ""
+    let cancelled = false;
+
+    async function loadProduct() {
+      setProductLoading(true);
+      setError("");
+      try {
+        const res = await fetch(`/api/products/${params.id}`);
+        if (!res.ok) {
+          throw new Error(res.status === 404 ? "מוצר לא נמצא" : "טעינת המוצר נכשלה");
         }
-      });
-    } else {
-      setError("מוצר לא נמצא");
+
+        const loadedProduct = await res.json();
+        if (cancelled) return;
+
+        setFormData({
+          name: loadedProduct.name || "",
+          description: loadedProduct.description || "",
+          fullDescription: loadedProduct.fullDescription || "",
+          price: loadedProduct.price?.toString() || "",
+          originalPrice: loadedProduct.originalPrice?.toString() || "",
+          category: loadedProduct.category || "",
+          image: loadedProduct.image || loadedProduct.imageUrl || "",
+          videoUrl: loadedProduct.videoUrl || "",
+          inStock: loadedProduct.inStock !== undefined ? loadedProduct.inStock : true,
+          stockCount: loadedProduct.stockCount?.toString() || "",
+          rating: loadedProduct.rating?.toString() || "4.5",
+          reviews: loadedProduct.reviews?.toString() || "0",
+          purchaseType: loadedProduct.purchaseType || "regular",
+          groupPurchaseDetails: loadedProduct.groupPurchaseDetails || {
+            closingDays: "40",
+            shippingDays: "60",
+            minQuantity: "10",
+            currentQuantity: "0"
+          },
+          features: Array.isArray(loadedProduct.features) && loadedProduct.features.length
+            ? loadedProduct.features
+            : ["", "", "", ""],
+          specs:
+            loadedProduct.specs && Object.keys(loadedProduct.specs).length
+              ? loadedProduct.specs
+              : {
+                  "מפרט 1": "",
+                  "מפרט 2": "",
+                  "מפרט 3": "",
+                  "מפרט 4": "",
+                  "מפרט 5": "",
+                  "מפרט 6": ""
+                },
+        });
+      } catch (err) {
+        console.error("Failed to load product", err);
+        if (!cancelled) {
+          setError(err.message || "טעינת המוצר נכשלה");
+        }
+      } finally {
+        if (!cancelled) {
+          setProductLoading(false);
+        }
+      }
     }
-  }, [params.id]);
+
+    if (params?.id) {
+      loadProduct();
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [params?.id]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -109,44 +141,58 @@ export default function EditProductPage() {
     setSubmitting(true);
 
     try {
-      const updates = {
-        name: formData.name,
-        description: formData.description,
-        fullDescription: formData.fullDescription,
-        price: parseFloat(formData.price),
+      const payload = {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        fullDescription: formData.fullDescription.trim(),
+        price: parseFloat(formData.price) || 0,
         originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
         category: formData.category,
         image: formData.image,
-        images: [formData.image, formData.image, formData.image],
-        videoUrl: formData.videoUrl || null,
+        imageUrl: formData.image,
+        images: formData.image ? [formData.image] : [],
+        videoUrl: formData.videoUrl || "",
         inStock: formData.inStock,
         stockCount: parseInt(formData.stockCount) || 0,
-        rating: parseFloat(formData.rating),
-        reviews: parseInt(formData.reviews),
+        rating: parseFloat(formData.rating) || 0,
+        reviews: parseInt(formData.reviews) || 0,
         purchaseType: formData.purchaseType,
-        groupPurchaseDetails: formData.purchaseType === 'group' ? {
-          closingDays: parseInt(formData.groupPurchaseDetails.closingDays),
-          shippingDays: parseInt(formData.groupPurchaseDetails.shippingDays),
-          minQuantity: parseInt(formData.groupPurchaseDetails.minQuantity),
-          currentQuantity: parseInt(formData.groupPurchaseDetails.currentQuantity),
-          totalDays: parseInt(formData.groupPurchaseDetails.closingDays) + parseInt(formData.groupPurchaseDetails.shippingDays)
-        } : null,
-        features: formData.features.filter(f => f.trim() !== ""),
+        groupPurchaseDetails:
+          formData.purchaseType === "group"
+            ? {
+                closingDays: parseInt(formData.groupPurchaseDetails.closingDays) || 0,
+                shippingDays: parseInt(formData.groupPurchaseDetails.shippingDays) || 0,
+                minQuantity: parseInt(formData.groupPurchaseDetails.minQuantity) || 1,
+                currentQuantity: parseInt(formData.groupPurchaseDetails.currentQuantity) || 0,
+                totalDays:
+                  (parseInt(formData.groupPurchaseDetails.closingDays) || 0) +
+                  (parseInt(formData.groupPurchaseDetails.shippingDays) || 0),
+              }
+            : null,
+        features: formData.features.filter((f) => f.trim() !== ""),
         specs: Object.fromEntries(
-          Object.entries(formData.specs).filter(([_, v]) => v.trim() !== "")
-        )
+          Object.entries(formData.specs).filter(([_, v]) => (v ?? "").toString().trim() !== "")
+        ),
       };
 
-      // Update product using the library function
-      const updatedProduct = updateProduct(params.id, updates);
-      
-      if (updatedProduct) {
-        console.log("Product updated:", updatedProduct);
-        alert("מוצר עודכן בהצלחה! השינויים יוחלו בכל הדפים.");
-        router.push("/admin/products");
-      } else {
-        setError("מוצר לא נמצא");
+      const response = await fetch(`/api/products/${params.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const details = await response.json().catch(() => ({}));
+        throw new Error(details?.error || "שגיאה בעדכון המוצר");
       }
+
+      await refreshProductsFromApi();
+      window.dispatchEvent(new Event("productsUpdated"));
+
+      alert("מוצר עודכן בהצלחה! השינויים יוחלו בכל הדפים.");
+      router.push("/admin/products");
     } catch (error) {
       setError(error.message || "שגיאה בעדכון המוצר");
     } finally {
@@ -154,10 +200,18 @@ export default function EditProductPage() {
     }
   };
 
-  if (!product && !error) {
+  if (productLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-blue-500 flex items-center justify-center">
-        <div className="text-white text-2xl">טוען...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-gray-600">טוען נתוני מוצר…</div>
+      </div>
+    );
+  }
+
+  if (error && !formData.name) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="rounded-xl bg-red-100 px-6 py-4 text-red-700 shadow">{error}</div>
       </div>
     );
   }
@@ -185,7 +239,7 @@ export default function EditProductPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-4xl font-bold text-white">ערוך מוצר</h1>
-            <p className="text-purple-100 mt-2">{product?.name}</p>
+            <p className="text-purple-100 mt-2">{formData.name}</p>
           </div>
           <Link
             href="/admin/products"

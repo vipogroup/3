@@ -39,6 +39,18 @@ const UserSchema = new mongoose.Schema(
     commissionBalance: { type: Number, default: 0 }, // יתרת עמלות בש"ח
     totalSales: { type: Number, default: 0 }, // סה"כ מכירות שהסוכן הביא
 
+    // Coupon program for agents
+    couponCode: { type: String, unique: true, sparse: true, trim: true },
+    couponSlug: { type: String, index: true, trim: true },
+    couponSequence: { type: Number, default: 0 },
+    discountPercent: { type: Number, default: 10, min: 0 },
+    commissionPercent: { type: Number, default: 12, min: 0 },
+    couponStatus: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
+    },
+
     // תאימות למודל הקודם
     createdAt: { type: Date, default: Date.now },
     isActive: { type: Boolean, default: true },

@@ -9,7 +9,7 @@ import { groupSalesByDay, getCurrentMonthRange } from "@/app/utils/date";
  * @param {Object} props - Component props
  * @param {Array} props.data - Array of agent's sale objects
  */
-export default function AgentChart({ data }) {
+export default function AgentChart({ data, className = "" }) {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const [chartData, setChartData] = useState(null);
@@ -149,17 +149,19 @@ export default function AgentChart({ data }) {
   }, [chartData]);
 
   // If no data, show empty state message
+  const containerClassName = className || "bg-white rounded-2xl shadow-md p-6 h-64";
+
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-8 text-center h-64 flex items-center justify-center">
+      <div className={`${containerClassName} flex items-center justify-center text-center`}>
         <p className="text-gray-500">אין נתונים לחודש הנוכחי</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 h-64">
-      <canvas ref={chartRef} />
+    <div className={containerClassName}>
+      <canvas ref={chartRef} className="w-full h-full" />
     </div>
   );
 }

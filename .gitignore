@@ -23,6 +23,29 @@ Thumbs.db
 
 # Editor
 .vscode/
+.idea/
+
+# Vercel local config
+.vercel/
+
+# Logs & reports
+logs/
+build.log
+
+# Local databases & backups
+.mock-db/
+backup-*/
+backup_*/
+backup_conflicting_routes/
+vipo_products_ui_export/
+vipo_products_ui_export.zip
+vipo_products_ui_export_*/
+export_vipo_products_ui/
+export_vipo_products_ui_*/
+
+# Misc bundles
+*.zip
+*.bak
 
 # Coverage
 coverage/
@@ -42,9 +65,3 @@ dist/
 *.cache
 .sass-cache/
 .parcel-cache/
-
-# Local helper scripts and exports (keep only on dev machine)
-scripts/create_blue_favicon.ps1
-public/update-product-images.html
-vipo_products_ui_export/
-vipo_products_ui_export.zip

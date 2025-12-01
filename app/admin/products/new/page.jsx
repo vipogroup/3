@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { addProduct } from "@/app/lib/products";
+import { refreshProductsFromApi } from "@/app/lib/products";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -41,12 +41,44 @@ export default function NewProductPage() {
     }
   });
 
+  const [categories, setCategories] = useState([
+    "אביזרי מחשב",
+    "אודיו",
+    "מסכים",
+    "ריהוט",
+  ]);
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState("");
+
+  const categoryOptions = useMemo(() => categories.sort((a, b) => a.localeCompare(b, "he")), [categories]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value
     }));
+  };
+
+  const addCategory = () => {
+    const trimmed = newCategory.trim();
+    if (!trimmed) {
+      alert("נא להזין שם קטגוריה");
+      return;
+    }
+
+    setCategories((prev) => {
+      if (prev.some((cat) => cat.toLowerCase() === trimmed.toLowerCase())) {
+        return prev;
+      }
+      return [...prev, trimmed];
+    });
+    setFormData((prev) => ({
+      ...prev,
+      category: trimmed,
+    }));
+    setNewCategory("");
+    setShowAddCategory(false);
   };
 
   const handleFeatureChange = (index, value) => {
@@ -68,40 +100,71 @@ export default function NewProductPage() {
     setSubmitting(true);
 
     try {
-      // Prepare product data
+      const priceValue = parseFloat(formData.price) || 0;
+      const originalPriceValue = formData.originalPrice ? parseFloat(formData.originalPrice) : null;
+      const stockCountValue = parseInt(formData.stockCount) || 0;
+      const ratingValue = parseFloat(formData.rating) || 0;
+      const reviewsValue = parseInt(formData.reviews) || 0;
+      const isGroupPurchase = formData.purchaseType === "group";
+
+      const groupPurchaseDetails = isGroupPurchase
+        ? {
+            closingDays: parseInt(formData.groupPurchaseDetails.closingDays) || 0,
+            shippingDays: parseInt(formData.groupPurchaseDetails.shippingDays) || 0,
+            minQuantity: parseInt(formData.groupPurchaseDetails.minQuantity) || 1,
+            currentQuantity: parseInt(formData.groupPurchaseDetails.currentQuantity) || 0,
+            totalDays:
+              (parseInt(formData.groupPurchaseDetails.closingDays) || 0) +
+              (parseInt(formData.groupPurchaseDetails.shippingDays) || 0),
+          }
+        : null;
+
       const productData = {
-        name: formData.name,
-        description: formData.description,
-        fullDescription: formData.fullDescription,
-        price: parseFloat(formData.price),
-        originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        fullDescription: formData.fullDescription.trim(),
+        price: priceValue,
+        originalPrice: originalPriceValue,
         category: formData.category,
         image: formData.image,
-        images: [formData.image, formData.image, formData.image], // 3 copies for gallery
-        videoUrl: formData.videoUrl || null,
+        imageUrl: formData.image,
+        images: formData.image ? [formData.image] : [],
+        videoUrl: formData.videoUrl || "",
         inStock: formData.inStock,
-        stockCount: parseInt(formData.stockCount) || 0,
-        rating: parseFloat(formData.rating),
-        reviews: parseInt(formData.reviews),
+        stockCount: stockCountValue,
+        rating: ratingValue,
+        reviews: reviewsValue,
         purchaseType: formData.purchaseType,
-        groupPurchaseDetails: formData.purchaseType === 'group' ? {
-          closingDays: parseInt(formData.groupPurchaseDetails.closingDays),
-          shippingDays: parseInt(formData.groupPurchaseDetails.shippingDays),
-          minQuantity: parseInt(formData.groupPurchaseDetails.minQuantity),
-          currentQuantity: parseInt(formData.groupPurchaseDetails.currentQuantity),
-          totalDays: parseInt(formData.groupPurchaseDetails.closingDays) + parseInt(formData.groupPurchaseDetails.shippingDays)
-        } : null,
-        features: formData.features.filter(f => f.trim() !== ""),
+        type: isGroupPurchase ? "group" : "online",
+        groupPurchaseDetails,
+        groupMinQuantity: groupPurchaseDetails?.minQuantity ?? null,
+        groupCurrentQuantity: groupPurchaseDetails?.currentQuantity ?? null,
+        expectedDeliveryDays: groupPurchaseDetails?.shippingDays ?? null,
+        commission: priceValue * 0.1,
+        features: formData.features.filter((f) => f.trim() !== ""),
         specs: Object.fromEntries(
           Object.entries(formData.specs).filter(([_, v]) => v.trim() !== "")
-        )
+        ),
+        active: true,
       };
 
-      // Add product using the library function
-      const newProduct = addProduct(productData);
-      
-      console.log("Product created:", newProduct);
-      
+      const response = await fetch("/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productData),
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload?.error || "יצירת המוצר נכשלה");
+      }
+
+      await response.json();
+      await refreshProductsFromApi();
+      window.dispatchEvent(new Event("productsUpdated"));
+
       alert("מוצר נוצר בהצלחה! המוצר יופיע בכל הדפים.");
       router.push("/admin/products");
     } catch (error) {
@@ -223,19 +286,52 @@ export default function NewProductPage() {
                   <label className="block text-sm font-bold text-gray-900 mb-2">
                     קטגוריה *
                   </label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600 transition-all"
-                  >
-                    <option value="">בחר קטגוריה</option>
-                    <option value="אביזרי מחשב">אביזרי מחשב</option>
-                    <option value="אודיו">אודיו</option>
-                    <option value="מסכים">מסכים</option>
-                    <option value="ריהוט">ריהוט</option>
-                  </select>
+                  <div className="flex gap-2">
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      required
+                      className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600 transition-all"
+                    >
+                      <option value="">בחר קטגוריה</option>
+                      {categoryOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddCategory((prev) => !prev)}
+                      className="px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl transition-all"
+                    >
+                      {showAddCategory ? "בטל" : "קטגוריה חדשה"}
+                    </button>
+                  </div>
+                  {showAddCategory && (
+                    <div className="mt-3 bg-purple-50 border border-purple-200 rounded-xl p-4 space-y-3">
+                      <label className="block text-sm font-semibold text-purple-900">
+                        הזן שם קטגוריה חדש
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newCategory}
+                          onChange={(e) => setNewCategory(e.target.value)}
+                          className="flex-1 px-4 py-2 border-2 border-purple-300 rounded-lg focus:outline-none focus:border-purple-600 transition-all"
+                          placeholder="לדוגמה: מוצרי חשמל"
+                        />
+                        <button
+                          type="button"
+                          onClick={addCategory}
+                          className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all"
+                        >
+                          הוסף
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -411,7 +507,7 @@ export default function NewProductPage() {
                       {/* Total Days Summary */}
                       <div className="mt-4 p-3 bg-blue-100 rounded-lg">
                         <p className="text-sm font-bold text-blue-900">
-                          ⏱️ סה"כ זמן המתנה משוער: 
+                          {'⏱️ סה&quot;כ זמן המתנה משוער:'} 
                           <span className="text-blue-600 text-lg mr-2">
                             {parseInt(formData.groupPurchaseDetails.closingDays) + parseInt(formData.groupPurchaseDetails.shippingDays)} ימים
                           </span>

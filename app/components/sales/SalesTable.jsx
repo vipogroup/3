@@ -114,7 +114,7 @@ export default function SalesTable({ sales = [], isAdmin = false }) {
     <div className="w-full">
       {/* Filters */}
       <div className="mb-4 p-4 bg-gray-50 rounded-lg flex flex-col md:flex-row gap-3">
-        <div className="flex-1">
+        <div className="flex-1 w-full">
           <input
             type="text"
             value={searchTerm}
@@ -126,14 +126,14 @@ export default function SalesTable({ sales = [], isAdmin = false }) {
             className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
           <select
             value={statusFilter}
             onChange={(e) => {
               setStatusFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="p-2 border border-gray-300 rounded"
+            className="w-full sm:w-auto p-2 border border-gray-300 rounded"
           >
             <option value="">כל הסטטוסים</option>
             <option value="pending">ממתין</option>
@@ -143,7 +143,7 @@ export default function SalesTable({ sales = [], isAdmin = false }) {
           </select>
           <button
             onClick={handleResetFilters}
-            className="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+            className="w-full sm:w-auto px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
           >
             איפוס
           </button>
@@ -151,7 +151,7 @@ export default function SalesTable({ sales = [], isAdmin = false }) {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="hidden md:block overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
           <thead className="bg-gray-50 sticky top-0">
             <tr>
@@ -258,38 +258,111 @@ export default function SalesTable({ sales = [], isAdmin = false }) {
         </table>
       </div>
 
+      {/* Mobile Cards */}
+      <div className="space-y-3 md:hidden">
+        {paginatedSales.length === 0 ? (
+          <div className="rounded-xl border border-gray-200 bg-white p-5 text-center text-gray-600 shadow-sm">
+            {sales.length === 0
+              ? "אין מכירות להצגה"
+              : "לא נמצאו תוצאות מתאימות לחיפוש"}
+          </div>
+        ) : (
+          paginatedSales.map((sale) => (
+            <div
+              key={sale._id}
+              className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm text-right"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs text-gray-500">תאריך</p>
+                  <p className="text-base font-semibold text-gray-900">
+                    {formatDate(sale.createdAt)}
+                  </p>
+                </div>
+                <SaleStatusBadge status={sale.status} />
+              </div>
+
+              <div className="mt-4 space-y-3 text-sm text-gray-700">
+                <div>
+                  <p className="text-xs text-gray-500">מוצר</p>
+                  <p className="font-medium">{sale.productId?.name || "מוצר לא ידוע"}</p>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  <div>
+                    <p className="text-xs text-gray-500">לקוח</p>
+                    <p className="font-medium">{sale.customerName || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">טלפון</p>
+                    <p className="font-medium break-all">{sale.customerPhone || "—"}</p>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs text-gray-500">מחיר</p>
+                      <p className="font-medium">₪{Number(sale.salePrice ?? 0).toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">עמלה</p>
+                      <p className="font-medium">₪{Number(sale.commission ?? 0).toFixed(2)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 flex flex-col gap-2">
+                <Link
+                  href={`/sales/${sale._id}`}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-200 transition-all"
+                >
+                  צפה
+                </Link>
+                {isAdmin && (
+                  <div className="flex justify-center">
+                    <AdminActions
+                      saleId={sale._id}
+                      isAdmin={isAdmin}
+                      onDelete={handleSaleDeleted}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-center mt-4">
-          <nav className="flex items-center gap-1">
+          <nav className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:gap-1">
             <button
               onClick={() => setCurrentPage(1)}
               disabled={currentPage === 1}
-              className="px-3 py-1 border rounded disabled:opacity-50"
+              className="w-full sm:w-auto px-3 py-1 border rounded disabled:opacity-50"
             >
               ראשון
             </button>
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1 border rounded disabled:opacity-50"
+              className="w-full sm:w-auto px-3 py-1 border rounded disabled:opacity-50"
             >
               הקודם
             </button>
-            <span className="px-3 py-1">
+            <span className="px-3 py-1 text-center">
               {currentPage} מתוך {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 border rounded disabled:opacity-50"
+              className="w-full sm:w-auto px-3 py-1 border rounded disabled:opacity-50"
             >
               הבא
             </button>
             <button
               onClick={() => setCurrentPage(totalPages)}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 border rounded disabled:opacity-50"
+              className="w-full sm:w-auto px-3 py-1 border rounded disabled:opacity-50"
             >
               אחרון
             </button>

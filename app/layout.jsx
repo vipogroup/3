@@ -1,7 +1,9 @@
 import "./globals.css";
 import { ThemeProvider } from "@/app/context/ThemeContext";
+import { CartProvider } from "@/app/context/CartContext";
 import UserHeader from "@/app/components/UserHeader";
 import ReferralTracker from "@/app/components/ReferralTracker";
+import CartToast from "@/app/components/CartToast";
 
 export const metadata = {
   title: "VIPO - חנות מוצרי גיימינג ואלקטרוניקה",
@@ -27,14 +29,17 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <ThemeProvider>
-          <ReferralTracker />
-          <UserHeader />
-          <div className="container py-4">
-            {children}
-            <footer className="mt-12 py-8 text-center text-sm text-gray-500">© VIPO</footer>
-          </div>
-        </ThemeProvider>
+        <CartProvider>
+          <ThemeProvider>
+            <ReferralTracker />
+            <UserHeader />
+            <div className="container py-4">
+              {children}
+              <footer className="mt-12 py-8 text-center text-sm text-gray-500">© VIPO</footer>
+            </div>
+            <CartToast />
+          </ThemeProvider>
+        </CartProvider>
       </body>
     </html>
   );

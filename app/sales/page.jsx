@@ -67,12 +67,12 @@ export default function SalesPage() {
 
   return (
     <MainLayout>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-2xl font-bold">מכירות</h1>
         {user && (
-          <Link 
+          <Link
             href="/sales/new"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-all"
           >
             הוספת מכירה
           </Link>
@@ -90,7 +90,7 @@ export default function SalesPage() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <SalesTable sales={sales} isAdmin={isAdmin} />
         </div>
       )}

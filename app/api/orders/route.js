@@ -70,10 +70,38 @@ export async function POST(req) {
 
     // 2) Parse body
     const body = await req.json();
-    const { items = [], total = 0, ...rest } = body || {};
-    if (!Array.isArray(items) || typeof total !== "number") {
+    const {
+      items: rawItems = [],
+      total: providedTotal,
+      totals: totalsPayload = {},
+      coupon: couponPayload = null,
+      ...rest
+    } = body || {};
+
+    if (!Array.isArray(rawItems)) {
       return NextResponse.json({ error: "Invalid order payload" }, { status: 400 });
     }
+
+    const items = rawItems.map((item = {}) => ({
+      productId: item.productId,
+      name: item.name ?? "",
+      quantity: Number(item.quantity) || 0,
+      unitPrice: Number(item.unitPrice) || 0,
+      totalPrice: Number(item.totalPrice) || Number(item.unitPrice || 0) * Number(item.quantity || 0),
+      image: item.image || null,
+      sku: item.sku || null,
+    }));
+
+    const { subtotal } = calcTotals(
+      items.map((item) => ({ qty: item.quantity, price: item.unitPrice }))
+    );
+
+    let discountPercent = Number(totalsPayload.discountPercent) || 0;
+    let discountAmount = Number(totalsPayload.discountAmount) || 0;
+    let couponCode = null;
+    let couponAgent = null;
+    let commissionPercent = 0;
+    let commissionAmount = 0;
 
     // 3) Read ref cookie (with safe fallback)
     let refSource = null;
@@ -85,44 +113,104 @@ export async function POST(req) {
       if (m) refSource = decodeURIComponent(m[1]);
     }
 
-    // 4) Resolve agent by referralId / referralCode / ObjectId
-    let refAgent = null;
-    if (refSource) {
-      refAgent = await usersCol.findOne({ referralId: refSource, role: "agent" });
-      if (!refAgent) {
-        refAgent = await usersCol.findOne({ referralCode: refSource, role: "agent" });
+    // 4) Coupon validation (preferred over legacy referral cookie)
+    if (couponPayload?.code) {
+      const couponCodeInput = String(couponPayload.code).trim().toLowerCase();
+      if (!couponCodeInput) {
+        return NextResponse.json({ error: "invalid_coupon" }, { status: 400 });
       }
-      if (!refAgent && ObjectId.isValid(refSource)) {
-        const byId = await usersCol.findOne({ _id: new ObjectId(refSource) });
-        if (byId?.role === "agent") refAgent = byId;
+
+      const couponQuery = {
+        couponCode: couponCodeInput,
+        role: "agent",
+        couponStatus: "active",
+      };
+
+      if (couponPayload.agentId && ObjectId.isValid(couponPayload.agentId)) {
+        couponQuery._id = new ObjectId(couponPayload.agentId);
       }
+
+      couponAgent = await usersCol.findOne(couponQuery, {
+        projection: {
+          couponCode: 1,
+          discountPercent: 1,
+          commissionPercent: 1,
+          fullName: 1,
+        },
+      });
+
+      if (!couponAgent) {
+        return NextResponse.json({ error: "invalid_coupon" }, { status: 400 });
+      }
+
+      couponCode = couponAgent.couponCode;
+      discountPercent = Number(couponAgent.discountPercent) || 0;
+      discountAmount = Number(((subtotal * discountPercent) / 100).toFixed(2));
+      commissionPercent = Number(couponAgent.commissionPercent) || 0;
+      const baseForCommission = Math.max(0, subtotal - discountAmount);
+      commissionAmount = Number(((baseForCommission * commissionPercent) / 100).toFixed(2));
+
+      refSource = couponCode;
     }
 
-    // 5) Anti self-ref + commission (fixed 2 per tests)
-    let refAgentId = null;
-    let commissionReferral = 0;
+    const subtotalDiscount = discountAmount || Number(((subtotal * discountPercent) / 100).toFixed(2));
+    discountAmount = Math.min(subtotal, subtotalDiscount);
+    const orderTotal = Math.max(0, subtotal - discountAmount);
 
-    if (refAgent && String(refAgent._id) !== String(me._id)) {
-      refAgentId = refAgent._id;
-      commissionReferral = 2; // not percent – fixed value required by tests
+    // 5) Legacy referral fallback (only when no coupon was provided)
+    let refAgentId = null;
+    let commissionReferral = commissionAmount;
+
+    if (!couponAgent) {
+      let refAgent = null;
+      if (refSource) {
+        refAgent = await usersCol.findOne({ referralId: refSource, role: "agent" });
+        if (!refAgent) {
+          refAgent = await usersCol.findOne({ referralCode: refSource, role: "agent" });
+        }
+        if (!refAgent && ObjectId.isValid(refSource)) {
+          const byId = await usersCol.findOne({ _id: new ObjectId(refSource) });
+          if (byId?.role === "agent") refAgent = byId;
+        }
+      }
+
+      if (refAgent && String(refAgent._id) !== String(me._id)) {
+        refAgentId = refAgent._id;
+        commissionReferral = 2;
+      } else {
+        refSource = null;
+        commissionReferral = 0;
+      }
     } else {
-      // drop invalid/self ref to keep data clean
-      refSource = null;
+      refAgentId = couponAgent._id;
+      commissionReferral = commissionAmount;
     }
 
     // 6) Create order (Native Driver)
     const orderDoc = {
       items,
-      total,
+      totals: {
+        subtotal,
+        discountPercent,
+        discountAmount,
+        total: orderTotal,
+      },
+      total: orderTotal,
+      discountAmount,
       createdBy: me._id,
       status: "pending",
       refSource,
       refAgentId,
       commissionReferral,
+      appliedCouponCode: couponCode,
+      agentId: couponAgent?._id ?? refAgentId,
+      couponCommissionPercent: commissionPercent,
+      couponCommissionAmount: commissionAmount,
       createdAt: new Date(),
       updatedAt: new Date(),
       ...rest,
     };
+
     
     const result = await ordersCol.insertOne(orderDoc);
     const orderId = result.insertedId;
@@ -132,6 +220,9 @@ export async function POST(req) {
       {
         ok: true,
         orderId,
+        totals: orderDoc.totals,
+        discountAmount: orderDoc.discountAmount,
+        couponCode,
         refSource,
         refAgentId,
         commission: commissionReferral,

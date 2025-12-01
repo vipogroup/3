@@ -1,8 +1,20 @@
+require("dotenv").config({ path: ".env.local" });
 
 /** @type {import('next').NextConfig} */
+const path = require("path");
+
 const nextConfig = {
   reactStrictMode: true,
   
+  webpack: (config) => {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      "@": path.resolve(__dirname),
+    };
+    return config;
+  },
+
   // Image optimization
   images: {
     remotePatterns: [
@@ -35,11 +47,6 @@ const nextConfig = {
       {
         source: "/:path*",
         headers: [
-          // Prevent clickjacking
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
           // Prevent MIME type sniffing
           {
             key: "X-Content-Type-Options",
@@ -70,6 +77,7 @@ const nextConfig = {
               "img-src 'self' data: https://res.cloudinary.com https://images.unsplash.com https://m.media-amazon.com https://placehold.co",
               "font-src 'self' data:",
               "connect-src 'self'",
+              "frame-src 'self' https://vipogroup.github.io https://vipogroup.github.io/",
               "frame-ancestors 'none'",
             ].join("; "),
           },

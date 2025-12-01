@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 export default function UsersList() {
   const [users, setUsers] = useState([]);
@@ -8,6 +9,8 @@ export default function UsersList() {
   const [error, setError] = useState("");
   const [currentUserId, setCurrentUserId] = useState(null);
   const [agents, setAgents] = useState({});
+  const [deletingId, setDeletingId] = useState(null);
+  const [togglingId, setTogglingId] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -63,6 +66,71 @@ export default function UsersList() {
       setAgents(agentsMap);
     } catch (err) {
       console.error("Failed to fetch agents:", err);
+    }
+  }
+
+  async function handleDeleteUser(user) {
+    if (!user?._id) return;
+
+    if (user._id === currentUserId) {
+      setError("לא ניתן למחוק את עצמך");
+      return;
+    }
+
+    if (!confirm(`האם למחוק את המשתמש ${user.fullName || user.email || user.phone}?`)) {
+      return;
+    }
+
+    try {
+      setError("");
+      setDeletingId(user._id);
+      const res = await fetch(`/api/users/${user._id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to delete user");
+      }
+
+      setUsers((prev) => prev.filter((u) => u._id !== user._id));
+    } catch (err) {
+      setError(err.message || "מחיקה נכשלה");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  async function handleToggleActive(user) {
+    if (!user?._id) return;
+
+    if (user._id === currentUserId) {
+      setError("לא ניתן לשנות את הסטטוס של עצמך");
+      return;
+    }
+
+    try {
+      setError("");
+      setTogglingId(user._id);
+      const res = await fetch(`/api/users/${user._id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isActive: !user.isActive }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to update status");
+      }
+
+      const { user: updated } = await res.json();
+      setUsers((prev) =>
+        prev.map((u) => (u._id === user._id ? { ...u, isActive: updated?.isActive } : u))
+      );
+    } catch (err) {
+      setError(err.message || "עדכון סטטוס נכשל");
+    } finally {
+      setTogglingId(null);
     }
   }
 
@@ -155,7 +223,21 @@ export default function UsersList() {
                     {isCurrentUser && <span className="text-xs text-blue-600 mr-2">(אתה)</span>}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{user.phone || "-"}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-2 justify-end">
+                      <span>{user.phone || "-"}</span>
+                      {user.phone && (
+                        <a
+                          href={buildWhatsAppUrl(user.phone, `היי ${user.fullName || ""}, כאן VIPO`)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold bg-green-500 text-white hover:bg-green-600 transition"
+                        >
+                          ווצאפ
+                        </a>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs rounded-full ${roleOption?.color}`}>
                       {roleOption?.label}
@@ -174,30 +256,66 @@ export default function UsersList() {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      user.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                    }`}>
-                      {user.isActive ? "פעיל" : "לא פעיל"}
-                    </span>
+                    <div className="flex items-center gap-2 justify-end">
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        user.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                      }`}>
+                        {user.isActive ? "פעיל" : "לא פעיל"}
+                      </span>
+                      {!isCurrentUser && (
+                        <button
+                          type="button"
+                          onClick={() => handleToggleActive(user)}
+                          disabled={togglingId === user._id}
+                          className={`px-3 py-1 rounded border text-xs font-semibold transition ${
+                            togglingId === user._id
+                              ? "bg-gray-200 text-gray-500 cursor-wait"
+                              : "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                          }`}
+                        >
+                          {togglingId === user._id
+                            ? "מעבד..."
+                            : user.isActive
+                            ? "כבה"
+                            : "הפעל"}
+                        </button>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(user.createdAt).toLocaleDateString("he-IL")}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <select
-                      value={user.role}
-                      onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                      disabled={isCurrentUser}
-                      className={`border rounded px-2 py-1 text-sm ${
-                        isCurrentUser ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'
-                      }`}
-                    >
-                      {roleOptions.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={user.role}
+                        onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                        disabled={isCurrentUser}
+                        className={`border rounded px-2 py-1 text-sm ${
+                          isCurrentUser ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'
+                        }`}
+                      >
+                        {roleOptions.map(option => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      {!isCurrentUser && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteUser(user)}
+                          disabled={deletingId === user._id}
+                          className={`px-3 py-1 rounded border text-xs font-semibold transition ${
+                            deletingId === user._id
+                              ? 'bg-gray-200 text-gray-500 cursor-wait'
+                              : 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'
+                          }`}
+                        >
+                          {deletingId === user._id ? "מוחק..." : "מחק"}
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               );

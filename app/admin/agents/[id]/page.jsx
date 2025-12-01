@@ -77,10 +77,17 @@ export default function AgentDetailPage() {
     );
   }
 
-  const refLink = `${window.location.origin}/join?ref=${agentId}`;
   const conversionRate = stats?.totalVisits > 0 
     ? ((stats?.totalSales / stats?.totalVisits) * 100).toFixed(1)
     : 0;
+
+  const couponCode = agent?.couponCode?.toUpperCase() || "---";
+  const discountPercent = agent?.discountPercent ?? 0;
+  const commissionPercent = agent?.commissionPercent ?? 0;
+  const couponStatus = agent?.couponStatus === "inactive" ? "לא פעיל" : "פעיל";
+  const couponStatusClass = agent?.couponStatus === "inactive"
+    ? "bg-red-100 text-red-700"
+    : "bg-green-100 text-green-700";
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -96,26 +103,37 @@ export default function AgentDetailPage() {
         <p className="text-gray-600">{agent.email} • {agent.phone}</p>
       </div>
 
-      {/* Referral Link */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <h3 className="font-semibold text-blue-900 mb-2">🔗 קישור ההפניה של הסוכן</h3>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={refLink}
-            readOnly
-            className="flex-1 px-3 py-2 border rounded-lg bg-white"
-          />
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(refLink);
-              alert("הקישור הועתק!");
-            }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            📋 העתק
-          </button>
+      {/* Coupon Details */}
+      <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+        <h3 className="font-semibold text-purple-900 mb-3">🎟️ קוד הקופון של הסוכן</h3>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <code className="text-2xl font-bold text-purple-700 bg-white px-4 py-2 rounded-lg border border-purple-100">
+              {couponCode}
+            </code>
+            <button
+              onClick={() => navigator.clipboard.writeText(couponCode)}
+              disabled={couponCode === "---"}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
+            >
+              📋 העתק קוד
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-3 text-sm">
+            <span className="bg-white px-3 py-1 rounded-full border border-purple-100">
+              הנחה ללקוח: <strong>{discountPercent}%</strong>
+            </span>
+            <span className="bg-white px-3 py-1 rounded-full border border-purple-100">
+              עמלה לסוכן: <strong>{commissionPercent}%</strong>
+            </span>
+            <span className={`px-3 py-1 rounded-full border border-purple-100 ${couponStatusClass}`}>
+              סטטוס קופון: <strong>{couponStatus}</strong>
+            </span>
+          </div>
         </div>
+        <p className="text-sm text-purple-800 mt-3">
+          הזמנות שנוצרו עם הקוד הזה משויכות אוטומטית לסוכן במערכת.
+        </p>
       </div>
 
       {/* KPI Cards */}
@@ -123,7 +141,7 @@ export default function AgentDetailPage() {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">סה"כ כניסות</p>
+              <p className="text-sm text-gray-600">{'סה&quot;כ כניסות'}</p>
               <p className="text-3xl font-bold text-blue-600">{stats?.totalVisits || 0}</p>
             </div>
             <div className="text-4xl">👥</div>
@@ -133,7 +151,7 @@ export default function AgentDetailPage() {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">סה"כ הפניות</p>
+              <p className="text-sm text-gray-600">{'סה&quot;כ הפניות'}</p>
               <p className="text-3xl font-bold text-green-600">{stats?.totalReferrals || 0}</p>
             </div>
             <div className="text-4xl">🤝</div>
@@ -143,7 +161,7 @@ export default function AgentDetailPage() {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">סה"כ מכירות</p>
+              <p className="text-sm text-gray-600">{'סה&quot;כ מכירות'}</p>
               <p className="text-3xl font-bold text-purple-600">{stats?.totalSales || 0}</p>
             </div>
             <div className="text-4xl">🛒</div>
@@ -229,7 +247,7 @@ export default function AgentDetailPage() {
                   <div className="space-y-1 text-sm">
                     <p>👥 כניסות: <span className="font-bold">{product.visits}</span></p>
                     <p>🛒 רכישות: <span className="font-bold">{product.purchases}</span></p>
-                    <p>💰 סה"כ: <span className="font-bold">₪{product.totalRevenue}</span></p>
+                    <p>{'💰 סה&quot;כ:'} <span className="font-bold">₪{product.totalRevenue}</span></p>
                     <p>📈 המרה: <span className="font-bold">
                       {product.visits > 0 ? ((product.purchases / product.visits) * 100).toFixed(1) : 0}%
                     </span></p>

@@ -14,11 +14,14 @@ export async function POST(req) {
     }
 
     const userId = decoded.userId;
+    const userFilter = ObjectId.isValid(userId)
+      ? { _id: new ObjectId(userId) }
+      : { _id: userId };
     const db = await getDb();
     const users = db.collection("users");
 
     // Get current user
-    const user = await users.findOne({ _id: new ObjectId(userId) });
+    const user = await users.findOne(userFilter);
     
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -40,7 +43,7 @@ export async function POST(req) {
 
     // Upgrade user to agent
     const result = await users.updateOne(
-      { _id: new ObjectId(userId) },
+      userFilter,
       { 
         $set: { 
           role: "agent",

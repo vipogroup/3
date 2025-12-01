@@ -27,7 +27,7 @@ export default function OrderSummary({
       {!showDetails && (
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-sm text-gray-600">סה"כ לתשלום</p>
+            <p className="text-sm text-gray-600">{'סה&quot;כ לתשלום'}</p>
             <p className="text-2xl font-bold text-gray-900">₪{total.toLocaleString()}</p>
           </div>
           {onContinue && (
@@ -78,7 +78,7 @@ export default function OrderSummary({
 
             <div className="border-t border-gray-200 pt-2">
               <div className="flex justify-between items-center">
-                <span className="text-base font-semibold text-gray-900">סה"כ לתשלום</span>
+                <span className="text-base font-semibold text-gray-900">{'סה&quot;כ לתשלום'}</span>
                 <span className="text-2xl font-bold text-gray-900">₪{total.toLocaleString()}</span>
               </div>
             </div>

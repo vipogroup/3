@@ -12,8 +12,30 @@ export const dynamic = "force-dynamic";
 
 // Helper function to get user from request
 async function getUserFromRequest(req) {
-  const token = req.cookies.get("token")?.value || "";
-  const payload = verify(token);
+  let token = null;
+
+  try {
+    token = req.cookies.get("auth_token")?.value || req.cookies.get("token")?.value || null;
+  } catch (err) {
+    token = null;
+  }
+
+  if (!token && typeof req.headers?.get === "function") {
+    const cookieHeader = req.headers.get("cookie") || "";
+    const match = cookieHeader.match(/(?:^|;\s*)(auth_token|token)=([^;]+)/i);
+    if (match) {
+      token = decodeURIComponent(match[2]);
+    }
+  }
+
+  if (!token && typeof req.headers?.get === "function") {
+    const authHeader = req.headers.get("authorization") || "";
+    if (authHeader.toLowerCase().startsWith("bearer ")) {
+      token = authHeader.slice(7).trim();
+    }
+  }
+
+  const payload = verify(token || "");
   if (!payload || !payload.userId || !payload.role) {
     return null;
   }

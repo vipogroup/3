@@ -213,12 +213,10 @@ export default function RegisterPage() {
               >
                 <option value="customer">לקוח</option>
                 <option value="agent">סוכן</option>
-                <option value="admin">מנהל</option>
               </select>
               <p id="role-help" className="text-xs text-gray-500 mt-1">
                 {role === "customer" && "לקוח - גישה לרכישת מוצרים"}
                 {role === "agent" && "סוכן - גישה לדשבורד סוכנים ועמלות"}
-                {role === "admin" && "מנהל - גישה מלאה למערכת (דורש אישור)"}
               </p>
             </div>
 

@@ -172,30 +172,34 @@ export const THEMES = {
   vipo: {
     id: "vipo",
     name: "VIPO Custom",
-    nameHe: "VIPO מותאם אישית",
-    description: "Modern purple and blue gradient",
-    descriptionHe: "גרדיאנט סגול וכחול מודרני",
+    nameHe: "VIPO סגנון כחול",
+    description: "Clean blue gradient inspired by VIPO branding",
+    descriptionHe: "מראה כחול מודרני עם טיפוגרפיה נקייה",
     icon: "💎",
-    
-    primary: "#8B5CF6", // Purple
-    secondary: "#3B82F6", // Blue
-    accent: "#EC4899", // Pink
-    success: "#10B981",
-    warning: "#F59E0B",
-    danger: "#EF4444",
-    
-    bgGradient: "from-purple-400 via-purple-500 to-blue-500",
-    headerBg: "bg-gradient-to-r from-purple-600 to-blue-600",
+
+    primary: "#3498db",
+    secondary: "#2980b9",
+    accent: "#5dade2",
+    success: "#3498db",
+    warning: "#5dade2",
+    danger: "#e74c3c",
+
+    bgGradient: "from-sky-200 via-sky-300 to-blue-300",
+    headerBg: "bg-gradient-to-r from-sky-500 to-blue-600",
     cardBg: "bg-white",
-    
-    primaryButton: "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold",
-    secondaryButton: "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white",
-    buyButton: "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold",
-    addToCartButton: "bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 font-bold",
-    
+
+    primaryButton:
+      "bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-semibold",
+    secondaryButton:
+      "bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 text-white",
+    buyButton:
+      "bg-gradient-to-r from-emerald-500 to-sky-500 hover:from-emerald-600 hover:to-sky-600 text-white font-semibold",
+    addToCartButton:
+      "bg-gradient-to-r from-cyan-400 to-sky-500 hover:from-cyan-500 hover:to-sky-600 text-white font-semibold",
+
     headingFont: "font-bold",
     bodyFont: "font-normal",
-    
+
     borderRadius: "rounded-2xl",
     shadow: "shadow-xl",
     spacing: "space-y-6",

@@ -1,18 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useTheme } from "@/app/hooks/useTheme";
+import CustomerNav from "./CustomerNav";
+import { buildManagerWhatsAppUrl } from "@/lib/whatsapp";
 
 export default function CustomerDashboard() {
-  const { theme } = useTheme();
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAgentModal, setShowAgentModal] = useState(false);
   const [upgrading, setUpgrading] = useState(false);
+  const [profileForm, setProfileForm] = useState({ fullName: "", email: "", phone: "" });
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileFeedback, setProfileFeedback] = useState(null);
   const router = useRouter();
+
+  const gradientStyle = useMemo(
+    () => ({
+      background: "linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%)",
+    }),
+    []
+  );
 
   useEffect(() => {
     fetchUserData();
@@ -21,16 +32,26 @@ export default function CustomerDashboard() {
 
   async function fetchUserData() {
     try {
-      const res = await fetch("/api/auth/me");
+      const res = await fetch("/api/users/me", { cache: "no-store" });
       if (res.ok) {
         const data = await res.json();
+        if (!data?.user) {
+          router.push("/login");
+          return;
+        }
+
         if (data.user.role !== "customer") {
-          // Redirect non-customers
           router.push(data.user.role === "admin" ? "/admin" : "/agent");
           return;
         }
+
         setUser(data.user);
-      } else {
+        setProfileForm({
+          fullName: data.user.fullName || "",
+          email: data.user.email || "",
+          phone: data.user.phone || "",
+        });
+      } else if (res.status === 401) {
         router.push("/login");
       }
     } catch (error) {
@@ -78,9 +99,48 @@ export default function CustomerDashboard() {
     }
   }
 
+  function handleProfileChange(event) {
+    const { name, value } = event.target;
+    setProfileForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function handleProfileSaveSubmit(event) {
+    event.preventDefault();
+    setProfileSaving(true);
+    setProfileFeedback(null);
+
+    try {
+      const res = await fetch("/api/users/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profileForm),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "שגיאה בעדכון הפרופיל");
+      }
+
+      const data = await res.json();
+      setUser(data.user);
+      setProfileForm({
+        fullName: data.user.fullName || "",
+        email: data.user.email || "",
+        phone: data.user.phone || "",
+      });
+      setProfileFeedback({ type: "success", message: "הפרופיל עודכן בהצלחה" });
+      setEditingProfile(false);
+    } catch (error) {
+      console.error("Profile update error", error);
+      setProfileFeedback({ type: "error", message: error.message || "שגיאה בעדכון הפרופיל" });
+    } finally {
+      setProfileSaving(false);
+    }
+  }
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-blue-500 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={gradientStyle}>
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
           <p className="text-gray-600 mt-4">טוען...</p>
@@ -92,45 +152,13 @@ export default function CustomerDashboard() {
   if (!user) return null;
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${theme.gradient} p-8`}>
+    <div className="min-h-screen p-8" style={gradientStyle}>
       <div className="max-w-7xl mx-auto">
-        {/* Navigation Bar */}
-        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-4 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/customer"
-                className="flex items-center gap-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                אזור אישי
-              </Link>
-              <Link
-                href="/products"
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-xl transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                מוצרים
-              </Link>
-              <Link
-                href="/customer/orders"
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-xl transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                הזמנות
-              </Link>
-            </div>
+        <div className="flex flex-col gap-3 mb-6">
+          <CustomerNav />
+          <form action="/api/auth/logout" method="post" className="self-end">
             <button
-              onClick={() => {
-                document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-                router.push("/login");
-              }}
+              type="submit"
               className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all font-medium"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +166,7 @@ export default function CustomerDashboard() {
               </svg>
               התנתק
             </button>
-          </div>
+          </form>
         </div>
 
         {/* Header */}
@@ -155,8 +183,125 @@ export default function CustomerDashboard() {
             <div className="text-right">
               <div className="text-sm text-gray-500">חשבון לקוח</div>
               <div className="text-lg font-semibold text-purple-600">{user.email}</div>
+              <a
+                href={buildManagerWhatsAppUrl(`שלום, אני לקוח במערכת VIPO ורוצה לבדוק את הסטטוס שלי.`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-green-500 text-white hover:bg-green-600 shadow-sm"
+              >
+                📲 צור קשר עם מנהל
+              </a>
             </div>
           </div>
+        </div>
+
+        {/* Personal Profile */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">פרופיל אישי</h2>
+              <p className="text-gray-600">עדכון פרטי ההתחברות והתקשורת שלך</p>
+            </div>
+            <button
+              onClick={() => {
+                setEditingProfile((prev) => !prev);
+                setProfileFeedback(null);
+              }}
+              className="px-5 py-2.5 rounded-xl border border-purple-500 text-purple-600 font-semibold hover:bg-purple-50 transition-all"
+            >
+              {editingProfile ? "ביטול" : "עריכת פרופיל"}
+            </button>
+          </div>
+
+          {profileFeedback && (
+            <div
+              className={`${
+                profileFeedback.type === "success"
+                  ? "bg-green-50 border-green-200 text-green-700"
+                  : "bg-red-50 border-red-200 text-red-700"
+              } border px-4 py-3 rounded-xl mb-6`}
+            >
+              {profileFeedback.message}
+            </div>
+          )}
+
+          {editingProfile ? (
+            <form onSubmit={handleProfileSaveSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">שם מלא</label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={profileForm.fullName}
+                  onChange={handleProfileChange}
+                  required
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">אימייל</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={profileForm.email}
+                  onChange={handleProfileChange}
+                  required
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">טלפון</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={profileForm.phone}
+                  onChange={handleProfileChange}
+                  required
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500"
+                />
+              </div>
+              <div className="md:col-span-2 flex flex-wrap gap-3 justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingProfile(false);
+                    setProfileFeedback(null);
+                    setProfileForm({
+                      fullName: user.fullName || "",
+                      email: user.email || "",
+                      phone: user.phone || "",
+                    });
+                  }}
+                  className="px-5 py-3 rounded-xl border border-gray-300 text-gray-600 font-semibold hover:bg-gray-100 transition-all"
+                  disabled={profileSaving}
+                >
+                  ביטול
+                </button>
+                <button
+                  type="submit"
+                  disabled={profileSaving}
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-60"
+                >
+                  {profileSaving ? "שומר..." : "שמירת שינויים"}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <div className="text-sm text-gray-500">שם מלא</div>
+                <div className="text-lg font-semibold text-gray-900">{user.fullName || "לא הוגדר"}</div>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <div className="text-sm text-gray-500">אימייל</div>
+                <div className="text-lg font-semibold text-gray-900">{user.email || "לא הוגדר"}</div>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <div className="text-sm text-gray-500">טלפון</div>
+                <div className="text-lg font-semibold text-gray-900">{user.phone || "לא הוגדר"}</div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Upgrade to Agent Banner */}

@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development next dev -p 3001 -H 0.0.0.0",
+    "dev": "next dev -p 3001 -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -16,7 +16,11 @@
     "reset-admin": "cross-env NODE_ENV=development node -r dotenv/config scripts/reset-admin.js",
     "seed-users": "cross-env NODE_ENV=development node -r dotenv/config scripts/seed-users.js",
     "seed-demo": "cross-env NODE_ENV=development node scripts/seed-demo-data.mjs",
-    "clear-demo": "cross-env NODE_ENV=development node scripts/clear-demo-data.mjs"
+    "clear-demo": "cross-env NODE_ENV=development node scripts/clear-demo-data.mjs",
+    "import:agents": "node tools/import-agents-from-pdf.js",
+    "import:agents:pdf": "node tools/import-agents-from-pdf.js",
+    "import:products": "node scripts/import-products.js",
+    "serve:agents": "npx http-server export_vipo_products_ui -p 3005"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -32,16 +36,21 @@
     "mongoose": "^8.19.2",
     "next": "14.2.5",
     "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.8",
+    "pdf-parse": "^1.1.1",
     "pdfkit": "^0.17.2",
     "qrcode": "1.5.4",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "sharp": "0.33.5",
+    "twilio": "^4.21.0",
     "uuid": "9.0.1",
     "zod": "3.23.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.5",
     "autoprefixer": "10.4.19",
     "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",

@@ -8,6 +8,7 @@ export default function AgentsList() {
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editingAgent, setEditingAgent] = useState(null);
+  const [copiedAgentId, setCopiedAgentId] = useState(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -33,6 +34,13 @@ export default function AgentsList() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleCopyCoupon(agent) {
+    if (!agent?.couponCode) return;
+    navigator.clipboard.writeText(agent.couponCode.toUpperCase());
+    setCopiedAgentId(agent._id);
+    setTimeout(() => setCopiedAgentId(null), 2000);
   }
 
   async function handleSubmit(e) {
@@ -87,16 +95,16 @@ export default function AgentsList() {
   }
 
   return (
-    <div>
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
         <div>
           <h2 className="text-2xl font-bold">רשימת סוכנים</h2>
           <p className="text-gray-600">סה״כ {agents.length} סוכנים</p>
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors self-start sm:self-auto"
         >
           ➕ הוסף סוכן
         </button>
@@ -179,51 +187,86 @@ export default function AgentsList() {
 
       {/* Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">שם</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">אימייל</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">טלפון</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">סטטוס</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">תאריך יצירה</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">פעולות</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {agents.map((agent) => (
-              <tr key={agent._id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">{agent.fullName}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{agent.email}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{agent.phone || "-"}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 py-1 text-xs rounded-full ${
-                    agent.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                  }`}>
-                    {agent.isActive ? "פעיל" : "לא פעיל"}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {new Date(agent.createdAt).toLocaleDateString("he-IL")}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <a
-                    href={`/admin/agents/${agent._id}`}
-                    className="text-purple-600 hover:text-purple-800 mr-3"
-                  >
-                    📊 סטטיסטיקות
-                  </a>
-                  <button
-                    onClick={() => handleEdit(agent)}
-                    className="text-blue-600 hover:text-blue-800 mr-3"
-                  >
-                    ✏️ ערוך
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">שם</th>
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">אימייל</th>
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">טלפון</th>
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">קוד קופון</th>
+                <th className="hidden md:table-cell px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">הנחה</th>
+                <th className="hidden md:table-cell px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">עמלה</th>
+                <th className="hidden lg:table-cell px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">סטטוס קופון</th>
+                <th className="hidden lg:table-cell px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">סטטוס משתמש</th>
+                <th className="hidden xl:table-cell px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">תאריך יצירה</th>
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">פעולות</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {agents.map((agent) => (
+                <tr key={agent._id} className="hover:bg-gray-50">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-gray-900 font-medium">{agent.fullName}</td>
+                  <td className="px-4 sm:px-6 py-4 text-gray-700 break-all">{agent.email}</td>
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">{agent.phone || "-"}</td>
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <code className="bg-gray-100 px-2 py-1 rounded text-xs font-mono">
+                        {(agent.couponCode || "---").toUpperCase()}
+                      </code>
+                      <button
+                        onClick={() => handleCopyCoupon(agent)}
+                        disabled={!agent.couponCode}
+                        className="text-purple-600 hover:text-purple-800 text-xs"
+                      >
+                        {copiedAgentId === agent._id ? "✓ הועתק" : "העתק"}
+                      </button>
+                    </div>
+                  </td>
+                  <td className="hidden md:table-cell px-4 sm:px-6 py-4 whitespace-nowrap text-gray-700">
+                    {agent.discountPercent ?? 0}%
+                  </td>
+                  <td className="hidden md:table-cell px-4 sm:px-6 py-4 whitespace-nowrap text-gray-700">
+                    {agent.commissionPercent ?? 0}%
+                  </td>
+                  <td className="hidden lg:table-cell px-4 sm:px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        agent.couponStatus === "active"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
+                      {agent.couponStatus === "active" ? "פעיל" : "לא פעיל"}
+                    </span>
+                  </td>
+                  <td className="hidden lg:table-cell px-4 sm:px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        agent.isActive
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {agent.isActive ? "פעיל" : "לא פעיל"}
+                    </span>
+                  </td>
+                  <td className="hidden xl:table-cell px-4 sm:px-6 py-4 whitespace-nowrap text-gray-500">
+                    {new Date(agent.createdAt).toLocaleDateString("he-IL")}
+                  </td>
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-purple-700 text-sm font-semibold">
+                    <button
+                      onClick={() => handleEdit(agent)}
+                      className="hover:text-purple-900 transition-colors"
+                    >
+                      ✏️ ערוך
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         {agents.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             אין סוכנים במערכת

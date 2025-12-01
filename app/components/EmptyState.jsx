@@ -1,22 +1,198 @@
 /**
  * Empty State Component
  * Stage 15.10 - Error & Empty States
- * 
+ *
  * Friendly empty states for tables, lists, and pages
  */
 
+function PackageIcon({ className = "w-16 h-16" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3.75 7.5L12 12l8.25-4.5m-16.5 0L12 3l8.25 4.5m-16.5 0V16.5L12 21m8.25-13.5V16.5L12 21m0-9v9"
+      />
+    </svg>
+  );
+}
+
+function ChartIcon({ className = "w-16 h-16" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M4 20h16" />
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M8 20v-8" />
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M12 20v-12" />
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M16 20v-5" />
+    </svg>
+  );
+}
+
+function RefreshIcon({ className = "w-5 h-5" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4 4v5h.6m15.4 2A8 8 0 004.6 9m0 0H9m11 11v-5h-.6m0 0a8 8 0 01-15.4-2m15.4 2H15"
+      />
+    </svg>
+  );
+}
+
+function SearchIcon({ className = "w-16 h-16" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function CloseIcon({ className = "w-5 h-5" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M6 18L18 6" />
+    </svg>
+  );
+}
+
+function CreditCardIcon({ className = "w-16 h-16" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M3 10h18" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="7" y="14" width="4" height="2" rx="0.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+function UsersIcon({ className = "w-16 h-16" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="9" cy="8" r="3.25" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        d="M3.5 19v-.75A5.5 5.5 0 019 12.75h0A5.5 5.5 0 0114.5 18.25V19"
+      />
+      <circle cx="17" cy="9" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        d="M14.5 18.5a4.5 4.5 0 014.5 4.5"
+      />
+    </svg>
+  );
+}
+
+function UserIcon({ className = "w-16 h-16" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.25" stroke="currentColor" strokeWidth="1.5" />
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M5 20v-.75A7.25 7.25 0 0112.25 12h.5A7.25 7.25 0 0120 19.25V20" />
+    </svg>
+  );
+}
+
+function LinkIcon({ className = "w-5 h-5" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8.5 12a3 3 0 010-4.24l3-3a3 3 0 014.24 4.24l-.88.88"
+      />
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15.5 12a3 3 0 010 4.24l-3 3a3 3 0 11-4.24-4.24l.88-.88"
+      />
+    </svg>
+  );
+}
+
+function PlusIcon({ className = "w-5 h-5" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M12 6v12M6 12h12" />
+    </svg>
+  );
+}
+
+function WarningIcon({ className = "w-16 h-16" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 4l8 14H4l8-14z"
+      />
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M12 10v4" />
+      <circle cx="12" cy="16.5" r=".75" fill="currentColor" />
+    </svg>
+  );
+}
+
+function CompassIcon({ className = "w-16 h-16" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.5 9.5l7-3-3 7-7 3 3-7z"
+      />
+    </svg>
+  );
+}
+
 export default function EmptyState({
-  icon = "📦",
+  icon = <PackageIcon className="w-16 h-16 text-purple-500" />,
   title = "אין נתונים",
   description = "לא נמצאו פריטים להצגה",
   action,
   className = "",
 }) {
+  const renderIcon = (displayIcon) => {
+    if (!displayIcon) return null;
+    if (typeof displayIcon === "string") {
+      return (
+        <span className="text-6xl" role="img" aria-label={title}>
+          {displayIcon}
+        </span>
+      );
+    }
+    return displayIcon;
+  };
+
+  const renderActionIcon = (actionIcon) => {
+    if (!actionIcon) return null;
+    if (typeof actionIcon === "string") {
+      return <span>{actionIcon}</span>;
+    }
+    return actionIcon;
+  };
+
   return (
     <div className={`text-center py-12 px-4 ${className}`}>
       {/* Icon */}
-      <div className="text-6xl mb-4" role="img" aria-label={title}>
-        {icon}
+      <div className="mb-4 flex justify-center text-purple-500" aria-hidden={typeof icon !== "string"}>
+        {renderIcon(icon)}
       </div>
 
       {/* Title */}
@@ -35,7 +211,7 @@ export default function EmptyState({
           onClick={action.onClick}
           className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          {action.icon && <span>{action.icon}</span>}
+          {action.icon && renderActionIcon(action.icon)}
           <span>{action.label}</span>
         </button>
       )}
@@ -50,13 +226,13 @@ export default function EmptyState({
 export function NoDataEmpty({ onRefresh }) {
   return (
     <EmptyState
-      icon="📊"
+      icon={<ChartIcon className="w-16 h-16 text-blue-500" />}
       title="אין נתונים להצגה"
       description="לא נמצאו נתונים. נסה לרענן את הדף או לבדוק את החיבור."
       action={
         onRefresh && {
           label: "רענן",
-          icon: "🔄",
+          icon: <RefreshIcon className="w-5 h-5" />,
           onClick: onRefresh,
         }
       }
@@ -67,13 +243,13 @@ export function NoDataEmpty({ onRefresh }) {
 export function NoResultsEmpty({ onClear }) {
   return (
     <EmptyState
-      icon="🔍"
+      icon={<SearchIcon className="w-16 h-16 text-indigo-500" />}
       title="לא נמצאו תוצאות"
       description="לא מצאנו תוצאות התואמות לחיפוש שלך. נסה מילות חיפוש אחרות."
       action={
         onClear && {
           label: "נקה חיפוש",
-          icon: "✕",
+          icon: <CloseIcon className="w-5 h-5" />,
           onClick: onClear,
         }
       }
@@ -84,13 +260,13 @@ export function NoResultsEmpty({ onClear }) {
 export function NoTransactionsEmpty({ onCreate }) {
   return (
     <EmptyState
-      icon="💳"
+      icon={<CreditCardIcon className="w-16 h-16 text-emerald-500" />}
       title="אין עסקאות עדיין"
       description="כשתתחיל למכור, העסקאות שלך יופיעו כאן."
       action={
         onCreate && {
           label: "צור עסקה ראשונה",
-          icon: "+",
+          icon: <PlusIcon className="w-5 h-5" />,
           onClick: onCreate,
         }
       }
@@ -101,12 +277,12 @@ export function NoTransactionsEmpty({ onCreate }) {
 export function NoReferralsEmpty() {
   return (
     <EmptyState
-      icon="👥"
+      icon={<UsersIcon className="w-16 h-16 text-purple-500" />}
       title="אין הפניות עדיין"
       description="שתף את קישור ההפניה שלך והתחל להרוויח עמלות!"
       action={{
         label: "העתק קישור",
-        icon: "🔗",
+        icon: <LinkIcon className="w-5 h-5" />,
         onClick: () => {
           const link = `${window.location.origin}/join?ref=${localStorage.getItem('referralId')}`;
           navigator.clipboard.writeText(link);
@@ -120,13 +296,13 @@ export function NoReferralsEmpty() {
 export function NoUsersEmpty({ onCreate }) {
   return (
     <EmptyState
-      icon="👤"
+      icon={<UserIcon className="w-16 h-16 text-blue-500" />}
       title="אין משתמשים במערכת"
       description="התחל בהוספת משתמשים למערכת."
       action={
         onCreate && {
           label: "הוסף משתמש",
-          icon: "+",
+          icon: <PlusIcon className="w-5 h-5" />,
           onClick: onCreate,
         }
       }
@@ -147,8 +323,8 @@ export function ErrorState({
   return (
     <div className={`text-center py-12 px-4 ${className}`}>
       {/* Error Icon */}
-      <div className="text-6xl mb-4" role="img" aria-label="שגיאה">
-        ⚠️
+      <div className="mb-4 flex justify-center text-red-500" aria-hidden="true">
+        <WarningIcon className="w-16 h-16" />
       </div>
 
       {/* Title */}
@@ -240,7 +416,9 @@ export function LoadingState({ message = "טוען..." }) {
 export function NotFoundState({ onGoHome }) {
   return (
     <div className="text-center py-12 px-4">
-      <div className="text-8xl mb-4">🔍</div>
+      <div className="mb-4 flex justify-center text-indigo-500">
+        <CompassIcon className="w-20 h-20" />
+      </div>
       <h1 className="text-4xl font-bold text-gray-900 mb-2">404</h1>
       <h2 className="text-2xl font-semibold text-gray-700 mb-4">
         הדף לא נמצא

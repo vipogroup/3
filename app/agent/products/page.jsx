@@ -1,16 +1,92 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getProducts, generateAgentLink } from "@/app/lib/products";
-import Link from "next/link";
+import { useState, useEffect, useMemo } from "react";
+import { getProducts, refreshProductsFromApi } from "@/app/lib/products";
+
+function buildCouponCode(user) {
+  if (!user) return "";
+
+  if (user.couponCode) {
+    return String(user.couponCode).trim();
+  }
+
+  const rawName = String(user.fullName || user.name || "סוכן").trim();
+  const sanitizedName = rawName.replace(/\s+/g, "");
+  const baseName = sanitizedName || "סוכן";
+
+  let sequence = user?.couponSequence;
+  if (sequence === undefined || sequence === null || sequence === "") {
+    const numericFromId = String(user?._id ?? "").replace(/\D/g, "").slice(-3);
+    if (numericFromId) {
+      sequence = numericFromId;
+    }
+  }
+
+  const sequenceStr = String(sequence ?? "1").trim() || "1";
+  return `${baseName}${sequenceStr}`;
+}
 
 export default function AgentProductsPage() {
   const [products, setProducts] = useState([]);
   const [user, setUser] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
+  const [couponCode, setCouponCode] = useState("");
+
+  const themeStyles = useMemo(
+    () => ({
+      gradientBackground: {
+        background: "linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%)",
+      },
+      primaryGradient: {
+        background: "linear-gradient(90deg, var(--primary), var(--secondary))",
+        color: "#ffffff",
+      },
+      gradientButton: {
+        background: "linear-gradient(90deg, var(--primary), var(--secondary))",
+        color: "#ffffff",
+      },
+      accentButton: {
+        backgroundColor: "var(--accent)",
+        color: "#ffffff",
+      },
+      successFill: {
+        backgroundColor: "var(--success)",
+        color: "#ffffff",
+      },
+      dangerFill: {
+        backgroundColor: "var(--danger)",
+        color: "#ffffff",
+      },
+      outlinePrimary: {
+        border: "2px solid var(--primary)",
+        color: "var(--primary)",
+        backgroundColor: "#ffffff",
+      },
+      textPrimary: {
+        color: "var(--primary)",
+      },
+      textSuccess: {
+        color: "var(--success)",
+      },
+      mutedCard: {
+        backgroundColor: "var(--bg)",
+      },
+    }),
+    []
+  );
 
   // Load products
-  const loadProducts = () => {
+  const loadProducts = async () => {
+    try {
+      const list = await refreshProductsFromApi();
+      if (Array.isArray(list)) {
+        setProducts(list.filter((product) => product?.active));
+        return;
+      }
+    } catch (error) {
+      console.error("Failed to refresh products for agent dashboard:", error);
+    }
+
     setProducts(getProducts());
   };
 
@@ -23,10 +99,32 @@ export default function AgentProductsPage() {
         const res = await fetch("/api/auth/me");
         if (res.ok) {
           const data = await res.json();
-          setUser(data.user);
+          let mergedUser = data?.user || null;
+
+          if (mergedUser) {
+            try {
+              const profileRes = await fetch("/api/users/me");
+              if (profileRes.ok) {
+                const profileData = await profileRes.json();
+                if (profileData?.user) {
+                  mergedUser = { ...mergedUser, ...profileData.user };
+                }
+              }
+            } catch (profileError) {
+              console.error("Failed to fetch user profile:", profileError);
+            }
+          }
+
+          setUser(mergedUser);
+          setCouponCode(buildCouponCode(mergedUser));
+        } else {
+          setUser(null);
+          setCouponCode("");
         }
       } catch (error) {
         console.error("Failed to fetch user:", error);
+        setUser(null);
+        setCouponCode("");
       }
     }
     fetchUser();
@@ -42,49 +140,83 @@ export default function AgentProductsPage() {
     return () => window.removeEventListener('productsUpdated', handleProductsUpdate);
   }, []);
 
-  const copyLink = (productId) => {
-    if (!user) return;
-    
-    const link = generateAgentLink(user.id, productId);
-    navigator.clipboard.writeText(link);
-    setCopiedId(productId);
-    
-    setTimeout(() => setCopiedId(null), 2000);
+  const copyCoupon = (productId) => {
+    if (!couponCode || typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
+      return;
+    }
+
+    navigator.clipboard
+      .writeText(couponCode)
+      .then(() => {
+        setCopiedId(productId);
+        setTimeout(() => setCopiedId(null), 2000);
+      })
+      .catch((err) => {
+        console.error("Failed to copy coupon code:", err);
+      });
+  };
+
+  const getProductShareUrl = (product) => {
+    const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://vipo.agents";
+    return `${baseUrl}/product/${product._id}`;
+  };
+
+  const buildShareText = (product) => {
+    const lines = [
+      `🛍️ *${product.name}*`,
+      "",
+      product.description,
+      "",
+      `💰 מחיר: ₪${product.price}`,
+    ];
+
+    if (couponCode) {
+      lines.push(`🏷️ קוד קופון: ${couponCode}`);
+    }
+
+    const productUrl = getProductShareUrl(product);
+    if (productUrl) {
+      lines.push("", `🔗 לרכישה: ${productUrl}`);
+    }
+
+    lines.push("", "השתמשו בקוד הקופון בקופה לקבלת ההטבה!");
+
+    return lines.filter(Boolean).join("\n");
   };
 
   const shareToWhatsApp = (product) => {
-    if (!user) return;
-    const link = generateAgentLink(user.id, product._id);
-    const text = `🛍️ *${product.name}*\n\n${product.description}\n\n💰 מחיר: ₪${product.price}\n\n👉 לרכישה:`;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + " " + link)}`;
+    if (!couponCode) return;
+    const text = buildShareText(product);
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const shareToFacebook = (product) => {
-    if (!user) return;
-    const link = generateAgentLink(user.id, product._id);
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
+    if (!couponCode) return;
+    const text = buildShareText(product);
+    const shareUrl = getProductShareUrl(product);
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(text)}`;
     window.open(facebookUrl, '_blank', 'width=600,height=400');
   };
 
   const shareToTwitter = (product) => {
-    if (!user) return;
-    const link = generateAgentLink(user.id, product._id);
-    const text = `${product.name} - רק ₪${product.price}!`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`;
+    if (!couponCode) return;
+    const text = buildShareText(product);
+    const shareUrl = getProductShareUrl(product);
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
     window.open(twitterUrl, '_blank', 'width=600,height=400');
   };
 
   const shareViaEmail = (product) => {
-    if (!user) return;
-    const link = generateAgentLink(user.id, product._id);
+    if (!couponCode) return;
+    const text = buildShareText(product);
     const subject = `בדוק את ${product.name}`;
-    const body = `שלום,\n\nמצאתי מוצר מדהים שחשבתי שיעניין אותך:\n\n${product.name}\n${product.description}\n\nמחיר: ₪${product.price}\n\nלרכישה: ${link}\n\nבברכה`;
+    const body = `שלום,\n\n${text}\n\nבברכה`; 
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-8">
+    <div className="min-h-screen p-8" style={themeStyles.gradientBackground}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -92,33 +224,39 @@ export default function AgentProductsPage() {
             המוצרים שלי
           </h1>
           <p className="text-gray-600">
-            בחר מוצר וקבל לינק ייחודי לשיתוף. כל רכישה דרך הלינק שלך תזכה אותך ב-10% עמלה!
+            בחר מוצר וקבל קוד קופון אישי לשיתוף. כל רכישה עם הקוד שלך תזכה אותך בעמלה!
           </p>
         </div>
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => {
-            const agentLink = user ? generateAgentLink(user.id, product._id) : "";
-            
+            const hasCoupon = Boolean(couponCode);
+
             return (
               <div
                 key={product._id}
                 className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300"
               >
                 {/* Product Image */}
-                <div className="relative h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                <div className="relative h-48 overflow-hidden" style={themeStyles.mutedCard}>
                   <img
                     src={product.image}
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />
                   {product.originalPrice && (
-                    <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                    <div
+                      className="absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-bold"
+                      style={themeStyles.dangerFill}
+                    >
                       חסכון {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
                     </div>
                   )}
-                  <div className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                  <div
+                    className="absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-bold"
+                    style={themeStyles.successFill}
+                  >
                     ₪{product.commission} עמלה
                   </div>
                 </div>
@@ -126,7 +264,7 @@ export default function AgentProductsPage() {
                 {/* Product Info */}
                 <div className="p-6">
                   {/* Category */}
-                  <div className="text-xs text-purple-600 font-semibold mb-2 uppercase">
+                  <div className="text-xs font-semibold mb-2 uppercase" style={themeStyles.primaryText}>
                     {product.category}
                   </div>
 
@@ -143,7 +281,7 @@ export default function AgentProductsPage() {
                   {/* Price & Commission */}
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <div className="text-2xl font-bold text-purple-600">
+                      <div className="text-2xl font-bold" style={themeStyles.primaryText}>
                         ₪{product.price}
                       </div>
                       {product.originalPrice && (
@@ -153,43 +291,49 @@ export default function AgentProductsPage() {
                       )}
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-green-600">
+                      <div className="text-lg font-bold" style={themeStyles.successText}>
                         ₪{product.commission}
                       </div>
                       <div className="text-xs text-gray-500">עמלה (10%)</div>
                     </div>
                   </div>
 
-                  {/* Agent Link */}
-                  <div className="mb-4 p-3 bg-gray-50 rounded-xl">
+                  {/* Coupon Code */}
+                  <div className="mb-4 p-3 rounded-xl" style={themeStyles.mutedCard}>
                     <div className="text-xs text-gray-600 mb-1 font-semibold">
-                      הלינק הייחודי שלך:
+                      קוד הקופון האישי שלך:
                     </div>
                     <div className="flex items-center gap-2 mb-3">
                       <input
                         type="text"
-                        value={agentLink}
+                        value={couponCode}
                         readOnly
+                        placeholder="הקוד יופיע כאן"
                         className="flex-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 font-mono"
                       />
                       <button
-                        onClick={() => copyLink(product._id)}
-                        className={`px-3 py-1 rounded font-semibold text-sm transition-all ${
-                          copiedId === product._id
-                            ? "bg-green-500 text-white"
-                            : "bg-purple-600 text-white hover:bg-purple-700"
-                        }`}
+                        onClick={() => copyCoupon(product._id)}
+                        disabled={!hasCoupon}
+                        className="font-semibold px-4 py-3 rounded-xl transition-all"
+                        style={themeStyles.outlinePrimary}
                       >
-                        {copiedId === product._id ? "✓ הועתק" : "העתק"}
+                        {copiedId === product._id ? "✔" : "העתק"}
                       </button>
                     </div>
-                    
+                    {!hasCoupon && (
+                      <div className="text-xs text-gray-500">
+                        הקוד יופיע כאן לאחר שיוגדר עבורך. אנא פנה למנהל במקרה הצורך.
+                      </div>
+                    )}
+
                     {/* Social Share Buttons */}
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-600 font-semibold">שתף:</span>
                       <button
                         onClick={() => shareToWhatsApp(product)}
-                        className="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1 text-xs"
+                        disabled={!hasCoupon}
+                        className="flex-1 font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1 text-xs"
+                        style={themeStyles.successFill}
                         title="שתף ב-WhatsApp"
                       >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -199,7 +343,9 @@ export default function AgentProductsPage() {
                       </button>
                       <button
                         onClick={() => shareToFacebook(product)}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1 text-xs"
+                        disabled={!hasCoupon}
+                        className="flex-1 font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1 text-xs"
+                        style={themeStyles.gradientButton}
                         title="שתף ב-Facebook"
                       >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -209,44 +355,15 @@ export default function AgentProductsPage() {
                       </button>
                       <button
                         onClick={() => shareViaEmail(product)}
-                        className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center text-xs"
+                        disabled={!hasCoupon}
+                        className="font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center text-xs"
+                        style={themeStyles.accentButton}
                         title="שלח במייל"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                       </button>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/products/${product._id}`}
-                      className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 rounded-xl transition-all text-center"
-                    >
-                      צפה במוצר
-                    </Link>
-                    <button
-                      onClick={() => copyLink(product._id)}
-                      className="bg-white border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-semibold px-4 py-3 rounded-xl transition-all"
-                    >
-                      🔗
-                    </button>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="text-gray-600">
-                        <span className="font-semibold">0</span> מכירות
-                      </div>
-                      <div className="text-gray-600">
-                        <span className="font-semibold">0</span> קליקים
-                      </div>
-                      <div className="text-green-600 font-semibold">
-                        ₪0 הכנסות
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -256,28 +373,31 @@ export default function AgentProductsPage() {
         </div>
 
         {/* Help Card */}
-        <div className="mt-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl shadow-xl p-8 text-white">
+        <div
+          className="mt-8 rounded-2xl shadow-xl p-8 text-white"
+          style={themeStyles.primaryGradient}
+        >
           <h2 className="text-2xl font-bold mb-4">💡 איך זה עובד?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <div className="text-4xl mb-2">1️⃣</div>
               <h3 className="font-bold mb-2">בחר מוצר</h3>
-              <p className="text-purple-100">
-                בחר מוצר מהרשימה והעתק את הלינק הייחודי שלך
+              <p className="text-white">
+                בחר מוצר מהרשימה והעתק את קוד הקופון האישי שלך
               </p>
             </div>
             <div>
               <div className="text-4xl mb-2">2️⃣</div>
               <h3 className="font-bold mb-2">שתף</h3>
               <p className="text-purple-100">
-                שתף את הלינק ברשתות חברתיות, WhatsApp או אימייל
+                שתף את קוד הקופון יחד עם קישור המוצר ב-WhatsApp, רשתות חברתיות או מייל
               </p>
             </div>
             <div>
               <div className="text-4xl mb-2">3️⃣</div>
               <h3 className="font-bold mb-2">הרווח</h3>
               <p className="text-purple-100">
-                קבל 10% עמלה מכל רכישה שמתבצעת דרך הלינק שלך!
+                קבל עמלה על כל רכישה שמתבצעת עם הקוד שלך!
               </p>
             </div>
           </div>

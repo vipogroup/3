@@ -51,7 +51,7 @@ function SaleStatusBadge({ status }) {
  * @param {Object} props - Component props
  * @param {Array} props.rows - Array of sale objects
  */
-export default function RecentSalesTable({ rows = [] }) {
+export default function RecentSalesTable({ rows = [], className = "" }) {
   // Sort by createdAt in descending order and limit to 10
   const recentSales = [...rows]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -84,51 +84,73 @@ export default function RecentSalesTable({ rows = [] }) {
     return phone;
   };
 
+  const cardClassName = className || "bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden";
+
   if (recentSales.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-8 text-center">
-        <p className="text-gray-500">אין מכירות אחרונות להצגה</p>
+      <div className={`${cardClassName} p-10 text-center flex items-center justify-center`}>
+        <div>
+          <p className="text-lg font-semibold text-gray-700">אין מכירות אחרונות להצגה</p>
+          <p className="text-sm text-gray-500 mt-2">כשתתבצע מכירה חדשה, היא תופיע כאן.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className={cardClassName}>
       <div className="overflow-x-auto">
-        <table className="min-w-full">
-          <thead className="bg-gray-50 sticky top-0">
+        <table className="min-w-full divide-y divide-gray-100">
+          <thead className="bg-gradient-to-r from-purple-50 to-blue-50">
             <tr>
-              <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 border-b">תאריך</th>
-              <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 border-b">מוצר</th>
-              <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 border-b">לקוח</th>
-              <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 border-b">טלפון</th>
-              <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 border-b">מחיר</th>
-              <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 border-b">עמלה</th>
-              <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 border-b">סטטוס</th>
+              <th className="px-5 py-3 text-right text-xs font-bold tracking-wide text-gray-600 uppercase">תאריך</th>
+              <th className="px-5 py-3 text-right text-xs font-bold tracking-wide text-gray-600 uppercase">מוצר</th>
+              <th className="px-5 py-3 text-right text-xs font-bold tracking-wide text-gray-600 uppercase">לקוח</th>
+              <th className="px-5 py-3 text-right text-xs font-bold tracking-wide text-gray-600 uppercase">טלפון</th>
+              <th className="px-5 py-3 text-right text-xs font-bold tracking-wide text-gray-600 uppercase">מחיר</th>
+              <th className="px-5 py-3 text-right text-xs font-bold tracking-wide text-gray-600 uppercase">עמלה</th>
+              <th className="px-5 py-3 text-right text-xs font-bold tracking-wide text-gray-600 uppercase">סטטוס</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="bg-white divide-y divide-gray-100">
             {recentSales.map((sale) => (
-              <tr key={sale._id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-sm text-gray-700 border-b">
-                  {formatDate(sale.createdAt)}
+              <tr key={sale._id} className="hover:bg-indigo-50/40 transition-colors">
+                <td className="px-5 py-4 text-sm text-gray-600 whitespace-nowrap">
+                  <div className="font-semibold text-gray-900">
+                    {formatDate(sale.createdAt)}
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    {new Date(sale.createdAt).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" })}
+                  </div>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-700 border-b truncate max-w-[150px]">
-                  {sale.productId?.name || "מוצר לא ידוע"}
+                <td className="px-5 py-4 text-sm text-gray-700 max-w-[200px]">
+                  <div className="font-medium text-gray-900 truncate">
+                    {sale.productId?.name || "מוצר לא ידוע"}
+                  </div>
+                  {sale.productId?.price ? (
+                    <div className="text-xs text-gray-400 mt-0.5">
+                      מחיר קטלוגי: {formatCurrencyILS(sale.productId.price)}
+                    </div>
+                  ) : null}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-700 border-b truncate max-w-[150px]">
-                  {sale.customerName}
+                <td className="px-5 py-4 text-sm text-gray-700 max-w-[200px]">
+                  <div className="font-medium text-gray-900 truncate">
+                    {sale.customerName || "---"}
+                  </div>
+                  <div className="text-xs text-gray-400 mt-0.5 truncate">
+                    {sale.customerEmail || "ללא אימייל"}
+                  </div>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-700 border-b">
+                <td className="px-5 py-4 text-sm text-gray-700 whitespace-nowrap">
                   {formatPhone(sale.customerPhone)}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-700 border-b text-right">
-                  {formatCurrencyILS(sale.salePrice)}
+                <td className="px-5 py-4 text-sm text-gray-900 text-left whitespace-nowrap">
+                  <span className="font-semibold">{formatCurrencyILS(sale.salePrice)}</span>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-700 border-b text-right">
-                  {formatCurrencyILS(sale.commission)}
+                <td className="px-5 py-4 text-sm text-indigo-600 text-left whitespace-nowrap">
+                  <span className="font-semibold">{formatCurrencyILS(sale.commission)}</span>
                 </td>
-                <td className="px-4 py-3 text-sm border-b">
+                <td className="px-5 py-4 text-sm text-right">
                   <SaleStatusBadge status={sale.status} />
                 </td>
               </tr>

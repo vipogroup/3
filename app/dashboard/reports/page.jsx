@@ -279,7 +279,7 @@ export default function ReportsPage() {
             </div>
             
             <div className="bg-white rounded-lg shadow-md p-4">
-              <h3 className="text-sm font-medium text-gray-500 mb-1">מס' עסקאות</h3>
+              <h3 className="text-sm font-medium text-gray-500 mb-1">מס&apos; עסקאות</h3>
               <p className="text-2xl font-bold">
                 {reportData.totals.count}
               </p>

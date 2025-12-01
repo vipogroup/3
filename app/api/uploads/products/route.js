@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import path from "path";
 import fs from "fs/promises";
-import { verify as verifyJwt } from "@/lib/auth/createToken.js";
+import { verify } from "@/lib/auth/createToken";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,7 +10,7 @@ export async function POST(req) {
   try {
     // Verify admin role
     const token = req.cookies.get("token")?.value;
-    const user = verifyJwt(token);
+    const user = verify(token);
     
     if (!user || user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized. Admin access required" }, { status: 403 });

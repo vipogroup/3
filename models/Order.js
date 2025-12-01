@@ -9,6 +9,10 @@ const OrderSchema = new mongoose.Schema(
     refAgentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     commissionReferral: { type: Number, default: 0 },     // סכום העמלה (במטבע העסקה)
 
+    // Coupon tracking
+    appliedCouponCode: { type: String, default: null },
+    agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+
     // Core order fields
     items: { type: Array, default: [] },
     total: { type: Number, default: 0 },

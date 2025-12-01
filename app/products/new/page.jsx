@@ -161,7 +161,7 @@ export default function NewProductPage() {
     return (
       <MainLayout>
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <p>You don't have permission to access this page.</p>
+          <p>You don&apos;t have permission to access this page.</p>
         </div>
       </MainLayout>
     );

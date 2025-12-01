@@ -1,13 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { getProductById } from "@/app/lib/products";
-import { useTheme } from "@/app/hooks/useTheme";
 
 export default function CheckoutPage() {
-  const { theme } = useTheme();
   const params = useParams();
   const router = useRouter();
   const productId = params.productId;
@@ -26,6 +24,13 @@ export default function CheckoutPage() {
     paymentMethod: "credit_card",
     agreeToTerms: false
   });
+
+  const gradientStyle = useMemo(
+    () => ({
+      background: "linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%)",
+    }),
+    []
+  );
 
   useEffect(() => {
     loadData();
@@ -138,7 +143,7 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className={`min-h-screen bg-gradient-to-br ${theme.gradient} flex items-center justify-center`}>
+      <div className="min-h-screen flex items-center justify-center" style={gradientStyle}>
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
           <p className="text-gray-600 mt-4">טוען...</p>
@@ -152,7 +157,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${theme.gradient} p-8`}>
+    <div className="min-h-screen p-8" style={gradientStyle}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
@@ -416,7 +421,7 @@ export default function CheckoutPage() {
               {/* Total */}
               <div className="pt-6 border-t-2 border-gray-300">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-xl font-bold text-gray-900">סה"כ לתשלום:</span>
+                  <span className="text-xl font-bold text-gray-900">{'סה&quot;כ לתשלום:'}</span>
                   <span className="text-3xl font-bold text-purple-600">
                     ₪{product.price}
                   </span>

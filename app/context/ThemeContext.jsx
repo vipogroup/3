@@ -1,66 +1,102 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { DEFAULT_SETTINGS, withDefaultSettings } from "@/lib/settingsDefaults";
 
 const ThemeContext = createContext();
 
-export function ThemeProvider({ children }) {
-  const [settings, setSettings] = useState({
-    // General
-    siteName: "VIPO",
-    siteDescription: "מערכת מתקדמת לניהול סוכנים ומוצרים",
-    logoUrl: "",
-    faviconUrl: "",
-    
-    // Colors
-    primaryColor: "#9333ea",
-    secondaryColor: "#2563eb",
-    accentColor: "#00bcd4",
-    successColor: "#16a34a",
-    warningColor: "#eab308",
-    dangerColor: "#dc2626",
-    backgroundColor: "#f7fbff",
-    textColor: "#0d1b2a",
-  });
+const STORAGE_KEY = "siteSettings";
+const isBrowser = typeof window !== "undefined";
 
+function withMetadata(settings, { source = "local", updatedAt } = {}) {
+  const timestamp = typeof updatedAt === "number" ? updatedAt : Date.now();
+  return {
+    ...settings,
+    __source: source,
+    __updatedAt: timestamp,
+  };
+}
+
+export function ThemeProvider({ children }) {
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const persistLocally = useCallback((value) => {
+    if (!isBrowser) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+    } catch (err) {
+      console.warn("Failed to persist settings locally", err);
+    }
+  }, []);
+
+  const loadSettings = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    if (isBrowser) {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          const localSettings = withDefaultSettings(parsed);
+          setSettings(
+            withMetadata(localSettings, {
+              source: parsed?.__source || "local",
+              updatedAt: parsed?.__updatedAt,
+            })
+          );
+        }
+      } catch (err) {
+        console.warn("Failed to parse local settings", err);
+      }
+    }
+
+    try {
+      const res = await fetch("/api/settings", { cache: "no-store" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || "settings_fetch_failed");
+      }
+
+      const data = await res.json();
+      const remoteSettings = withDefaultSettings(data?.settings || {});
+      const remoteUpdatedAt = data?.updatedAt ? new Date(data.updatedAt).getTime() : 0;
+      const remoteWithMeta = withMetadata(remoteSettings, {
+        source: "remote",
+        updatedAt: remoteUpdatedAt,
+      });
+
+      setSettings((current) => {
+        const currentUpdatedAt = current?.__updatedAt ?? 0;
+
+        if (currentUpdatedAt > remoteUpdatedAt) {
+          persistLocally(current);
+          return current;
+        }
+
+        persistLocally(remoteWithMeta);
+        return remoteWithMeta;
+      });
+    } catch (err) {
+      console.error("SETTINGS_LOAD_ERROR", err);
+      setError("טעינת ההגדרות נכשלה. מוצגות הגדרות שמורות במכשיר.");
+    } finally {
+      setLoading(false);
+    }
+  }, [persistLocally]);
 
   // Load settings from API or localStorage
   useEffect(() => {
     loadSettings();
-  }, []);
+  }, [loadSettings]);
 
-  // Apply CSS variables when settings change
-  useEffect(() => {
-    applyTheme();
-  }, [settings]);
+  const applyTheme = useCallback(() => {
+    if (typeof document === "undefined") return;
 
-  const loadSettings = async () => {
-    try {
-      // Try to load from localStorage first
-      const saved = localStorage.getItem("siteSettings");
-      if (saved) {
-        setSettings(JSON.parse(saved));
-      }
-
-      // TODO: Load from API
-      // const res = await fetch("/api/settings");
-      // if (res.ok) {
-      //   const data = await res.json();
-      //   setSettings(data.settings);
-      //   localStorage.setItem("siteSettings", JSON.stringify(data.settings));
-      // }
-    } catch (error) {
-      console.error("Failed to load settings:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const applyTheme = () => {
-    // Apply CSS variables to :root
     const root = document.documentElement;
-    
+
     root.style.setProperty("--primary", settings.primaryColor);
     root.style.setProperty("--secondary", settings.secondaryColor);
     root.style.setProperty("--accent", settings.accentColor);
@@ -69,11 +105,18 @@ export function ThemeProvider({ children }) {
     root.style.setProperty("--danger", settings.dangerColor);
     root.style.setProperty("--bg", settings.backgroundColor);
     root.style.setProperty("--text", settings.textColor);
+    root.style.setProperty("--font-family", settings.fontFamily || "'Inter', 'Heebo', sans-serif");
+    root.style.setProperty("--line-height", settings.lineHeight || 1.5);
+    root.style.setProperty("--letter-spacing", settings.letterSpacing || "0.01em");
+    root.style.setProperty("--direction", settings.direction || "rtl");
 
-    // Update document title
+    document.body.style.fontFamily = settings.fontFamily || "'Inter', 'Heebo', sans-serif";
+    document.body.style.lineHeight = settings.lineHeight ? String(settings.lineHeight) : "1.5";
+    document.body.style.letterSpacing = settings.letterSpacing || "0.01em";
+    document.body.setAttribute("dir", settings.direction || "rtl");
+
     document.title = settings.siteName;
 
-    // Update favicon if exists
     if (settings.faviconUrl) {
       let link = document.querySelector("link[rel~='icon']");
       if (!link) {
@@ -84,7 +127,6 @@ export function ThemeProvider({ children }) {
       link.href = settings.faviconUrl;
     }
 
-    // Update meta description
     let metaDesc = document.querySelector("meta[name='description']");
     if (!metaDesc) {
       metaDesc = document.createElement("meta");
@@ -92,28 +134,67 @@ export function ThemeProvider({ children }) {
       document.head.appendChild(metaDesc);
     }
     metaDesc.content = settings.siteDescription;
-  };
+  }, [settings]);
 
-  const updateSettings = async (newSettings) => {
-    setSettings(newSettings);
-    
-    // Save to localStorage
-    localStorage.setItem("siteSettings", JSON.stringify(newSettings));
+  // Apply CSS variables when settings change
+  useEffect(() => {
+    applyTheme();
+  }, [applyTheme]);
 
-    // TODO: Save to API
-    // try {
-    //   await fetch("/api/settings", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(newSettings)
-    //   });
-    // } catch (error) {
-    //   console.error("Failed to save settings:", error);
-    // }
-  };
+  const updateSettings = useCallback((nextSettings, options = {}) => {
+    const merged = withDefaultSettings(nextSettings);
+    const withMeta = withMetadata(merged, options);
+    setSettings(withMeta);
+    persistLocally(withMeta);
+    setError(null);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("themeChanged"));
+    }
+    return withMeta;
+  }, [persistLocally]);
+
+  const saveSettings = useCallback(async (nextSettings) => {
+    const merged = updateSettings(nextSettings, { source: "local" });
+
+    try {
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ settings: merged }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data?.ok === false) {
+        throw new Error(data?.error || "settings_save_failed");
+      }
+
+      const saved = withDefaultSettings(data?.settings || merged);
+      const savedWithMeta = withMetadata(saved, {
+        source: "remote",
+        updatedAt: data?.updatedAt ? new Date(data.updatedAt).getTime() : Date.now(),
+      });
+      setSettings(savedWithMeta);
+      persistLocally(savedWithMeta);
+      setError(null);
+      return { ok: true, settings: savedWithMeta, updatedAt: data?.updatedAt || null };
+    } catch (err) {
+      console.error("SETTINGS_SAVE_ERROR", err);
+      setError("שמירת ההגדרות נכשלה. נסו שוב.");
+      throw err;
+    }
+  }, [persistLocally, updateSettings]);
 
   return (
-    <ThemeContext.Provider value={{ settings, updateSettings, loading }}>
+    <ThemeContext.Provider
+      value={{
+        settings,
+        updateSettings,
+        saveSettings,
+        loading,
+        error,
+        reloadSettings: loadSettings,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );

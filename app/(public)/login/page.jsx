@@ -35,11 +35,15 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const identifier = email.trim();
+      const payload = {
+        identifier: email.trim(),
+        password,
+        rememberMe,
+      };
+
       const res = await api("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier, password }),
+        body: JSON.stringify(payload),
       });
 
       console.log('[LOGIN] Response status:', res.status);
@@ -60,7 +64,7 @@ export default function LoginPage() {
       if (rememberMe) {
         localStorage.setItem(
           "vipo-login",
-          JSON.stringify({ email: identifier, password })
+          JSON.stringify({ email: payload.identifier, password })
         );
       } else {
         localStorage.removeItem("vipo-login");

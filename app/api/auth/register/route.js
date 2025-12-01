@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { commissionPerReferral } from "@/app/config/commissions";
-import dbConnect from "@/lib/mongoose";
+import { connectMongo } from "@/lib/mongoose";
 import Notification from "@/models/Notification";
 
 export async function POST(req) {
@@ -23,7 +23,11 @@ export async function POST(req) {
       return NextResponse.json({ ok: false, error: "phone or email required" }, { status: 400 });
     }
     
-    if (!["admin", "agent", "customer"].includes(role)) {
+    if (["admin"].includes(role)) {
+      return NextResponse.json({ ok: false, error: "admin_registration_disabled" }, { status: 403 });
+    }
+
+    if (!["agent", "customer"].includes(role)) {
       return NextResponse.json({ ok: false, error: "invalid role" }, { status: 400 });
     }
     
@@ -111,7 +115,7 @@ export async function POST(req) {
     
     // Create admin notification (Stage 2.5)
     try {
-      await dbConnect();
+      await connectMongo();
       await Notification.create({
         type: "new_user",
         message: `נרשם משתמש חדש: ${doc.email || doc.phone || doc.fullName || "Unknown"}`,
