@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
+import Image from "next/image";
+import { formatCurrencyILS } from "@/app/utils/date";
 import { useTheme } from "@/app/context/ThemeContext";
 import { getAllPresets, applyPreset } from "@/app/lib/themePresets";
 
@@ -270,17 +272,27 @@ export default function SettingsForm() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-blue-500 p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-6xl ml-auto mr-0">
+    <div className="min-h-screen bg-white p-3 sm:p-6 md:p-8">
+      <div className="w-full max-w-6xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">הגדרות מערכת</h1>
-          <p className="text-purple-100 text-sm sm:text-base">נהל את כל הגדרות האתר, לוגו, צבעים ופונקציות</p>
+        <div className="bg-white px-3 sm:px-6 py-4 sm:py-6 mb-4">
+          <div className="max-w-7xl mx-auto">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 flex items-center gap-2 sm:gap-3" style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              <CogIcon className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#0891b2' }} />
+              הגדרות מערכת
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600">נהל את כל הגדרות האתר, לוגו, צבעים ופונקציות</p>
+          </div>
         </div>
 
         {/* Status Messages */}
         {(isBusy || mergedError || success) && (
-          <div className="mb-6 space-y-3">
+          <div className="mb-4 space-y-3">
             {isBusy && (
               <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
                 טוען נתונים... אנא המתן.
@@ -300,33 +312,42 @@ export default function SettingsForm() {
         )}
 
         {/* Tabs */}
-        <div className="bg-white rounded-t-2xl shadow-xl overflow-x-auto">
-          <div className="flex border-b">
+        <div className="bg-white rounded-t-lg sm:rounded-t-xl shadow-md overflow-x-auto">
+          <div className="flex border-b-2" style={{ borderColor: '#e5e7eb' }}>
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 sm:px-6 sm:py-4 font-semibold transition-all whitespace-nowrap ${
-                  activeTab === tab.id
-                    ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-                    : "text-gray-600 hover:bg-gray-50"
-                }`}
+                className="flex items-center gap-2 px-3 py-2 sm:px-6 sm:py-4 font-semibold transition-all whitespace-nowrap text-sm sm:text-base"
+                style={{
+                  background: activeTab === tab.id ? 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' : 'transparent',
+                  color: activeTab === tab.id ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== tab.id) {
+                    e.currentTarget.style.background = '#f9fafb';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== tab.id) {
+                    e.currentTarget.style.background = 'transparent';
+                  }
+                }}
               >
-                <span className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl ${
-                  activeTab === tab.id
-                    ? "bg-white/20 text-white"
-                    : "bg-gray-100 text-gray-700"
-                }`}>
-                  <tab.Icon className={activeTab === tab.id ? "w-5 h-5" : "w-5 h-5"} />
+                <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg" style={{
+                  background: activeTab === tab.id ? 'rgba(255, 255, 255, 0.2)' : '#f3f4f6',
+                  color: activeTab === tab.id ? 'white' : '#374151'
+                }}>
+                  <tab.Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                 </span>
-                {tab.label}
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-b-2xl shadow-xl p-4 sm:p-6 lg:p-8">
+        <form onSubmit={handleSubmit} className="bg-white rounded-b-lg sm:rounded-b-xl shadow-md p-4 sm:p-6">
           {/* Presets Tab */}
           {activeTab === "presets" && (
             <div className="space-y-6">
@@ -349,7 +370,20 @@ export default function SettingsForm() {
                       key={preset.id}
                       type="button"
                       onClick={() => handlePresetSelect(preset.id)}
-                      className="relative bg-white border-4 border-gray-200 hover:border-purple-500 rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] text-left"
+                      className="relative bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 transition-all duration-300 text-left"
+                      style={{
+                        borderColor: '#e5e7eb'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#0891b2';
+                        e.currentTarget.style.transform = 'scale(1.02)';
+                        e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(8, 145, 178, 0.1), 0 10px 10px -5px rgba(8, 145, 178, 0.04)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = '#e5e7eb';
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
                     >
                       {/* Preview Gradient */}
                       <div
@@ -496,8 +530,14 @@ export default function SettingsForm() {
                   placeholder="https://..."
                 />
                 {settings.logoUrl && (
-                  <div className="mt-4">
-                    <img src={settings.logoUrl} alt="Logo" className="h-16" />
+                  <div className="mt-4 relative h-16 w-16">
+                    <Image
+                      src={settings.logoUrl}
+                      alt="לוגו האתר"
+                      fill
+                      sizes="64px"
+                      className="object-contain"
+                    />
                   </div>
                 )}
               </div>

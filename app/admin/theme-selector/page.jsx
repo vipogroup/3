@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getAllThemes } from "@/app/themes/themes";
 import Link from "next/link";
@@ -15,11 +15,7 @@ export default function ThemeSelectorPage() {
   
   const themes = getAllThemes();
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
     try {
       // Check auth
       const userRes = await fetch("/api/auth/me");
@@ -45,7 +41,11 @@ export default function ThemeSelectorPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [router]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   async function handleThemeChange(themeId) {
     try {
@@ -74,9 +74,9 @@ export default function ThemeSelectorPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">טוען...</p>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function ThemeSelectorPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4 md:p-8">
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
@@ -98,7 +98,7 @@ export default function ThemeSelectorPage() {
           </div>
           <Link
             href="/admin/dashboard-improved"
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold px-6 py-3 rounded-lg transition shadow-md"
           >
             ← חזרה לדשבורד
           </Link>

@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import MainLayout from "@/app/components/layout/MainLayout";
 
 export default function NewProductPage() {
@@ -267,11 +269,14 @@ export default function NewProductPage() {
               {previewUrls.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                   {previewUrls.map((url, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={url}
+                    <div key={index} className="relative h-24 w-24">
+                      <Image
+                        src={url || "https://placehold.co/96x96?text=VIPO"}
                         alt={`Preview ${index + 1}`}
-                        className="h-24 w-24 object-cover rounded border border-gray-300"
+                        fill
+                        sizes="96px"
+                        className="object-cover rounded border border-gray-300"
+                        unoptimized
                       />
                     </div>
                   ))}

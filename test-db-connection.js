@@ -1,6 +1,16 @@
 // Test database connection and admin user
-require('dotenv').config({ path: './app/.env.local' });
+const path = require('path');
+const dotenv = require('dotenv');
 const { MongoClient } = require('mongodb');
+
+const envPaths = [
+  path.join(process.cwd(), '.env.local'),
+  path.join(process.cwd(), 'app', '.env.local'),
+];
+
+for (const envPath of envPaths) {
+  dotenv.config({ path: envPath, override: true });
+}
 
 async function testDb() {
   console.log('\n🔍 Testing Database Connection\n');
@@ -44,7 +54,7 @@ async function testDb() {
     console.log('\n📍 Testing bcrypt comparison...');
     const bcrypt = require('bcryptjs');
     if (admin && admin.password) {
-      const testPassword = '12345678A';
+      const testPassword = process.env.ADMIN_PASSWORD || '12345678A!';
       const match = await bcrypt.compare(testPassword, admin.password);
       console.log(`✅ Password test: ${match ? 'MATCH' : 'NO MATCH'}`);
       

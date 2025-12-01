@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ContactManagerButton from "@/app/components/agent/ContactManagerButton";
@@ -245,11 +245,7 @@ export default function AgentDashboardPage() {
   const [copied, setCopied] = useState(false);
   const [copiedStatus, setCopiedStatus] = useState("");
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
     try {
       // Get current user
       const userRes = await fetch("/api/auth/me");
@@ -317,7 +313,11 @@ export default function AgentDashboardPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [router]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   function copyCouponCode() {
     if (!coupon?.code) return;
@@ -344,9 +344,9 @@ export default function AgentDashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">טוען נתונים...</p>
         </div>
       </div>
@@ -354,37 +354,16 @@ export default function AgentDashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
+    <main className="min-h-[calc(100vh-64px)] bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header */}
-        <div className="mb-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3 tracking-tight">
-              דשבורד סוכן
-            </h1>
-            <p className="text-gray-600 flex items-center gap-2 text-lg font-medium">
-              <WaveIcon className="w-5 h-5 text-purple-500" /> שלום {user?.fullName || "סוכן"}!
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            {user && (
-              <ContactManagerButton agentName={user.fullName || "סוכן VIPO"} agentId={user.agentId || user._id} />
-            )}
-            <Link
-              href="/agent/products"
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-6 py-3.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-xl flex items-center gap-2 hover:-translate-y-0.5"
-            >
-              <ShoppingBagIcon className="w-5 h-5" /> המוצרים שלי
-            </Link>
-            <form action="/api/auth/logout" method="post" className="contents">
-              <button
-                type="submit"
-                className="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-xl flex items-center gap-2 hover:-translate-y-0.5"
-              >
-                <LogoutIcon className="w-5 h-5" /> התנתק
-              </button>
-            </form>
-          </div>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            דשבורד סוכן
+          </h1>
+          <p className="text-gray-600">
+            שלום {user?.fullName || "סוכן"}! כאן תוכל לעקוב אחר הביצועים שלך
+          </p>
         </div>
 
         {/* Level Progress */}
@@ -398,7 +377,7 @@ export default function AgentDashboardPage() {
               : null;
 
             return (
-              <div className="bg-gradient-to-r from-purple-600 via-indigo-500 to-blue-500 text-white rounded-3xl shadow-xl p-6 md:p-8 overflow-hidden relative">
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl shadow-lg p-6 md:p-8 overflow-hidden relative">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                   <div>
                     <span className="text-xs uppercase tracking-[0.4em] text-white/60 block mb-2">
@@ -458,8 +437,8 @@ export default function AgentDashboardPage() {
           <div className="bg-white rounded-3xl shadow-md hover:shadow-2xl p-7 transition-all duration-300 hover:-translate-y-1 border border-gray-100">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-600 tracking-wide">{'סה&quot;כ הפניות'}</h3>
-              <div className="p-2.5 bg-purple-50 rounded-xl">
-                <LinkIcon className="text-purple-500 w-5 h-5" />
+              <div className="p-2.5 bg-blue-50 rounded-xl">
+                <LinkIcon className="text-blue-600 w-5 h-5" />
               </div>
             </div>
             <p className="text-4xl font-extrabold text-gray-900 mb-1 tracking-tight">
@@ -543,7 +522,7 @@ export default function AgentDashboardPage() {
                     <button
                       onClick={copyCouponMessage}
                       disabled={!coupon?.code}
-                      className="flex-1 sm:flex-none bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-xl transition-all duration-200 font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                      className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-lg transition font-semibold shadow-md"
                     >
                       {copied && copiedStatus === "message" ? "✓ הודעה הועתקה" : "העתק הודעה"}
                     </button>
@@ -554,8 +533,8 @@ export default function AgentDashboardPage() {
                     <p className="font-bold text-blue-600 text-xs tracking-wide mb-1">הנחה ללקוח</p>
                     <p className="text-lg font-extrabold text-gray-900">{coupon?.discountPercent ?? 0}%</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-purple-100 shadow-sm hover:shadow-md transition-shadow">
-                    <p className="font-bold text-purple-600 text-xs tracking-wide mb-1">עמלה עבורך</p>
+                  <div className="p-4 bg-white rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+                    <p className="font-bold text-orange-600 text-xs tracking-wide mb-1">עמלה עבורך</p>
                     <p className="text-lg font-extrabold text-gray-900">{coupon?.commissionPercent ?? 0}%</p>
                   </div>
                   <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">

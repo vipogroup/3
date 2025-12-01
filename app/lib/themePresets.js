@@ -1,37 +1,35 @@
 // Theme Presets - סגנונות מוכנים של אתרי מכירות מפורסמים
 
 export const THEME_PRESETS = {
-  vipo: {
-    name: "VIPO",
-    description: "סגנון VIPO כחול ומודרני עם טיפוגרפיה נקייה",
+  "vipo-turquoise": {
+    name: "VIPO כחול-טורקיז",
+    description: "העיצוב החדש - גרדיאנט כחול-טורקיז מודרני ומקצועי",
     preview: "💎",
     colors: {
-      primaryColor: "#3498db",
-      secondaryColor: "#2980b9",
-      accentColor: "#5dade2",
-      successColor: "#3498db",
-      warningColor: "#5dade2",
-      dangerColor: "#e74c3c",
-      backgroundColor: "#f8f9fa",
-      textColor: "#2c3e50",
-      backgroundGradient: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 52%, #ec4899 100%)",
-      cardGradient: "linear-gradient(145deg, rgba(255,255,255,0.86) 0%, rgba(226,232,255,0.95) 100%)",
-      buttonGradient: "linear-gradient(130deg, #7c3aed 0%, #4f46e5 55%, #ec4899 100%)",
+      primaryColor: "#0891b2",        // Turquoise
+      secondaryColor: "#1e3a8a",      // Deep Blue
+      accentColor: "#06b6d4",         // Cyan
+      successColor: "#16a34a",        // Green
+      warningColor: "#f59e0b",        // Amber
+      dangerColor: "#dc2626",         // Red
+      backgroundColor: "#ffffff",      // White
+      textColor: "#1f2937",           // Gray 800
+      backgroundGradient: "linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)",
+      cardGradient: "linear-gradient(white, white)",
+      buttonGradient: "linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)",
     },
     typography: {
       fontFamily: "'Inter', 'Heebo', sans-serif",
-      lineHeight: 1.5,
+      lineHeight: 1.6,
       letterSpacing: "0.01em",
       direction: "rtl",
     },
   },
 
-  "vipo-editable": {
-    name: "VIPO עריכה",
-    description: "גרסת VIPO עם התאמה אישית",
-    preview: "🛠️",
-    editable: true,
-    basePreset: "vipo",
+  vipo: {
+    name: "VIPO קלאסי",
+    description: "סגנון VIPO המקורי - סגול ורוד",
+    preview: "🎨",
     colors: {
       primaryColor: "#3498db",
       secondaryColor: "#2980b9",

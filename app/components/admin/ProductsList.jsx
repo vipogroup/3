@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
+import { formatCurrencyILS } from "@/app/utils/date";
 import ImageUpload from "@/components/ImageUpload";
 
 export default function ProductsList() {
@@ -236,10 +238,12 @@ export default function ProductsList() {
           <div key={product._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
             {product.imageUrl && (
               <div className="h-48 bg-gray-200 relative">
-                <img
+                <Image
                   src={product.imageUrl}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
+                  alt={product.name || "מוצר"}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, 100vw"
+                  className="object-cover"
                 />
               </div>
             )}
@@ -249,7 +253,7 @@ export default function ProductsList() {
                 <p className="text-sm text-gray-600 mb-2 line-clamp-2">{product.description}</p>
               )}
               <div className="flex justify-between items-center mb-3">
-                <span className="text-2xl font-bold text-purple-600">₪{product.price}</span>
+                <span className="text-2xl font-bold text-purple-600">{formatCurrencyILS(product.price)}</span>
                 {product.category && (
                   <span className="text-xs bg-gray-100 px-2 py-1 rounded">{product.category}</span>
                 )}

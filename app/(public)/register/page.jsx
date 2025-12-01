@@ -78,13 +78,23 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+    <main className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="w-full max-w-md">
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-6 sm:p-8" style={{
+          border: '2px solid transparent',
+          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box'
+        }}>
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
               הצטרף אלינו
             </h1>
             <p className="text-gray-600">
@@ -111,7 +121,7 @@ export default function RegisterPage() {
                 onChange={(e) => setFullName(e.target.value)}
                 required
                 disabled={loading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
                 aria-describedby="fullName-help"
               />
               <p id="fullName-help" className="text-xs text-gray-500 mt-1">
@@ -136,7 +146,7 @@ export default function RegisterPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
                 aria-describedby="email-help"
               />
               <p id="email-help" className="text-xs text-gray-500 mt-1">
@@ -160,7 +170,7 @@ export default function RegisterPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 disabled={loading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
                 aria-describedby="phone-help"
               />
               <p id="phone-help" className="text-xs text-gray-500 mt-1">
@@ -186,7 +196,7 @@ export default function RegisterPage() {
                 required
                 minLength={6}
                 disabled={loading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
                 aria-describedby="password-help"
               />
               <p id="password-help" className="text-xs text-gray-500 mt-1">
@@ -208,7 +218,7 @@ export default function RegisterPage() {
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 disabled={loading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
                 aria-describedby="role-help"
               >
                 <option value="customer">לקוח</option>
@@ -270,7 +280,12 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="w-full text-white font-semibold py-3 px-6 rounded-lg transition-all disabled:cursor-not-allowed"
+              style={{
+                background: loading ? '#9ca3af' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+              }}
+              onMouseEnter={(e) => !loading && (e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)')}
+              onMouseLeave={(e) => !loading && (e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)')}
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -301,7 +316,10 @@ export default function RegisterPage() {
             כבר יש לך חשבון?{" "}
             <a 
               href="/login" 
-              className="font-semibold text-blue-600 hover:text-blue-700 focus:outline-none focus:underline"
+              className="font-semibold focus:outline-none focus:underline"
+              style={{ color: '#0891b2' }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#0e7490'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#0891b2'}
             >
               התחבר כאן
             </a>

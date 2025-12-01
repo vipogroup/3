@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import MainLayout from "@/app/components/layout/MainLayout";
 
 export default function EditProductPage({ params }) {
@@ -206,7 +208,7 @@ export default function EditProductPage({ params }) {
     return (
       <MainLayout>
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <p>You don't have permission to access this page.</p>
+          <p>You don&apos;t have permission to access this page.</p>
         </div>
       </MainLayout>
     );
@@ -291,11 +293,14 @@ export default function EditProductPage({ params }) {
               {existingImages.length > 0 ? (
                 <div className="mt-2 grid grid-cols-2 md:grid-cols-4 gap-4">
                   {existingImages.map((url, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={url}
+                    <div key={index} className="relative h-24 w-24">
+                      <Image
+                        src={url || "https://placehold.co/96x96?text=VIPO"}
                         alt={`Product image ${index + 1}`}
-                        className="h-24 w-24 object-cover rounded border border-gray-300"
+                        fill
+                        sizes="96px"
+                        className="object-cover rounded border border-gray-300"
+                        unoptimized
                       />
                       <button
                         type="button"
@@ -341,11 +346,14 @@ export default function EditProductPage({ params }) {
               {previewUrls.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                   {previewUrls.map((url, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={url}
+                    <div key={index} className="relative h-24 w-24">
+                      <Image
+                        src={url || "https://placehold.co/96x96?text=VIPO"}
                         alt={`Preview ${index + 1}`}
-                        className="h-24 w-24 object-cover rounded border border-gray-300"
+                        fill
+                        sizes="96px"
+                        className="object-cover rounded border border-gray-300"
+                        unoptimized
                       />
                     </div>
                   ))}

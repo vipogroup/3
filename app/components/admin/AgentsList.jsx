@@ -91,36 +91,70 @@ export default function AgentsList() {
   }
 
   if (loading) {
-    return <div className="text-center py-8">טוען...</div>;
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-gray-200 rounded-full"></div>
+          <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin absolute top-0" style={{
+            borderTopColor: '#0891b2',
+            borderRightColor: '#0891b2',
+            borderBottomColor: '#1e3a8a'
+          }}></div>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
-        <div>
-          <h2 className="text-2xl font-bold">רשימת סוכנים</h2>
-          <p className="text-gray-600">סה״כ {agents.length} סוכנים</p>
+      <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-3 sm:p-4 mb-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+          <div>
+            <p className="text-sm sm:text-base text-gray-600">סה״כ {agents.length} סוכנים במערכת</p>
+          </div>
+          <button
+            onClick={() => setShowForm(true)}
+            className="text-white font-semibold px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base self-start sm:self-auto"
+            style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            הוסף סוכן
+          </button>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors self-start sm:self-auto"
-        >
-          ➕ הוסף סוכן
-        </button>
       </div>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
+        <div className="bg-white rounded-xl p-4 mb-6 border-2" style={{ borderColor: '#ef4444' }}>
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5" style={{ color: '#ef4444' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-sm font-medium" style={{ color: '#ef4444' }}>{error}</span>
+          </div>
         </div>
       )}
 
       {/* Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <h3 className="text-xl font-bold mb-6" style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
               {editingAgent ? "עריכת סוכן" : "הוספת סוכן חדש"}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -165,17 +199,23 @@ export default function AgentsList() {
                   required={!editingAgent}
                 />
               </div>
-              <div className="flex gap-2 justify-end">
+              <div className="flex gap-2 justify-end pt-2">
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-100"
+                  className="px-4 py-2 border-2 rounded-lg font-medium transition-all"
+                  style={{ borderColor: '#e5e7eb' }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                 >
                   ביטול
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="px-4 py-2 text-white rounded-lg font-medium transition-all"
+                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'}
                 >
                   {editingAgent ? "עדכן" : "הוסף"}
                 </button>
@@ -185,27 +225,31 @@ export default function AgentsList() {
         </div>
       )}
 
-      {/* Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
+      {/* Desktop Table & Mobile Cards */}
+      <div className="bg-white rounded-lg sm:rounded-xl shadow-md overflow-hidden">
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50">
+            <thead style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)', borderBottom: '2px solid #0891b2' }}>
               <tr>
-                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">שם</th>
-                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">אימייל</th>
-                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">טלפון</th>
-                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">קוד קופון</th>
-                <th className="hidden md:table-cell px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">הנחה</th>
-                <th className="hidden md:table-cell px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">עמלה</th>
-                <th className="hidden lg:table-cell px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">סטטוס קופון</th>
-                <th className="hidden lg:table-cell px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">סטטוס משתמש</th>
-                <th className="hidden xl:table-cell px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">תאריך יצירה</th>
-                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">פעולות</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>שם</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>אימייל</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>טלפון</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>קוד קופון</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>הנחה</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>עמלה</th>
+                <th className="hidden lg:table-cell px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>סטטוס קופון</th>
+                <th className="hidden lg:table-cell px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>סטטוס משתמש</th>
+                <th className="hidden xl:table-cell px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>תאריך יצירה</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>פעולות</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {agents.map((agent) => (
-                <tr key={agent._id} className="hover:bg-gray-50">
+                <tr 
+                  key={agent._id} 
+                  className="transition-all hover:bg-gray-50"
+                >
                   <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-gray-900 font-medium">{agent.fullName}</td>
                   <td className="px-4 sm:px-6 py-4 text-gray-700 break-all">{agent.email}</td>
                   <td className="px-4 sm:px-6 py-4 whitespace-nowrap">{agent.phone || "-"}</td>
@@ -217,9 +261,10 @@ export default function AgentsList() {
                       <button
                         onClick={() => handleCopyCoupon(agent)}
                         disabled={!agent.couponCode}
-                        className="text-purple-600 hover:text-purple-800 text-xs"
+                        className="text-xs"
+                        style={{ color: '#0891b2' }}
                       >
-                        {copiedAgentId === agent._id ? "✓ הועתק" : "העתק"}
+                        {copiedAgentId === agent._id ? "✓" : "📋"}
                       </button>
                     </div>
                   </td>
@@ -254,12 +299,13 @@ export default function AgentsList() {
                   <td className="hidden xl:table-cell px-4 sm:px-6 py-4 whitespace-nowrap text-gray-500">
                     {new Date(agent.createdAt).toLocaleDateString("he-IL")}
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-purple-700 text-sm font-semibold">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                     <button
                       onClick={() => handleEdit(agent)}
-                      className="hover:text-purple-900 transition-colors"
+                      className="text-white font-medium px-3 py-1.5 rounded-lg text-xs"
+                      style={{ background: '#0891b2' }}
                     >
-                      ✏️ ערוך
+                      ערוך
                     </button>
                   </td>
                 </tr>
@@ -267,9 +313,92 @@ export default function AgentsList() {
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden p-4 space-y-3">
+          {agents.map((agent) => (
+            <div
+              key={agent._id}
+              className="p-4 rounded-lg border-2 border-gray-200 bg-white"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-gray-900 mb-1">{agent.fullName}</p>
+                  <p className="text-xs text-gray-500 break-all">{agent.email}</p>
+                  {agent.phone && <p className="text-xs text-gray-500 mt-1">{agent.phone}</p>}
+                </div>
+                <div className="flex gap-2">
+                  <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
+                    agent.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                  }`}>
+                    {agent.isActive ? "פעיל" : "לא פעיל"}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                <div>
+                  <span className="text-gray-500">קוד קופון:</span>
+                  <div className="flex items-center gap-1 mt-1">
+                    <code className="bg-gray-100 px-2 py-1 rounded text-xs font-mono">
+                      {(agent.couponCode || "---").toUpperCase()}
+                    </code>
+                    <button
+                      onClick={() => handleCopyCoupon(agent)}
+                      disabled={!agent.couponCode}
+                      className="text-xs" style={{ color: '#0891b2' }}
+                    >
+                      {copiedAgentId === agent._id ? "✓" : "📋"}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-gray-500">הנחה:</span>
+                  <span className="font-semibold mr-1" style={{ color: '#1e3a8a' }}>
+                    {agent.discountPercent ?? 0}%
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500">עמלה:</span>
+                  <span className="font-semibold mr-1" style={{ color: '#16a34a' }}>
+                    {agent.commissionPercent ?? 0}%
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500">סטטוס קופון:</span>
+                  <span className={`text-xs px-2 py-1 rounded-full mr-1 ${
+                    agent.couponStatus === "active" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
+                  }`}>
+                    {agent.couponStatus === "active" ? "פעיל" : "לא פעיל"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                <p className="text-xs text-gray-500">
+                  {new Date(agent.createdAt).toLocaleDateString("he-IL")}
+                </p>
+                <button
+                  onClick={() => handleEdit(agent)}
+                  className="text-white font-medium px-3 py-1.5 rounded-lg text-xs"
+                  style={{ background: '#0891b2' }}
+                >
+                  ערוך
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
         {agents.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            אין סוכנים במערכת
+          <div className="p-8 sm:p-12 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}>
+              <svg className="w-8 h-8" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <p className="text-gray-600 font-medium mb-2">אין סוכנים במערכת</p>
+            <p className="text-sm text-gray-500">לחץ על "הוסף סוכן" כדי להתחיל</p>
           </div>
         )}
       </div>

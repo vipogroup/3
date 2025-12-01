@@ -8,9 +8,16 @@ export default async function UsersPage() {
   await requireAdmin();
   
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">ניהול משתמשים</h1>
-      <UsersList />
+    <div className="min-h-screen bg-white p-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6" style={{
+          background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text'
+        }}>ניהול משתמשים</h1>
+        <UsersList />
+      </div>
     </div>
   );
 }

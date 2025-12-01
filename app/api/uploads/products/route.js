@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import path from "path";
 import fs from "fs/promises";
 import { verify } from "@/lib/auth/createToken";
+import { getAuthToken } from "@/lib/auth/requireAuth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 export async function POST(req) {
   try {
     // Verify admin role
-    const token = req.cookies.get("token")?.value;
+    const token = getAuthToken(req);
     const user = verify(token);
     
     if (!user || user.role !== "admin") {

@@ -3,6 +3,21 @@ import crypto from "crypto";
 import { getDb } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // שעה
+const MAX_REQUESTS_PER_WINDOW = 5;
+
+function getClientIp(request) {
+  try {
+    return (
+      request?.headers?.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request?.headers?.get("x-real-ip") ||
+      "unknown"
+    );
+  } catch (error) {
+    return "unknown";
+  }
+}
+
 function resolveOrigin(request) {
   const originHeader = request.headers.get("origin");
   if (originHeader) {
@@ -48,9 +63,23 @@ export async function POST(request) {
       return NextResponse.json({ ok: true });
     }
 
+    const now = Date.now();
+    const windowStart = now - RATE_LIMIT_WINDOW_MS;
+    const attempts = Array.isArray(user.passwordResetAttempts)
+      ? user.passwordResetAttempts.filter((ts) => Number(new Date(ts)) >= windowStart)
+      : [];
+
+    if (attempts.length >= MAX_REQUESTS_PER_WINDOW) {
+      // גם כאן מחזירים ok כדי לא לחשוף יותר מדי מידע
+      return NextResponse.json({ ok: true });
+    }
+
     const token = crypto.randomBytes(32).toString("hex");
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-    const expires = new Date(Date.now() + 1000 * 60 * 30); // 30 דקות
+    const ttl = user.role === "admin" ? 1000 * 60 * 10 : 1000 * 60 * 30; // Admin: 10 דק'
+    const expires = new Date(now + ttl);
+
+    const updatedAttempts = [...attempts, new Date(now).toISOString()];
 
     await users.updateOne(
       { _id: user._id },
@@ -58,6 +87,16 @@ export async function POST(request) {
         $set: {
           passwordResetToken: hashedToken,
           passwordResetExpires: expires,
+          passwordResetAttempts: updatedAttempts,
+          lastPasswordResetRequestAt: new Date(now),
+          lastPasswordResetRequestIp: getClientIp(request),
+        },
+        $push: {
+          passwordResetAudit: {
+            type: "request",
+            requestedAt: new Date(now),
+            ip: getClientIp(request),
+          },
         },
       }
     );

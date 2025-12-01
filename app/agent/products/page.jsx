@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import Image from "next/image";
 import { getProducts, refreshProductsFromApi } from "@/app/lib/products";
 
 function buildCouponCode(user) {
@@ -76,7 +77,7 @@ export default function AgentProductsPage() {
   );
 
   // Load products
-  const loadProducts = async () => {
+  const loadProducts = useCallback(async () => {
     try {
       const list = await refreshProductsFromApi();
       if (Array.isArray(list)) {
@@ -88,7 +89,7 @@ export default function AgentProductsPage() {
     }
 
     setProducts(getProducts());
-  };
+  }, []);
 
   useEffect(() => {
     // Initial load
@@ -128,7 +129,7 @@ export default function AgentProductsPage() {
       }
     }
     fetchUser();
-  }, []);
+  }, [loadProducts]);
 
   // Listen for product updates
   useEffect(() => {
@@ -138,7 +139,7 @@ export default function AgentProductsPage() {
 
     window.addEventListener('productsUpdated', handleProductsUpdate);
     return () => window.removeEventListener('productsUpdated', handleProductsUpdate);
-  }, []);
+  }, [loadProducts]);
 
   const copyCoupon = (productId) => {
     if (!couponCode || typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
@@ -240,10 +241,13 @@ export default function AgentProductsPage() {
               >
                 {/* Product Image */}
                 <div className="relative h-48 overflow-hidden" style={themeStyles.mutedCard}>
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
+                  <Image
+                    src={product.image || "https://placehold.co/600x400?text=VIPO"}
+                    alt={product.name || "מוצר"}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, 100vw"
+                    className="object-cover"
+                    unoptimized
                   />
                   {product.originalPrice && (
                     <div
@@ -389,14 +393,14 @@ export default function AgentProductsPage() {
             <div>
               <div className="text-4xl mb-2">2️⃣</div>
               <h3 className="font-bold mb-2">שתף</h3>
-              <p className="text-purple-100">
+              <p className="text-blue-100">
                 שתף את קוד הקופון יחד עם קישור המוצר ב-WhatsApp, רשתות חברתיות או מייל
               </p>
             </div>
             <div>
               <div className="text-4xl mb-2">3️⃣</div>
               <h3 className="font-bold mb-2">הרווח</h3>
-              <p className="text-purple-100">
+              <p className="text-blue-100">
                 קבל עמלה על כל רכישה שמתבצעת עם הקוד שלך!
               </p>
             </div>

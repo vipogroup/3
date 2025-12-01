@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -251,11 +251,7 @@ export default function AdminDashboardClient() {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
     try {
       // Get current user
       const userRes = await fetch("/api/auth/me");
@@ -283,14 +279,27 @@ export default function AdminDashboardClient() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [router]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">טוען נתונים...</p>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="bg-white rounded-xl p-8" style={{
+          border: '2px solid transparent',
+          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box',
+          boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
+        }}>
+          <div className="animate-spin rounded-full h-16 w-16 mx-auto mb-4" style={{
+            border: '4px solid rgba(8, 145, 178, 0.2)',
+            borderTopColor: '#0891b2'
+          }}></div>
+          <p className="text-gray-600 text-center font-medium">טוען נתונים...</p>
         </div>
       </div>
     );
@@ -299,202 +308,165 @@ export default function AdminDashboardClient() {
   const stats = dashboardData?.stats || {};
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4 md:p-8">
+    <main className="min-h-screen bg-white p-3 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
-        {/* Navigation Bar */}
-        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-4 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 flex-wrap">
-              <Link
-                href="/admin"
-                className="flex items-center gap-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                אזור אישי
-              </Link>
-              <Link
-                href="/admin/users"
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-xl transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                משתמשים
-              </Link>
-              <Link
-                href="/admin/products"
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-xl transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                מוצרים
-              </Link>
-              <Link
-                href="/admin/settings"
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-xl transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                הגדרות
-              </Link>
-            </div>
-            <form action="/api/auth/logout" method="post" className="contents">
-              <button
-                type="submit"
-                className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                התנתק
-              </button>
-            </form>
-          </div>
-        </div>
-
         {/* Header */}
-        <div className="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-              <span className="flex items-center gap-3">
-                <DashboardIcon className="w-8 h-8 text-purple-600" />
-                דשבורד מנהל
-              </span>
-            </h1>
-            <p className="text-gray-600">
-              שלום {user?.fullName || "מנהל"}! ניהול מלא של המערכת
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Link
-              href="/admin/products/new"
-              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg flex items-center gap-2"
-            >
-              <PlusCircleIcon className="w-5 h-5 text-white" />
-              <span>מוצר חדש</span>
-            </Link>
-            <Link
-              href="/admin/settings"
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg flex items-center gap-2"
-            >
-              <SettingsIcon className="w-5 h-5 text-white" />
-              <span>הגדרות</span>
-            </Link>
-          </div>
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
+            <span className="flex items-center gap-2 sm:gap-3" style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              <DashboardIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" style={{ color: '#0891b2' }} />
+              דשבורד מנהל
+            </span>
+          </h1>
         </div>
 
         {/* Quick Actions */}
-        <section className="mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-              <div>
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2">
-                  <SparkIcon className="w-6 h-6 text-purple-500" />
-                  <span>קיצורי דרך לניהול מהיר</span>
-                </h2>
-                <p className="text-sm text-gray-500">
-                  גישה מהירה לכלי הניהול המרכזיים במערכת
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <section className="mb-4 sm:mb-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               <Link
                 href="/admin/users"
-                className="group relative overflow-hidden rounded-2xl border border-purple-100 bg-gradient-to-br from-white via-white to-purple-50/60 p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+                className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+                style={{
+                  border: '2px solid transparent',
+                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
+                }}
               >
-                <span className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
-                <div className="relative flex flex-col gap-3">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 text-white shadow-lg shadow-purple-500/30">
-                    <UsersIcon className="w-6 h-6" />
+                <div className="relative flex flex-col gap-2 sm:gap-3">
+                  <span className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg" style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                  }}>
+                    <UsersIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </span>
                   <div>
-                    <p className="text-base font-semibold text-gray-900">ניהול משתמשים</p>
-                    <p className="text-sm text-gray-500">הוספה, עדכון ומעקב אחרי משתמשים רשומים</p>
+                    <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול משתמשים</p>
+                    <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">הוספה, עדכון ומעקב אחרי משתמשים רשומים</p>
                   </div>
-                  <span className="mt-2 text-sm font-semibold text-purple-600">כניסה לניהול משתמשים</span>
+                  <span className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block" style={{ color: '#0891b2' }}>כניסה לניהול משתמשים</span>
                 </div>
               </Link>
 
               <Link
                 href="/admin/products"
-                className="group relative overflow-hidden rounded-2xl border border-amber-100 bg-gradient-to-br from-white via-white to-amber-50/50 p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+                className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+                style={{
+                  border: '2px solid transparent',
+                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
+                }}
               >
-                <span className="absolute inset-0 bg-gradient-to-br from-amber-400/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
-                <div className="relative flex flex-col gap-3">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30">
-                    <CubeIcon className="w-6 h-6" />
+                <div className="relative flex flex-col gap-2 sm:gap-3">
+                  <span className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg" style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                  }}>
+                    <CubeIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </span>
                   <div>
-                    <p className="text-base font-semibold text-gray-900">ניהול מוצרים</p>
-                    <p className="text-sm text-gray-500">עדכון קטלוג, מלאי ומידע על מוצרים</p>
+                    <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול מוצרים</p>
+                    <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">עדכון קטלוג, מלאי ומידע על מוצרים</p>
                   </div>
-                  <span className="mt-2 text-sm font-semibold text-amber-600">כניסה לניהול מוצרים</span>
+                  <span className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block" style={{ color: '#0891b2' }}>כניסה לניהול מוצרים</span>
                 </div>
               </Link>
 
               <Link
                 href="/admin/orders"
-                className="group relative overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-white via-white to-blue-50/60 p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+                className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+                style={{
+                  border: '2px solid transparent',
+                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
+                }}
               >
-                <span className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
-                <div className="relative flex flex-col gap-3">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30">
-                    <CartIcon className="w-6 h-6" />
+                <div className="relative flex flex-col gap-2 sm:gap-3">
+                  <span className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg" style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                  }}>
+                    <CartIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </span>
                   <div>
-                    <p className="text-base font-semibold text-gray-900">ניהול הזמנות</p>
-                    <p className="text-sm text-gray-500">מעקב אחר סטטוסים, עמלות ותשלומים</p>
+                    <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול הזמנות</p>
+                    <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">מעקב אחר סטטוסים, עמלות ותשלומים</p>
                   </div>
-                  <span className="mt-2 text-sm font-semibold text-blue-600">כניסה לרשימת ההזמנות</span>
+                  <span className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block" style={{ color: '#0891b2' }}>כניסה לרשימת ההזמנות</span>
                 </div>
               </Link>
 
               <Link
                 href="/admin/reports"
-                className="group relative overflow-hidden rounded-2xl border border-indigo-100 bg-gradient-to-br from-white via-white to-indigo-50/60 p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+                className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+                style={{
+                  border: '2px solid transparent',
+                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
+                }}
               >
-                <span className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
-                <div className="relative flex flex-col gap-3">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-500/30">
-                    <ChartBarIcon className="w-6 h-6" />
+                <div className="relative flex flex-col gap-2 sm:gap-3">
+                  <span className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg" style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                  }}>
+                    <ChartBarIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </span>
                   <div>
-                    <p className="text-base font-semibold text-gray-900">דוחות וביצועים</p>
-                    <p className="text-sm text-gray-500">ניתוח נתונים והפקת תובנות עסקיות</p>
+                    <p className="text-sm sm:text-base font-semibold text-gray-900">דוחות וביצועים</p>
+                    <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">ניתוח נתונים והפקת תובנות עסקיות</p>
                   </div>
-                  <span className="mt-2 text-sm font-semibold text-indigo-600">צפה בדוחות ובסטטיסטיקות</span>
+                  <span className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block" style={{ color: '#0891b2' }}>צפה בדוחות ובסטטיסטיקות</span>
                 </div>
               </Link>
             </div>
-          </div>
         </section>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
           {/* New Users Section */}
-          <section className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
-                <UserPlusIcon className="w-7 h-7 text-purple-500" />
+          <section className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-6">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-base sm:text-lg font-bold flex items-center gap-2" style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}>
+                <UserPlusIcon className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7" style={{ color: '#0891b2' }} />
                 <span>משתמשים חדשים</span>
               </h2>
             </div>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+            <div className="space-y-2 sm:space-y-3 max-h-96 overflow-y-auto">
               {dashboardData?.newUsers?.length > 0 ? (
                 dashboardData.newUsers.map((user) => (
                   <div
                     key={user._id}
-                    className="flex items-start justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all"
+                    className="flex items-start justify-between p-3 sm:p-4 rounded-lg transition-all"
+                    style={{
+                      border: '2px solid #e5e7eb',
+                      background: 'white'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#0891b2';
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#e5e7eb';
+                      e.currentTarget.style.background = 'white';
+                    }}
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="text-sm sm:text-base font-semibold text-gray-900 truncate">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+                        <p className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
                           {user.fullName || user.email || user.phone}
                         </p>
                         {(() => {
@@ -534,63 +506,127 @@ export default function AdminDashboardClient() {
           </section>
 
           {/* Recent Orders Section */}
-          <section className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
-                <ClipboardIcon className="w-7 h-7 text-indigo-500" />
+          <section className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2" style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}>
+                <ClipboardIcon className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7" style={{ color: '#0891b2' }} />
                 <span>הזמנות אחרונות</span>
               </h2>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b-2 border-gray-200">
-                    <th className="text-right py-3 px-3 text-xs sm:text-sm font-semibold text-gray-700">מוצר</th>
-                    <th className="text-right py-3 px-3 text-xs sm:text-sm font-semibold text-gray-700">לקוח</th>
-                    <th className="text-right py-3 px-3 text-xs sm:text-sm font-semibold text-gray-700">סכום</th>
-                    <th className="text-right py-3 px-3 text-xs sm:text-sm font-semibold text-gray-700">עמלה</th>
-                    <th className="text-right py-3 px-3 text-xs sm:text-sm font-semibold text-gray-700">סטטוס</th>
-                    <th className="text-right py-3 px-3 text-xs sm:text-sm font-semibold text-gray-700">תאריך</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dashboardData?.recentOrders?.length > 0 ? (
-                    dashboardData.recentOrders.map((order) => (
-                      <tr key={order._id} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="py-3 px-3 text-xs sm:text-sm">{order.productName}</td>
-                        <td className="py-3 px-3 text-xs sm:text-sm">{order.customerName}</td>
-                        <td className="py-3 px-3 text-xs sm:text-sm font-semibold text-gray-900">
-                          ₪{order.totalAmount.toLocaleString()}
-                        </td>
-                        <td className="py-3 px-3 text-xs sm:text-sm font-semibold text-green-600">
-                          ₪{order.commissionAmount.toLocaleString()}
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className={`text-xs px-2 py-1 rounded-full ${
-                            order.status === "completed"
-                              ? "bg-green-100 text-green-700"
-                              : order.status === "pending"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-gray-100 text-gray-700"
-                          }`}>
-                            {order.status}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3 text-xs text-gray-500">
-                          {new Date(order.createdAt).toLocaleDateString("he-IL")}
-                        </td>
+
+            {dashboardData?.recentOrders?.length > 0 ? (
+              <>
+                {/* Desktop Table */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid #0891b2' }}>
+                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>מוצר</th>
+                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>לקוח</th>
+                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>סכום</th>
+                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>עמלה</th>
+                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>סטטוס</th>
+                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>תאריך</th>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="6" className="text-center py-8 text-gray-500">
-                        אין הזמנות עדיין
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    </thead>
+                    <tbody>
+                      {dashboardData.recentOrders.map((order) => (
+                        <tr key={order._id} className="border-b border-gray-100 transition-all" onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)'} onMouseLeave={(e) => e.currentTarget.style.background = 'white'}>
+                          <td className="py-3 px-3 text-sm">{order.productName}</td>
+                          <td className="py-3 px-3 text-sm">{order.customerName}</td>
+                          <td className="py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>
+                            ₪{(order.totalAmount || 0).toLocaleString()}
+                          </td>
+                          <td className="py-3 px-3 text-sm font-semibold" style={{ color: '#16a34a' }}>
+                            ₪{(order.commissionAmount || 0).toLocaleString()}
+                          </td>
+                          <td className="py-3 px-3">
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              order.status === "completed"
+                                ? "bg-green-100 text-green-700"
+                                : order.status === "pending"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-gray-100 text-gray-700"
+                            }`}>
+                              {order.status}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-xs text-gray-500">
+                            {new Date(order.createdAt).toLocaleDateString("he-IL")}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden space-y-3">
+                  {dashboardData.recentOrders.map((order) => (
+                    <div
+                      key={order._id}
+                      className="p-4 rounded-lg transition-all"
+                      style={{
+                        border: '2px solid #e5e7eb',
+                        background: 'white'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#0891b2';
+                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = '#e5e7eb';
+                        e.currentTarget.style.background = 'white';
+                      }}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-gray-900 mb-1">{order.productName}</p>
+                          <p className="text-xs text-gray-500">{order.customerName}</p>
+                        </div>
+                        <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
+                          order.status === "completed"
+                            ? "bg-green-100 text-green-700"
+                            : order.status === "pending"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-gray-100 text-gray-700"
+                        }`}>
+                          {order.status}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-gray-500">סכום:</span>
+                          <span className="font-semibold mr-1" style={{ color: '#1e3a8a' }}>
+                            ₪{(order.totalAmount || 0).toLocaleString()}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">עמלה:</span>
+                          <span className="font-semibold mr-1" style={{ color: '#16a34a' }}>
+                            ₪{(order.commissionAmount || 0).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="mt-2 pt-2 border-t border-gray-100">
+                        <p className="text-xs text-gray-500">
+                          {new Date(order.createdAt).toLocaleDateString("he-IL")}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-8 text-gray-500 text-sm">
+                אין הזמנות עדיין
+              </div>
+            )}
           </section>
         </div>
 

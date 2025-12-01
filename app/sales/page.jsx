@@ -67,33 +67,89 @@ export default function SalesPage() {
 
   return (
     <MainLayout>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <h1 className="text-2xl font-bold">מכירות</h1>
+      <div className="min-h-[calc(100vh-64px)] bg-white">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+            <div>
+              <h1 
+                className="text-3xl font-bold mb-1"
+                style={{ 
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                המכירות שלי
+              </h1>
+              <div className="h-1 w-24 rounded-full" style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }} />
+            </div>
         {user && (
           <Link
             href="/sales/new"
-            className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-all"
+            className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-300"
+            style={{ 
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(8, 145, 178, 0.2)';
+            }}
           >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
             הוספת מכירה
           </Link>
         )}
       </div>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-          <p>{error}</p>
+        <div 
+          className="px-4 py-3 rounded-lg mb-6"
+          style={{
+            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%)',
+            border: '2px solid rgba(239, 68, 68, 0.3)',
+            color: '#dc2626'
+          }}
+        >
+          <p className="font-medium">{error}</p>
         </div>
       )}
 
       {loading ? (
-        <div className="flex justify-center py-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+        <div className="flex justify-center py-12">
+          <div 
+            className="animate-spin rounded-full h-12 w-12 border-4 border-gray-200"
+            style={{ 
+              borderTopColor: '#1e3a8a',
+              borderBottomColor: '#0891b2'
+            }}
+          ></div>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <SalesTable sales={sales} isAdmin={isAdmin} />
+          <div 
+            className="rounded-xl p-4 sm:p-6"
+            style={{
+              border: '2px solid transparent',
+              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)'
+            }}
+          >
+            <SalesTable sales={sales} isAdmin={isAdmin} />
+          </div>
+        )}
         </div>
-      )}
+      </div>
     </MainLayout>
   );
 }

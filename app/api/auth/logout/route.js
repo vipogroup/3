@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { clearAuthCookie } from "@/lib/auth/requireAuth";
 
 function resolveRedirectUrl(request) {
   const hostHeader = request.headers.get("host");
@@ -21,18 +22,7 @@ function resolveRedirectUrl(request) {
 function createLogoutResponse(request) {
   const redirectUrl = resolveRedirectUrl(request);
   const response = NextResponse.redirect(redirectUrl);
-
-  const cookieOptions = {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 0,
-  };
-
-  response.cookies.set("auth_token", "", cookieOptions);
-  // Remove legacy token cookie if it exists
-  response.cookies.set("token", "", cookieOptions);
+  clearAuthCookie(response);
 
   return response;
 }

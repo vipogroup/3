@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { getDb } from "@/lib/db";
 import { verifyJwt } from "@/src/lib/auth/createToken.js";
 import { calcTotals } from "@/lib/orders/calc.js";
-import { requireAuth } from "@/lib/auth/requireAuth";
+import { getAuthToken, requireAuth } from "@/lib/auth/requireAuth";
 
 async function ordersCollection() {
   const db = await getDb();
@@ -17,7 +17,7 @@ async function ordersCollection() {
 
 export async function GET(req) {
   try {
-    const token = req.cookies.get("token")?.value || "";
+    const token = getAuthToken(req) || "";
     const decoded = verifyJwt(token);
     if (!decoded?.userId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

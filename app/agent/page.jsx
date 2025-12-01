@@ -1,6 +1,10 @@
 import { getUserFromCookies } from "@/lib/auth/server";
+import { getDb } from "@/lib/db";
+import { ObjectId } from "mongodb";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import CopyCouponButton from "./components/CopyCouponButton";
+import KPICard from "./components/KPICard";
 
 const TrophyIcon = ({ className = "w-10 h-10" }) => (
   <svg
@@ -190,16 +194,163 @@ const TargetIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-async function getAgentStats() {
-  // TODO: Replace with real database queries
+const numberFormatter = new Intl.NumberFormat('he-IL');
+const currencyFormatter = new Intl.NumberFormat('he-IL', {
+  style: 'currency',
+  currency: 'ILS',
+  maximumFractionDigits: 0,
+});
+
+const formatNumber = (value = 0) => numberFormatter.format(Math.max(0, Number(value) || 0));
+const formatCurrency = (value = 0) => currencyFormatter.format(Math.max(0, Number(value) || 0));
+const formatPercent = (value = 0) => `${Math.max(0, Number(value) || 0)}%`;
+
+const ACTIVE_SALE_STATUSES = ["pending", "processing", "paid", "confirmed", "in_progress"];
+
+function normalizeObjectId(id) {
+  if (!id) return null;
+  try {
+    return typeof id === "string" ? new ObjectId(id) : new ObjectId(id);
+  } catch {
+    return null;
+  }
+}
+
+function calcLevel(xp) {
+  const safeXp = Math.max(0, xp || 0);
+  const level = Math.floor(safeXp / 1500) + 1;
+  const nextLevelXp = level * 1500;
+  return { level, nextLevelXp };
+}
+
+async function getAgentStats(agentId) {
+  const agentObjectId = normalizeObjectId(agentId);
+  if (!agentObjectId) {
+    return {
+      totalReferrals: 0,
+      activeSales: 0,
+      totalSales: 0,
+      totalRevenue: 0,
+      totalCommission: 0,
+      pendingCommission: 0,
+      level: 1,
+      xp: 0,
+      nextLevelXp: 1500,
+      referralCode: null,
+      referralLink: null,
+      conversionRate: 0,
+      avgCommission: 0,
+      monthlyVisits: 0,
+      clicks: 0,
+      goals: {
+        sales: { target: 10, current: 0 },
+        revenue: { target: 20000, current: 0 },
+        referrals: { target: 50, current: 0 },
+      },
+    };
+  }
+
+  const db = await getDb();
+  const users = db.collection("users");
+  const orders = db.collection("orders");
+  const referralLogs = db.collection("referral_logs");
+
+  const agentDoc = await users.findOne(
+    { _id: agentObjectId },
+    {
+      projection: {
+        referralsCount: 1,
+        referralCount: 1,
+        commissionBalance: 1,
+        totalSales: 1,
+        referralId: 1,
+        couponCode: 1,
+      },
+    }
+  );
+
+  const totalReferralsBase =
+    agentDoc?.referralsCount ?? agentDoc?.referralCount ??
+    (await users.countDocuments({ referredBy: agentObjectId }));
+
+  const [totalSales, activeSales, totalsAgg, pendingAgg, clicksAgg] = await Promise.all([
+    orders.countDocuments({ refAgentId: agentObjectId }),
+    orders.countDocuments({ refAgentId: agentObjectId, status: { $in: ACTIVE_SALE_STATUSES } }),
+    orders
+      .aggregate([
+        { $match: { refAgentId: agentObjectId } },
+        {
+          $group: {
+            _id: null,
+            totalCommission: { $sum: "$commissionAmount" },
+            totalRevenue: { $sum: "$totalAmount" },
+          },
+        },
+      ])
+      .toArray(),
+    orders
+      .aggregate([
+        { $match: { refAgentId: agentObjectId, status: { $in: ["pending", "processing"] } } },
+        { $group: { _id: null, pendingCommission: { $sum: "$commissionAmount" } } },
+      ])
+      .toArray(),
+    referralLogs
+      .aggregate([
+        { $match: { agentId: agentObjectId } },
+        { $group: { _id: "$action", total: { $sum: 1 } } },
+      ])
+      .toArray(),
+  ]);
+
+  const totalRevenue = totalsAgg[0]?.totalRevenue || 0;
+  const totalCommission = totalsAgg[0]?.totalCommission || 0;
+  const pendingCommission = pendingAgg[0]?.pendingCommission || 0;
+  const clicks = clicksAgg.find((c) => c._id === "click")?.total || 0;
+  const views = clicksAgg.find((c) => c._id === "view")?.total || 0;
+
+  const monthlyWindow = new Date();
+  monthlyWindow.setDate(monthlyWindow.getDate() - 30);
+  const monthlyVisits = await referralLogs.countDocuments({
+    agentId: agentObjectId,
+    ts: { $gte: monthlyWindow },
+  });
+
+  const conversionRate = clicks > 0 ? Number(((totalSales / clicks) * 100).toFixed(1)) : 0;
+  const avgCommission = totalSales > 0 ? Number((totalCommission / totalSales).toFixed(2)) : 0;
+
+  const xp = Math.round(totalSales * 250 + totalReferralsBase * 120 + totalCommission * 0.5);
+  const { level, nextLevelXp } = calcLevel(xp);
+
+  const referralCode = agentDoc?.referralId || agentDoc?.couponCode || agentObjectId.toString();
+  const baseUrl =
+    process.env.PUBLIC_URL ||
+    process.env.NEXT_PUBLIC_HOME_URL ||
+    process.env.NEXTAUTH_URL ||
+    "http://localhost:3001";
+  const sanitizedBase = baseUrl.replace(/\/$/, "");
+  const referralLink = `${sanitizedBase}/join?ref=${encodeURIComponent(referralCode)}`;
+
   return {
-    totalReferrals: 45,
-    activeSales: 12,
-    totalEarnings: 15420,
-    pendingEarnings: 3200,
-    level: 3,
-    xp: 4500,
-    nextLevelXp: 6000,
+    totalReferrals: totalReferralsBase,
+    activeSales,
+    totalSales,
+    totalRevenue,
+    totalCommission,
+    pendingCommission,
+    level,
+    xp,
+    nextLevelXp,
+    referralCode,
+    referralLink,
+    conversionRate,
+    avgCommission,
+    monthlyVisits,
+    clicks,
+    goals: {
+      sales: { target: 10, current: totalSales },
+      revenue: { target: 20000, current: totalRevenue },
+      referrals: { target: 50, current: totalReferralsBase },
+    },
   };
 }
 
@@ -207,227 +358,187 @@ export default async function AgentPage() {
   const user = await getUserFromCookies();
   if (!user) redirect("/login");
   
-  const stats = await getAgentStats();
-  const xpProgress = ((stats.xp / stats.nextLevelXp) * 100).toFixed(0);
+  const stats = await getAgentStats(user._id);
+  const xpProgress = stats.nextLevelXp > 0 ? ((stats.xp / stats.nextLevelXp) * 100).toFixed(0) : 0;
+
+  const goalDefinitions = [
+    { key: 'sales', label: 'מכירות', color: 'bg-blue-600', formatter: formatNumber },
+    { key: 'revenue', label: 'הכנסות', color: 'bg-emerald-600', formatter: formatCurrency },
+    { key: 'referrals', label: 'הפניות', color: 'bg-blue-600', formatter: formatNumber },
+  ];
 
   const kpiCards = [
     {
-      title: 'סה״כ הפניות',
-      value: stats.totalReferrals,
-      icon: ChainIcon,
-      accent: "text-blue-600",
+      title: 'מכירות פעילות',
+      value: formatNumber(stats.activeSales),
+      iconName: "bag",
     },
     {
-      title: "מכירות פעילות",
-      value: stats.activeSales,
-      icon: CartIcon,
-      accent: "text-purple-600",
+      title: 'סה״כ הזמנות',
+      value: formatNumber(stats.totalSales),
+      iconName: "cart",
     },
     {
       title: 'סה״כ מכירות',
-      value: `₪${stats.totalEarnings.toLocaleString()}`,
-      icon: WalletIcon,
-      accent: "text-emerald-600",
+      value: formatCurrency(stats.totalRevenue),
+      iconName: "wallet",
     },
     {
       title: "המתנה לתשלום",
-      value: `₪${stats.pendingEarnings.toLocaleString()}`,
-      icon: HourglassIcon,
-      accent: "text-amber-500",
+      value: formatCurrency(stats.pendingCommission),
+      iconName: "hourglass",
     },
   ];
 
   return (
-    <main
-      className="min-h-screen p-4 sm:p-8 bg-gradient-to-b from-slate-50 via-white to-slate-50"
-      style={{
-        background: "linear-gradient(160deg, rgba(99,102,241,0.18) 0%, rgba(236,233,255,0.25) 40%, rgba(255,255,255,0.6) 100%)",
-      }}
-    >
-      <div className="max-w-7xl mx-auto">
-        {/* Navigation Bar */}
-        <div className="bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl shadow-sm p-4 mb-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex flex-wrap gap-2 md:gap-4">
-              <Link
-                href="/agent"
-                className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all font-medium shadow-sm"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                אזור אישי
-              </Link>
-              <Link
-                href="/agent/products"
-                className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100 text-gray-700 rounded-xl transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                מוצרים
-              </Link>
-              <Link
-                href="/agent/sales"
-                className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100 text-gray-700 rounded-xl transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                מכירות
-              </Link>
-            </div>
-            <Link
-              href="/login"
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all font-medium w-full md:w-auto shadow-sm"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              התנתק
-            </Link>
-          </div>
-        </div>
-
+    <main className="min-h-[calc(100vh-64px)] bg-white">
+      <div className="max-w-7xl mx-auto px-4 py-4">
         {/* Header */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-1">
-            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">
-              דשבורד סוכן
-            </h1>
-            <p className="text-sm sm:text-base text-slate-600 max-w-lg">
-              ברוך הבא! כאן תוכל לעקוב אחר הביצועים, הקישורים והעמלות שלך במקום אחד.
-            </p>
-          </div>
-          <Link
-            href="/agent/products"
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-4 py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 w-full sm:w-auto"
+        <div className="mb-6">
+          <h1 
+            className="text-3xl font-bold mb-1"
+            style={{ 
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
           >
-            <ShoppingBagIcon /> המוצרים שלי
-          </Link>
-        </div>
-
-        {/* Level & XP Card */}
-        <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 rounded-2xl shadow-md p-5 sm:p-6 mb-8 text-white">
-          <div className="flex items-start justify-between gap-4 mb-3">
-            <div>
-              <h2 className="text-2xl font-bold">רמה {stats.level}</h2>
-              <p className="text-indigo-100 text-sm sm:text-base">
-                {stats.xp} / {stats.nextLevelXp} XP
-              </p>
-            </div>
-            <TrophyIcon className="w-10 h-10 sm:w-12 sm:h-12 text-white/90" />
-          </div>
-          <div className="w-full bg-white/25 rounded-full h-2.5 overflow-hidden">
-            <div
-              className="bg-white h-full rounded-full transition-all"
-              style={{ width: `${xpProgress}%` }}
-            ></div>
-          </div>
-          <p className="text-xs sm:text-sm text-indigo-100 mt-2">
-            עוד {stats.nextLevelXp - stats.xp} XP לרמה הבאה!
-          </p>
+            דשבורד סוכן
+          </h1>
+          <div className="h-1 w-24 rounded-full" style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }} />
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-          {kpiCards.map(({ title, value, icon: Icon, accent }) => (
-            <div key={title} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 sm:p-5">
-              <div className="flex items-center justify-between">
-                <span className="text-xs sm:text-sm font-medium text-slate-600">{title}</span>
-                <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${accent}`} />
-              </div>
-              <p className="mt-3 text-xl sm:text-2xl font-semibold text-slate-900">{value}</p>
-            </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+          {kpiCards.map(({ title, value, iconName }) => (
+            <KPICard key={title} title={title} value={value} iconName={iconName} />
           ))}
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-8">
-          {/* Referral Links Section */}
-          <section className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6 space-y-5">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl sm:text-2xl font-semibold text-slate-900">
-                קישורים אישיים
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Coupon Code Section */}
+          <section 
+            className="rounded-xl p-5"
+            style={{
+              border: '2px solid transparent',
+              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)'
+            }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold" style={{ color: '#1e3a8a' }}>
+                קוד קופון שלך
               </h2>
-              <ChainIcon className="w-6 h-6 text-blue-500" />
-            </div>
-            <div className="space-y-4">
-              <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
-                <p className="text-xs sm:text-sm text-slate-600 mb-2">קוד ההפניה שלך</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-500/10 border border-blue-500/20 rounded-full flex items-center justify-center text-blue-600">
-                    <ChainIcon className="w-5 h-5" />
-                  </div>
-                  <code className="flex-1 bg-white px-3 py-2 rounded-lg font-mono text-sm">
-                    REF123456
-                  </code>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-all text-sm">
-                    העתק
-                  </button>
-                </div>
+              <div 
+                className="w-10 h-10 rounded-full flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                </svg>
               </div>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                שתף את הקוד שלך עם לקוחות פוטנציאליים וקבל עמלה על כל מכירה. מומלץ להוסיף גם תיאור קצר של הערך שאתה מעניק.
+            </div>
+            <div 
+              className="rounded-xl p-4"
+              style={{
+                background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)',
+                border: '2px solid rgba(8, 145, 178, 0.2)'
+              }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>קוד הקופון שלך:</span>
+                <CopyCouponButton code={stats.referralCode} />
+              </div>
+              {stats.referralCode ? (
+                <code 
+                  className="block px-4 py-4 rounded-lg font-mono text-2xl font-bold text-center shadow-sm"
+                  style={{ 
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                    color: 'white'
+                  }}
+                >
+                  {stats.referralCode}
+                </code>
+              ) : (
+                <div 
+                  className="block px-4 py-3 rounded-lg text-sm text-center"
+                  style={{ 
+                    background: 'rgba(107, 114, 128, 0.1)',
+                    color: '#6b7280',
+                    border: '2px dashed rgba(107, 114, 128, 0.3)'
+                  }}
+                >
+                  לא הוגדר
+                </div>
+              )}
+              <p className="text-xs text-gray-600 mt-3 text-center font-medium">
+                שתף קוד זה עם לקוחות לקבלת עמלה
               </p>
-              <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-all shadow-sm text-sm">
-                צור קישור חדש
-              </button>
             </div>
           </section>
 
-          {/* Commission Stats Section */}
-          <section className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6 space-y-5">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl sm:text-2xl font-semibold text-slate-900">
-                עמלות וסטטיסטיקות
-              </h2>
-              <DiamondIcon className="w-6 h-6 text-purple-500" />
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl">
-                <div>
-                  <p className="text-xs sm:text-sm text-slate-600">ממוצע עמלה</p>
-                  <p className="text-2xl font-bold text-purple-600">₪1,285</p>
-                </div>
-                <WalletIcon className="w-6 h-6 text-purple-500" />
+          {/* Stats Section */}
+          <section 
+            className="rounded-xl p-5"
+            style={{
+              border: '2px solid transparent',
+              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)'
+            }}
+          >
+            <h2 className="text-lg font-bold mb-4" style={{ color: '#1e3a8a' }}>
+              סטטיסטיקות
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              <div 
+                className="p-4 rounded-xl transition-all duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%)',
+                  border: '2px solid rgba(30, 58, 138, 0.2)'
+                }}
+              >
+                <p className="text-xs font-semibold mb-1" style={{ color: '#1e3a8a' }}>סה"כ עמלות</p>
+                <p className="text-xl font-bold" style={{ color: '#1e3a8a' }}>{formatCurrency(stats.totalCommission)}</p>
               </div>
-              <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
-                <div>
-                  <p className="text-xs sm:text-sm text-slate-600">ביקורים החודש</p>
-                  <p className="text-2xl font-bold text-blue-600">234</p>
-                </div>
-                <EyeIcon className="w-6 h-6 text-blue-500" />
+              <div 
+                className="p-4 rounded-xl transition-all duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(251, 191, 36, 0.08) 100%)',
+                  border: '2px solid rgba(245, 158, 11, 0.3)'
+                }}
+              >
+                <p className="text-xs font-semibold text-amber-700 mb-1">ממתינות</p>
+                <p className="text-xl font-bold text-amber-600">{formatCurrency(stats.pendingCommission)}</p>
               </div>
-              <div className="flex items-center justify-between p-4 bg-emerald-50 rounded-xl">
-                <div>
-                  <p className="text-xs sm:text-sm text-slate-600">שיעור המרה</p>
-                  <p className="text-2xl font-bold text-emerald-600">26.7%</p>
-                </div>
-                <TrendIcon className="w-6 h-6 text-emerald-500" />
+              <div 
+                className="p-4 rounded-xl transition-all duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(107, 114, 128, 0.08) 0%, rgba(148, 163, 184, 0.08) 100%)',
+                  border: '2px solid rgba(107, 114, 128, 0.2)'
+                }}
+              >
+                <p className="text-xs font-semibold text-gray-600 mb-1">קליקים</p>
+                <p className="text-xl font-bold text-gray-900">{formatNumber(stats.clicks)}</p>
+              </div>
+              <div 
+                className="p-4 rounded-xl transition-all duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(52, 211, 153, 0.08) 100%)',
+                  border: '2px solid rgba(16, 185, 129, 0.3)'
+                }}
+              >
+                <p className="text-xs font-semibold text-emerald-700 mb-1">המרה</p>
+                <p className="text-xl font-bold text-emerald-600">{formatPercent(stats.conversionRate)}</p>
               </div>
             </div>
           </section>
         </div>
-
-        {/* Goals Section */}
-        <section className="mt-8 bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900">יעדים החודש</h2>
-            <TargetIcon className="w-6 h-6 text-rose-500" />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[{ label: "10 מכירות", progress: 0.8, caption: "8 / 10 הושלמו", color: "bg-blue-600" }, { label: "₪20,000 הכנסות", progress: 0.6, caption: "₪12,000 / ₪20,000", color: "bg-emerald-600" }, { label: "50 הפניות", progress: 0.9, caption: "45 / 50 הושלמו", color: "bg-purple-600" }].map(({ label, progress, caption, color }) => (
-              <div key={label} className="p-4 border border-slate-200 rounded-xl space-y-2">
-                <p className="text-sm text-slate-600">{label}</p>
-                <div className="w-full bg-slate-200/70 rounded-full h-2">
-                  <div className={`${color} h-2 rounded-full`} style={{ width: `${Math.round(progress * 100)}%` }}></div>
-                </div>
-                <p className="text-xs text-slate-500">{caption}</p>
-              </div>
-            ))}
-          </div>
-        </section>
       </div>
     </main>
   );

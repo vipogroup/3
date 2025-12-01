@@ -35,6 +35,9 @@ npm run dev
 - PAYPLUS_API_KEY=...
 - PAYPLUS_SECRET=...
 - PAYPLUS_WEBHOOK_SECRET=...
+- PAYPLUS_BASE_URL=https://restapiv2.payplus.co.il/api
+
+> ℹ️  אם אחד הערכים חסר, ה-API יפעיל מצב fallback ויחזיר קישור תשלום מדומה (`/checkout/success`). לאחר שמגדירים את כל המשתנים, המערכת תבצע קריאות PayPlus אמיתיות ותאמת חתימות ב-webhook.
 
 ## שלבים מומלצים (Windsurf)
 1) DB: צור Products ראשונים ב-POST `/api/products`

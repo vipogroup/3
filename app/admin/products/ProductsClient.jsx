@@ -152,41 +152,86 @@ export default function ProductsClient() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-8">
+    <div className="min-h-screen bg-white p-3 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
-          <h1 className="text-4xl font-bold text-gray-900">ניהול מוצרים</h1>
-          <div className="flex items-center gap-3">
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4" style={{
+            background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>ניהול מוצרים</h1>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <Link
               href="/products"
-              className="bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-5 py-3 rounded-xl transition-all shadow-sm"
+              className="font-semibold px-3 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all shadow-sm flex items-center gap-2 text-xs sm:text-sm"
+              style={{
+                background: 'white',
+                border: '2px solid #0891b2',
+                color: '#0891b2'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'white';
+              }}
               target="_blank"
               rel="noopener noreferrer"
             >
-              👁️‍🗨️ צפייה בדף המוצרים באתר
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <span className="hidden sm:inline">צפייה בדף המוצרים באתר</span>
+              <span className="sm:hidden">צפה באתר</span>
             </Link>
             <button
               onClick={toggleSelectionMode}
-              className={`font-semibold px-5 py-3 rounded-xl transition-all shadow-sm border ${
-                selectionMode
-                  ? "bg-red-50 border-red-500 text-red-600 hover:bg-red-100"
-                  : "bg-white border-red-500 text-red-600 hover:bg-red-50"
-              }`}
+              className="font-semibold px-3 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all shadow-sm flex items-center gap-2 text-xs sm:text-sm"
+              style={{
+                background: selectionMode ? 'rgba(220, 38, 38, 0.05)' : 'white',
+                border: '2px solid #dc2626',
+                color: '#dc2626'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(220, 38, 38, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = selectionMode ? 'rgba(220, 38, 38, 0.05)' : 'white';
+              }}
             >
-              {selectionMode ? "בטל מחיקה מרובה" : "🗑️ מחיקת מוצרים"}
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <span className="hidden sm:inline">{selectionMode ? "בטל מחיקה מרובה" : "מחיקת מוצרים"}</span>
+              <span className="sm:hidden">{selectionMode ? "בטל" : "מחק"}</span>
             </button>
             {selectionMode && (
               <>
                 <button
                   onClick={handleSelectAll}
-                  className="bg-white border border-gray-400 text-gray-700 hover:bg-gray-100 font-semibold px-5 py-3 rounded-xl transition-all shadow-sm"
+                  className="font-semibold px-3 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all shadow-sm text-xs sm:text-sm"
+                  style={{
+                    background: 'white',
+                    border: '2px solid #6b7280',
+                    color: '#374151'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
                 >
-                  {allSelected ? "בטל סימון הכול" : "סמן את כל המוצרים"}
+                  <span className="hidden sm:inline">{allSelected ? "בטל סימון הכול" : "סמן את כל המוצרים"}</span>
+                  <span className="sm:hidden">{allSelected ? "בטל הכל" : "סמן הכל"}</span>
                 </button>
                 <button
                   onClick={handleBulkDelete}
                   disabled={loading || selectedCount === 0}
-                  className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
+                  style={{
+                    background: (loading || selectedCount === 0) ? '#9ca3af' : 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)'
+                  }}
+                  onMouseEnter={(e) => !(loading || selectedCount === 0) && (e.currentTarget.style.background = 'linear-gradient(135deg, #b91c1c 0%, #dc2626 100%)')}
+                  onMouseLeave={(e) => !(loading || selectedCount === 0) && (e.currentTarget.style.background = 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)')}
                 >
                   מחק {selectedCount ? `${selectedCount} מוצרים` : "מוצרים נבחרים"}
                 </button>
@@ -194,18 +239,33 @@ export default function ProductsClient() {
             )}
             <Link
               href="/admin/products/new"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-lg"
+              className="text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all shadow-lg flex items-center gap-2 text-xs sm:text-sm"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
             >
-              + הוסף מוצר חדש
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="hidden sm:inline">הוסף מוצר חדש</span>
+              <span className="sm:hidden">הוסף</span>
             </Link>
           </div>
         </div>
 
         {products.length > 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-md overflow-hidden">
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #0891b2' }}>
                   {selectionMode && (
                     <th className="px-4 py-4 w-12 text-center">
                       <input
@@ -216,16 +276,16 @@ export default function ProductsClient() {
                       />
                     </th>
                   )}
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-900">שם המוצר</th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-900">מחיר</th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-900">קטגוריה</th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-900">סטטוס</th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-900">פעולות</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold" style={{ color: '#1e3a8a' }}>שם המוצר</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold" style={{ color: '#1e3a8a' }}>מחיר</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold" style={{ color: '#1e3a8a' }}>קטגוריה</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold" style={{ color: '#1e3a8a' }}>סטטוס</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold" style={{ color: '#1e3a8a' }}>פעולות</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {products.map((product) => (
-                  <tr key={product._id} className="hover:bg-gray-50">
+                  <tr key={product._id} className="border-b border-gray-100 transition-all" onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)'} onMouseLeave={(e) => e.currentTarget.style.background = 'white'}>
                     {selectionMode && (
                       <td className="px-4 py-4 text-center">
                         <input
@@ -254,14 +314,20 @@ export default function ProductsClient() {
                       <div className="flex gap-2">
                         <Link
                           href={`/admin/products/${product._id}/edit`}
-                          className="text-blue-600 hover:text-blue-700 font-medium"
+                          className="font-medium transition-colors"
+                          style={{ color: '#0891b2' }}
+                          onMouseEnter={(e) => e.currentTarget.style.color = '#0e7490'}
+                          onMouseLeave={(e) => e.currentTarget.style.color = '#0891b2'}
                         >
                           ערוך
                         </Link>
                         <button
                           onClick={() => handleDelete(product._id, product.name)}
                           disabled={loading}
-                          className="text-red-600 hover:text-red-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: loading ? '#9ca3af' : '#dc2626' }}
+                          onMouseEnter={(e) => !loading && (e.currentTarget.style.color = '#b91c1c')}
+                          onMouseLeave={(e) => !loading && (e.currentTarget.style.color = '#dc2626')}
                         >
                           מחק
                         </button>
@@ -271,17 +337,101 @@ export default function ProductsClient() {
                 ))}
               </tbody>
             </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="md:hidden p-4">
+              <div className="grid grid-cols-2 gap-3">
+              {products.map((product) => (
+                <div
+                  key={product._id}
+                  className="p-3 rounded-lg border-2 border-gray-200 bg-white"
+                >
+                  <div className="mb-2">
+                    <p className="text-xs font-semibold text-gray-900 mb-1 line-clamp-2">{product.name}</p>
+                    <p className="text-xs text-gray-500">{product.category}</p>
+                  </div>
+                  
+                  <div className="mb-2">
+                    <span className="text-sm font-bold" style={{ color: '#1e3a8a' }}>₪{product.price}</span>
+                    <span className={`mr-2 text-xs px-2 py-0.5 rounded-full ${
+                      product.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                    }`}>
+                      {product.active ? "פעיל" : "לא פעיל"}
+                    </span>
+                  </div>
+
+                  <div className="pt-2 border-t border-gray-100 flex flex-col gap-2">
+                    {selectionMode && (
+                      <input
+                        type="checkbox"
+                        checked={selectedProducts.has(product._id)}
+                        onChange={() => toggleProductSelection(product._id)}
+                        aria-label={`select product ${product.name}`}
+                        className="w-4 h-4"
+                      />
+                    )}
+                    <div className="flex gap-1">
+                      <Link
+                        href={`/admin/products/${product._id}/edit`}
+                        className="flex-1 text-center text-white font-medium px-2 py-1.5 rounded text-xs"
+                        style={{ background: '#0891b2' }}
+                      >
+                        ערוך
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(product._id, product.name)}
+                        disabled={loading}
+                        className="flex-1 font-medium px-2 py-1.5 rounded text-xs"
+                        style={{
+                          background: loading ? '#e5e7eb' : 'white',
+                          border: '2px solid #dc2626',
+                          color: loading ? '#6b7280' : '#dc2626'
+                        }}
+                      >
+                        מחק
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              </div>
+            </div>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-            <div className="text-6xl mb-4">📦</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">אין מוצרים במערכת</h3>
+          <div className="bg-white rounded-xl shadow-lg p-12 text-center" style={{
+            border: '2px solid transparent',
+            backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box'
+          }}>
+            <svg className="w-24 h-24 mx-auto mb-4" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <h3 className="text-2xl font-bold mb-2" style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>אין מוצרים במערכת</h3>
             <p className="text-gray-600 mb-6">התחל בהוספת המוצר הראשון שלך</p>
             <Link
               href="/admin/products/new"
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-all"
+              className="inline-flex items-center gap-2 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
             >
-              + הוסף מוצר
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              הוסף מוצר
             </Link>
           </div>
         )}

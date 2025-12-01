@@ -2,9 +2,9 @@ export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { getDb } from "@/lib/db";
+import { setAuthCookie } from "@/lib/auth/requireAuth";
 
 function log(tag, obj) {
   try {
@@ -80,13 +80,7 @@ export async function POST(request) {
     );
 
     const res = NextResponse.json({ success: true, role: user.role || "admin" }, { status: 200 });
-    res.cookies.set("auth_token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 7,
-    });
+    setAuthCookie(res, token);
 
     log("set-cookie", { ok: true, elapsedMs: Date.now() - startedAt });
     return res;

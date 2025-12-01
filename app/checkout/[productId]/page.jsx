@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getProductById } from "@/app/lib/products";
 
 export default function CheckoutPage() {
@@ -32,11 +33,8 @@ export default function CheckoutPage() {
     []
   );
 
-  useEffect(() => {
-    loadData();
-  }, [productId]);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
+    if (!productId) return;
     setLoading(true);
     
     // Load product
@@ -67,7 +65,11 @@ export default function CheckoutPage() {
     }
     
     setLoading(false);
-  }
+  }, [productId, router]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -385,9 +387,11 @@ export default function CheckoutPage() {
               {/* Product */}
               <div className="mb-6 pb-6 border-b border-gray-200">
                 <div className="flex gap-4">
-                  <img
-                    src={product.image}
-                    alt={product.name}
+                  <Image
+                    src={product.image || "https://placehold.co/120x120?text=VIPO"}
+                    alt={product.name || "מוצר"}
+                    width={120}
+                    height={120}
                     className="w-20 h-20 object-cover rounded-xl"
                   />
                   <div className="flex-1">

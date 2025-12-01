@@ -170,19 +170,19 @@ export default function CustomerDashboard() {
         </div>
 
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-8 mb-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-2">
                 שלום, {user.fullName}! 👋
               </h1>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 text-base sm:text-lg">
                 ברוך הבא לדשבורד הלקוחות שלך
               </p>
             </div>
-            <div className="text-right">
+            <div className="text-right space-y-2">
               <div className="text-sm text-gray-500">חשבון לקוח</div>
-              <div className="text-lg font-semibold text-purple-600">{user.email}</div>
+              <div className="text-base sm:text-lg font-semibold text-purple-600 break-all">{user.email}</div>
               <a
                 href={buildManagerWhatsAppUrl(`שלום, אני לקוח במערכת VIPO ורוצה לבדוק את הסטטוס שלי.`)}
                 target="_blank"
@@ -196,7 +196,7 @@ export default function CustomerDashboard() {
         </div>
 
         {/* Personal Profile */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-8 mb-8">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">פרופיל אישי</h2>
@@ -305,22 +305,36 @@ export default function CustomerDashboard() {
         </div>
 
         {/* Upgrade to Agent Banner */}
-        <div className="bg-gradient-to-r from-green-400 via-emerald-500 to-teal-500 rounded-2xl shadow-xl p-6 mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div 
+          className="rounded-2xl shadow-xl p-4 sm:p-6 mb-8"
+          style={{
+            background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+          }}
+        >
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="bg-white/20 backdrop-blur-sm p-3 sm:p-4 rounded-xl flex-shrink-0">
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
               <div className="text-white">
-                <h3 className="text-2xl font-bold mb-1">רוצה להרוויח כסף? 💰</h3>
-                <p className="text-green-50">הפוך לסוכן וקבל עמלות של 10% על כל מכירה!</p>
+                <h3 className="text-xl sm:text-2xl font-bold mb-1">רוצה להרוויח כסף? 💰</h3>
+                <p className="text-sm sm:text-base text-blue-50">הפוך לסוכן וקבל עמלות של 10% על כל מכירה!</p>
               </div>
             </div>
             <button
               onClick={() => setShowAgentModal(true)}
-              className="bg-white text-green-600 hover:bg-green-50 font-bold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
+              className="bg-white font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all shadow-lg hover:shadow-xl w-full sm:w-auto"
+              style={{ color: '#1e3a8a' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#f0f9ff';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'white';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
             >
               🚀 הפוך לסוכן
             </button>
@@ -385,14 +399,14 @@ export default function CustomerDashboard() {
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">הזמנות אחרונות</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">הזמנות אחרונות</h2>
             <Link
               href="/customer/orders"
               className="text-purple-600 hover:text-purple-700 font-semibold text-sm"
             >
-              צפה בכל ההזמנות →
+              צפה בכל →
             </Link>
           </div>
 
@@ -413,70 +427,120 @@ export default function CustomerDashboard() {
               </Link>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-right py-3 px-4 font-semibold text-gray-700">מספר הזמנה</th>
-                    <th className="text-right py-3 px-4 font-semibold text-gray-700">תאריך</th>
-                    <th className="text-right py-3 px-4 font-semibold text-gray-700">מוצרים</th>
-                    <th className="text-right py-3 px-4 font-semibold text-gray-700">סכום</th>
-                    <th className="text-right py-3 px-4 font-semibold text-gray-700">סטטוס</th>
-                    <th className="text-right py-3 px-4 font-semibold text-gray-700">פעולות</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.slice(0, 5).map((order) => (
-                    <tr key={order._id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="py-4 px-4 font-mono text-sm">#{order._id.slice(-6)}</td>
-                      <td className="py-4 px-4 text-sm text-gray-600">
-                        {new Date(order.createdAt).toLocaleDateString('he-IL')}
-                      </td>
-                      <td className="py-4 px-4 text-sm">
-                        {order.items?.length || 0} פריטים
-                      </td>
-                      <td className="py-4 px-4 font-semibold text-purple-600">
-                        ₪{order.totalAmount?.toFixed(2) || '0.00'}
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                          order.status === 'completed' ? 'bg-green-100 text-green-700' :
-                          order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                          order.status === 'processing' ? 'bg-blue-100 text-blue-700' :
-                          'bg-gray-100 text-gray-700'
-                        }`}>
-                          {order.status === 'completed' ? 'הושלם' :
-                           order.status === 'pending' ? 'ממתין' :
-                           order.status === 'processing' ? 'בטיפול' :
-                           order.status}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">
-                        <Link
-                          href={`/customer/orders/${order._id}`}
-                          className="text-purple-600 hover:text-purple-700 font-semibold text-sm"
-                        >
-                          צפה
-                        </Link>
-                      </td>
+            <>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">מספר הזמנה</th>
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">תאריך</th>
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">מוצרים</th>
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">סכום</th>
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">סטטוס</th>
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">פעולות</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {orders.slice(0, 5).map((order) => (
+                      <tr key={order._id} className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="py-4 px-4 font-mono text-sm">#{order._id.slice(-6)}</td>
+                        <td className="py-4 px-4 text-sm text-gray-600">
+                          {new Date(order.createdAt).toLocaleDateString('he-IL')}
+                        </td>
+                        <td className="py-4 px-4 text-sm">
+                          {order.items?.length || 0} פריטים
+                        </td>
+                        <td className="py-4 px-4 font-semibold text-purple-600">
+                          ₪{order.totalAmount?.toFixed(2) || '0.00'}
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                            order.status === 'completed' ? 'bg-green-100 text-green-700' :
+                            order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                            order.status === 'processing' ? 'bg-blue-100 text-blue-700' :
+                            'bg-gray-100 text-gray-700'
+                          }`}>
+                            {order.status === 'completed' ? 'הושלם' :
+                             order.status === 'pending' ? 'ממתין' :
+                             order.status === 'processing' ? 'בטיפול' :
+                             order.status}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4">
+                          <Link
+                            href={`/customer/orders/${order._id}`}
+                            className="text-purple-600 hover:text-purple-700 font-semibold text-sm"
+                          >
+                            צפה
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-4">
+                {orders.slice(0, 5).map((order) => (
+                  <div key={order._id} className="border border-gray-200 rounded-xl p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="text-xs text-gray-500">מספר הזמנה</p>
+                        <p className="font-mono text-sm font-semibold">#{order._id.slice(-6)}</p>
+                      </div>
+                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                        order.status === 'completed' ? 'bg-green-100 text-green-700' :
+                        order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                        order.status === 'processing' ? 'bg-blue-100 text-blue-700' :
+                        'bg-gray-100 text-gray-700'
+                      }`}>
+                        {order.status === 'completed' ? 'הושלם' :
+                         order.status === 'pending' ? 'ממתין' :
+                         order.status === 'processing' ? 'בטיפול' :
+                         order.status}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <p className="text-xs text-gray-500">תאריך</p>
+                        <p className="font-medium">{new Date(order.createdAt).toLocaleDateString('he-IL')}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">פריטים</p>
+                        <p className="font-medium">{order.items?.length || 0}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t">
+                      <div>
+                        <p className="text-xs text-gray-500">סכום</p>
+                        <p className="text-lg font-bold text-purple-600">₪{order.totalAmount?.toFixed(2) || '0.00'}</p>
+                      </div>
+                      <Link
+                        href={`/customer/orders/${order._id}`}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700"
+                      >
+                        צפה
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
 
         {/* Help Section */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl shadow-xl p-8 mt-8 text-white">
-          <div className="flex items-center justify-between">
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl shadow-xl p-4 sm:p-8 mt-8 text-white">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="text-2xl font-bold mb-2">צריך עזרה?</h3>
-              <p className="text-purple-100">אנחנו כאן בשבילך! צור קשר עם התמיכה שלנו</p>
+              <h3 className="text-xl sm:text-2xl font-bold mb-2">צריך עזרה?</h3>
+              <p className="text-sm sm:text-base text-purple-100">אנחנו כאן בשבילך! צור קשר עם התמיכה שלנו</p>
             </div>
             <Link
               href="/contact"
-              className="bg-white text-purple-600 hover:bg-gray-100 font-semibold px-6 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl"
+              className="bg-white text-purple-600 hover:bg-gray-100 font-semibold px-6 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl text-center"
             >
               צור קשר
             </Link>
@@ -535,7 +599,14 @@ export default function CustomerDashboard() {
               <button
                 onClick={handleUpgradeToAgent}
                 disabled={upgrading}
-                className="flex-1 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                onMouseEnter={(e) => {
+                  if (!upgrading) e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                }}
+                onMouseLeave={(e) => {
+                  if (!upgrading) e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                }}
               >
                 {upgrading ? (
                   <span className="flex items-center justify-center gap-2">

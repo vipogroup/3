@@ -218,13 +218,13 @@ export default function EditProductPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-blue-500 flex items-center justify-center p-8">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center p-8">
         <div className="bg-white rounded-2xl shadow-2xl p-8 text-center max-w-md">
           <div className="text-6xl mb-4">❌</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-4">{error}</h1>
           <Link
             href="/admin/products"
-            className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl transition-all"
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition"
           >
             חזרה לרשימת מוצרים
           </Link>
@@ -234,16 +234,16 @@ export default function EditProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-blue-500 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-4xl font-bold text-white">ערוך מוצר</h1>
-            <p className="text-purple-100 mt-2">{formData.name}</p>
+            <h1 className="text-4xl font-bold text-gray-900">ערוך מוצר</h1>
+            <p className="text-gray-600 mt-2">{formData.name}</p>
           </div>
           <Link
             href="/admin/products"
-            className="bg-white text-purple-600 font-semibold px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all"
+            className="bg-white text-blue-600 font-semibold px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition"
           >
             ← חזרה
           </Link>
@@ -272,7 +272,7 @@ export default function EditProductPage() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                     placeholder="לדוגמה: מקלדת מכנית RGB"
                   />
                 </div>
@@ -287,7 +287,7 @@ export default function EditProductPage() {
                     onChange={handleChange}
                     required
                     rows={3}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                     placeholder="תיאור קצר של המוצר (1-2 שורות)"
                   ></textarea>
                 </div>
@@ -302,7 +302,7 @@ export default function EditProductPage() {
                     onChange={handleChange}
                     required
                     rows={5}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                     placeholder="תיאור מפורט של המוצר (מספר פסקאות)"
                   ></textarea>
                 </div>
@@ -319,7 +319,7 @@ export default function EditProductPage() {
                     required
                     min="0"
                     step="0.01"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                     placeholder="450"
                   />
                 </div>
@@ -335,7 +335,7 @@ export default function EditProductPage() {
                     onChange={handleChange}
                     min="0"
                     step="0.01"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                     placeholder="599"
                   />
                 </div>
@@ -349,7 +349,7 @@ export default function EditProductPage() {
                     value={formData.category}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                   >
                     <option value="">בחר קטגוריה</option>
                     <option value="אביזרי מחשב">אביזרי מחשב</option>
@@ -370,7 +370,7 @@ export default function EditProductPage() {
                     onChange={handleChange}
                     required
                     min="0"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                     placeholder="15"
                   />
                 </div>
@@ -385,7 +385,7 @@ export default function EditProductPage() {
                     value={formData.image}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                     placeholder="https://images.unsplash.com/..."
                   />
                 </div>
@@ -399,7 +399,7 @@ export default function EditProductPage() {
                     name="videoUrl"
                     value={formData.videoUrl}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                     placeholder="https://www.youtube.com/embed/VIDEO_ID"
                   />
                 </div>
@@ -414,7 +414,7 @@ export default function EditProductPage() {
                     value={formData.purchaseType}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                   >
                     <option value="regular">רכישה רגילה און-ליין (מלאי בארץ)</option>
                     <option value="group">רכישה קבוצתית במחיר מפעל</option>
@@ -514,7 +514,7 @@ export default function EditProductPage() {
                     name="inStock"
                     checked={formData.inStock}
                     onChange={handleChange}
-                    className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500"
+                    className="w-5 h-5 text-purple-600 rounded focus:ring-blue-500"
                   />
                   <label className="mr-3 text-sm font-bold text-gray-900">
                     במלאי
@@ -533,7 +533,7 @@ export default function EditProductPage() {
                     type="text"
                     value={feature}
                     onChange={(e) => handleFeatureChange(index, e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                     placeholder={`תכונה ${index + 1}`}
                   />
                 ))}
@@ -553,7 +553,7 @@ export default function EditProductPage() {
                       type="text"
                       value={value}
                       onChange={(e) => handleSpecChange(key, e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                       placeholder={`ערך עבור ${key}`}
                     />
                   </div>
@@ -577,7 +577,7 @@ export default function EditProductPage() {
                     min="1"
                     max="5"
                     step="0.1"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                   />
                 </div>
 
@@ -591,7 +591,7 @@ export default function EditProductPage() {
                     value={formData.reviews}
                     onChange={handleChange}
                     min="0"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>

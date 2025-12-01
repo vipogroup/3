@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 export default function AgentDetailPage() {
@@ -16,13 +16,8 @@ export default function AgentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (agentId) {
-      fetchAgentData();
-    }
-  }, [agentId]);
-
-  async function fetchAgentData() {
+  const fetchAgentData = useCallback(async () => {
+    if (!agentId) return;
     try {
       setLoading(true);
       setError("");
@@ -47,7 +42,13 @@ export default function AgentDetailPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [agentId]);
+
+  useEffect(() => {
+    if (agentId) {
+      fetchAgentData();
+    }
+  }, [agentId, fetchAgentData]);
 
   if (loading) {
     return (

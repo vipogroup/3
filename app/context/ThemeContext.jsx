@@ -6,6 +6,7 @@ import { DEFAULT_SETTINGS, withDefaultSettings } from "@/lib/settingsDefaults";
 const ThemeContext = createContext();
 
 const STORAGE_KEY = "siteSettings";
+const REMOTE_POLL_INTERVAL = 30_000; // 30 seconds
 const isBrowser = typeof window !== "undefined";
 
 function withMetadata(settings, { source = "local", updatedAt } = {}) {
@@ -31,6 +32,47 @@ export function ThemeProvider({ children }) {
     }
   }, []);
 
+  const applyRemoteSettings = useCallback(
+    (remoteData = {}) => {
+      const remoteSettings = withDefaultSettings(remoteData?.settings || {});
+      const remoteUpdatedAt = remoteData?.updatedAt ? new Date(remoteData.updatedAt).getTime() : 0;
+      const remoteWithMeta = withMetadata(remoteSettings, {
+        source: "remote",
+        updatedAt: remoteUpdatedAt,
+      });
+
+      setSettings((current) => {
+        const currentUpdatedAt = current?.__updatedAt ?? 0;
+
+        if (currentUpdatedAt > remoteUpdatedAt) {
+          persistLocally(current);
+          return current;
+        }
+
+        persistLocally(remoteWithMeta);
+        return remoteWithMeta;
+      });
+    },
+    [persistLocally]
+  );
+
+  const fetchRemoteSettings = useCallback(async () => {
+    try {
+      const res = await fetch("/api/settings", { cache: "no-store" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || "settings_fetch_failed");
+      }
+
+      const data = await res.json();
+      applyRemoteSettings(data);
+      setError(null);
+    } catch (err) {
+      console.error("SETTINGS_LOAD_ERROR", err);
+      setError("טעינת ההגדרות נכשלה. מוצגות הגדרות שמורות במכשיר.");
+    }
+  }, [applyRemoteSettings]);
+
   const loadSettings = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -53,39 +95,9 @@ export function ThemeProvider({ children }) {
       }
     }
 
-    try {
-      const res = await fetch("/api/settings", { cache: "no-store" });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data?.error || "settings_fetch_failed");
-      }
-
-      const data = await res.json();
-      const remoteSettings = withDefaultSettings(data?.settings || {});
-      const remoteUpdatedAt = data?.updatedAt ? new Date(data.updatedAt).getTime() : 0;
-      const remoteWithMeta = withMetadata(remoteSettings, {
-        source: "remote",
-        updatedAt: remoteUpdatedAt,
-      });
-
-      setSettings((current) => {
-        const currentUpdatedAt = current?.__updatedAt ?? 0;
-
-        if (currentUpdatedAt > remoteUpdatedAt) {
-          persistLocally(current);
-          return current;
-        }
-
-        persistLocally(remoteWithMeta);
-        return remoteWithMeta;
-      });
-    } catch (err) {
-      console.error("SETTINGS_LOAD_ERROR", err);
-      setError("טעינת ההגדרות נכשלה. מוצגות הגדרות שמורות במכשיר.");
-    } finally {
-      setLoading(false);
-    }
-  }, [persistLocally]);
+    await fetchRemoteSettings();
+    setLoading(false);
+  }, [fetchRemoteSettings]);
 
   // Load settings from API or localStorage
   useEffect(() => {
@@ -183,6 +195,55 @@ export function ThemeProvider({ children }) {
       throw err;
     }
   }, [persistLocally, updateSettings]);
+
+  useEffect(() => {
+    if (!isBrowser) return undefined;
+
+    const handleStorage = (event) => {
+      if (event.key && event.key !== STORAGE_KEY) return;
+
+      if (!event.newValue) {
+        fetchRemoteSettings();
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(event.newValue);
+        const localSettings = withDefaultSettings(parsed);
+        const withMeta = withMetadata(localSettings, {
+          source: parsed?.__source || "local",
+          updatedAt: parsed?.__updatedAt,
+        });
+
+        setSettings((current) => {
+          const currentUpdatedAt = current?.__updatedAt ?? 0;
+          const incomingUpdatedAt = withMeta.__updatedAt ?? 0;
+
+          if (incomingUpdatedAt <= currentUpdatedAt) {
+            return current;
+          }
+
+          return withMeta;
+        });
+      } catch (err) {
+        console.warn("Failed to process storage event for settings", err);
+        fetchRemoteSettings();
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [fetchRemoteSettings]);
+
+  useEffect(() => {
+    if (!isBrowser) return undefined;
+
+    const intervalId = window.setInterval(() => {
+      fetchRemoteSettings();
+    }, REMOTE_POLL_INTERVAL);
+
+    return () => window.clearInterval(intervalId);
+  }, [fetchRemoteSettings]);
 
   return (
     <ThemeContext.Provider

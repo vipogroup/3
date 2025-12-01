@@ -124,6 +124,8 @@ export async function POST(req, { params }) {
 
     const dir = path.join(process.cwd(), "public", "tmp");
     await fs.promises.mkdir(dir, { recursive: true });
+    await cleanupOldTmpFiles(dir);
+
     const fname = `quote-${randomUUID()}.pdf`;
     const fpath = path.join(dir, fname);
     await fs.promises.writeFile(fpath, buffer);
@@ -131,10 +133,36 @@ export async function POST(req, { params }) {
     const u = new URL(req.url);
     const url = `${u.origin}/tmp/${fname}`;
 
-    // TODO: cleanup old files via a TTL job
     return NextResponse.json({ url });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+async function cleanupOldTmpFiles(dir) {
+  const MAX_AGE_MS = 1000 * 60 * 60 * 24; // 24 hours
+  try {
+    const entries = await fs.promises.readdir(dir);
+    const now = Date.now();
+
+    await Promise.all(
+      entries.map(async (file) => {
+        if (!file.startsWith("quote-")) return;
+        const fullPath = path.join(dir, file);
+        try {
+          const stat = await fs.promises.stat(fullPath);
+          if (now - stat.mtimeMs > MAX_AGE_MS) {
+            await fs.promises.unlink(fullPath);
+          }
+        } catch (err) {
+          console.warn("TMP_CLEANUP_WARN", err.message);
+        }
+      })
+    );
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      console.warn("TMP_CLEANUP_FAILED", err.message);
+    }
   }
 }

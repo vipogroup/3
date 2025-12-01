@@ -43,11 +43,21 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+    <main className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">שכחת סיסמה?</h1>
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-6 sm:p-8" style={{
+          border: '2px solid transparent',
+          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box'
+        }}>
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>שכחת סיסמה?</h1>
             <p className="text-gray-600 text-sm">
               הזן את כתובת האימייל שלך ונשלח קישור לאיפוס הסיסמה
             </p>
@@ -64,7 +74,10 @@ export default function ForgotPasswordPage() {
                 required
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                style={{ borderColor: '#d1d5db' }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#0891b2'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#d1d5db'}
                 placeholder="you@example.com"
                 disabled={loading}
               />
@@ -86,7 +99,12 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="w-full text-white font-semibold py-3 px-6 rounded-lg transition-all disabled:cursor-not-allowed"
+              style={{
+                background: loading ? '#9ca3af' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+              }}
+              onMouseEnter={(e) => !loading && (e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)')}
+              onMouseLeave={(e) => !loading && (e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)')}
             >
               {loading ? "שולח..." : "שלח קישור לאיפוס"}
             </button>
@@ -94,7 +112,10 @@ export default function ForgotPasswordPage() {
 
           <button
             type="button"
-            className="mt-6 text-sm text-blue-600 hover:text-blue-700"
+            className="mt-6 text-sm"
+            style={{ color: '#0891b2' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = '#0e7490'}
+            onMouseLeave={(e) => e.currentTarget.style.color = '#0891b2'}
             onClick={() => router.push("/login")}
           >
             חזרה למסך התחברות

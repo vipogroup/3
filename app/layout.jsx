@@ -9,8 +9,6 @@ export const metadata = {
   title: "VIPO - חנות מוצרי גיימינג ואלקטרוניקה",
   description: "מוצרי גיימינג איכותיים במחירים משתלמים - משלוח מהיר לכל הארץ",
   manifest: "/manifest.webmanifest",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
-  themeColor: "#8b5cf6",
 };
 
 export default function RootLayout({ children }) {
@@ -28,15 +26,12 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body>
+      <body className="bg-gray-50">
         <CartProvider>
           <ThemeProvider>
             <ReferralTracker />
             <UserHeader />
-            <div className="container py-4">
-              {children}
-              <footer className="mt-12 py-8 text-center text-sm text-gray-500">© VIPO</footer>
-            </div>
+            {children}
             <CartToast />
           </ThemeProvider>
         </CartProvider>

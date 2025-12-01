@@ -1,0 +1,31 @@
+{
+  "base": "http://localhost:3001",
+  "ts": "2025-12-01T02:48:37.405Z",
+  "checks": [
+    {
+      "key": "api.products",
+      "result": "failed",
+      "evidence": "status=200"
+    },
+    {
+      "key": "ui.products",
+      "result": "passed",
+      "evidence": "status=200"
+    },
+    {
+      "key": "auth.register",
+      "result": "failed",
+      "evidence": "status=403"
+    },
+    {
+      "key": "auth.login",
+      "result": "failed",
+      "evidence": "status=400"
+    },
+    {
+      "key": "stats.endpoint",
+      "result": "missing",
+      "evidence": "status=404"
+    }
+  ]
+}

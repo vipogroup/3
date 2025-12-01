@@ -173,7 +173,23 @@ export default function UsersList() {
   }
 
   if (loading) {
-    return <div className="text-center py-8">טוען...</div>;
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="bg-white rounded-xl p-8" style={{
+          border: '2px solid transparent',
+          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box',
+          boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
+        }}>
+          <div className="animate-spin rounded-full h-12 w-12 mx-auto mb-4" style={{
+            border: '4px solid rgba(8, 145, 178, 0.2)',
+            borderTopColor: '#0891b2'
+          }}></div>
+          <p className="text-gray-600 text-center font-medium">טוען משתמשים...</p>
+        </div>
+      </div>
+    );
   }
 
   const roleOptions = [
@@ -185,30 +201,41 @@ export default function UsersList() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold">רשימת משתמשים</h2>
-        <p className="text-gray-600">סה״כ {users.length} משתמשים</p>
+      <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-3 sm:p-4 mb-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold" style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>רשימת משתמשים</h2>
+            <p className="text-sm text-gray-600 mt-1">סה״כ {users.length} משתמשים</p>
+          </div>
+        </div>
       </div>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <div className="bg-red-50 border-2 border-red-200 text-red-700 px-6 py-4 rounded-xl mb-6 font-medium">
           {error}
         </div>
       )}
 
-      {/* Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      {/* Desktop Table & Mobile Cards */}
+      <div className="bg-white rounded-lg sm:rounded-xl shadow-md overflow-hidden">
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">שם</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">אימייל</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">טלפון</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">תפקיד</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">הופנה על ידי</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">סטטוס</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">תאריך הצטרפות</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">פעולות</th>
+          <thead>
+            <tr style={{ borderBottom: '2px solid #0891b2' }}>
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase" style={{ color: '#1e3a8a' }}>שם</th>
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase" style={{ color: '#1e3a8a' }}>אימייל</th>
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase" style={{ color: '#1e3a8a' }}>טלפון</th>
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase" style={{ color: '#1e3a8a' }}>תפקיד</th>
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase" style={{ color: '#1e3a8a' }}>הופנה על ידי</th>
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase" style={{ color: '#1e3a8a' }}>סטטוס</th>
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase" style={{ color: '#1e3a8a' }}>תאריך הצטרפות</th>
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase" style={{ color: '#1e3a8a' }}>פעולות</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -217,7 +244,7 @@ export default function UsersList() {
               const isCurrentUser = user._id === currentUserId;
               
               return (
-                <tr key={user._id} className={`hover:bg-gray-50 ${isCurrentUser ? 'bg-blue-50' : ''}`}>
+                <tr key={user._id} className="border-b border-gray-100 transition-all" style={{ background: isCurrentUser ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)' : 'white' }} onMouseEnter={(e) => !isCurrentUser && (e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)')} onMouseLeave={(e) => !isCurrentUser && (e.currentTarget.style.background = 'white')}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {user.fullName || user.email}
                     {isCurrentUser && <span className="text-xs text-blue-600 mr-2">(אתה)</span>}
@@ -231,9 +258,10 @@ export default function UsersList() {
                           href={buildWhatsAppUrl(user.phone, `היי ${user.fullName || ""}, כאן VIPO`)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold bg-green-500 text-white hover:bg-green-600 transition"
+                          className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-white"
+                          style={{ background: '#0891b2' }}
                         >
-                          ווצאפ
+                          WhatsApp
                         </a>
                       )}
                     </div>
@@ -246,8 +274,10 @@ export default function UsersList() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     {user.referredBy ? (
                       <div className="flex items-center gap-2">
-                        <span className="text-green-600">🤝</span>
-                        <span className="text-sm font-medium text-green-700">
+                        <svg className="w-4 h-4" style={{ color: '#16a34a' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span className="text-sm font-medium" style={{ color: '#16a34a' }}>
                           {agents[user.referredBy] || "טוען..."}
                         </span>
                       </div>
@@ -267,11 +297,15 @@ export default function UsersList() {
                           type="button"
                           onClick={() => handleToggleActive(user)}
                           disabled={togglingId === user._id}
-                          className={`px-3 py-1 rounded border text-xs font-semibold transition ${
-                            togglingId === user._id
-                              ? "bg-gray-200 text-gray-500 cursor-wait"
-                              : "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
-                          }`}
+                          className="px-3 py-1 rounded-lg text-xs font-semibold transition"
+                          style={{
+                            background: togglingId === user._id ? '#e5e7eb' : 'white',
+                            border: togglingId === user._id ? '2px solid #9ca3af' : '2px solid #0891b2',
+                            color: togglingId === user._id ? '#6b7280' : '#0891b2',
+                            cursor: togglingId === user._id ? 'wait' : 'pointer'
+                          }}
+                          onMouseEnter={(e) => !togglingId && (e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)')}
+                          onMouseLeave={(e) => !togglingId && (e.currentTarget.style.background = 'white')}
                         >
                           {togglingId === user._id
                             ? "מעבד..."
@@ -306,11 +340,15 @@ export default function UsersList() {
                           type="button"
                           onClick={() => handleDeleteUser(user)}
                           disabled={deletingId === user._id}
-                          className={`px-3 py-1 rounded border text-xs font-semibold transition ${
-                            deletingId === user._id
-                              ? 'bg-gray-200 text-gray-500 cursor-wait'
-                              : 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'
-                          }`}
+                          className="px-3 py-1 rounded-lg text-xs font-semibold transition"
+                          style={{
+                            background: deletingId === user._id ? '#e5e7eb' : 'white',
+                            border: deletingId === user._id ? '2px solid #9ca3af' : '2px solid #dc2626',
+                            color: deletingId === user._id ? '#6b7280' : '#dc2626',
+                            cursor: deletingId === user._id ? 'wait' : 'pointer'
+                          }}
+                          onMouseEnter={(e) => !deletingId && (e.currentTarget.style.background = 'rgba(220, 38, 38, 0.05)')}
+                          onMouseLeave={(e) => !deletingId && (e.currentTarget.style.background = 'white')}
                         >
                           {deletingId === user._id ? "מוחק..." : "מחק"}
                         </button>
@@ -322,20 +360,141 @@ export default function UsersList() {
             })}
           </tbody>
         </table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden p-4 space-y-3">
+          {users.map((user) => {
+            const roleOption = roleOptions.find(r => r.value === user.role);
+            const isCurrentUser = user._id === currentUserId;
+            
+            return (
+              <div
+                key={user._id}
+                className="p-4 rounded-lg border-2 border-gray-200 bg-white"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-gray-900 mb-1">
+                      {user.fullName || user.email}
+                      {isCurrentUser && <span className="text-xs mr-2" style={{ color: '#0891b2' }}> (אתה)</span>}
+                    </p>
+                    <p className="text-xs text-gray-500 break-all">{user.email}</p>
+                    {user.phone && <p className="text-xs text-gray-500 mt-1">{user.phone}</p>}
+                  </div>
+                  <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${roleOption?.color}`}>
+                    {roleOption?.label}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                  <div>
+                    <span className="text-gray-500">סטטוס:</span>
+                    <span className={`mr-1 px-2 py-1 rounded-full ${
+                      user.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                    }`}>
+                      {user.isActive ? "פעיל" : "לא פעיל"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">תאריך:</span>
+                    <span className="mr-1 text-gray-700">
+                      {new Date(user.createdAt).toLocaleDateString("he-IL")}
+                    </span>
+                  </div>
+                </div>
+
+                {user.referredBy && (
+                  <div className="mb-3 text-xs">
+                    <span className="text-gray-500">הופנה ע״י:</span>
+                    <span className="mr-1 font-medium" style={{ color: '#16a34a' }}>
+                      {agents[user.referredBy] || "טוען..."}
+                    </span>
+                  </div>
+                )}
+
+                <div className="pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
+                  {user.phone && (
+                    <a
+                      href={buildWhatsAppUrl(user.phone, `היי ${user.fullName || ""}, כאן VIPO`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white font-medium px-3 py-1.5 rounded-lg text-xs"
+                      style={{ background: '#0891b2' }}
+                    >
+                      WhatsApp
+                    </a>
+                  )}
+                  {!isCurrentUser && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleToggleActive(user)}
+                        disabled={togglingId === user._id}
+                        className="text-xs px-3 py-1.5 rounded-lg font-medium"
+                        style={{
+                          background: togglingId === user._id ? '#e5e7eb' : 'white',
+                          border: '2px solid #0891b2',
+                          color: '#0891b2'
+                        }}
+                      >
+                        {togglingId === user._id ? "מעבד..." : user.isActive ? "כבה" : "הפעל"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteUser(user)}
+                        disabled={deletingId === user._id}
+                        className="text-xs px-3 py-1.5 rounded-lg font-medium"
+                        style={{
+                          background: deletingId === user._id ? '#e5e7eb' : 'white',
+                          border: '2px solid #dc2626',
+                          color: '#dc2626'
+                        }}
+                      >
+                        {deletingId === user._id ? "מוחק..." : "מחק"}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
         {users.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-gray-500 text-sm">
             אין משתמשים במערכת
           </div>
         )}
       </div>
 
       {/* Info Box */}
-      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h3 className="font-semibold text-blue-900 mb-2">💡 הערות חשובות</h3>
-        <ul className="text-sm text-blue-800 space-y-1">
-          <li>• לא ניתן לשנות את התפקיד של עצמך</li>
-          <li>• לא ניתן להוריד את המנהל האחרון במערכת</li>
-          <li>• שינוי תפקיד מתבצע מיידית</li>
+      <div className="mt-6 rounded-xl p-6" style={{
+        border: '2px solid transparent',
+        backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+        boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
+      }}>
+        <h3 className="font-semibold mb-3 flex items-center gap-2" style={{ color: '#1e3a8a' }}>
+          <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+          </svg>
+          הערות חשובות
+        </h3>
+        <ul className="text-sm text-gray-700 space-y-2">
+          <li className="flex items-start gap-2">
+            <span style={{ color: '#0891b2' }}>•</span>
+            <span>לא ניתן לשנות את התפקיד של עצמך</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span style={{ color: '#0891b2' }}>•</span>
+            <span>לא ניתן להוריד את המנהל האחרון במערכת</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span style={{ color: '#0891b2' }}>•</span>
+            <span>שינוי תפקיד מתבצע מיידית</span>
+          </li>
         </ul>
       </div>
     </div>

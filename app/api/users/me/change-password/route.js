@@ -1,19 +1,12 @@
 import { NextResponse } from "next/server";
-import { MongoClient, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 
 import { verifyJwt } from "@/src/lib/auth/createToken.js";
 import { comparePassword as compare, hashPassword as hash } from "@/src/lib/auth/hash.js";
+import { getDb } from "@/lib/db";
 
-const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "vipo";
-let _client;
-async function db() {
-  _client ||= new MongoClient(uri);
-  if (!_client.topology?.isConnected()) await _client.connect();
-  return _client.db(dbName);
-}
 async function usersCollection() {
-  const dbo = await db();
+  const dbo = await getDb();
   return dbo.collection("users");
 }
 
