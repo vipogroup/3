@@ -1,12 +1,12 @@
-import { getUserFromCookies } from "@/lib/auth/server";
-import { getDb } from "@/lib/db";
-import { ObjectId } from "mongodb";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import CopyCouponButton from "./components/CopyCouponButton";
-import KPICard from "./components/KPICard";
+import { getUserFromCookies } from '@/lib/auth/server';
+import { getDb } from '@/lib/db';
+import { ObjectId } from 'mongodb';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import CopyCouponButton from './components/CopyCouponButton';
+import KPICard from './components/KPICard';
 
-const TrophyIcon = ({ className = "w-10 h-10" }) => (
+const TrophyIcon = ({ className = 'w-10 h-10' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -27,7 +27,7 @@ const TrophyIcon = ({ className = "w-10 h-10" }) => (
   </svg>
 );
 
-const ChainIcon = ({ className = "w-8 h-8" }) => (
+const ChainIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -43,7 +43,7 @@ const ChainIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const ShoppingBagIcon = ({ className = "w-5 h-5" }) => (
+const ShoppingBagIcon = ({ className = 'w-5 h-5' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -59,7 +59,7 @@ const ShoppingBagIcon = ({ className = "w-5 h-5" }) => (
   </svg>
 );
 
-const CartIcon = ({ className = "w-8 h-8" }) => (
+const CartIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -76,7 +76,7 @@ const CartIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const WalletIcon = ({ className = "w-8 h-8" }) => (
+const WalletIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -92,7 +92,7 @@ const WalletIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const HourglassIcon = ({ className = "w-8 h-8" }) => (
+const HourglassIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -110,7 +110,7 @@ const HourglassIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const ChartIcon = ({ className = "w-8 h-8" }) => (
+const ChartIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -128,7 +128,7 @@ const ChartIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const TrendIcon = ({ className = "w-8 h-8" }) => (
+const TrendIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -144,7 +144,7 @@ const TrendIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const DiamondIcon = ({ className = "w-8 h-8" }) => (
+const DiamondIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -161,7 +161,7 @@ const DiamondIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const EyeIcon = ({ className = "w-8 h-8" }) => (
+const EyeIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -177,7 +177,7 @@ const EyeIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const TargetIcon = ({ className = "w-8 h-8" }) => (
+const TargetIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -205,12 +205,12 @@ const formatNumber = (value = 0) => numberFormatter.format(Math.max(0, Number(va
 const formatCurrency = (value = 0) => currencyFormatter.format(Math.max(0, Number(value) || 0));
 const formatPercent = (value = 0) => `${Math.max(0, Number(value) || 0)}%`;
 
-const ACTIVE_SALE_STATUSES = ["pending", "processing", "paid", "confirmed", "in_progress"];
+const ACTIVE_SALE_STATUSES = ['pending', 'processing', 'paid', 'confirmed', 'in_progress'];
 
 function normalizeObjectId(id) {
   if (!id) return null;
   try {
-    return typeof id === "string" ? new ObjectId(id) : new ObjectId(id);
+    return typeof id === 'string' ? new ObjectId(id) : new ObjectId(id);
   } catch {
     return null;
   }
@@ -251,9 +251,9 @@ async function getAgentStats(agentId) {
   }
 
   const db = await getDb();
-  const users = db.collection("users");
-  const orders = db.collection("orders");
-  const referralLogs = db.collection("referral_logs");
+  const users = db.collection('users');
+  const orders = db.collection('orders');
+  const referralLogs = db.collection('referral_logs');
 
   const agentDoc = await users.findOne(
     { _id: agentObjectId },
@@ -266,11 +266,12 @@ async function getAgentStats(agentId) {
         referralId: 1,
         couponCode: 1,
       },
-    }
+    },
   );
 
   const totalReferralsBase =
-    agentDoc?.referralsCount ?? agentDoc?.referralCount ??
+    agentDoc?.referralsCount ??
+    agentDoc?.referralCount ??
     (await users.countDocuments({ referredBy: agentObjectId }));
 
   const [totalSales, activeSales, totalsAgg, pendingAgg, clicksAgg] = await Promise.all([
@@ -282,22 +283,22 @@ async function getAgentStats(agentId) {
         {
           $group: {
             _id: null,
-            totalCommission: { $sum: "$commissionAmount" },
-            totalRevenue: { $sum: "$totalAmount" },
+            totalCommission: { $sum: '$commissionAmount' },
+            totalRevenue: { $sum: '$totalAmount' },
           },
         },
       ])
       .toArray(),
     orders
       .aggregate([
-        { $match: { refAgentId: agentObjectId, status: { $in: ["pending", "processing"] } } },
-        { $group: { _id: null, pendingCommission: { $sum: "$commissionAmount" } } },
+        { $match: { refAgentId: agentObjectId, status: { $in: ['pending', 'processing'] } } },
+        { $group: { _id: null, pendingCommission: { $sum: '$commissionAmount' } } },
       ])
       .toArray(),
     referralLogs
       .aggregate([
         { $match: { agentId: agentObjectId } },
-        { $group: { _id: "$action", total: { $sum: 1 } } },
+        { $group: { _id: '$action', total: { $sum: 1 } } },
       ])
       .toArray(),
   ]);
@@ -305,8 +306,8 @@ async function getAgentStats(agentId) {
   const totalRevenue = totalsAgg[0]?.totalRevenue || 0;
   const totalCommission = totalsAgg[0]?.totalCommission || 0;
   const pendingCommission = pendingAgg[0]?.pendingCommission || 0;
-  const clicks = clicksAgg.find((c) => c._id === "click")?.total || 0;
-  const views = clicksAgg.find((c) => c._id === "view")?.total || 0;
+  const clicks = clicksAgg.find((c) => c._id === 'click')?.total || 0;
+  const views = clicksAgg.find((c) => c._id === 'view')?.total || 0;
 
   const monthlyWindow = new Date();
   monthlyWindow.setDate(monthlyWindow.getDate() - 30);
@@ -326,8 +327,8 @@ async function getAgentStats(agentId) {
     process.env.PUBLIC_URL ||
     process.env.NEXT_PUBLIC_HOME_URL ||
     process.env.NEXTAUTH_URL ||
-    "http://localhost:3001";
-  const sanitizedBase = baseUrl.replace(/\/$/, "");
+    'http://localhost:3001';
+  const sanitizedBase = baseUrl.replace(/\/$/, '');
   const referralLink = `${sanitizedBase}/join?ref=${encodeURIComponent(referralCode)}`;
 
   return {
@@ -356,8 +357,8 @@ async function getAgentStats(agentId) {
 
 export default async function AgentPage() {
   const user = await getUserFromCookies();
-  if (!user) redirect("/login");
-  
+  if (!user) redirect('/login');
+
   const stats = await getAgentStats(user._id);
   const xpProgress = stats.nextLevelXp > 0 ? ((stats.xp / stats.nextLevelXp) * 100).toFixed(0) : 0;
 
@@ -371,22 +372,22 @@ export default async function AgentPage() {
     {
       title: 'מכירות פעילות',
       value: formatNumber(stats.activeSales),
-      iconName: "bag",
+      iconName: 'bag',
     },
     {
       title: 'סה״כ הזמנות',
       value: formatNumber(stats.totalSales),
-      iconName: "cart",
+      iconName: 'cart',
     },
     {
       title: 'סה״כ מכירות',
       value: formatCurrency(stats.totalRevenue),
-      iconName: "wallet",
+      iconName: 'wallet',
     },
     {
-      title: "המתנה לתשלום",
+      title: 'המתנה לתשלום',
       value: formatCurrency(stats.pendingCommission),
-      iconName: "hourglass",
+      iconName: 'hourglass',
     },
   ];
 
@@ -395,18 +396,21 @@ export default async function AgentPage() {
       <div className="max-w-7xl mx-auto px-4 py-4">
         {/* Header */}
         <div className="mb-6">
-          <h1 
+          <h1
             className="text-3xl font-bold mb-1"
-            style={{ 
+            style={{
               background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+              backgroundClip: 'text',
             }}
           >
             דשבורד סוכן
           </h1>
-          <div className="h-1 w-24 rounded-full" style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }} />
+          <div
+            className="h-1 w-24 rounded-full"
+            style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+          />
         </div>
 
         {/* KPI Cards */}
@@ -419,57 +423,71 @@ export default async function AgentPage() {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Coupon Code Section */}
-          <section 
+          <section
             className="rounded-xl p-5"
             style={{
               border: '2px solid transparent',
-              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundImage:
+                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
-              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)'
+              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
             }}
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold" style={{ color: '#1e3a8a' }}>
                 קוד קופון שלך
               </h2>
-              <div 
+              <div
                 className="w-10 h-10 rounded-full flex items-center justify-center"
                 style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
               >
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                <svg
+                  className="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+                  />
                 </svg>
               </div>
             </div>
-            <div 
+            <div
               className="rounded-xl p-4"
               style={{
-                background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)',
-                border: '2px solid rgba(8, 145, 178, 0.2)'
+                background:
+                  'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)',
+                border: '2px solid rgba(8, 145, 178, 0.2)',
               }}
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>קוד הקופון שלך:</span>
+                <span className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>
+                  קוד הקופון שלך:
+                </span>
                 <CopyCouponButton code={stats.referralCode} />
               </div>
               {stats.referralCode ? (
-                <code 
+                <code
                   className="block px-4 py-4 rounded-lg font-mono text-2xl font-bold text-center shadow-sm"
-                  style={{ 
+                  style={{
                     background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                    color: 'white'
+                    color: 'white',
                   }}
                 >
                   {stats.referralCode}
                 </code>
               ) : (
-                <div 
+                <div
                   className="block px-4 py-3 rounded-lg text-sm text-center"
-                  style={{ 
+                  style={{
                     background: 'rgba(107, 114, 128, 0.1)',
                     color: '#6b7280',
-                    border: '2px dashed rgba(107, 114, 128, 0.3)'
+                    border: '2px dashed rgba(107, 114, 128, 0.3)',
                   }}
                 >
                   לא הוגדר
@@ -482,59 +500,72 @@ export default async function AgentPage() {
           </section>
 
           {/* Stats Section */}
-          <section 
+          <section
             className="rounded-xl p-5"
             style={{
               border: '2px solid transparent',
-              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundImage:
+                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
-              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)'
+              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
             }}
           >
             <h2 className="text-lg font-bold mb-4" style={{ color: '#1e3a8a' }}>
               סטטיסטיקות
             </h2>
             <div className="grid grid-cols-2 gap-3">
-              <div 
+              <div
                 className="p-4 rounded-xl transition-all duration-300"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%)',
-                  border: '2px solid rgba(30, 58, 138, 0.2)'
+                  background:
+                    'linear-gradient(135deg, rgba(30, 58, 138, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%)',
+                  border: '2px solid rgba(30, 58, 138, 0.2)',
                 }}
               >
-                <p className="text-xs font-semibold mb-1" style={{ color: '#1e3a8a' }}>סה"כ עמלות</p>
-                <p className="text-xl font-bold" style={{ color: '#1e3a8a' }}>{formatCurrency(stats.totalCommission)}</p>
+                <p className="text-xs font-semibold mb-1" style={{ color: '#1e3a8a' }}>
+                  סה&quot;כ עמלות
+                </p>
+                <p className="text-xl font-bold" style={{ color: '#1e3a8a' }}>
+                  {formatCurrency(stats.totalCommission)}
+                </p>
               </div>
-              <div 
+              <div
                 className="p-4 rounded-xl transition-all duration-300"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(251, 191, 36, 0.08) 100%)',
-                  border: '2px solid rgba(245, 158, 11, 0.3)'
+                  background:
+                    'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(251, 191, 36, 0.08) 100%)',
+                  border: '2px solid rgba(245, 158, 11, 0.3)',
                 }}
               >
                 <p className="text-xs font-semibold text-amber-700 mb-1">ממתינות</p>
-                <p className="text-xl font-bold text-amber-600">{formatCurrency(stats.pendingCommission)}</p>
+                <p className="text-xl font-bold text-amber-600">
+                  {formatCurrency(stats.pendingCommission)}
+                </p>
               </div>
-              <div 
+              <div
                 className="p-4 rounded-xl transition-all duration-300"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(107, 114, 128, 0.08) 0%, rgba(148, 163, 184, 0.08) 100%)',
-                  border: '2px solid rgba(107, 114, 128, 0.2)'
+                  background:
+                    'linear-gradient(135deg, rgba(107, 114, 128, 0.08) 0%, rgba(148, 163, 184, 0.08) 100%)',
+                  border: '2px solid rgba(107, 114, 128, 0.2)',
                 }}
               >
                 <p className="text-xs font-semibold text-gray-600 mb-1">קליקים</p>
                 <p className="text-xl font-bold text-gray-900">{formatNumber(stats.clicks)}</p>
               </div>
-              <div 
+              <div
                 className="p-4 rounded-xl transition-all duration-300"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(52, 211, 153, 0.08) 100%)',
-                  border: '2px solid rgba(16, 185, 129, 0.3)'
+                  background:
+                    'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(52, 211, 153, 0.08) 100%)',
+                  border: '2px solid rgba(16, 185, 129, 0.3)',
                 }}
               >
                 <p className="text-xs font-semibold text-emerald-700 mb-1">המרה</p>
-                <p className="text-xl font-bold text-emerald-600">{formatPercent(stats.conversionRate)}</p>
+                <p className="text-xl font-bold text-emerald-600">
+                  {formatPercent(stats.conversionRate)}
+                </p>
               </div>
             </div>
           </section>

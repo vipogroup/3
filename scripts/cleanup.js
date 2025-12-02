@@ -73,11 +73,11 @@ const unusedPatterns = [
   '**/*.bak',
   '**/*.tmp',
   '**/.DS_Store',
-  '**/Thumbs.db'
+  '**/Thumbs.db',
 ];
 
 let foundUnused = false;
-unusedPatterns.forEach(pattern => {
+unusedPatterns.forEach((pattern) => {
   // This is a simple check - in production you'd use a proper glob library
   console.log(`   Checking for: ${pattern}`);
 });

@@ -1,7 +1,7 @@
-import { requireAdmin } from "@/lib/auth/server";
-import dynamic from "next/dynamic";
+import { requireAdmin } from '@/lib/auth/server';
+import dynamic from 'next/dynamic';
 
-const AdminDashboardClient = dynamic(() => import("./components/AdminDashboardClient"), {
+const AdminDashboardClient = dynamic(() => import('./components/AdminDashboardClient'), {
   ssr: false,
 });
 

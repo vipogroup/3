@@ -24,7 +24,7 @@ if (packageJson.dependencies.bcrypt && packageJson.dependencies.bcryptjs) {
   duplicates.push({
     name: 'bcrypt + bcryptjs',
     recommendation: 'Keep bcryptjs only (pure JS, cross-platform)',
-    action: 'npm uninstall bcrypt'
+    action: 'npm uninstall bcrypt',
   });
 }
 
@@ -33,7 +33,7 @@ if (packageJson.dependencies.jose && packageJson.dependencies.jsonwebtoken) {
   duplicates.push({
     name: 'jose + jsonwebtoken',
     recommendation: 'Keep one JWT library (jose is more modern)',
-    action: 'npm uninstall jsonwebtoken (or jose if using jsonwebtoken in code)'
+    action: 'npm uninstall jsonwebtoken (or jose if using jsonwebtoken in code)',
   });
 }
 
@@ -84,8 +84,8 @@ const report = {
   duplicatesList: duplicates,
   packageCount: {
     dependencies: Object.keys(packageJson.dependencies || {}).length,
-    devDependencies: Object.keys(packageJson.devDependencies || {}).length
-  }
+    devDependencies: Object.keys(packageJson.devDependencies || {}).length,
+  },
 };
 
 const reportPath = path.join(process.cwd(), 'stage-15-1-report.json');

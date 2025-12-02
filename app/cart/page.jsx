@@ -1,11 +1,12 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { useMemo, useState, useEffect } from "react";
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { useMemo, useState, useEffect } from 'react';
 
-import { useCartContext } from "@/app/context/CartContext";
+import { useCartContext } from '@/app/context/CartContext';
+import { validateCouponClient, calculateDiscount, calculateTotal } from '@/lib/couponsClient';
 
 export default function CartPage() {
   const router = useRouter();
@@ -20,9 +21,9 @@ export default function CartPage() {
     clearCart,
   } = useCartContext();
 
-  const [couponCode, setCouponCode] = useState("");
+  const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
-  const [couponError, setCouponError] = useState("");
+  const [couponError, setCouponError] = useState('');
   const [isApplying, setIsApplying] = useState(false);
   const [user, setUser] = useState(null);
   const [showMarquee, setShowMarquee] = useState(true);
@@ -32,63 +33,58 @@ export default function CartPage() {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch("/api/auth/me");
+        const res = await fetch('/api/auth/me');
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
         }
       } catch (error) {
-        console.error("Failed to fetch user:", error);
+        console.error('Failed to fetch user:', error);
       }
     }
     fetchUser();
   }, []);
 
-  const gradientPrimary = "linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)";
-  const gradientReverse = "linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)";
+  const gradientPrimary = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+  const gradientReverse = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
 
-  const formatCurrency = (value) => `₪${value.toLocaleString("he-IL", { minimumFractionDigits: 0 })}`;
+  const formatCurrency = (value) =>
+    `₪${value.toLocaleString('he-IL', { minimumFractionDigits: 0 })}`;
 
-  // Calculate discount
-  const discount = appliedCoupon 
-    ? appliedCoupon.type === 'percentage'
-      ? (totals.subtotal * appliedCoupon.value) / 100
-      : appliedCoupon.value
-    : 0;
-  
-  const finalTotal = Math.max(0, totals.subtotal - discount);
+  // Calculate discount using shared helper (consistent with Checkout)
+  const discountPercent = appliedCoupon?.discountPercent || 0;
+  const discount = useMemo(
+    () => calculateDiscount(totals.subtotal, discountPercent),
+    [totals.subtotal, discountPercent],
+  );
+  const finalTotal = useMemo(
+    () => calculateTotal(totals.subtotal, discount),
+    [totals.subtotal, discount],
+  );
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) {
-      setCouponError("אנא הזן קוד קופון");
+      setCouponError('אנא הזן קוד קופון');
       return;
     }
 
     setIsApplying(true);
-    setCouponError("");
+    setCouponError('');
 
     try {
-      // Simulate API call - replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Mock coupon validation - replace with real API call
-      const mockCoupons = {
-        'SAVE10': { type: 'percentage', value: 10, code: 'SAVE10' },
-        'SAVE50': { type: 'fixed', value: 50, code: 'SAVE50' },
-        'WELCOME': { type: 'percentage', value: 15, code: 'WELCOME' },
-      };
+      // Use real API validation (same as Checkout)
+      const result = await validateCouponClient(couponCode);
 
-      const coupon = mockCoupons[couponCode.toUpperCase()];
-      
-      if (coupon) {
-        setAppliedCoupon(coupon);
-        setCouponError("");
+      if (result.ok && result.coupon) {
+        setAppliedCoupon(result.coupon);
+        setCouponError('');
       } else {
-        setCouponError("קוד קופון לא תקין");
+        setCouponError(result.error || 'קוד קופון לא תקין');
         setAppliedCoupon(null);
       }
     } catch (error) {
-      setCouponError("שגיאה בבדיקת הקופון");
+      setCouponError('שגיאה בבדיקת הקופון');
+      setAppliedCoupon(null);
     } finally {
       setIsApplying(false);
     }
@@ -96,28 +92,28 @@ export default function CartPage() {
 
   const handleRemoveCoupon = () => {
     setAppliedCoupon(null);
-    setCouponCode("");
-    setCouponError("");
+    setCouponCode('');
+    setCouponError('');
   };
 
   async function handleUpgradeToAgent() {
     try {
       setUpgrading(true);
-      const res = await fetch("/api/users/upgrade-to-agent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/users/upgrade-to-agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (res.ok) {
-        alert("ברכות! הפכת לסוכן בהצלחה!");
-        window.location.href = "/agent";
+        alert('ברכות! הפכת לסוכן בהצלחה!');
+        window.location.href = '/agent';
       } else {
         const data = await res.json();
-        alert("שגיאה: " + (data.error || "לא ניתן לשדרג לסוכן"));
+        alert('שגיאה: ' + (data.error || 'לא ניתן לשדרג לסוכן'));
       }
     } catch (error) {
-      console.error("Upgrade error:", error);
-      alert("שגיאה בשדרוג לסוכן");
+      console.error('Upgrade error:', error);
+      alert('שגיאה בשדרוג לסוכן');
     } finally {
       setUpgrading(false);
       setShowAgentModal(false);
@@ -128,25 +124,37 @@ export default function CartPage() {
     return (
       <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-white">
         <div className="text-center space-y-4 max-w-md px-4">
-          <svg className="w-24 h-24 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          <svg
+            className="w-24 h-24 mx-auto text-gray-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            />
           </svg>
           <h1 className="text-2xl font-bold text-gray-900">הסל שלך ריק</h1>
           <p className="text-gray-500">התחל להוסיף מוצרים</p>
           <Link
             href="/products"
             className="inline-block text-white font-medium px-6 py-3 rounded-lg transition-all duration-300"
-            style={{ 
+            style={{
               background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)'
+              boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+              e.currentTarget.style.background =
+                'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
               e.currentTarget.style.transform = 'translateY(-2px)';
               e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+              e.currentTarget.style.background =
+                'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = '0 2px 8px rgba(8, 145, 178, 0.2)';
             }}
@@ -162,7 +170,7 @@ export default function CartPage() {
     <div className="min-h-[calc(100vh-64px)] bg-white">
       {/* Marquee Banner - Only for customers */}
       {showMarquee && user?.role === 'customer' && (
-        <div 
+        <div
           className="relative overflow-hidden py-3 cursor-pointer"
           style={{ background: gradientPrimary }}
           onClick={() => setShowAgentModal(true)}
@@ -177,7 +185,9 @@ export default function CartPage() {
                   רוצים להרוויח כסף?
                 </span>
                 <span className="text-white text-base">•</span>
-                <span className="text-white font-semibold text-lg">הפכו לסוכן וקבלו 10% עמלה על כל מכירה!</span>
+                <span className="text-white font-semibold text-lg">
+                  הפכו לסוכן וקבלו 10% עמלה על כל מכירה!
+                </span>
                 <span className="text-white text-base">•</span>
                 <span className="bg-white text-blue-900 px-4 py-1 rounded-full font-bold text-sm">
                   לחצו כאן להצטרפות
@@ -194,7 +204,9 @@ export default function CartPage() {
                   רוצים להרוויח כסף?
                 </span>
                 <span className="text-white text-base">•</span>
-                <span className="text-white font-semibold text-lg">הפכו לסוכן וקבלו 10% עמלה על כל מכירה!</span>
+                <span className="text-white font-semibold text-lg">
+                  הפכו לסוכן וקבלו 10% עמלה על כל מכירה!
+                </span>
                 <span className="text-white text-base">•</span>
                 <span className="bg-white text-blue-900 px-4 py-1 rounded-full font-bold text-sm">
                   לחצו כאן להצטרפות
@@ -212,7 +224,12 @@ export default function CartPage() {
             aria-label="סגור"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -244,26 +261,29 @@ export default function CartPage() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 
+            <h1
               className="text-3xl font-bold mb-1"
-              style={{ 
+              style={{
                 background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
+                backgroundClip: 'text',
               }}
             >
               סל קניות ({totals.totalQuantity})
             </h1>
-            <div className="h-1 w-24 rounded-full" style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }} />
+            <div
+              className="h-1 w-24 rounded-full"
+              style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+            />
           </div>
           <button
             type="button"
             onClick={clearCart}
             className="text-sm font-medium px-4 py-2 rounded-lg transition-all duration-300"
-            style={{ 
+            style={{
               color: '#ef4444',
-              border: '2px solid #ef4444'
+              border: '2px solid #ef4444',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = '#ef4444';
@@ -281,20 +301,21 @@ export default function CartPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-3">
             {items.map((item) => (
-              <div 
-                key={item.productId} 
+              <div
+                key={item.productId}
                 className="rounded-lg p-4 flex gap-4 transition-all duration-300"
                 style={{
                   border: '2px solid transparent',
-                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                  backgroundImage:
+                    'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
                   backgroundOrigin: 'border-box',
                   backgroundClip: 'padding-box, border-box',
-                  boxShadow: '0 2px 10px rgba(8, 145, 178, 0.08)'
+                  boxShadow: '0 2px 10px rgba(8, 145, 178, 0.08)',
                 }}
               >
                 <Image
-                  src={item.image || "https://placehold.co/120x120?text=VIPO"}
-                  alt={item.name || "Product image"}
+                  src={item.image || 'https://placehold.co/120x120?text=VIPO'}
+                  alt={item.name || 'Product image'}
                   width={100}
                   height={100}
                   className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md flex-shrink-0"
@@ -302,14 +323,26 @@ export default function CartPage() {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <h2 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-2">{item.name}</h2>
+                    <h2 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-2">
+                      {item.name}
+                    </h2>
                     <button
                       type="button"
                       onClick={() => removeItem(item.productId)}
                       className="text-gray-400 hover:text-red-600 flex-shrink-0"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -343,31 +376,35 @@ export default function CartPage() {
             ))}
           </div>
 
-          <div 
+          <div
             className="rounded-xl p-6 h-fit sticky top-20 space-y-4"
             style={{
               border: '2px solid transparent',
-              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundImage:
+                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
-              boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
+              boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
             }}
           >
             <div className="mb-4">
-              <h2 
+              <h2
                 className="text-2xl font-bold mb-1"
-                style={{ 
+                style={{
                   background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
+                  backgroundClip: 'text',
                 }}
               >
                 סיכום הזמנה
               </h2>
-              <div className="h-1 w-20 rounded-full" style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }} />
+              <div
+                className="h-1 w-20 rounded-full"
+                style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+              />
             </div>
-            
+
             {/* Coupon Code Section */}
             <div className="border-t border-b border-gray-200 py-4">
               {!appliedCoupon ? (
@@ -386,44 +423,51 @@ export default function CartPage() {
                       onClick={handleApplyCoupon}
                       disabled={isApplying}
                       className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-all duration-300 disabled:opacity-50"
-                      style={{ 
-                        background: isApplying ? '#9CA3AF' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                        boxShadow: isApplying ? 'none' : '0 2px 8px rgba(8, 145, 178, 0.2)'
+                      style={{
+                        background: isApplying
+                          ? '#9CA3AF'
+                          : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                        boxShadow: isApplying ? 'none' : '0 2px 8px rgba(8, 145, 178, 0.2)',
                       }}
-                      onMouseEnter={(e) => { 
+                      onMouseEnter={(e) => {
                         if (!isApplying) {
-                          e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                          e.currentTarget.style.background =
+                            'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
                           e.currentTarget.style.transform = 'translateY(-2px)';
                         }
                       }}
-                      onMouseLeave={(e) => { 
+                      onMouseLeave={(e) => {
                         if (!isApplying) {
-                          e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                          e.currentTarget.style.background =
+                            'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
                           e.currentTarget.style.transform = 'translateY(0)';
                         }
                       }}
                     >
-                      {isApplying ? "..." : "החל"}
+                      {isApplying ? '...' : 'החל'}
                     </button>
                   </div>
-                  {couponError && (
-                    <p className="text-xs text-red-600">{couponError}</p>
-                  )}
+                  {couponError && <p className="text-xs text-red-600">{couponError}</p>}
                 </div>
               ) : (
                 <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-md p-3">
                   <div className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      className="w-5 h-5 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
                     <div>
                       <p className="text-sm font-medium text-green-900">{appliedCoupon.code}</p>
-                      <p className="text-xs text-green-700">
-                        {appliedCoupon.type === 'percentage' 
-                          ? `${appliedCoupon.value}% הנחה`
-                          : `${formatCurrency(appliedCoupon.value)} הנחה`
-                        }
-                      </p>
+                      <p className="text-xs text-green-700">{discountPercent}% הנחה</p>
                     </div>
                   </div>
                   <button
@@ -431,7 +475,12 @@ export default function CartPage() {
                     className="text-green-600 hover:text-green-700"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -455,24 +504,26 @@ export default function CartPage() {
               </div>
             </div>
             <div className="border-t pt-3 flex justify-between text-base font-bold text-gray-900">
-              <span>סה"כ לתשלום:</span>
+              <span>סה&quot;כ לתשלום:</span>
               <span>{formatCurrency(finalTotal)}</span>
             </div>
             <button
               type="button"
-              onClick={() => router.push("/checkout")}
+              onClick={() => router.push('/checkout')}
               className="w-full text-white font-bold py-3 rounded-lg transition-all duration-300"
-              style={{ 
+              style={{
                 background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                boxShadow: '0 4px 12px rgba(8, 145, 178, 0.3)'
+                boxShadow: '0 4px 12px rgba(8, 145, 178, 0.3)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                e.currentTarget.style.background =
+                  'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
                 e.currentTarget.style.transform = 'translateY(-2px)';
                 e.currentTarget.style.boxShadow = '0 6px 16px rgba(8, 145, 178, 0.4)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                e.currentTarget.style.background =
+                  'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
                 e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
               }}
@@ -482,13 +533,14 @@ export default function CartPage() {
             <Link
               href="/products"
               className="block w-full text-center font-medium py-3 rounded-lg transition-all duration-300"
-              style={{ 
+              style={{
                 backgroundColor: 'white',
                 border: '2px solid #1e3a8a',
-                color: '#1e3a8a'
+                color: '#1e3a8a',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                e.currentTarget.style.background =
+                  'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
                 e.currentTarget.style.color = 'white';
                 e.currentTarget.style.transform = 'translateY(-2px)';
               }}
@@ -510,7 +562,7 @@ export default function CartPage() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8">
             <div className="text-center mb-6">
-              <div 
+              <div
                 className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
                 style={{ background: gradientPrimary }}
               >
@@ -522,42 +574,65 @@ export default function CartPage() {
               <p className="text-gray-600">צור הכנסה פאסיבית על ידי שיתוף מוצרים</p>
             </div>
 
-            <div 
+            <div
               className="rounded-xl p-6 mb-6"
               style={{
-                background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
-                border: '2px solid rgba(8, 145, 178, 0.3)'
+                background:
+                  'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
+                border: '2px solid rgba(8, 145, 178, 0.3)',
               }}
             >
-              <h4 className="font-bold mb-3 text-lg" style={{ color: '#1e3a8a' }}>מה תקבל כסוכן?</h4>
+              <h4 className="font-bold mb-3 text-lg" style={{ color: '#1e3a8a' }}>
+                מה תקבל כסוכן?
+              </h4>
               <ul className="space-y-2" style={{ color: '#1e3a8a' }}>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: '#0891b2' }}>✓</span>
-                  <span><strong>עמלות של 10%</strong> על כל מכירה שתבצע</span>
+                  <span className="font-bold" style={{ color: '#0891b2' }}>
+                    ✓
+                  </span>
+                  <span>
+                    <strong>עמלות של 10%</strong> על כל מכירה שתבצע
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: '#0891b2' }}>✓</span>
-                  <span><strong>קוד קופון ייחודי</strong> לשיתוף עם חברים</span>
+                  <span className="font-bold" style={{ color: '#0891b2' }}>
+                    ✓
+                  </span>
+                  <span>
+                    <strong>קוד קופון ייחודי</strong> לשיתוף עם חברים
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: '#0891b2' }}>✓</span>
-                  <span><strong>דשבורד סוכן מתקדם</strong> עם סטטיסטיקות</span>
+                  <span className="font-bold" style={{ color: '#0891b2' }}>
+                    ✓
+                  </span>
+                  <span>
+                    <strong>דשבורד סוכן מתקדם</strong> עם סטטיסטיקות
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: '#0891b2' }}>✓</span>
-                  <span><strong>מעקב אחר הרווחים</strong> בזמן אמת</span>
+                  <span className="font-bold" style={{ color: '#0891b2' }}>
+                    ✓
+                  </span>
+                  <span>
+                    <strong>מעקב אחר הרווחים</strong> בזמן אמת
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: '#0891b2' }}>✓</span>
-                  <span><strong>בונוסים ותגמולים</strong> למוכרים מצטיינים</span>
+                  <span className="font-bold" style={{ color: '#0891b2' }}>
+                    ✓
+                  </span>
+                  <span>
+                    <strong>בונוסים ותגמולים</strong> למוכרים מצטיינים
+                  </span>
                 </li>
               </ul>
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
               <p className="text-sm text-blue-800">
-                <strong>שים לב:</strong> השדרוג הוא חד-פעמי ולא ניתן לבטל אותו. 
-                לאחר השדרוג תקבל גישה לדשבורד הסוכנים ותוכל להתחיל להרוויח!
+                <strong>שים לב:</strong> השדרוג הוא חד-פעמי ולא ניתן לבטל אותו. לאחר השדרוג תקבל
+                גישה לדשבורד הסוכנים ותוכל להתחיל להרוויח!
               </p>
             </div>
 
@@ -577,13 +652,25 @@ export default function CartPage() {
                 {upgrading ? (
                   <span className="flex items-center justify-center gap-2">
                     <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
                     </svg>
                     משדרג...
                   </span>
                 ) : (
-                  "כן, אני רוצה להפוך לסוכן!"
+                  'כן, אני רוצה להפוך לסוכן!'
                 )}
               </button>
               <button

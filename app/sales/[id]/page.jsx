@@ -1,43 +1,43 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import MainLayout from "@/app/components/layout/MainLayout";
-import SaleStatusBadge from "@/app/components/sales/SaleStatusBadge";
-import AdminActions from "@/app/components/sales/AdminActions";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import MainLayout from '@/app/components/layout/MainLayout';
+import SaleStatusBadge from '@/app/components/sales/SaleStatusBadge';
+import AdminActions from '@/app/components/sales/AdminActions';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export default function SaleDetailsPage({ params }) {
   const router = useRouter();
   const { id } = params;
-  
+
   const [sale, setSale] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [user, setUser] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Form state for editable fields (admin only)
   const [editableFields, setEditableFields] = useState({
-    customerName: "",
-    customerPhone: "",
-    salePrice: "",
-    status: ""
+    customerName: '',
+    customerPhone: '',
+    salePrice: '',
+    status: '',
   });
 
   // Fetch current user
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        const res = await fetch('/api/auth/me', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
         }
       } catch (error) {
-        console.error("Failed to fetch user:", error);
+        console.error('Failed to fetch user:', error);
       }
     }
 
@@ -48,37 +48,37 @@ export default function SaleDetailsPage({ params }) {
   useEffect(() => {
     async function fetchSaleDetails() {
       try {
-        const res = await fetch(`/api/sales/${id}`, { cache: "no-store" });
-        
+        const res = await fetch(`/api/sales/${id}`, { cache: 'no-store' });
+
         if (!res.ok) {
           if (res.status === 401) {
-            setError("אנא התחבר כדי לצפות בפרטי המכירה");
+            setError('אנא התחבר כדי לצפות בפרטי המכירה');
             return;
           }
           if (res.status === 403) {
-            setError("אין לך הרשאה לצפות בפריט זה");
+            setError('אין לך הרשאה לצפות בפריט זה');
             return;
           }
           if (res.status === 404) {
-            setError("המכירה לא נמצאה");
+            setError('המכירה לא נמצאה');
             return;
           }
-          throw new Error("Failed to load sale details");
+          throw new Error('Failed to load sale details');
         }
-        
+
         const data = await res.json();
         setSale(data);
-        
+
         // Initialize editable fields with current values
         setEditableFields({
-          customerName: data.customerName || "",
-          customerPhone: data.customerPhone || "",
-          salePrice: data.salePrice || "",
-          status: data.status || "pending"
+          customerName: data.customerName || '',
+          customerPhone: data.customerPhone || '',
+          salePrice: data.salePrice || '',
+          status: data.status || 'pending',
         });
       } catch (error) {
-        console.error("Error fetching sale details:", error);
-        setError("אירעה שגיאה בטעינת פרטי המכירה");
+        console.error('Error fetching sale details:', error);
+        setError('אירעה שגיאה בטעינת פרטי המכירה');
       } finally {
         setLoading(false);
       }
@@ -89,14 +89,14 @@ export default function SaleDetailsPage({ params }) {
     }
   }, [id]);
 
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user?.role === 'admin';
 
   // Handle field changes (admin only)
   const handleFieldChange = (e) => {
     const { name, value } = e.target;
-    setEditableFields(prev => ({
+    setEditableFields((prev) => ({
       ...prev,
-      [name]: name === "salePrice" ? Number(value) : value
+      [name]: name === 'salePrice' ? Number(value) : value,
     }));
   };
 
@@ -106,12 +106,12 @@ export default function SaleDetailsPage({ params }) {
     if (!value) return;
 
     // Remove non-digits
-    const digits = value.replace(/\D/g, "");
-    
+    const digits = value.replace(/\D/g, '');
+
     // Format as Israeli phone number
     if (digits.length >= 10) {
-      const formatted = digits.slice(0, 3) + "-" + digits.slice(3, 10);
-      setEditableFields(prev => ({ ...prev, customerPhone: formatted }));
+      const formatted = digits.slice(0, 3) + '-' + digits.slice(3, 10);
+      setEditableFields((prev) => ({ ...prev, customerPhone: formatted }));
     }
   };
 
@@ -122,37 +122,37 @@ export default function SaleDetailsPage({ params }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isAdmin || isSubmitting) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const res = await fetch(`/api/sales/${id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           customerName: editableFields.customerName,
-          customerPhone: editableFields.customerPhone.replace(/\D/g, ""), // Send only digits
+          customerPhone: editableFields.customerPhone.replace(/\D/g, ''), // Send only digits
           salePrice: Number(editableFields.salePrice),
-          status: editableFields.status
+          status: editableFields.status,
         }),
       });
-      
+
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to update sale");
+        throw new Error(data.error || 'Failed to update sale');
       }
-      
+
       // Update local state with response data
       const updatedSale = await res.json();
       setSale(updatedSale);
-      
+
       // Show success message
-      alert("המכירה עודכנה בהצלחה"); // Replace with toast in production
+      alert('המכירה עודכנה בהצלחה'); // Replace with toast in production
     } catch (error) {
-      console.error("Submit error:", error);
-      alert("פעולה נכשלה, נסה שוב"); // Replace with toast in production
+      console.error('Submit error:', error);
+      alert('פעולה נכשלה, נסה שוב'); // Replace with toast in production
     } finally {
       setIsSubmitting(false);
     }
@@ -161,12 +161,12 @@ export default function SaleDetailsPage({ params }) {
   // Format date helper
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat("he-IL", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Intl.DateTimeFormat('he-IL', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
     }).format(date);
   };
 
@@ -174,10 +174,7 @@ export default function SaleDetailsPage({ params }) {
     <MainLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">פרטי מכירה</h1>
-        <Link
-          href="/sales"
-          className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
-        >
+        <Link href="/sales" className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100">
           חזרה למכירות
         </Link>
       </div>
@@ -200,39 +197,37 @@ export default function SaleDetailsPage({ params }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-lg font-semibold mb-4">פרטי מכירה</h3>
-                  
+
                   <div className="mb-4">
                     <label className="block mb-1 text-sm font-medium">מזהה מכירה</label>
-                    <div className="p-2 bg-gray-50 rounded border border-gray-200">
-                      {sale._id}
-                    </div>
+                    <div className="p-2 bg-gray-50 rounded border border-gray-200">{sale._id}</div>
                   </div>
-                  
+
                   <div className="mb-4">
                     <label className="block mb-1 text-sm font-medium">תאריך יצירה</label>
                     <div className="p-2 bg-gray-50 rounded border border-gray-200">
                       {formatDate(sale.createdAt)}
                     </div>
                   </div>
-                  
+
                   <div className="mb-4">
                     <label className="block mb-1 text-sm font-medium">סוכן</label>
                     <div className="p-2 bg-gray-50 rounded border border-gray-200">
-                      {sale.agentId || "לא ידוע"}
+                      {sale.agentId || 'לא ידוע'}
                     </div>
                   </div>
-                  
+
                   <div className="mb-4">
                     <label className="block mb-1 text-sm font-medium">מוצר</label>
                     <div className="p-2 bg-gray-50 rounded border border-gray-200">
-                      {sale.productId?.name || "מוצר לא ידוע"}
+                      {sale.productId?.name || 'מוצר לא ידוע'}
                     </div>
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="text-lg font-semibold mb-4">פרטים לעריכה</h3>
-                  
+
                   <div className="mb-4">
                     <label htmlFor="customerName" className="block mb-1 text-sm font-medium">
                       שם לקוח
@@ -247,7 +242,7 @@ export default function SaleDetailsPage({ params }) {
                       disabled={isSubmitting}
                     />
                   </div>
-                  
+
                   <div className="mb-4">
                     <label htmlFor="customerPhone" className="block mb-1 text-sm font-medium">
                       טלפון לקוח
@@ -263,7 +258,7 @@ export default function SaleDetailsPage({ params }) {
                       disabled={isSubmitting}
                     />
                   </div>
-                  
+
                   <div className="mb-4">
                     <label htmlFor="salePrice" className="block mb-1 text-sm font-medium">
                       מחיר מכירה
@@ -283,7 +278,7 @@ export default function SaleDetailsPage({ params }) {
                       עמלה מחושבת: ₪{calculatedCommission.toFixed(2)}
                     </p>
                   </div>
-                  
+
                   <div className="mb-4">
                     <label htmlFor="status" className="block mb-1 text-sm font-medium">
                       סטטוס
@@ -304,19 +299,16 @@ export default function SaleDetailsPage({ params }) {
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-6 flex justify-between">
-                <AdminActions 
-                  saleId={sale._id} 
-                  isAdmin={isAdmin} 
-                />
-                
+                <AdminActions saleId={sale._id} isAdmin={isAdmin} />
+
                 <button
                   type="submit"
                   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "שומר..." : "שמור שינויים"}
+                  {isSubmitting ? 'שומר...' : 'שמור שינויים'}
                 </button>
               </div>
             </form>
@@ -325,51 +317,51 @@ export default function SaleDetailsPage({ params }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 className="text-lg font-semibold mb-4">פרטי מכירה</h3>
-                
+
                 <div className="mb-4">
                   <p className="text-sm text-gray-500">מזהה מכירה</p>
                   <p>{sale._id}</p>
                 </div>
-                
+
                 <div className="mb-4">
                   <p className="text-sm text-gray-500">תאריך יצירה</p>
                   <p>{formatDate(sale.createdAt)}</p>
                 </div>
-                
+
                 <div className="mb-4">
                   <p className="text-sm text-gray-500">סוכן</p>
-                  <p>{sale.agentId || "לא ידוע"}</p>
+                  <p>{sale.agentId || 'לא ידוע'}</p>
                 </div>
-                
+
                 <div className="mb-4">
                   <p className="text-sm text-gray-500">מוצר</p>
-                  <p>{sale.productId?.name || "מוצר לא ידוע"}</p>
+                  <p>{sale.productId?.name || 'מוצר לא ידוע'}</p>
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="text-lg font-semibold mb-4">פרטי לקוח ותשלום</h3>
-                
+
                 <div className="mb-4">
                   <p className="text-sm text-gray-500">שם לקוח</p>
                   <p>{sale.customerName}</p>
                 </div>
-                
+
                 <div className="mb-4">
                   <p className="text-sm text-gray-500">טלפון לקוח</p>
                   <p>{sale.customerPhone}</p>
                 </div>
-                
+
                 <div className="mb-4">
                   <p className="text-sm text-gray-500">מחיר מכירה</p>
                   <p>₪{sale.salePrice.toFixed(2)}</p>
                 </div>
-                
+
                 <div className="mb-4">
                   <p className="text-sm text-gray-500">עמלה</p>
                   <p>₪{sale.commission.toFixed(2)}</p>
                 </div>
-                
+
                 <div className="mb-4">
                   <p className="text-sm text-gray-500">סטטוס</p>
                   <div className="mt-1">

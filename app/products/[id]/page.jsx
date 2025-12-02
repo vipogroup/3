@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-import { getProductById, fetchProductById } from "@/app/lib/products";
-import { useCartContext } from "@/app/context/CartContext";
-import { useTheme } from "@/app/context/ThemeContext";
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
+import { getProductById, fetchProductById } from '@/app/lib/products';
+import { useCartContext } from '@/app/context/CartContext';
+import { useTheme } from '@/app/context/ThemeContext';
 
 export default function ProductPage() {
   const params = useParams();
@@ -31,22 +31,22 @@ export default function ProductPage() {
     buttonGradient,
     borderSoftColor,
   } = useMemo(() => {
-    const primary = themeSettings?.primaryColor || "#4f46e5";
-    const secondary = themeSettings?.secondaryColor || "#4338ca";
-    const accent = themeSettings?.accentColor || "#ec4899";
-    const text = themeSettings?.textColor || "#1f2937";
+    const primary = themeSettings?.primaryColor || '#4f46e5';
+    const secondary = themeSettings?.secondaryColor || '#4338ca';
+    const accent = themeSettings?.accentColor || '#ec4899';
+    const text = themeSettings?.textColor || '#1f2937';
     const background =
       themeSettings?.backgroundGradient ||
       `linear-gradient(135deg, ${primary} 0%, ${secondary} 50%, ${accent} 100%)`;
     const cardBg =
       themeSettings?.cardGradient ||
-      "linear-gradient(145deg, rgba(255,255,255,0.92) 0%, rgba(240,246,255,0.98) 100%)";
+      'linear-gradient(145deg, rgba(255,255,255,0.92) 0%, rgba(240,246,255,0.98) 100%)';
     const buttonBg =
       themeSettings?.buttonGradient ||
       `linear-gradient(135deg, ${primary} 0%, ${secondary} 48%, ${accent} 100%)`;
     const borderColor = themeSettings?.primaryColor
       ? `${themeSettings.primaryColor}33`
-      : "rgba(79,70,229,0.28)";
+      : 'rgba(79,70,229,0.28)';
 
     return {
       primaryColor: primary,
@@ -64,8 +64,8 @@ export default function ProductPage() {
     () =>
       themeSettings?.backgroundColor
         ? `${themeSettings.backgroundColor}dd`
-        : "rgba(255,255,255,0.85)",
-    [themeSettings]
+        : 'rgba(255,255,255,0.85)',
+    [themeSettings],
   );
 
   const loadProduct = useCallback(async () => {
@@ -95,7 +95,7 @@ export default function ProductPage() {
         setProductError(true);
       }
     } catch (error) {
-      console.error("Failed to load product", error);
+      console.error('Failed to load product', error);
       if (!cached) {
         setProduct(null);
         setProductError(true);
@@ -108,7 +108,7 @@ export default function ProductPage() {
     loadProduct();
     async function fetchUser() {
       try {
-        const res = await fetch("/api/auth/me");
+        const res = await fetch('/api/auth/me');
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
@@ -124,8 +124,8 @@ export default function ProductPage() {
     const update = () => {
       loadProduct();
     };
-    window.addEventListener("productsUpdated", update);
-    return () => window.removeEventListener("productsUpdated", update);
+    window.addEventListener('productsUpdated', update);
+    return () => window.removeEventListener('productsUpdated', update);
   }, [params.id, loadProduct]);
 
   useEffect(() => setSelectedMediaIndex(0), [product?._id]);
@@ -135,7 +135,10 @@ export default function ProductPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 px-10 py-12 text-center max-w-md">
           <div className="flex items-center justify-center mb-6">
-            <div className="h-12 w-12 rounded-full border-4 border-gray-200 animate-spin" style={{ borderTopColor: '#1e3a8a', borderBottomColor: '#0891b2' }}></div>
+            <div
+              className="h-12 w-12 rounded-full border-4 border-gray-200 animate-spin"
+              style={{ borderTopColor: '#1e3a8a', borderBottomColor: '#0891b2' }}
+            ></div>
           </div>
           <h2 className="text-xl font-semibold text-gray-900 mb-2">טוען מוצר...</h2>
           <p className="text-gray-600">אנא המתן</p>
@@ -150,20 +153,22 @@ export default function ProductPage() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center max-w-md mx-auto">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">מוצר לא נמצא</h1>
           <p className="text-gray-600 mb-6">המוצר שחיפשת אינו קיים במערכת</p>
-          <Link 
-            href="/products" 
+          <Link
+            href="/products"
             className="inline-block text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300"
-            style={{ 
+            style={{
               background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)'
+              boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+              e.currentTarget.style.background =
+                'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
               e.currentTarget.style.transform = 'translateY(-2px)';
               e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+              e.currentTarget.style.background =
+                'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = '0 2px 8px rgba(8, 145, 178, 0.2)';
             }}
@@ -177,28 +182,27 @@ export default function ProductPage() {
 
   const imageCandidates = [
     product.image,
-    ...(Array.isArray(product.images) ? product.images : [])
+    ...(Array.isArray(product.images) ? product.images : []),
   ].filter(Boolean);
 
   const uniqueImages = [...new Set(imageCandidates)].slice(0, 3);
 
   const mediaItems = [
-    ...uniqueImages.map((src) => ({ type: "image", src })),
-    ...(product.videoUrl ? [{ type: "video", src: product.videoUrl }] : [])
+    ...uniqueImages.map((src) => ({ type: 'image', src })),
+    ...(product.videoUrl ? [{ type: 'video', src: product.videoUrl }] : []),
   ];
 
   if (mediaItems.length === 0) {
     mediaItems.push({
-      type: "image",
-      src: "https://via.placeholder.com/800x600?text=No+Image"
+      type: 'image',
+      src: 'https://via.placeholder.com/800x600?text=No+Image',
     });
   }
 
   const selectedMedia = mediaItems[selectedMediaIndex];
 
   const hasDiscount =
-    typeof product.originalPrice === "number" &&
-    product.originalPrice > product.price;
+    typeof product.originalPrice === 'number' && product.originalPrice > product.price;
 
   const discountPercent = hasDiscount
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -206,7 +210,7 @@ export default function ProductPage() {
 
   const handleBuyNow = () => {
     addItem(product, quantity);
-    router.push("/checkout");
+    router.push('/checkout');
   };
 
   return (
@@ -215,22 +219,19 @@ export default function ProductPage() {
         {/* Product Content */}
         <div className="bg-white">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
-
             {/* Left: Image Gallery */}
             <div>
               <div
                 className={`relative ${
-                  selectedMedia.type === "video"
-                    ? "aspect-video"
-                    : "aspect-square"
+                  selectedMedia.type === 'video' ? 'aspect-video' : 'aspect-square'
                 } border border-gray-200 rounded-lg overflow-hidden mb-3 bg-gray-50`}
               >
-                {selectedMedia.type === "video" ? (
+                {selectedMedia.type === 'video' ? (
                   <iframe src={selectedMedia.src} className="w-full h-full" allowFullScreen />
                 ) : (
                   <Image
-                    src={selectedMedia.src || "https://placehold.co/600x600?text=VIPO"}
-                    alt={product?.name || "תמונה של מוצר"}
+                    src={selectedMedia.src || 'https://placehold.co/600x600?text=VIPO'}
+                    alt={product?.name || 'תמונה של מוצר'}
                     fill
                     sizes="(min-width: 1024px) 40vw, 100vw"
                     className="object-cover"
@@ -239,11 +240,11 @@ export default function ProductPage() {
                 )}
 
                 {hasDiscount && (
-                  <div 
+                  <div
                     className="absolute top-2 right-2 text-white px-2 py-1 rounded-md text-xs font-bold shadow-md"
-                    style={{ 
+                    style={{
                       background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
-                      transform: 'rotate(-8deg)'
+                      transform: 'rotate(-8deg)',
                     }}
                   >
                     -{discountPercent}%
@@ -258,7 +259,7 @@ export default function ProductPage() {
                     onClick={() => setSelectedMediaIndex(i)}
                     className="relative w-16 h-16 rounded-md overflow-hidden border-2 transition"
                     style={{
-                      borderColor: i === selectedMediaIndex ? '#0891b2' : '#e5e7eb'
+                      borderColor: i === selectedMediaIndex ? '#0891b2' : '#e5e7eb',
                     }}
                     onMouseEnter={(e) => {
                       if (i !== selectedMediaIndex) e.currentTarget.style.borderColor = '#0891b2';
@@ -267,14 +268,14 @@ export default function ProductPage() {
                       if (i !== selectedMediaIndex) e.currentTarget.style.borderColor = '#e5e7eb';
                     }}
                   >
-                    {item.type === "video" ? (
+                    {item.type === 'video' ? (
                       <div className="w-full h-full bg-black/80 text-white flex items-center justify-center text-xs font-semibold tracking-wide">
                         וידאו
                       </div>
                     ) : (
                       <Image
-                        src={item.src || "https://placehold.co/80x80?text=VIPO"}
-                        alt={product?.name || "תצוגת מוצר"}
+                        src={item.src || 'https://placehold.co/80x80?text=VIPO'}
+                        alt={product?.name || 'תצוגת מוצר'}
                         fill
                         sizes="80px"
                         className="object-cover"
@@ -290,24 +291,24 @@ export default function ProductPage() {
             <div className="flex flex-col gap-2">
               {/* Category */}
               {product.category && (
-                <Link 
-                  href="/products" 
+                <Link
+                  href="/products"
                   className="text-xs font-medium inline-block transition-colors duration-300"
                   style={{ color: '#0891b2' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = '#1e3a8a'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = '#0891b2'}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#1e3a8a')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#0891b2')}
                 >
                   {product.category}
                 </Link>
               )}
 
-              <h1 
+              <h1
                 className="text-2xl lg:text-3xl font-bold leading-tight mb-1"
-                style={{ 
+                style={{
                   background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
+                  backgroundClip: 'text',
                 }}
               >
                 {product.name}
@@ -359,9 +360,7 @@ export default function ProductPage() {
                         ✓ במלאי ({product.stockCount} יחידות)
                       </span>
                     ) : (
-                      <span className="text-sm text-red-600 font-medium">
-                        אזל מהמלאי
-                      </span>
+                      <span className="text-sm text-red-600 font-medium">אזל מהמלאי</span>
                     )}
                   </div>
                 )}
@@ -369,16 +368,22 @@ export default function ProductPage() {
                 {/* Group Purchase Details */}
                 {product.purchaseType === 'group' && product.groupPurchaseDetails && (
                   <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <div className="text-sm font-semibold text-blue-900 mb-2">
-                      🏭 רכישה קבוצתית
-                    </div>
+                    <div className="text-sm font-semibold text-blue-900 mb-2">🏭 רכישה קבוצתית</div>
                     <div className="text-sm text-blue-700 space-y-1">
-                      <div>הזמנות: {product.groupPurchaseDetails.currentQuantity || 0}/{product.groupPurchaseDetails.minQuantity}</div>
-                      <div>זמן אספקה: ~{product.groupPurchaseDetails.totalDays || (product.groupPurchaseDetails.closingDays + product.groupPurchaseDetails.shippingDays)} ימים</div>
+                      <div>
+                        הזמנות: {product.groupPurchaseDetails.currentQuantity || 0}/
+                        {product.groupPurchaseDetails.minQuantity}
+                      </div>
+                      <div>
+                        זמן אספקה: ~
+                        {product.groupPurchaseDetails.totalDays ||
+                          product.groupPurchaseDetails.closingDays +
+                            product.groupPurchaseDetails.shippingDays}{' '}
+                        ימים
+                      </div>
                     </div>
                   </div>
                 )}
-
               </div>
 
               {/* Quantity Selector */}
@@ -408,17 +413,19 @@ export default function ProductPage() {
                 <button
                   onClick={handleBuyNow}
                   className="w-full text-white py-3 rounded-lg font-bold transition-all duration-300"
-                  style={{ 
+                  style={{
                     background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                    boxShadow: '0 4px 12px rgba(8, 145, 178, 0.3)'
+                    boxShadow: '0 4px 12px rgba(8, 145, 178, 0.3)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                    e.currentTarget.style.background =
+                      'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                     e.currentTarget.style.boxShadow = '0 6px 16px rgba(8, 145, 178, 0.4)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                    e.currentTarget.style.background =
+                      'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
                     e.currentTarget.style.transform = 'translateY(0)';
                     e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
                   }}
@@ -428,13 +435,14 @@ export default function ProductPage() {
                 <button
                   onClick={() => addItem(product, quantity)}
                   className="w-full text-white py-3 rounded-lg font-medium transition-all duration-300"
-                  style={{ 
+                  style={{
                     background: 'white',
                     color: '#1e3a8a',
-                    border: '2px solid #1e3a8a'
+                    border: '2px solid #1e3a8a',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                    e.currentTarget.style.background =
+                      'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
                     e.currentTarget.style.color = 'white';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                   }}
@@ -449,48 +457,64 @@ export default function ProductPage() {
               </div>
 
               {/* Features */}
-              {product.features && product.features.length > 0 && product.features.some(f => f) && (
-                <div 
-                  className="mt-4 rounded-xl p-5"
-                  style={{
-                    border: '2px solid transparent',
-                    backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                    backgroundOrigin: 'border-box',
-                    backgroundClip: 'padding-box, border-box',
-                    boxShadow: '0 2px 10px rgba(8, 145, 178, 0.08)'
-                  }}
-                >
-                  <h2 className="text-lg font-bold mb-4" style={{ color: '#1e3a8a' }}>
-                    תכונות עיקריות
-                  </h2>
-                  <ul className="space-y-3">
-                    {product.features.filter(f => f).map((feature, i) => (
-                      <li key={i} className="flex items-start gap-3 text-gray-700">
-                        <div 
-                          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-                        >
-                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <span className="flex-1">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {product.features &&
+                product.features.length > 0 &&
+                product.features.some((f) => f) && (
+                  <div
+                    className="mt-4 rounded-xl p-5"
+                    style={{
+                      border: '2px solid transparent',
+                      backgroundImage:
+                        'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                      backgroundOrigin: 'border-box',
+                      backgroundClip: 'padding-box, border-box',
+                      boxShadow: '0 2px 10px rgba(8, 145, 178, 0.08)',
+                    }}
+                  >
+                    <h2 className="text-lg font-bold mb-4" style={{ color: '#1e3a8a' }}>
+                      תכונות עיקריות
+                    </h2>
+                    <ul className="space-y-3">
+                      {product.features
+                        .filter((f) => f)
+                        .map((feature, i) => (
+                          <li key={i} className="flex items-start gap-3 text-gray-700">
+                            <div
+                              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+                              style={{
+                                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                              }}
+                            >
+                              <svg
+                                className="w-4 h-4 text-white"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <span className="flex-1">{feature}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
 
               {/* Technical Specs */}
               {product.specs && Object.keys(product.specs).length > 0 && (
-                <div 
+                <div
                   className="mt-4 rounded-xl p-5"
                   style={{
                     border: '2px solid transparent',
-                    backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                    backgroundImage:
+                      'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
                     backgroundOrigin: 'border-box',
                     backgroundClip: 'padding-box, border-box',
-                    boxShadow: '0 2px 10px rgba(8, 145, 178, 0.08)'
+                    boxShadow: '0 2px 10px rgba(8, 145, 178, 0.08)',
                   }}
                 >
                   <h2 className="text-lg font-bold mb-4" style={{ color: '#1e3a8a' }}>
@@ -498,14 +522,20 @@ export default function ProductPage() {
                   </h2>
                   <div className="bg-gradient-to-br from-blue-50/30 to-cyan-50/30 rounded-lg p-4">
                     <dl className="space-y-3">
-                      {Object.entries(product.specs).map(([key, value]) => (
-                        value && (
-                          <div key={key} className="flex justify-between py-2 border-b border-gray-200 last:border-0">
-                            <dt className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>{key}:</dt>
-                            <dd className="text-sm font-medium text-gray-700">{value}</dd>
-                          </div>
-                        )
-                      ))}
+                      {Object.entries(product.specs).map(
+                        ([key, value]) =>
+                          value && (
+                            <div
+                              key={key}
+                              className="flex justify-between py-2 border-b border-gray-200 last:border-0"
+                            >
+                              <dt className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>
+                                {key}:
+                              </dt>
+                              <dd className="text-sm font-medium text-gray-700">{value}</dd>
+                            </div>
+                          ),
+                      )}
                     </dl>
                   </div>
                 </div>
@@ -513,14 +543,15 @@ export default function ProductPage() {
 
               {/* Description */}
               {product.fullDescription && (
-                <div 
+                <div
                   className="mt-4 rounded-xl p-5"
                   style={{
                     border: '2px solid transparent',
-                    backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                    backgroundImage:
+                      'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
                     backgroundOrigin: 'border-box',
                     backgroundClip: 'padding-box, border-box',
-                    boxShadow: '0 2px 10px rgba(8, 145, 178, 0.08)'
+                    boxShadow: '0 2px 10px rgba(8, 145, 178, 0.08)',
                   }}
                 >
                   <h2 className="text-lg font-bold mb-3" style={{ color: '#1e3a8a' }}>
@@ -530,7 +561,6 @@ export default function ProductPage() {
                 </div>
               )}
             </div>
-
           </div>
         </div>
 
@@ -539,14 +569,15 @@ export default function ProductPage() {
           <Link
             href="/products"
             className="inline-flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all duration-300"
-            style={{ 
+            style={{
               background: 'white',
               border: '2px solid #1e3a8a',
               color: '#1e3a8a',
-              boxShadow: '0 2px 8px rgba(30, 58, 138, 0.1)'
+              boxShadow: '0 2px 8px rgba(30, 58, 138, 0.1)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+              e.currentTarget.style.background =
+                'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
               e.currentTarget.style.color = 'white';
               e.currentTarget.style.transform = 'translateX(5px)';
               e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
@@ -575,7 +606,6 @@ export default function ProductPage() {
             <span>חזרה למוצרים</span>
           </Link>
         </div>
-
       </div>
     </div>
   );

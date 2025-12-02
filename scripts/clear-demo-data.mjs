@@ -1,16 +1,18 @@
 import { MongoClient } from 'mongodb';
 
-const uri = process.env.MONGODB_URI || "mongodb+srv://danielco1:ZAQ!1qaz@cluster0.mongodb.net/vipogroup?retryWrites=true&w=majority";
+const uri =
+  process.env.MONGODB_URI ||
+  'mongodb+srv://danielco1:ZAQ!1qaz@cluster0.mongodb.net/vipogroup?retryWrites=true&w=majority';
 
 async function clearDemoData() {
   const client = new MongoClient(uri);
-  
+
   try {
     await client.connect();
     console.log('✅ Connected to MongoDB');
-    
+
     const db = client.db('vipogroup');
-    
+
     // Demo emails to delete
     const demoEmails = [
       // Agents
@@ -26,32 +28,32 @@ async function clearDemoData() {
       'moshe@customer.com',
       'lea@customer.com',
       'eli@customer.com',
-      'noa@customer.com'
+      'noa@customer.com',
     ];
-    
+
     console.log('\n🗑️  Deleting demo users...');
     const usersResult = await db.collection('users').deleteMany({
-      email: { $in: demoEmails }
+      email: { $in: demoEmails },
     });
     console.log(`✅ Deleted ${usersResult.deletedCount} users`);
-    
+
     // Get demo user IDs to delete related data
     // Since we already deleted them, we'll delete by recent dates
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
+
     console.log('\n🗑️  Deleting demo sales...');
     const salesResult = await db.collection('sales').deleteMany({
-      createdAt: { $gte: thirtyDaysAgo }
+      createdAt: { $gte: thirtyDaysAgo },
     });
     console.log(`✅ Deleted ${salesResult.deletedCount} sales`);
-    
+
     console.log('\n🗑️  Deleting demo visits...');
     const visitsResult = await db.collection('visits').deleteMany({
-      ts: { $gte: thirtyDaysAgo }
+      ts: { $gte: thirtyDaysAgo },
     });
     console.log(`✅ Deleted ${visitsResult.deletedCount} visits`);
-    
+
     console.log('\n═══════════════════════════════════════');
     console.log('✅ Demo data cleared successfully!');
     console.log('═══════════════════════════════════════');
@@ -59,7 +61,6 @@ async function clearDemoData() {
     console.log(`💰 Sales deleted: ${salesResult.deletedCount}`);
     console.log(`👀 Visits deleted: ${visitsResult.deletedCount}`);
     console.log('═══════════════════════════════════════');
-    
   } catch (error) {
     console.error('❌ Error clearing demo data:', error);
     throw error;

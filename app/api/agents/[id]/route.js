@@ -1,21 +1,17 @@
-import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
+import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
 
-import { getDb } from "@/lib/db";
-import { verify as verifyJwt } from "@/lib/auth/createToken";
-import { hashPassword } from "@/lib/auth/hash";
+import { getDb } from '@/lib/db';
+import { verify as verifyJwt } from '@/lib/auth/createToken';
+import { hashPassword } from '@/lib/auth/hash';
 
 function getToken(req) {
-  return (
-    req.cookies.get("auth_token")?.value ||
-    req.cookies.get("token")?.value ||
-    ""
-  );
+  return req.cookies.get('auth_token')?.value || req.cookies.get('token')?.value || '';
 }
 
 function ensureAdmin(req) {
   const decoded = verifyJwt(getToken(req));
-  if (!decoded || decoded.role !== "admin") {
+  if (!decoded || decoded.role !== 'admin') {
     return null;
   }
   return decoded;
@@ -32,67 +28,67 @@ function normalize(doc) {
 export async function GET(req, { params }) {
   try {
     if (!ensureAdmin(req)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const id = params?.id;
     if (!id || !ObjectId.isValid(id)) {
-      return NextResponse.json({ error: "Invalid agent id" }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid agent id' }, { status: 400 });
     }
 
     const db = await getDb();
-    const col = db.collection("users");
+    const col = db.collection('users');
     const agent = await col.findOne(
-      { _id: new ObjectId(id), role: "agent" },
+      { _id: new ObjectId(id), role: 'agent' },
       {
         projection: {
           passwordHash: 0,
           password: 0,
         },
-      }
+      },
     );
 
     if (!agent) {
-      return NextResponse.json({ error: "Agent not found" }, { status: 404 });
+      return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
     }
 
     return NextResponse.json({ agent: normalize(agent) });
   } catch (error) {
-    console.error("AGENT_GET_ERROR", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error('AGENT_GET_ERROR', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
 
 export async function PUT(req, { params }) {
   try {
     if (!ensureAdmin(req)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const id = params?.id;
     if (!id || !ObjectId.isValid(id)) {
-      return NextResponse.json({ error: "Invalid agent id" }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid agent id' }, { status: 400 });
     }
 
     const body = await req.json().catch(() => ({}));
     const updates = {};
 
-    if (typeof body.fullName === "string" && body.fullName.trim()) {
+    if (typeof body.fullName === 'string' && body.fullName.trim()) {
       updates.fullName = body.fullName.trim();
     }
 
-    if (typeof body.email === "string") {
+    if (typeof body.email === 'string') {
       const normalizedEmail = body.email.trim().toLowerCase();
       if (!normalizedEmail) {
-        return NextResponse.json({ error: "Email is required" }, { status: 400 });
+        return NextResponse.json({ error: 'Email is required' }, { status: 400 });
       }
       updates.email = normalizedEmail;
     }
 
-    if (typeof body.phone === "string") {
+    if (typeof body.phone === 'string') {
       const normalizedPhone = body.phone.trim();
       if (!normalizedPhone) {
-        return NextResponse.json({ error: "Phone is required" }, { status: 400 });
+        return NextResponse.json({ error: 'Phone is required' }, { status: 400 });
       }
       updates.phone = normalizedPhone;
     }
@@ -111,34 +107,34 @@ export async function PUT(req, { params }) {
       }
     }
 
-    if (typeof body.couponStatus === "string") {
+    if (typeof body.couponStatus === 'string') {
       const status = body.couponStatus.trim().toLowerCase();
-      if (["active", "inactive"].includes(status)) {
+      if (['active', 'inactive'].includes(status)) {
         updates.couponStatus = status;
       }
     }
 
-    if (Object.prototype.hasOwnProperty.call(body, "isActive")) {
+    if (Object.prototype.hasOwnProperty.call(body, 'isActive')) {
       updates.isActive = Boolean(body.isActive);
     }
 
-    const password = typeof body.password === "string" ? body.password.trim() : "";
+    const password = typeof body.password === 'string' ? body.password.trim() : '';
     let passwordHashUpdate = null;
     if (password) {
       passwordHashUpdate = await hashPassword(password);
     }
 
     if (!Object.keys(updates).length && !passwordHashUpdate) {
-      return NextResponse.json({ error: "Nothing to update" }, { status: 400 });
+      return NextResponse.json({ error: 'Nothing to update' }, { status: 400 });
     }
 
     const db = await getDb();
-    const col = db.collection("users");
+    const col = db.collection('users');
     const objectId = new ObjectId(id);
 
-    const existing = await col.findOne({ _id: objectId, role: "agent" });
+    const existing = await col.findOne({ _id: objectId, role: 'agent' });
     if (!existing) {
-      return NextResponse.json({ error: "Agent not found" }, { status: 404 });
+      return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
     }
 
     if (updates.email) {
@@ -147,7 +143,7 @@ export async function PUT(req, { params }) {
         email: updates.email,
       });
       if (dupEmail) {
-        return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+        return NextResponse.json({ error: 'Email already in use' }, { status: 409 });
       }
     }
 
@@ -157,7 +153,7 @@ export async function PUT(req, { params }) {
         phone: updates.phone,
       });
       if (dupPhone) {
-        return NextResponse.json({ error: "Phone already in use" }, { status: 409 });
+        return NextResponse.json({ error: 'Phone already in use' }, { status: 409 });
       }
     }
 
@@ -172,16 +168,16 @@ export async function PUT(req, { params }) {
       updateDoc.$set.passwordHash = passwordHashUpdate;
     }
 
-    await col.updateOne({ _id: objectId, role: "agent" }, updateDoc);
+    await col.updateOne({ _id: objectId, role: 'agent' }, updateDoc);
 
     const agent = await col.findOne(
       { _id: objectId },
-      { projection: { passwordHash: 0, password: 0 } }
+      { projection: { passwordHash: 0, password: 0 } },
     );
 
     return NextResponse.json({ success: true, agent: normalize(agent) });
   } catch (error) {
-    console.error("AGENT_UPDATE_ERROR", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error('AGENT_UPDATE_ERROR', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

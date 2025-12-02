@@ -8,17 +8,17 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/vipo';
 
 async function createTestUsers() {
   const client = new MongoClient(MONGODB_URI);
-  
+
   try {
     await client.connect();
     console.log('Connected to MongoDB');
-    
+
     const db = client.db();
     const users = db.collection('users');
-    
+
     // Hash password "admin"
     const hashedPassword = await bcrypt.hash('admin', 12);
-    
+
     // Test users to create
     const testUsers = [
       {
@@ -29,7 +29,7 @@ async function createTestUsers() {
         role: 'admin',
         active: true,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         fullName: 'Agent Test',
@@ -39,7 +39,7 @@ async function createTestUsers() {
         role: 'agent',
         active: true,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         fullName: 'Customer Test',
@@ -49,31 +49,31 @@ async function createTestUsers() {
         role: 'customer',
         active: true,
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     ];
-    
+
     console.log('\n🔧 Creating test users...\n');
-    
+
     for (const user of testUsers) {
       // Check if user already exists
       const existingUser = await users.findOne({ email: user.email });
-      
+
       if (existingUser) {
         console.log(`⚠️  User ${user.email} already exists - updating password...`);
-        
+
         // Update existing user with new password
         await users.updateOne(
           { email: user.email },
-          { 
-            $set: { 
+          {
+            $set: {
               password: hashedPassword,
               active: true,
-              updatedAt: new Date()
-            }
-          }
+              updatedAt: new Date(),
+            },
+          },
         );
-        
+
         console.log(`✅ Updated ${user.role}: ${user.email} | Password: admin`);
       } else {
         // Create new user
@@ -81,7 +81,7 @@ async function createTestUsers() {
         console.log(`✅ Created ${user.role}: ${user.email} | Password: admin`);
       }
     }
-    
+
     console.log('\n🎉 Test users created successfully!\n');
     console.log('📋 Login credentials:');
     console.log('┌─────────────────────────────────────────────────┐');
@@ -98,7 +98,6 @@ async function createTestUsers() {
     console.log('│ Password: admin                                 │');
     console.log('└─────────────────────────────────────────────────┘');
     console.log('\n🚀 Ready to test all dashboards!\n');
-    
   } catch (error) {
     console.error('❌ Error creating test users:', error);
   } finally {

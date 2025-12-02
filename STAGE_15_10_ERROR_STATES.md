@@ -1,6 +1,7 @@
 # 🎭 Stage 15.10 - Error & Empty States
 
 ## תאריך: 2025-11-01
+
 ## סטטוס: ✅ Complete
 
 ---
@@ -16,7 +17,9 @@
 ## ✅ Components שנוצרו
 
 ### 1. EmptyState.jsx
+
 **תכונות:**
+
 - ✅ Empty state כללי
 - ✅ 5 predefined states
 - ✅ Action buttons
@@ -24,22 +27,25 @@
 - ✅ Accessible
 
 **Usage:**
+
 ```jsx
-import EmptyState from "@/components/EmptyState";
+import EmptyState from '@/components/EmptyState';
 
 <EmptyState
   icon="📦"
   title="אין נתונים"
   description="לא נמצאו פריטים"
   action={{
-    label: "הוסף פריט",
+    label: 'הוסף פריט',
     onClick: handleAdd,
   }}
-/>
+/>;
 ```
 
 ### 2. ErrorState
+
 **תכונות:**
+
 - ✅ Error display
 - ✅ Retry button
 - ✅ Go back button
@@ -47,19 +53,22 @@ import EmptyState from "@/components/EmptyState";
 - ✅ Accessible
 
 **Usage:**
+
 ```jsx
-import { ErrorState } from "@/components/EmptyState";
+import { ErrorState } from '@/components/EmptyState';
 
 <ErrorState
   error="שגיאה בטעינה"
   description="לא הצלחנו לטעון את הנתונים"
   onRetry={handleRetry}
   onGoBack={() => router.back()}
-/>
+/>;
 ```
 
 ### 3. ErrorBoundary
+
 **תכונות:**
+
 - ✅ Catches React errors
 - ✅ Fallback UI
 - ✅ Error logging
@@ -67,12 +76,13 @@ import { ErrorState } from "@/components/EmptyState";
 - ✅ Dev mode details
 
 **Usage:**
+
 ```jsx
-import ErrorBoundary from "@/components/ErrorBoundary";
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 <ErrorBoundary>
   <YourComponent />
-</ErrorBoundary>
+</ErrorBoundary>;
 ```
 
 ---
@@ -80,41 +90,51 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 ## 🎨 Predefined Empty States
 
 ### 1. NoDataEmpty
+
 ```jsx
 <NoDataEmpty onRefresh={handleRefresh} />
 ```
+
 - Icon: 📊
 - Title: "אין נתונים להצגה"
 - Action: "רענן"
 
 ### 2. NoResultsEmpty
+
 ```jsx
 <NoResultsEmpty onClear={handleClear} />
 ```
+
 - Icon: 🔍
 - Title: "לא נמצאו תוצאות"
 - Action: "נקה חיפוש"
 
 ### 3. NoTransactionsEmpty
+
 ```jsx
 <NoTransactionsEmpty onCreate={handleCreate} />
 ```
+
 - Icon: 💳
 - Title: "אין עסקאות עדיין"
 - Action: "צור עסקה ראשונה"
 
 ### 4. NoReferralsEmpty
+
 ```jsx
 <NoReferralsEmpty />
 ```
+
 - Icon: 👥
 - Title: "אין הפניות עדיין"
 - Action: "העתק קישור"
 
 ### 5. NoUsersEmpty
+
 ```jsx
 <NoUsersEmpty onCreate={handleCreate} />
 ```
+
 - Icon: 👤
 - Title: "אין משתמשים במערכת"
 - Action: "הוסף משתמש"
@@ -124,17 +144,19 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 ## 🔧 Additional States
 
 ### LoadingState
-```jsx
-import { LoadingState } from "@/components/EmptyState";
 
-<LoadingState message="טוען נתונים..." />
+```jsx
+import { LoadingState } from '@/components/EmptyState';
+
+<LoadingState message="טוען נתונים..." />;
 ```
 
 ### NotFoundState (404)
-```jsx
-import { NotFoundState } from "@/components/EmptyState";
 
-<NotFoundState onGoHome={() => router.push('/')} />
+```jsx
+import { NotFoundState } from '@/components/EmptyState';
+
+<NotFoundState onGoHome={() => router.push('/')} />;
 ```
 
 ---
@@ -142,9 +164,10 @@ import { NotFoundState } from "@/components/EmptyState";
 ## 📊 Usage Examples
 
 ### Example 1: Table with Empty State
+
 ```jsx
-import Table from "@/components/Table";
-import { NoTransactionsEmpty } from "@/components/EmptyState";
+import Table from '@/components/Table';
+import { NoTransactionsEmpty } from '@/components/EmptyState';
 
 function TransactionsTable({ data }) {
   if (data.length === 0) {
@@ -156,8 +179,9 @@ function TransactionsTable({ data }) {
 ```
 
 ### Example 2: API Error Handling
+
 ```jsx
-import { ErrorState } from "@/components/EmptyState";
+import { ErrorState } from '@/components/EmptyState';
 
 function DataDisplay() {
   const [data, setData] = useState(null);
@@ -174,13 +198,7 @@ function DataDisplay() {
   };
 
   if (error) {
-    return (
-      <ErrorState
-        error="שגיאה בטעינת נתונים"
-        description={error}
-        onRetry={fetchData}
-      />
-    );
+    return <ErrorState error="שגיאה בטעינת נתונים" description={error} onRetry={fetchData} />;
   }
 
   return <div>{/* Display data */}</div>;
@@ -188,17 +206,16 @@ function DataDisplay() {
 ```
 
 ### Example 3: Error Boundary
+
 ```jsx
 // app/layout.jsx
-import ErrorBoundary from "@/components/ErrorBoundary";
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
+        <ErrorBoundary>{children}</ErrorBoundary>
       </body>
     </html>
   );
@@ -206,19 +223,16 @@ export default function RootLayout({ children }) {
 ```
 
 ### Example 4: Search Results
+
 ```jsx
 function SearchResults({ query, results }) {
   if (results.length === 0) {
-    return (
-      <NoResultsEmpty
-        onClear={() => setQuery('')}
-      />
-    );
+    return <NoResultsEmpty onClear={() => setQuery('')} />;
   }
 
   return (
     <div>
-      {results.map(result => (
+      {results.map((result) => (
         <ResultCard key={result.id} {...result} />
       ))}
     </div>
@@ -246,6 +260,7 @@ function SearchResults({ query, results }) {
 ## 💡 Best Practices
 
 ### 1. Always Provide Context
+
 ```jsx
 // ❌ Bad
 <EmptyState title="אין נתונים" />
@@ -258,17 +273,19 @@ function SearchResults({ query, results }) {
 ```
 
 ### 2. Offer Actions
+
 ```jsx
 // ✅ Give users something to do
 <EmptyState
   action={{
-    label: "צור עסקה ראשונה",
+    label: 'צור עסקה ראשונה',
     onClick: handleCreate,
   }}
 />
 ```
 
 ### 3. Use Appropriate Icons
+
 ```jsx
 // Match icon to context
 📊 - Data/Charts
@@ -279,11 +296,9 @@ function SearchResults({ query, results }) {
 ```
 
 ### 4. Provide Retry Options
+
 ```jsx
-<ErrorState
-  onRetry={handleRetry}
-  onGoBack={() => router.back()}
-/>
+<ErrorState onRetry={handleRetry} onGoBack={() => router.back()} />
 ```
 
 ---

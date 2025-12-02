@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import MainLayout from "@/app/components/layout/MainLayout";
+import MainLayout from '@/app/components/layout/MainLayout';
 
 export default function ReportsPage() {
   return (

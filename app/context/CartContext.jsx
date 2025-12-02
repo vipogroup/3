@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-const STORAGE_KEY = "vipo_cart_v1";
+const STORAGE_KEY = 'vipo_cart_v1';
 
 const CartContext = createContext(null);
 
@@ -11,9 +11,9 @@ function normalizeItem(rawItem = {}) {
   const quantity = Number(rawItem.quantity) || 1;
   return {
     productId: String(rawItem.productId),
-    name: rawItem.name || "",
+    name: rawItem.name || '',
     price: Number(rawItem.price) || 0,
-    image: rawItem.image || "",
+    image: rawItem.image || '',
     originalPrice: rawItem.originalPrice ? Number(rawItem.originalPrice) : null,
     quantity: quantity < 1 ? 1 : quantity,
   };
@@ -26,20 +26,18 @@ export function CartProvider({ children }) {
 
   // Load cart from localStorage on first render (client-side only)
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          const normalized = parsed
-            .map(normalizeItem)
-            .filter(Boolean);
+          const normalized = parsed.map(normalizeItem).filter(Boolean);
           setItems(normalized);
         }
       }
     } catch (error) {
-      console.warn("Failed to load cart from storage", error);
+      console.warn('Failed to load cart from storage', error);
     } finally {
       setHydrated(true);
     }
@@ -47,11 +45,11 @@ export function CartProvider({ children }) {
 
   // Persist cart to localStorage whenever it changes
   useEffect(() => {
-    if (!hydrated || typeof window === "undefined") return;
+    if (!hydrated || typeof window === 'undefined') return;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     } catch (error) {
-      console.warn("Failed to persist cart to storage", error);
+      console.warn('Failed to persist cart to storage', error);
     }
   }, [items, hydrated]);
 
@@ -80,7 +78,7 @@ export function CartProvider({ children }) {
           name: product.name,
           price: product.price,
           originalPrice: product.originalPrice ?? null,
-          image: product.image || "",
+          image: product.image || '',
           quantity: qtyToAdd,
         },
       ];
@@ -98,19 +96,15 @@ export function CartProvider({ children }) {
   const setItemQuantity = useCallback((productId, nextQuantity) => {
     setItems((prev) => {
       const qty = Math.max(1, Number(nextQuantity) || 1);
-      return prev.map((item) =>
-        item.productId === productId ? { ...item, quantity: qty } : item
-      );
+      return prev.map((item) => (item.productId === productId ? { ...item, quantity: qty } : item));
     });
   }, []);
 
   const incrementItem = useCallback((productId) => {
     setItems((prev) =>
       prev.map((item) =>
-        item.productId === productId
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
+        item.productId === productId ? { ...item, quantity: item.quantity + 1 } : item,
+      ),
     );
   }, []);
 
@@ -120,7 +114,7 @@ export function CartProvider({ children }) {
         if (item.productId !== productId) return item;
         const nextQty = Math.max(1, item.quantity - 1);
         return { ...item, quantity: nextQty };
-      })
+      }),
     );
   }, []);
 
@@ -172,7 +166,7 @@ export function CartProvider({ children }) {
       totals,
       lastAdded,
       dismissLastAdded,
-    ]
+    ],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
@@ -181,7 +175,7 @@ export function CartProvider({ children }) {
 export function useCartContext() {
   const ctx = useContext(CartContext);
   if (!ctx) {
-    throw new Error("useCartContext must be used within CartProvider");
+    throw new Error('useCartContext must be used within CartProvider');
   }
   return ctx;
 }

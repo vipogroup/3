@@ -5,54 +5,54 @@ import { connectMongo } from '../lib/mongoose.js';
 import User from '../models/User.js';
 
 const transliterationMap = {
-  א: "a",
-  ב: "b",
-  ג: "g",
-  ד: "d",
-  ה: "h",
-  ו: "v",
-  ז: "z",
-  ח: "ch",
-  ט: "t",
-  י: "y",
-  כ: "k",
-  ך: "k",
-  ל: "l",
-  מ: "m",
-  ם: "m",
-  נ: "n",
-  ן: "n",
-  ס: "s",
-  ע: "a",
-  פ: "p",
-  ף: "p",
-  צ: "ts",
-  ץ: "ts",
-  ק: "k",
-  ר: "r",
-  ש: "sh",
-  ת: "t",
+  א: 'a',
+  ב: 'b',
+  ג: 'g',
+  ד: 'd',
+  ה: 'h',
+  ו: 'v',
+  ז: 'z',
+  ח: 'ch',
+  ט: 't',
+  י: 'y',
+  כ: 'k',
+  ך: 'k',
+  ל: 'l',
+  מ: 'm',
+  ם: 'm',
+  נ: 'n',
+  ן: 'n',
+  ס: 's',
+  ע: 'a',
+  פ: 'p',
+  ף: 'p',
+  צ: 'ts',
+  ץ: 'ts',
+  ק: 'k',
+  ר: 'r',
+  ש: 'sh',
+  ת: 't',
 };
 
-function transliterateToSlug(input = "") {
-  if (!input) return "agent";
+function transliterateToSlug(input = '') {
+  if (!input) return 'agent';
 
   const normalized = input
     .trim()
     .toLowerCase()
-    .split("")
+    .split('')
     .map((char) => {
       if (transliterationMap[char]) return transliterationMap[char];
       if (/[a-z0-9]/.test(char)) return char;
-      if (char === " ") return "-";
+      if (char === ' ') return '-';
       if (/[-_]/.test(char)) return char;
-      return "";
+      return '';
     })
-    .join("");
+    .join('');
 
-  const collapsed = normalized.replace(/[-_]{2,}/g, "-");
-  const trimmed = collapsed.replace(/^-+|-+$/g, "");
-  return trimmed || "agent";
+  const collapsed = normalized.replace(/[-_]{2,}/g, '-');
+  const trimmed = collapsed.replace(/^-+|-+$/g, '');
+  return trimmed || 'agent';
 }
 
 async function migrateAgentCoupons() {
@@ -68,9 +68,10 @@ async function migrateAgentCoupons() {
   const bulkOps = [];
 
   for (const agent of agents) {
-    const slugBase = agent.couponSlug || transliterateToSlug(agent.fullName || agent.phone || 'agent');
+    const slugBase =
+      agent.couponSlug || transliterateToSlug(agent.fullName || agent.phone || 'agent');
 
-    const currentCounter = slugCounters.get(slugBase) || (agent.couponSequence || 0);
+    const currentCounter = slugCounters.get(slugBase) || agent.couponSequence || 0;
     const nextCounter = currentCounter + 1;
     slugCounters.set(slugBase, nextCounter);
 

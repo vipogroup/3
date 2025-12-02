@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 /**
  * Form component for creating a new sale
@@ -12,33 +12,31 @@ export default function SaleForm() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-  
+
   const [formData, setFormData] = useState({
-    productId: "",
-    customerName: "",
-    customerPhone: "",
-    salePrice: ""
+    productId: '',
+    customerName: '',
+    customerPhone: '',
+    salePrice: '',
   });
 
   // Calculate commission preview (5% of sale price)
-  const commissionPreview = formData.salePrice 
-    ? Number(formData.salePrice) * 0.05 
-    : 0;
+  const commissionPreview = formData.salePrice ? Number(formData.salePrice) * 0.05 : 0;
 
   // Fetch products for dropdown
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("/api/products?active=1", { 
-          cache: "no-store" 
+        const res = await fetch('/api/products?active=1', {
+          cache: 'no-store',
         });
-        
-        if (!res.ok) throw new Error("Failed to fetch products");
-        
+
+        if (!res.ok) throw new Error('Failed to fetch products');
+
         const data = await res.json();
         setProducts(Array.isArray(data) ? data : []);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error('Error fetching products:', error);
       } finally {
         setLoading(false);
       }
@@ -50,11 +48,11 @@ export default function SaleForm() {
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear error when field is edited
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -64,44 +62,44 @@ export default function SaleForm() {
     if (!value) return;
 
     // Remove non-digits
-    const digits = value.replace(/\D/g, "");
-    
+    const digits = value.replace(/\D/g, '');
+
     // Format as Israeli phone number
     if (digits.length >= 10) {
-      const formatted = digits.slice(0, 3) + "-" + digits.slice(3, 10);
-      setFormData(prev => ({ ...prev, customerPhone: formatted }));
+      const formatted = digits.slice(0, 3) + '-' + digits.slice(3, 10);
+      setFormData((prev) => ({ ...prev, customerPhone: formatted }));
     }
   };
 
   // Validate form data
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.productId) {
-      newErrors.productId = "יש לבחור מוצר";
+      newErrors.productId = 'יש לבחור מוצר';
     }
-    
+
     if (!formData.customerName?.trim()) {
-      newErrors.customerName = "יש להזין שם לקוח";
+      newErrors.customerName = 'יש להזין שם לקוח';
     }
-    
+
     if (!formData.customerPhone) {
-      newErrors.customerPhone = "יש להזין מספר טלפון";
+      newErrors.customerPhone = 'יש להזין מספר טלפון';
     } else {
       // Validate Israeli phone number
       const phoneRegex = /^0\d{8,9}$/;
-      const digits = formData.customerPhone.replace(/\D/g, "");
+      const digits = formData.customerPhone.replace(/\D/g, '');
       if (!phoneRegex.test(digits)) {
-        newErrors.customerPhone = "יש להזין מספר טלפון ישראלי תקין";
+        newErrors.customerPhone = 'יש להזין מספר טלפון ישראלי תקין';
       }
     }
-    
+
     if (!formData.salePrice) {
-      newErrors.salePrice = "יש להזין מחיר מכירה";
+      newErrors.salePrice = 'יש להזין מחיר מכירה';
     } else if (Number(formData.salePrice) <= 0) {
-      newErrors.salePrice = "המחיר חייב להיות גדול מ-0";
+      newErrors.salePrice = 'המחיר חייב להיות גדול מ-0';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -109,38 +107,38 @@ export default function SaleForm() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm() || submitting) return;
-    
+
     setSubmitting(true);
-    
+
     try {
-      const res = await fetch("/api/sales", {
-        method: "POST",
+      const res = await fetch('/api/sales', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           productId: formData.productId,
           customerName: formData.customerName.trim(),
-          customerPhone: formData.customerPhone.replace(/\D/g, ""), // Send only digits
-          salePrice: Number(formData.salePrice)
+          customerPhone: formData.customerPhone.replace(/\D/g, ''), // Send only digits
+          salePrice: Number(formData.salePrice),
         }),
       });
-      
+
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to create sale");
+        throw new Error(data.error || 'Failed to create sale');
       }
-      
+
       // Show success message
-      alert("המכירה נוצרה בהצלחה"); // Replace with toast in production
-      
+      alert('המכירה נוצרה בהצלחה'); // Replace with toast in production
+
       // Redirect to sales page
-      router.push("/sales");
+      router.push('/sales');
     } catch (error) {
-      console.error("Submit error:", error);
-      alert("פעולה נכשלה, נסה שוב"); // Replace with toast in production
+      console.error('Submit error:', error);
+      alert('פעולה נכשלה, נסה שוב'); // Replace with toast in production
     } finally {
       setSubmitting(false);
     }
@@ -166,15 +164,13 @@ export default function SaleForm() {
           required
         >
           <option value="">בחר מוצר</option>
-          {products.map(product => (
+          {products.map((product) => (
             <option key={product._id} value={product._id}>
               {product.name} - ₪{product.price}
             </option>
           ))}
         </select>
-        {errors.productId && (
-          <p className="text-red-500 text-sm mt-1">{errors.productId}</p>
-        )}
+        {errors.productId && <p className="text-red-500 text-sm mt-1">{errors.productId}</p>}
       </div>
 
       <div className="mb-4">
@@ -191,9 +187,7 @@ export default function SaleForm() {
           disabled={submitting}
           required
         />
-        {errors.customerName && (
-          <p className="text-red-500 text-sm mt-1">{errors.customerName}</p>
-        )}
+        {errors.customerName && <p className="text-red-500 text-sm mt-1">{errors.customerName}</p>}
       </div>
 
       <div className="mb-4">
@@ -233,9 +227,7 @@ export default function SaleForm() {
           disabled={submitting}
           required
         />
-        {errors.salePrice && (
-          <p className="text-red-500 text-sm mt-1">{errors.salePrice}</p>
-        )}
+        {errors.salePrice && <p className="text-red-500 text-sm mt-1">{errors.salePrice}</p>}
       </div>
 
       <div className="mb-6 p-3 bg-blue-50 rounded">
@@ -258,7 +250,7 @@ export default function SaleForm() {
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           disabled={submitting}
         >
-          {submitting ? "שולח..." : "יצירת מכירה"}
+          {submitting ? 'שולח...' : 'יצירת מכירה'}
         </button>
       </div>
     </form>

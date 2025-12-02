@@ -2,13 +2,13 @@
  * Next.js-compatible helper: get user from cookies (used like a middleware).
  * Does NOT alter routing; existing middleware.js remains source of truth.
  */
-import { cookies } from "next/headers";
+import { cookies } from 'next/headers';
 
-import { verifyJwt } from "./createToken.js";
+import { verifyJwt } from './createToken.js';
 
 export function getUserFromRequest() {
   try {
-    const token = cookies().get("token")?.value;
+    const token = cookies().get('token')?.value;
     if (!token) return null;
     const decoded = verifyJwt(token);
     if (!decoded?.userId) return null;
@@ -32,5 +32,5 @@ export async function authMiddleware(req, res, next) {
   } catch {
     // swallow errors to avoid impacting existing behavior
   }
-  return typeof next === "function" ? next() : undefined;
+  return typeof next === 'function' ? next() : undefined;
 }

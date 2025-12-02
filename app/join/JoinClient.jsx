@@ -1,18 +1,21 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from 'react';
 
 export default function JoinClient({ refId, productId }) {
-  const safeRef = useMemo(() => (typeof refId === "string" ? refId.trim() : null), [refId]);
-  const safeProduct = useMemo(() => (typeof productId === "string" ? productId.trim() : null), [productId]);
+  const safeRef = useMemo(() => (typeof refId === 'string' ? refId.trim() : null), [refId]);
+  const safeProduct = useMemo(
+    () => (typeof productId === 'string' ? productId.trim() : null),
+    [productId],
+  );
 
   useEffect(() => {
     if (!safeRef) return;
 
     try {
-      localStorage.setItem("referrerId", safeRef);
+      localStorage.setItem('referrerId', safeRef);
     } catch (err) {
-      console.warn("Failed to persist referrerId", err);
+      console.warn('Failed to persist referrerId', err);
     }
   }, [safeRef]);
 
@@ -20,10 +23,10 @@ export default function JoinClient({ refId, productId }) {
     <section className="space-y-4">
       <div className="text-sm">
         <div>
-          Referral ID: <strong>{safeRef || "—"}</strong>
+          Referral ID: <strong>{safeRef || '—'}</strong>
         </div>
         <div>
-          Product ID: <strong>{safeProduct || "—"}</strong>
+          Product ID: <strong>{safeProduct || '—'}</strong>
         </div>
       </div>
 

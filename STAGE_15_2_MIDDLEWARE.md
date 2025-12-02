@@ -1,6 +1,7 @@
 # 🔒 Stage 15.2 - Routing & Middleware Verification
 
 ## תאריך: 2025-11-01
+
 ## סטטוס: ✅ Complete
 
 ---
@@ -16,9 +17,11 @@
 ## ✅ מה הושלם
 
 ### 1. בדיקת Middleware קיים
+
 **קובץ:** `middleware.js`
 
 **Routes מוגנים:**
+
 - `/app/*`
 - `/admin/*`
 - `/agent/*`
@@ -26,6 +29,7 @@
 - `/dashboard/*`
 
 **Routes ציבוריים:**
+
 - `/login`
 - `/admin/login`
 - `/register`
@@ -33,15 +37,19 @@
 - `/products`
 
 **לוגיקה:**
+
 ```javascript
 // 1. בדוק אם הנתיב דורש אימות
-const needsAuth = PROTECTED_PREFIXES.some(p => pathname.startsWith(p));
+const needsAuth = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
 
 // 2. אם לא דורש - המשך
 if (!needsAuth) return NextResponse.next();
 
 // 3. בדוק token בcookie
-const token = cookie.split('; ').find(s => s.startsWith('token='))?.split('=')[1];
+const token = cookie
+  .split('; ')
+  .find((s) => s.startsWith('token='))
+  ?.split('=')[1];
 
 // 4. אם אין token - הפנה ל-login
 if (!token) return NextResponse.redirect(new URL('/login', req.url));
@@ -53,43 +61,51 @@ await jwtVerify(token, secret);
 ---
 
 ### 2. Playwright Tests נוצרו
+
 **קובץ:** `tests/auth-middleware.spec.js`
 
 **Test Suites:**
 
 #### 🔐 Authentication Middleware (4 tests)
+
 - ✅ `/api/auth/me` returns 401 before login
 - ✅ `/api/auth/me` returns 200 after login
 - ✅ Login with invalid credentials returns 401
 - ✅ Login with valid credentials returns 200 and sets cookie
 
 #### 👨‍💼 Protected Routes - Admin (3 tests)
+
 - ✅ `/admin` redirects to `/login` when not authenticated
 - ✅ `/admin` accessible after login
 - ✅ `/admin/users` requires admin role
 
 #### 🤝 Protected Routes - Agent (2 tests)
+
 - ✅ `/agent` redirects to `/login` when not authenticated
 - ✅ `/agent` accessible after login
 
 #### 🔒 Protected API Routes (4 tests)
+
 - ✅ `/api/private/*` returns 401 without auth
 - ✅ `/api/transactions` returns 401 without auth
 - ✅ `/api/transactions` returns 200 with auth
 - ✅ `/api/admin/transactions` requires admin role
 
 #### 🌐 Public Routes (4 tests)
+
 - ✅ `/` (home) is accessible without auth
 - ✅ `/login` is accessible without auth
 - ✅ `/register` is accessible without auth
 - ✅ `/products` is accessible without auth
 
 #### 🍪 Cookie Security (3 tests)
+
 - ✅ Auth cookie has HttpOnly flag
 - ✅ Auth cookie has Path=/
 - ✅ Auth cookie has SameSite attribute
 
 #### 🚪 Logout (1 test)
+
 - ✅ Logout clears auth cookie
 
 **סה"כ:** 21 tests
@@ -99,6 +115,7 @@ await jwtVerify(token, secret);
 ## 🧪 הרצת Tests
 
 ### הרצה מקומית:
+
 ```bash
 # הרץ את כל ה-tests
 npx playwright test tests/auth-middleware.spec.js
@@ -114,6 +131,7 @@ npx playwright test tests/auth-middleware.spec.js --debug
 ```
 
 ### CI/CD:
+
 ```bash
 # בGitHub Actions / CI
 npm run test:ui
@@ -124,6 +142,7 @@ npm run test:ui
 ## 📊 Test Coverage
 
 ### Authentication Flow:
+
 ```
 ┌─────────────┐
 │   Visitor   │
@@ -143,6 +162,7 @@ npm run test:ui
 ```
 
 ### Authorization Matrix:
+
 ```
 Route              | No Auth | User | Agent | Admin
 -------------------|---------|------|-------|-------
@@ -162,17 +182,20 @@ Route              | No Auth | User | Agent | Admin
 ## 🔒 Security Verification
 
 ### Cookie Attributes:
+
 ```
 Set-Cookie: token=<JWT>; HttpOnly; Path=/; SameSite=Lax; Max-Age=86400
 ```
 
 **Verified:**
+
 - ✅ **HttpOnly** - מונע גישה מ-JavaScript (XSS protection)
 - ✅ **Path=/** - Cookie זמין לכל האתר
 - ✅ **SameSite=Lax** - מונע CSRF attacks
 - ⚠️ **Secure** - צריך להיות בפרודקשן (HTTPS only)
 
 ### JWT Verification:
+
 ```javascript
 // middleware.js
 try {
@@ -185,6 +208,7 @@ try {
 ```
 
 **Verified:**
+
 - ✅ Token מאומת עם `jose` library
 - ✅ Invalid token → redirect to login
 - ✅ Expired token → redirect to login
@@ -195,26 +219,31 @@ try {
 ## 🐛 Issues Found & Fixed
 
 ### Issue 1: Public paths not excluded
+
 **Before:**
+
 ```javascript
-const needsAuth = PROTECTED_PREFIXES.some(p => pathname.startsWith(p));
+const needsAuth = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
 if (!needsAuth) return NextResponse.next();
 ```
 
 **Problem:** `/admin/login` was redirecting to `/login` (infinite loop)
 
 **Fixed:**
+
 ```javascript
 // Allow public paths even if they match protected prefixes
-if (PUBLIC_PATHS.some(p => pathname === p)) {
+if (PUBLIC_PATHS.some((p) => pathname === p)) {
   return NextResponse.next();
 }
 ```
 
 ### Issue 2: No role-based authorization
+
 **Current:** Middleware only checks authentication, not authorization
 
 **Recommendation:** Add role check in middleware or API routes
+
 ```javascript
 // In API route
 const user = await getUserFromSession();
@@ -228,23 +257,26 @@ if (user.role !== 'admin') {
 ## 📝 Recommendations
 
 ### 1. Add Rate Limiting
+
 ```javascript
 // middleware.js
 import rateLimit from 'express-rate-limit';
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 100, // limit each IP to 100 requests per windowMs
 });
 ```
 
 ### 2. Add CSRF Protection
+
 ```javascript
 // For forms
 <input type="hidden" name="csrf_token" value={csrfToken} />
 ```
 
 ### 3. Add Session Timeout
+
 ```javascript
 // Check token expiry
 const payload = await jwtVerify(token, secret);
@@ -254,13 +286,14 @@ if (payload.exp < Date.now() / 1000) {
 ```
 
 ### 4. Add Audit Logging
+
 ```javascript
 // Log all auth attempts
 console.log('AUTH_ATTEMPT', {
   ip: req.ip,
   path: req.nextUrl.pathname,
-  success: true/false,
-  timestamp: new Date()
+  success: true / false,
+  timestamp: new Date(),
 });
 ```
 
@@ -284,13 +317,16 @@ console.log('AUTH_ATTEMPT', {
 ## 📦 Deliverables
 
 ### Files Created:
+
 1. ✅ `tests/auth-middleware.spec.js` - 21 Playwright tests
 2. ✅ `STAGE_15_2_MIDDLEWARE.md` - תיעוד זה
 
 ### Files Modified:
+
 - ❌ None (no functional changes as required)
 
 ### PR Ready:
+
 ```
 Title: 15.2 – Routing & Middleware Verification
 
@@ -315,11 +351,13 @@ Files:
 ## 🚀 Next Steps
 
 ### Run Tests:
+
 ```bash
 npx playwright test tests/auth-middleware.spec.js
 ```
 
 ### Expected Output:
+
 ```
 Running 21 tests using 1 worker
 
@@ -349,6 +387,7 @@ Running 21 tests using 1 worker
 ```
 
 ### Create PR:
+
 ```bash
 git add tests/auth-middleware.spec.js STAGE_15_2_MIDDLEWARE.md
 git commit -m "15.2 – Routing & Middleware Verification"

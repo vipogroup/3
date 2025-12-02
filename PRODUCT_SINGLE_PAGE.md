@@ -1,6 +1,7 @@
 # 🛍️ דף מוצר בודד - Product Single Page
 
 ## תאריך: 2025-11-01 03:15
+
 ## סטטוס: ✅ הושלם
 
 ---
@@ -16,10 +17,12 @@
 ## 🎨 תכונות העיצוב
 
 ### 1. **Layout כפול**
+
 - **צד שמאל:** גלריית תמונות
 - **צד ימין:** פרטי מוצר ופעולות
 
 ### 2. **גלריית תמונות**
+
 - ✅ תמונה ראשית גדולה (384px גובה)
 - ✅ 3 תמונות ממוזערות למטה
 - ✅ לחיצה על ממוזערת מחליפה את הראשית
@@ -27,10 +30,12 @@
 - ✅ Hover effect על הממוזערות
 
 ### 3. **Badges**
+
 - ✅ **חסכון:** אדום בפינה ימנית עליונה
 - ✅ **במלאי:** ירוק בפינה שמאלית עליונה + מספר יחידות
 
 ### 4. **פרטי מוצר**
+
 - ✅ קטגוריה (סגול, uppercase)
 - ✅ שם מוצר (כותרת גדולה)
 - ✅ דירוג כוכבים + מספר ביקורות
@@ -39,20 +44,24 @@
 - ✅ תכונות עיקריות (pills סגולים)
 
 ### 5. **בורר כמות**
-- ✅ כפתורי + ו- 
+
+- ✅ כפתורי + ו-
 - ✅ תצוגת מספר באמצע
 - ✅ הגבלה: מינימום 1, מקסימום מלאי
 
 ### 6. **כפתורי פעולה**
+
 - ✅ **הוסף לסל:** gradient סגול-כחול, גדול
 - ✅ **מועדפים:** לב, לבן עם border
 - ✅ **Admin:** ערוך/מחק (רק למנהלים)
 
 ### 7. **תיאור מלא**
+
 - ✅ טקסט ארוך ומפורט
 - ✅ מופרד בבורדר עליון
 
 ### 8. **מפרט טכני**
+
 - ✅ Grid של 2 עמודות
 - ✅ כל פריט ברקע אפור
 - ✅ כותרת + ערך
@@ -94,28 +103,33 @@
 ## 🔧 תכונות טכניות
 
 ### 1. **Dynamic Routing**
+
 ```javascript
 // URL: /products/1
 // params.id = "1"
-const foundProduct = DEMO_PRODUCTS.find(p => p._id === params.id);
+const foundProduct = DEMO_PRODUCTS.find((p) => p._id === params.id);
 ```
 
 ### 2. **Image Gallery**
+
 ```javascript
 const [selectedImage, setSelectedImage] = useState(0);
 
 // Main image
-<img src={product.images[selectedImage]} />
+<img src={product.images[selectedImage]} />;
 
 // Thumbnails
-{product.images.map((img, index) => (
-  <button onClick={() => setSelectedImage(index)}>
-    <img src={img} />
-  </button>
-))}
+{
+  product.images.map((img, index) => (
+    <button onClick={() => setSelectedImage(index)}>
+      <img src={img} />
+    </button>
+  ));
+}
 ```
 
 ### 3. **Quantity Selector**
+
 ```javascript
 const [quantity, setQuantity] = useState(1);
 
@@ -127,6 +141,7 @@ onClick={() => setQuantity(Math.min(product.stockCount, quantity + 1))}
 ```
 
 ### 4. **Add to Cart**
+
 ```javascript
 const handleAddToCart = () => {
   alert(`נוסף לסל: ${product.name} x${quantity}`);
@@ -135,13 +150,16 @@ const handleAddToCart = () => {
 ```
 
 ### 5. **Admin Actions**
+
 ```javascript
-{user?.role === "admin" && (
-  <div>
-    <Link href={`/products/${product._id}/edit`}>ערוך</Link>
-    <button onClick={handleDelete}>מחק</button>
-  </div>
-)}
+{
+  user?.role === 'admin' && (
+    <div>
+      <Link href={`/products/${product._id}/edit`}>ערוך</Link>
+      <button onClick={handleDelete}>מחק</button>
+    </div>
+  );
+}
 ```
 
 ---
@@ -151,26 +169,30 @@ const handleAddToCart = () => {
 כל מוצר כעת כולל:
 
 ### 1. **תמונות מרובות**
+
 ```javascript
 images: [
-  "https://images.unsplash.com/photo-1.jpg",
-  "https://images.unsplash.com/photo-2.jpg",
-  "https://images.unsplash.com/photo-3.jpg"
-]
+  'https://images.unsplash.com/photo-1.jpg',
+  'https://images.unsplash.com/photo-2.jpg',
+  'https://images.unsplash.com/photo-3.jpg',
+];
 ```
 
 ### 2. **תיאור מלא**
+
 ```javascript
-fullDescription: "טקסט ארוך ומפורט של 200+ מילים..."
+fullDescription: 'טקסט ארוך ומפורט של 200+ מילים...';
 ```
 
 ### 3. **מלאי**
+
 ```javascript
 inStock: true,
 stockCount: 15
 ```
 
 ### 4. **מפרט טכני**
+
 ```javascript
 specs: {
   "סוג מתגים": "Cherry MX Blue",
@@ -185,7 +207,9 @@ specs: {
 ## 🎯 תכונות מיוחדות
 
 ### 1. **404 Page**
+
 אם המוצר לא נמצא:
+
 ```jsx
 <div className="text-center">
   <h1>מוצר לא נמצא</h1>
@@ -194,18 +218,20 @@ specs: {
 ```
 
 ### 2. **Back Button**
+
 כפתור חזרה בולט בראש הדף:
+
 ```jsx
-<Link href="/products">
-  ← חזרה לחנות
-</Link>
+<Link href="/products">← חזרה לחנות</Link>
 ```
 
 ### 3. **Responsive**
+
 - **Mobile:** Stack vertical (תמונה מעל, פרטים מתחת)
 - **Desktop:** 2 columns (תמונה שמאל, פרטים ימין)
 
 ### 4. **Hover Effects**
+
 - תמונות ממוזערות: scale + border
 - כפתורים: shadow + color change
 - כרטיסי מפרט: subtle hover
@@ -215,13 +241,15 @@ specs: {
 ## 📱 Responsive Breakpoints
 
 ### Mobile (< 1024px):
+
 ```css
 grid-cols-1  /* תמונה מעל פרטים */
 ```
 
 ### Desktop (≥ 1024px):
+
 ```css
-lg:grid-cols-2  /* 2 עמודות */
+lg: grid-cols-2; /* 2 עמודות */
 ```
 
 ---
@@ -229,12 +257,14 @@ lg:grid-cols-2  /* 2 עמודות */
 ## 🎨 Color Scheme
 
 ### Primary Colors:
+
 - **Purple:** `#9333ea` (purple-600)
 - **Blue:** `#2563eb` (blue-600)
 - **Red:** `#ef4444` (red-500)
 - **Green:** `#22c55e` (green-500)
 
 ### Gradients:
+
 ```css
 /* Background */
 from-purple-400 via-purple-500 to-blue-500
@@ -248,11 +278,13 @@ from-purple-600 to-blue-600
 ## 🔄 User Flow
 
 ### 1. **מדף המוצרים:**
+
 ```
 לחיצה על "צפה במוצר" → /products/[id]
 ```
 
 ### 2. **בדף המוצר:**
+
 ```
 1. צפייה בתמונות (לחיצה על ממוזערות)
 2. קריאת פרטים ומפרט
@@ -262,6 +294,7 @@ from-purple-600 to-blue-600
 ```
 
 ### 3. **מנהל:**
+
 ```
 1. רואה כפתורי ערוך/מחק
 2. יכול לערוך את המוצר
@@ -273,12 +306,14 @@ from-purple-600 to-blue-600
 ## 💡 טיפים לשימוש
 
 ### ללקוחות:
+
 1. **לחץ על תמונות ממוזערות** לראות זוויות שונות
 2. **שנה כמות** עם כפתורי +/-
 3. **לחץ הוסף לסל** לרכישה
 4. **לחץ ❤️** להוספה למועדפים
 
 ### למנהלים:
+
 1. **התחבר כ-Admin** לראות כפתורי ניהול
 2. **לחץ ערוך** לשינוי פרטי המוצר
 3. **לחץ מחק** להסרת המוצר (עם אישור)
@@ -290,20 +325,20 @@ from-purple-600 to-blue-600
 ### מומלץ להוסיף:
 
 #### 1. **Related Products**
+
 ```jsx
 <section>
   <h2>מוצרים דומים</h2>
-  <div className="grid grid-cols-4">
-    {/* 4 מוצרים מאותה קטגוריה */}
-  </div>
+  <div className="grid grid-cols-4">{/* 4 מוצרים מאותה קטגוריה */}</div>
 </section>
 ```
 
 #### 2. **Reviews Section**
+
 ```jsx
 <section>
   <h2>ביקורות לקוחות</h2>
-  {reviews.map(review => (
+  {reviews.map((review) => (
     <div>
       <div>★★★★★ {review.rating}</div>
       <p>{review.comment}</p>
@@ -314,10 +349,11 @@ from-purple-600 to-blue-600
 ```
 
 #### 3. **Q&A Section**
+
 ```jsx
 <section>
   <h2>שאלות ותשובות</h2>
-  {questions.map(q => (
+  {questions.map((q) => (
     <div>
       <h3>ש: {q.question}</h3>
       <p>ת: {q.answer}</p>
@@ -327,6 +363,7 @@ from-purple-600 to-blue-600
 ```
 
 #### 4. **Share Buttons**
+
 ```jsx
 <div>
   <button>שתף בפייסבוק</button>
@@ -336,10 +373,9 @@ from-purple-600 to-blue-600
 ```
 
 #### 5. **Zoom on Image**
+
 ```jsx
-<button onClick={openLightbox}>
-  🔍 הגדל תמונה
-</button>
+<button onClick={openLightbox}>🔍 הגדל תמונה</button>
 ```
 
 ---
@@ -347,11 +383,13 @@ from-purple-600 to-blue-600
 ## 🐛 Known Issues
 
 ### אין (כרגע):
+
 - ✅ כל התכונות עובדות
 - ✅ Responsive מלא
 - ✅ אין שגיאות
 
 ### TODO:
+
 - [ ] חיבור לסל קניות אמיתי
 - [ ] חיבור למועדפים
 - [ ] חיבור ל-API למוצרים מה-DB
@@ -362,12 +400,14 @@ from-purple-600 to-blue-600
 ## 📊 Statistics
 
 ### קוד:
+
 - **שורות:** 450+
 - **Components:** 1 (ProductPage)
 - **States:** 4 (product, selectedImage, quantity, user)
 - **Effects:** 1 (fetch product + user)
 
 ### תכונות:
+
 - ✅ 3 תמונות לכל מוצר
 - ✅ 6 מוצרים זמינים
 - ✅ מפרט טכני מלא
@@ -381,6 +421,7 @@ from-purple-600 to-blue-600
 ## 🎉 סיכום
 
 דף מוצר בודד מקצועי ומעוצב שכולל:
+
 - ✅ גלריית תמונות אינטראקטיבית
 - ✅ כל פרטי המוצר
 - ✅ מפרט טכני מלא

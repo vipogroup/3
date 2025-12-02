@@ -1,6 +1,7 @@
 # ♿ Stage 15.7 - Accessibility WCAG 2.1 AA
 
 ## תאריך: 2025-11-01
+
 ## סטטוס: ✅ Complete
 
 ---
@@ -18,11 +19,13 @@
 ### 1. Perceivable (ניתן לתפיסה)
 
 #### 1.1 Text Alternatives
+
 - [x] כל התמונות עם alt text
 - [x] Icons decorative עם aria-hidden="true"
 - [x] Icons functional עם aria-label
 
 **דוגמה:**
+
 ```jsx
 // ❌ Bad
 <img src="/logo.png" />
@@ -40,16 +43,19 @@
 ```
 
 #### 1.2 Time-based Media
+
 - [x] אין וידאו/אודיו ללא captions
 - [x] Toast auto-dismiss עם אפשרות לסגירה ידנית
 
 #### 1.3 Adaptable
+
 - [x] HTML סמנטי
 - [x] Heading hierarchy תקין (h1 → h2 → h3)
 - [x] Lists עם ul/ol
 - [x] Tables עם proper structure
 
 **דוגמה:**
+
 ```jsx
 // ✅ Semantic HTML
 <main>
@@ -77,12 +83,14 @@
 ```
 
 #### 1.4 Distinguishable
+
 - [x] Contrast ratio ≥ 4.5:1 (text)
 - [x] Contrast ratio ≥ 3:1 (UI components)
 - [x] Text resizable up to 200%
 - [x] אין text בתמונות
 
 **Contrast Checks:**
+
 ```css
 /* ✅ Good Contrast */
 color: #111827; /* gray-900 */
@@ -104,12 +112,14 @@ background: #ffffff; /* white */
 ### 2. Operable (ניתן להפעלה)
 
 #### 2.1 Keyboard Accessible
+
 - [x] כל הפונקציות נגישות במקלדת
 - [x] Tab order לוגי
 - [x] Focus visible
 - [x] אין keyboard traps
 
 **דוגמה:**
+
 ```jsx
 // ✅ Keyboard accessible
 <button
@@ -131,14 +141,17 @@ background: #ffffff; /* white */
 ```
 
 #### 2.2 Enough Time
+
 - [x] Toast עם 3 שניות + אפשרות לסגירה
 - [x] אין time limits קריטיים
 
 #### 2.3 Seizures
+
 - [x] אין flashing content
 - [x] Animations עדינות
 
 #### 2.4 Navigable
+
 - [x] Skip to main content link
 - [x] Page titles תיאוריים
 - [x] Focus order לוגי
@@ -146,6 +159,7 @@ background: #ffffff; /* white */
 - [x] Multiple ways to navigate
 
 **דוגמה:**
+
 ```jsx
 // ✅ Skip link
 <a href="#main-content" className="sr-only focus:not-sr-only">
@@ -166,22 +180,26 @@ background: #ffffff; /* white */
 ### 3. Understandable (ניתן להבנה)
 
 #### 3.1 Readable
+
 - [x] Language declared: `<html lang="he">`
 - [x] טקסט ברור ופשוט
 - [x] הסברים לטפסים
 
 #### 3.2 Predictable
+
 - [x] Navigation עקבי
 - [x] אין context changes בלתי צפויים
 - [x] Error messages ברורות
 
 #### 3.3 Input Assistance
+
 - [x] Labels לכל input
 - [x] Error identification
 - [x] Error suggestions
 - [x] Error prevention (confirmation)
 
 **דוגמה:**
+
 ```jsx
 // ✅ Proper form
 <form>
@@ -212,6 +230,7 @@ background: #ffffff; /* white */
 ### 4. Robust (חזק)
 
 #### 4.1 Compatible
+
 - [x] HTML תקין
 - [x] ARIA attributes נכונים
 - [x] תואם screen readers
@@ -222,30 +241,42 @@ background: #ffffff; /* white */
 ## 🔧 תיקונים שבוצעו
 
 ### 1. Color Contrast
+
 **Before:**
+
 ```css
-.text-gray-400 { color: #9ca3af; } /* 2.8:1 */
+.text-gray-400 {
+  color: #9ca3af;
+} /* 2.8:1 */
 ```
 
 **After:**
+
 ```css
-.text-gray-600 { color: #4b5563; } /* 7.0:1 ✓ */
+.text-gray-600 {
+  color: #4b5563;
+} /* 7.0:1 ✓ */
 ```
 
 ### 2. Missing Labels
+
 **Before:**
+
 ```jsx
 <input type="text" placeholder="חיפוש..." />
 ```
 
 **After:**
+
 ```jsx
 <label htmlFor="search" className="sr-only">חיפוש</label>
 <input id="search" type="text" placeholder="חיפוש..." />
 ```
 
 ### 3. Focus Indicators
+
 **Before:**
+
 ```css
 button:focus {
   outline: none; /* ❌ */
@@ -253,6 +284,7 @@ button:focus {
 ```
 
 **After:**
+
 ```css
 button:focus {
   outline: 2px solid #2563eb;
@@ -261,12 +293,15 @@ button:focus {
 ```
 
 ### 4. ARIA Attributes
+
 **Before:**
+
 ```jsx
 <div onClick={handleClick}>לחץ כאן</div>
 ```
 
 **After:**
+
 ```jsx
 <button onClick={handleClick} aria-label="שלח טופס">
   לחץ כאן
@@ -278,6 +313,7 @@ button:focus {
 ## 🧪 Testing Tools
 
 ### 1. axe DevTools
+
 ```bash
 # Install Chrome extension
 https://chrome.google.com/webstore/detail/axe-devtools
@@ -290,6 +326,7 @@ https://chrome.google.com/webstore/detail/axe-devtools
 ```
 
 ### 2. Lighthouse
+
 ```bash
 # Run in Chrome DevTools
 1. Open DevTools
@@ -301,6 +338,7 @@ https://chrome.google.com/webstore/detail/axe-devtools
 ```
 
 ### 3. Screen Reader Testing
+
 ```bash
 # NVDA (Windows - Free)
 https://www.nvaccess.org/
@@ -319,6 +357,7 @@ Cmd + F5
 ```
 
 ### 4. Keyboard Testing
+
 ```bash
 # Manual tests:
 1. Tab - Navigate forward
@@ -334,6 +373,7 @@ Cmd + F5
 ## 📊 Lighthouse Results
 
 ### Before Fixes:
+
 ```
 Accessibility: 78
 Issues:
@@ -344,6 +384,7 @@ Issues:
 ```
 
 ### After Fixes:
+
 ```
 Accessibility: 98 ✓
 Issues:
@@ -358,6 +399,7 @@ Issues:
 ## 🎨 Accessibility Patterns
 
 ### Skip Link
+
 ```jsx
 // Add to layout
 <a
@@ -373,6 +415,7 @@ Issues:
 ```
 
 ### Screen Reader Only Text
+
 ```css
 .sr-only {
   position: absolute;
@@ -399,6 +442,7 @@ Issues:
 ```
 
 ### Live Regions
+
 ```jsx
 // For dynamic content
 <div role="status" aria-live="polite" aria-atomic="true">
@@ -412,6 +456,7 @@ Issues:
 ```
 
 ### Modal Dialog
+
 ```jsx
 <div
   role="dialog"
@@ -421,7 +466,7 @@ Issues:
 >
   <h2 id="dialog-title">כותרת</h2>
   <p id="dialog-description">תיאור...</p>
-  
+
   <button onClick={onClose} aria-label="סגור חלון">
     ×
   </button>
@@ -433,6 +478,7 @@ Issues:
 ## 📝 Common Issues & Fixes
 
 ### Issue 1: Low Contrast
+
 ```jsx
 // ❌ Bad
 <p className="text-gray-400">טקסט</p>
@@ -442,6 +488,7 @@ Issues:
 ```
 
 ### Issue 2: Missing Alt Text
+
 ```jsx
 // ❌ Bad
 <img src="/icon.png" />
@@ -454,6 +501,7 @@ Issues:
 ```
 
 ### Issue 3: Non-Semantic Buttons
+
 ```jsx
 // ❌ Bad
 <div onClick={handleClick}>לחץ</div>
@@ -463,6 +511,7 @@ Issues:
 ```
 
 ### Issue 4: Missing Form Labels
+
 ```jsx
 // ❌ Bad
 <input placeholder="שם" />
@@ -473,6 +522,7 @@ Issues:
 ```
 
 ### Issue 5: Poor Focus Indicators
+
 ```jsx
 // ❌ Bad
 button:focus { outline: none; }
@@ -504,10 +554,12 @@ button:focus {
 ## 📦 Files Modified
 
 ### Global:
+
 1. ✅ `app/layout.jsx` - Added lang="he", skip link
 2. ✅ `app/globals.css` - Focus styles, sr-only
 
 ### Components:
+
 3. ✅ All components - ARIA attributes
 4. ✅ All buttons - aria-label where needed
 5. ✅ All images - alt text
@@ -539,19 +591,23 @@ lighthouse http://localhost:3001 --only-categories=accessibility
 ## 📚 Resources
 
 ### WCAG 2.1 Guidelines:
+
 - https://www.w3.org/WAI/WCAG21/quickref/
 
 ### Testing Tools:
+
 - axe DevTools: https://www.deque.com/axe/devtools/
 - WAVE: https://wave.webaim.org/
 - Lighthouse: Built into Chrome DevTools
 
 ### Screen Readers:
+
 - NVDA (Free): https://www.nvaccess.org/
 - JAWS: https://www.freedomscientific.com/
 - VoiceOver: Built into macOS
 
 ### Learning:
+
 - WebAIM: https://webaim.org/
 - A11y Project: https://www.a11yproject.com/
 - MDN Accessibility: https://developer.mozilla.org/en-US/docs/Web/Accessibility
@@ -561,6 +617,7 @@ lighthouse http://localhost:3001 --only-categories=accessibility
 ## 💡 Best Practices
 
 ### 1. Always Use Semantic HTML
+
 ```jsx
 // ✅ Good
 <button>לחץ</button>
@@ -574,6 +631,7 @@ lighthouse http://localhost:3001 --only-categories=accessibility
 ```
 
 ### 2. Provide Text Alternatives
+
 ```jsx
 // For images
 <img src="..." alt="תיאור" />
@@ -585,6 +643,7 @@ lighthouse http://localhost:3001 --only-categories=accessibility
 ```
 
 ### 3. Ensure Keyboard Access
+
 ```jsx
 // All interactive elements must be keyboard accessible
 <button>...</button>
@@ -593,6 +652,7 @@ lighthouse http://localhost:3001 --only-categories=accessibility
 ```
 
 ### 4. Use ARIA Wisely
+
 ```jsx
 // Only when HTML isn't enough
 <div role="button" tabIndex={0}>...</div>
@@ -602,6 +662,7 @@ lighthouse http://localhost:3001 --only-categories=accessibility
 ```
 
 ### 5. Test with Real Users
+
 - Use screen readers
 - Test keyboard navigation
 - Check with users who have disabilities

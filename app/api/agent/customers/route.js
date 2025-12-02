@@ -1,8 +1,8 @@
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
-import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
-import { ObjectId } from "mongodb";
+import { NextResponse } from 'next/server';
+import { getDb } from '@/lib/db';
+import { ObjectId } from 'mongodb';
 
 /**
  * GET /api/agent/customers?agentId=xxx&limit=50
@@ -11,18 +11,15 @@ import { ObjectId } from "mongodb";
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
-    const agentId = searchParams.get("agentId");
-    const limit = parseInt(searchParams.get("limit") || "50");
+    const agentId = searchParams.get('agentId');
+    const limit = parseInt(searchParams.get('limit') || '50');
 
     if (!agentId) {
-      return NextResponse.json(
-        { ok: false, error: "agentId required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'agentId required' }, { status: 400 });
     }
 
     const db = await getDb();
-    const users = db.collection("users");
+    const users = db.collection('users');
 
     // Get customers referred by this agent
     const customers = await users
@@ -36,7 +33,7 @@ export async function GET(req) {
             createdAt: 1,
             role: 1,
           },
-        }
+        },
       )
       .sort({ createdAt: -1 })
       .limit(limit)
@@ -45,7 +42,7 @@ export async function GET(req) {
     return NextResponse.json({
       ok: true,
       agentId,
-      customers: customers.map(c => ({
+      customers: customers.map((c) => ({
         _id: String(c._id),
         fullName: c.fullName,
         email: c.email,
@@ -56,10 +53,7 @@ export async function GET(req) {
       total: customers.length,
     });
   } catch (error) {
-    console.error("AGENT_CUSTOMERS_ERROR:", error);
-    return NextResponse.json(
-      { ok: false, error: "server error" },
-      { status: 500 }
-    );
+    console.error('AGENT_CUSTOMERS_ERROR:', error);
+    return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
   }
 }

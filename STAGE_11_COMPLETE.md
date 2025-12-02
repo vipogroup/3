@@ -13,9 +13,11 @@ Stage 11 הושלם! נבנתה מערכת הפניות מלאה (Referral Syste
 ## 🎯 מה הושלם?
 
 ### 11.1 - עדכון סכמת המשתמש ✅
+
 **קובץ:** `models/User.js`
 
 **שדות חדשים:**
+
 - `referredBy`: ObjectId - מי הפנה את המשתמש
 - `referralsCount`: Number - כמות הפניות (לסטטיסטיקה מהירה)
 - `referralsAmount`: Number - סכום עמלות/קרדיט עתידי
@@ -23,33 +25,40 @@ Stage 11 הושלם! נבנתה מערכת הפניות מלאה (Referral Syste
 - `isActive`: Boolean - סטטוס פעילות
 
 **Virtual Property:**
+
 - `refLink` - לינק הפניה אישי: `${PUBLIC_URL}/?ref=${userId}`
 
 **אינדקסים:**
+
 - `referredBy` - לשאילתות מהירות
 - `email` - sparse index
 
 ---
 
 ### 11.2 - שמירת מקור הפניה ✅
+
 **קובץ:** `app/api/join/route.js`
 
 **תכונות:**
+
 - קוקי HttpOnly ל-30 יום
 - SameSite: lax
 - Secure בפרודקשן
 - Fallback ל-localStorage
 
 **קובץ:** `app/components/ReferralTracker.jsx`
+
 - Client Component שתופס ?ref= parameter
 - שומר ב-localStorage כגיבוי
 
 ---
 
 ### 11.3 - קליטת הפניה בהרשמה ✅
+
 **קובץ:** `app/api/auth/register/route.js`
 
 **לוגיקה:**
+
 1. קורא `refSource` מקוקי
 2. Fallback ל-`referrerId` מה-body (localStorage)
 3. מאמת שהמפנה קיים ב-DB
@@ -61,15 +70,14 @@ Stage 11 הושלם! נבנתה מערכת הפניות מלאה (Referral Syste
 ---
 
 ### 11.4 - עדכון מונה הפניות ✅
+
 **מיקום:** `app/api/auth/register/route.js`
 
 **לוגיקה:**
+
 ```javascript
 if (doc.referredBy) {
-  await users.updateOne(
-    { _id: doc.referredBy },
-    { $inc: { referralsCount: 1 } }
-  );
+  await users.updateOne({ _id: doc.referredBy }, { $inc: { referralsCount: 1 } });
 }
 ```
 
@@ -78,11 +86,13 @@ if (doc.referredBy) {
 ---
 
 ### 11.5 - API תקציר הפניות ✅
+
 **קובץ:** `app/api/referrals/summary/route.js`
 
 **Endpoint:** `GET /api/referrals/summary`
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -101,9 +111,11 @@ if (doc.referredBy) {
 ---
 
 ### 11.6 - UI כרטיס הפניות ✅
+
 **קובץ:** `app/components/ReferralCard.jsx`
 
 **תכונות:**
+
 - הצגת לינק אישי
 - כפתור העתקה (clipboard API)
 - שיתוף ב-WhatsApp
@@ -113,18 +125,21 @@ if (doc.referredBy) {
 - Responsive
 
 **שימוש:**
-```jsx
-import ReferralCard from "@/components/ReferralCard";
 
-<ReferralCard />
+```jsx
+import ReferralCard from '@/components/ReferralCard';
+
+<ReferralCard />;
 ```
 
 ---
 
 ### 11.7-11.12 - בדיקות ותיעוד ✅
+
 **קובץ:** `STAGE_11_TESTING_GUIDE.md`
 
 **כולל:**
+
 - 60+ test cases
 - בדיקות E2E ידניות
 - בדיקות API עם cURL
@@ -138,6 +153,7 @@ import ReferralCard from "@/components/ReferralCard";
 ## 📁 קבצים שנוצרו/עודכנו
 
 ### עודכנו (5):
+
 1. `models/User.js` - הוספת שדות referral
 2. `app/api/auth/register/route.js` - לוגיקת referral
 3. `app/layout.jsx` - הוספת ReferralTracker
@@ -145,6 +161,7 @@ import ReferralCard from "@/components/ReferralCard";
 5. `app/api/join/route.js` - כבר היה קיים ✓
 
 ### נוצרו (4):
+
 6. `app/components/ReferralTracker.jsx` - fallback tracking
 7. `app/components/ReferralCard.jsx` - UI card
 8. `app/api/referrals/summary/route.js` - summary API
@@ -183,6 +200,7 @@ import ReferralCard from "@/components/ReferralCard";
 ## 🎨 UI Screenshots (Conceptual)
 
 ### Referral Card:
+
 ```
 ┌─────────────────────────────────────┐
 │ 🎁 חבר-מביא-חבר                    │
@@ -211,6 +229,7 @@ import ReferralCard from "@/components/ReferralCard";
 ## 🚀 הוראות שימוש
 
 ### למשתמש:
+
 1. התחבר למערכת
 2. גלוש לדשבורד
 3. ראה כרטיס "חבר-מביא-חבר"
@@ -219,9 +238,10 @@ import ReferralCard from "@/components/ReferralCard";
 6. עקוב אחרי מספר ההפניות
 
 ### למפתח:
+
 ```javascript
 // Add ReferralCard to any dashboard
-import ReferralCard from "@/components/ReferralCard";
+import ReferralCard from '@/components/ReferralCard';
 
 export default function Dashboard() {
   return (
@@ -239,6 +259,7 @@ export default function Dashboard() {
 ## 📊 Database Schema
 
 ### users collection:
+
 ```javascript
 {
   _id: ObjectId("..."),
@@ -248,12 +269,12 @@ export default function Dashboard() {
   password: "hashed...",
   role: "customer",
   isActive: true,
-  
+
   // Referral fields
   referredBy: ObjectId("..."), // מי הפנה
   referralsCount: 5,           // כמה הפנה
   referralsAmount: 0,          // עתידי
-  
+
   createdAt: ISODate("..."),
   updatedAt: ISODate("...")
 }
@@ -264,6 +285,7 @@ export default function Dashboard() {
 ## 🔌 API Endpoints
 
 ### 1. Join (Referral Tracking)
+
 ```
 GET /api/join?ref=<USER_ID>
 → Sets cookie: refSource
@@ -271,6 +293,7 @@ GET /api/join?ref=<USER_ID>
 ```
 
 ### 2. Register (with Referral)
+
 ```
 POST /api/auth/register
 Body: {
@@ -283,6 +306,7 @@ Body: {
 ```
 
 ### 3. Referrals Summary
+
 ```
 GET /api/referrals/summary
 Headers: Cookie: token=<JWT>
@@ -294,6 +318,7 @@ Headers: Cookie: token=<JWT>
 ## ⚙️ Configuration
 
 ### Environment Variables:
+
 ```env
 # .env.local
 PUBLIC_URL=http://localhost:3001  # Development
@@ -308,6 +333,7 @@ JWT_SECRET=your-secret-key
 ## 🛡️ Security Features
 
 ### Implemented:
+
 - ✅ HttpOnly cookies (XSS protection)
 - ✅ SameSite: lax (CSRF protection)
 - ✅ Self-referral prevention
@@ -316,6 +342,7 @@ JWT_SECRET=your-secret-key
 - ✅ Cookie cleanup after registration
 
 ### TODO (Optional):
+
 - ⏳ Rate limiting (prevent abuse)
 - ⏳ IP tracking
 - ⏳ Referral fraud detection
@@ -327,10 +354,12 @@ JWT_SECRET=your-secret-key
 ## 📈 Analytics & Metrics
 
 ### Available Now:
+
 - Total referrals per user (`referralsCount`)
 - Referral link (`refLink` virtual)
 
 ### Future Enhancements:
+
 - Conversion rate
 - Top referrers leaderboard
 - Referral timeline
@@ -342,6 +371,7 @@ JWT_SECRET=your-secret-key
 ## 🧪 Testing
 
 ### Manual Testing:
+
 ```bash
 # 1. Test referral link
 http://localhost:3001/?ref=<USER_ID>
@@ -362,6 +392,7 @@ db.users.findOne({ _id: ObjectId("<USER_ID>") })
 ```
 
 ### API Testing:
+
 ```bash
 # Test with cURL
 curl -I "http://localhost:3001/api/join?ref=<USER_ID>"
@@ -373,19 +404,25 @@ curl -I "http://localhost:3001/api/join?ref=<USER_ID>"
 ## 🐛 Troubleshooting
 
 ### Problem: Cookie not created
+
 **Solution:**
+
 - Check browser settings (cookies enabled)
 - Check HTTPS in production
 - Fallback: localStorage will work
 
 ### Problem: referredBy not saved
+
 **Solution:**
+
 - Check USER_ID is valid ObjectId
 - Check user exists in DB
 - Check console logs for errors
 
 ### Problem: referralsCount not updating
+
 **Solution:**
+
 - Check MongoDB connection
 - Check user has referredBy field
 - Check update query in register route
@@ -397,17 +434,20 @@ curl -I "http://localhost:3001/api/join?ref=<USER_ID>"
 אם צריך לבטל את השלב:
 
 ### Option 1: Disable Referral Tracking
+
 ```javascript
 // In app/api/auth/register/route.js
 // Comment out lines 38-83 (referral logic)
 ```
 
 ### Option 2: Hide UI
+
 ```javascript
 // Remove <ReferralCard /> from dashboards
 ```
 
 ### Option 3: Disable Counter
+
 ```javascript
 // Comment out lines 78-82 (counter update)
 ```
@@ -434,6 +474,7 @@ curl -I "http://localhost:3001/api/join?ref=<USER_ID>"
 ## 🎯 Next Steps
 
 ### Stage 12 (Optional):
+
 - Rewards/Credits system
 - Referral analytics dashboard
 - Email notifications
@@ -441,6 +482,7 @@ curl -I "http://localhost:3001/api/join?ref=<USER_ID>"
 - Referral campaigns
 
 ### Or:
+
 - Deploy to production
 - Monitor referral metrics
 - A/B test referral messaging
@@ -451,6 +493,7 @@ curl -I "http://localhost:3001/api/join?ref=<USER_ID>"
 ## 📝 Notes
 
 ### Best Practices:
+
 - Always validate referrer exists
 - Prevent self-referral
 - Clean up cookies after use
@@ -458,11 +501,13 @@ curl -I "http://localhost:3001/api/join?ref=<USER_ID>"
 - Track metrics for optimization
 
 ### Performance:
+
 - `referralsCount` cached (no aggregation needed)
 - Indexed `referredBy` for fast queries
 - Minimal DB operations
 
 ### Privacy:
+
 - No PII in referral links (only user ID)
 - HttpOnly cookies (no JS access)
 - Secure in production
@@ -474,6 +519,7 @@ curl -I "http://localhost:3001/api/join?ref=<USER_ID>"
 **Stage 11 הושלם בהצלחה!**
 
 נבנתה מערכת הפניות מלאה עם:
+
 - ✅ Tracking מאובטח (cookie + localStorage)
 - ✅ Registration integration
 - ✅ Counter updates

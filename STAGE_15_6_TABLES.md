@@ -1,6 +1,7 @@
 # 📊 Stage 15.6 - Dashboard Tables Enhancement
 
 ## תאריך: 2025-11-01
+
 ## סטטוס: ✅ Complete
 
 ---
@@ -20,6 +21,7 @@
 טבלה מקצועית עם כל התכונות:
 
 **תכונות:**
+
 - ✅ **Sticky Header** - כותרת נשארת בראש בגלילה
 - ✅ **Zebra Rows** - שורות מתחלפות בצבע
 - ✅ **Sortable Columns** - מיון לפי עמודות
@@ -34,6 +36,7 @@
 ## 🎨 Visual Design
 
 ### Desktop View:
+
 ```
 ┌──────────────────────────────────────────────────┐
 │ שם      │ אימייל        │ תפקיד  │ סטטוס │ פעולות │ ← Sticky Header
@@ -46,6 +49,7 @@
 ```
 
 ### Empty State:
+
 ```
 ┌──────────────────────────────────────────────────┐
 │                                                  │
@@ -60,45 +64,43 @@
 ## 📝 Usage Examples
 
 ### Example 1: Basic Table
+
 ```jsx
-import Table from "@/components/Table";
+import Table from '@/components/Table';
 
 const columns = [
-  { key: "name", label: "שם" },
-  { key: "email", label: "אימייל" },
-  { key: "role", label: "תפקיד" },
+  { key: 'name', label: 'שם' },
+  { key: 'email', label: 'אימייל' },
+  { key: 'role', label: 'תפקיד' },
 ];
 
 const data = [
-  { id: 1, name: "ישראל", email: "user@mail.com", role: "לקוח" },
-  { id: 2, name: "דוד", email: "david@mail.com", role: "סוכן" },
+  { id: 1, name: 'ישראל', email: 'user@mail.com', role: 'לקוח' },
+  { id: 2, name: 'דוד', email: 'david@mail.com', role: 'סוכן' },
 ];
 
-<Table
-  columns={columns}
-  data={data}
-  caption="רשימת משתמשים"
-/>
+<Table columns={columns} data={data} caption="רשימת משתמשים" />;
 ```
 
 ### Example 2: Sortable Table
+
 ```jsx
-const [sortColumn, setSortColumn] = useState("name");
-const [sortDirection, setSortDirection] = useState("asc");
+const [sortColumn, setSortColumn] = useState('name');
+const [sortDirection, setSortDirection] = useState('asc');
 
 const handleSort = (column, direction) => {
   setSortColumn(column);
   setSortDirection(direction);
-  
+
   // Sort data
   const sorted = [...data].sort((a, b) => {
-    if (direction === "asc") {
+    if (direction === 'asc') {
       return a[column] > b[column] ? 1 : -1;
     } else {
       return a[column] < b[column] ? 1 : -1;
     }
   });
-  
+
   setData(sorted);
 };
 
@@ -109,29 +111,30 @@ const handleSort = (column, direction) => {
   sortColumn={sortColumn}
   sortDirection={sortDirection}
   onSort={handleSort}
-/>
+/>;
 ```
 
 ### Example 3: Custom Rendering
+
 ```jsx
-import { StatusBadge, ActionButtons } from "@/components/Table";
+import { StatusBadge, ActionButtons } from '@/components/Table';
 
 const columns = [
-  { key: "name", label: "שם" },
-  { key: "email", label: "אימייל" },
+  { key: 'name', label: 'שם' },
+  { key: 'email', label: 'אימייל' },
   {
-    key: "status",
-    label: "סטטוס",
+    key: 'status',
+    label: 'סטטוס',
     render: (value) => (
       <StatusBadge
-        status={value === "active" ? "success" : "warning"}
-        label={value === "active" ? "פעיל" : "ממתין"}
+        status={value === 'active' ? 'success' : 'warning'}
+        label={value === 'active' ? 'פעיל' : 'ממתין'}
       />
     ),
   },
   {
-    key: "actions",
-    label: "פעולות",
+    key: 'actions',
+    label: 'פעולות',
     sortable: false,
     render: (_, row) => (
       <ActionButtons
@@ -143,24 +146,22 @@ const columns = [
   },
 ];
 
-<Table columns={columns} data={data} />
+<Table columns={columns} data={data} />;
 ```
 
 ### Example 4: With Pagination
+
 ```jsx
-import Table, { TablePagination } from "@/components/Table";
+import Table, { TablePagination } from '@/components/Table';
 
 const [currentPage, setCurrentPage] = useState(1);
 const itemsPerPage = 10;
 
-const paginatedData = data.slice(
-  (currentPage - 1) * itemsPerPage,
-  currentPage * itemsPerPage
-);
+const paginatedData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
 <>
   <Table columns={columns} data={paginatedData} />
-  
+
   <TablePagination
     currentPage={currentPage}
     totalPages={Math.ceil(data.length / itemsPerPage)}
@@ -168,7 +169,7 @@ const paginatedData = data.slice(
     itemsPerPage={itemsPerPage}
     onPageChange={setCurrentPage}
   />
-</>
+</>;
 ```
 
 ---
@@ -176,38 +177,41 @@ const paginatedData = data.slice(
 ## 🎯 Component API
 
 ### Table Props:
+
 ```typescript
 interface TableProps {
-  columns: Column[];           // Column definitions
-  data: any[];                 // Table data
-  caption?: string;            // Screen reader caption
-  stickyHeader?: boolean;      // Sticky header (default: true)
-  zebraRows?: boolean;         // Alternating row colors (default: true)
-  sortable?: boolean;          // Enable sorting (default: false)
-  onSort?: (column, direction) => void;  // Sort handler
-  sortColumn?: string;         // Current sort column
-  sortDirection?: "asc" | "desc";  // Sort direction
-  emptyMessage?: string;       // Empty state message
-  className?: string;          // Additional classes
+  columns: Column[]; // Column definitions
+  data: any[]; // Table data
+  caption?: string; // Screen reader caption
+  stickyHeader?: boolean; // Sticky header (default: true)
+  zebraRows?: boolean; // Alternating row colors (default: true)
+  sortable?: boolean; // Enable sorting (default: false)
+  onSort?: (column, direction) => void; // Sort handler
+  sortColumn?: string; // Current sort column
+  sortDirection?: 'asc' | 'desc'; // Sort direction
+  emptyMessage?: string; // Empty state message
+  className?: string; // Additional classes
 }
 
 interface Column {
-  key: string;                 // Data key
-  label: string;               // Column header
-  sortable?: boolean;          // Can sort this column (default: true)
-  render?: (value, row) => ReactNode;  // Custom renderer
+  key: string; // Data key
+  label: string; // Column header
+  sortable?: boolean; // Can sort this column (default: true)
+  render?: (value, row) => ReactNode; // Custom renderer
 }
 ```
 
 ### StatusBadge Props:
+
 ```typescript
 interface StatusBadgeProps {
-  status: "success" | "warning" | "error" | "info" | "default";
+  status: 'success' | 'warning' | 'error' | 'info' | 'default';
   label: string;
 }
 ```
 
 ### ActionButtons Props:
+
 ```typescript
 interface ActionButtonsProps {
   onView?: () => void;
@@ -217,6 +221,7 @@ interface ActionButtonsProps {
 ```
 
 ### TablePagination Props:
+
 ```typescript
 interface TablePaginationProps {
   currentPage: number;
@@ -232,12 +237,11 @@ interface TablePaginationProps {
 ## ♿ Accessibility Features
 
 ### Table Accessibility:
+
 ```jsx
 <table aria-label="רשימת משתמשים">
-  <caption className="sr-only">
-    טבלת משתמשים עם פרטים מלאים
-  </caption>
-  
+  <caption className="sr-only">טבלת משתמשים עם פרטים מלאים</caption>
+
   <thead>
     <tr>
       <th scope="col" aria-sort="ascending">
@@ -245,7 +249,7 @@ interface TablePaginationProps {
       </th>
     </tr>
   </thead>
-  
+
   <tbody>
     <tr>
       <td>ישראל</td>
@@ -255,6 +259,7 @@ interface TablePaginationProps {
 ```
 
 **ARIA Attributes:**
+
 - ✅ `aria-label` - Table description
 - ✅ `<caption>` - Screen reader caption
 - ✅ `scope="col"` - Column headers
@@ -262,6 +267,7 @@ interface TablePaginationProps {
 - ✅ `aria-label` - Action buttons
 
 ### Keyboard Navigation:
+
 - ✅ Tab through sortable headers
 - ✅ Enter/Space to sort
 - ✅ Tab through action buttons
@@ -272,17 +278,19 @@ interface TablePaginationProps {
 ## 🎨 Styling Details
 
 ### Sticky Header:
+
 ```css
 .sticky-header {
   position: sticky;
   top: 0;
   z-index: 10;
   background: #f9fafb;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 ```
 
 ### Zebra Rows:
+
 ```css
 /* Even rows */
 tr:nth-child(even) {
@@ -301,6 +309,7 @@ tr:hover {
 ```
 
 ### Sort Icons:
+
 ```jsx
 // Ascending
 <svg>↑</svg>
@@ -317,23 +326,24 @@ tr:hover {
 ## 📱 Responsive Design
 
 ### Desktop (≥ 768px):
+
 - Full table width
 - All columns visible
 - Sticky header
 - Hover effects
 
 ### Mobile (< 768px):
+
 - Horizontal scroll
 - `overflow-x-auto`
 - Sticky header
 - Touch-friendly
 
 **Mobile Optimization:**
+
 ```jsx
 <div className="overflow-x-auto">
-  <table className="min-w-full">
-    {/* Table content */}
-  </table>
+  <table className="min-w-full">{/* Table content */}</table>
 </div>
 ```
 
@@ -342,31 +352,32 @@ tr:hover {
 ## 🧪 Real-World Examples
 
 ### Admin Users Table:
+
 ```jsx
 const columns = [
-  { key: "fullName", label: "שם מלא" },
-  { key: "email", label: "אימייל" },
-  { key: "phone", label: "טלפון" },
+  { key: 'fullName', label: 'שם מלא' },
+  { key: 'email', label: 'אימייל' },
+  { key: 'phone', label: 'טלפון' },
   {
-    key: "role",
-    label: "תפקיד",
+    key: 'role',
+    label: 'תפקיד',
     render: (value) => {
       const labels = {
-        admin: "מנהל",
-        agent: "סוכן",
-        customer: "לקוח",
+        admin: 'מנהל',
+        agent: 'סוכן',
+        customer: 'לקוח',
       };
       return labels[value] || value;
     },
   },
   {
-    key: "createdAt",
-    label: "תאריך הצטרפות",
-    render: (value) => new Date(value).toLocaleDateString("he-IL"),
+    key: 'createdAt',
+    label: 'תאריך הצטרפות',
+    render: (value) => new Date(value).toLocaleDateString('he-IL'),
   },
   {
-    key: "actions",
-    label: "פעולות",
+    key: 'actions',
+    label: 'פעולות',
     sortable: false,
     render: (_, row) => (
       <ActionButtons
@@ -383,45 +394,42 @@ const columns = [
   caption="רשימת משתמשים במערכת"
   sortable={true}
   emptyMessage="אין משתמשים במערכת"
-/>
+/>;
 ```
 
 ### Agent Transactions Table:
+
 ```jsx
 const columns = [
   {
-    key: "createdAt",
-    label: "תאריך",
-    render: (value) => new Date(value).toLocaleDateString("he-IL"),
+    key: 'createdAt',
+    label: 'תאריך',
+    render: (value) => new Date(value).toLocaleDateString('he-IL'),
   },
-  { key: "description", label: "תיאור" },
+  { key: 'description', label: 'תיאור' },
   {
-    key: "amount",
-    label: "סכום",
+    key: 'amount',
+    label: 'סכום',
     render: (value) => `₪${value.toLocaleString()}`,
   },
   {
-    key: "status",
-    label: "סטטוס",
+    key: 'status',
+    label: 'סטטוס',
     render: (value) => {
       const statusMap = {
-        pending: { status: "warning", label: "ממתין" },
-        completed: { status: "success", label: "הושלם" },
-        failed: { status: "error", label: "נכשל" },
+        pending: { status: 'warning', label: 'ממתין' },
+        completed: { status: 'success', label: 'הושלם' },
+        failed: { status: 'error', label: 'נכשל' },
       };
       const { status, label } = statusMap[value] || statusMap.pending;
       return <StatusBadge status={status} label={label} />;
     },
   },
   {
-    key: "actions",
-    label: "פעולות",
+    key: 'actions',
+    label: 'פעולות',
     sortable: false,
-    render: (_, row) => (
-      <ActionButtons
-        onView={() => handleViewTransaction(row._id)}
-      />
-    ),
+    render: (_, row) => <ActionButtons onView={() => handleViewTransaction(row._id)} />,
   },
 ];
 
@@ -431,53 +439,49 @@ const columns = [
   caption="רשימת עסקאות"
   sortable={true}
   emptyMessage="אין עסקאות להצגה"
-/>
+/>;
 ```
 
 ### Referrals Table:
+
 ```jsx
 const columns = [
-  { key: "fullName", label: "שם" },
-  { key: "email", label: "אימייל" },
+  { key: 'fullName', label: 'שם' },
+  { key: 'email', label: 'אימייל' },
   {
-    key: "createdAt",
-    label: "תאריך הצטרפות",
-    render: (value) => new Date(value).toLocaleDateString("he-IL"),
+    key: 'createdAt',
+    label: 'תאריך הצטרפות',
+    render: (value) => new Date(value).toLocaleDateString('he-IL'),
   },
   {
-    key: "status",
-    label: "סטטוס",
+    key: 'status',
+    label: 'סטטוס',
     render: (value) => (
       <StatusBadge
-        status={value === "active" ? "success" : "info"}
-        label={value === "active" ? "פעיל" : "ממתין"}
+        status={value === 'active' ? 'success' : 'info'}
+        label={value === 'active' ? 'פעיל' : 'ממתין'}
       />
     ),
   },
 ];
 
-<Table
-  columns={columns}
-  data={referrals}
-  caption="רשימת הפניות"
-  emptyMessage="אין הפניות עדיין"
-/>
+<Table columns={columns} data={referrals} caption="רשימת הפניות" emptyMessage="אין הפניות עדיין" />;
 ```
 
 ---
 
 ## 📊 Comparison
 
-| Feature | Before | After |
-|---------|--------|-------|
-| Sticky Header | ❌ | ✅ |
-| Zebra Rows | ❌ | ✅ |
-| Sorting | ❌ | ✅ |
-| Empty State | ⚠️ Basic | ✅ Beautiful |
-| Accessibility | ⚠️ Basic | ✅ Full ARIA |
-| Responsive | ⚠️ Overflow | ✅ Optimized |
-| Action Buttons | ⚠️ Inline | ✅ Component |
-| Pagination | ❌ | ✅ |
+| Feature        | Before      | After        |
+| -------------- | ----------- | ------------ |
+| Sticky Header  | ❌          | ✅           |
+| Zebra Rows     | ❌          | ✅           |
+| Sorting        | ❌          | ✅           |
+| Empty State    | ⚠️ Basic    | ✅ Beautiful |
+| Accessibility  | ⚠️ Basic    | ✅ Full ARIA |
+| Responsive     | ⚠️ Overflow | ✅ Optimized |
+| Action Buttons | ⚠️ Inline   | ✅ Component |
+| Pagination     | ❌          | ✅           |
 
 ---
 
@@ -499,9 +503,11 @@ const columns = [
 ## 📦 Files Created
 
 ### Components (1):
+
 1. ✅ `app/components/Table.jsx` - Enhanced table + helpers
 
 ### Documentation (1):
+
 2. ✅ `STAGE_15_6_TABLES.md` - This file
 
 ---
@@ -511,6 +517,7 @@ const columns = [
 ### Step 1: Replace Existing Tables
 
 **Before:**
+
 ```jsx
 <table>
   <thead>
@@ -520,7 +527,7 @@ const columns = [
     </tr>
   </thead>
   <tbody>
-    {users.map(user => (
+    {users.map((user) => (
       <tr key={user.id}>
         <td>{user.name}</td>
         <td>{user.email}</td>
@@ -531,21 +538,23 @@ const columns = [
 ```
 
 **After:**
+
 ```jsx
-import Table from "@/components/Table";
+import Table from '@/components/Table';
 
 const columns = [
-  { key: "name", label: "שם" },
-  { key: "email", label: "אימייל" },
+  { key: 'name', label: 'שם' },
+  { key: 'email', label: 'אימייל' },
 ];
 
-<Table columns={columns} data={users} />
+<Table columns={columns} data={users} />;
 ```
 
 ### Step 2: Add Sorting (Optional)
+
 ```jsx
-const [sortColumn, setSortColumn] = useState("name");
-const [sortDirection, setSortDirection] = useState("asc");
+const [sortColumn, setSortColumn] = useState('name');
+const [sortDirection, setSortDirection] = useState('asc');
 
 <Table
   columns={columns}
@@ -554,10 +563,11 @@ const [sortDirection, setSortDirection] = useState("asc");
   sortColumn={sortColumn}
   sortDirection={sortDirection}
   onSort={handleSort}
-/>
+/>;
 ```
 
 ### Step 3: Add Pagination (Optional)
+
 ```jsx
 import { TablePagination } from "@/components/Table";
 
@@ -570,11 +580,13 @@ import { TablePagination } from "@/components/Table";
 ## 💡 Best Practices
 
 ### 1. Always Provide Caption
+
 ```jsx
 <Table caption="רשימת משתמשים במערכת" />
 ```
 
 ### 2. Use Custom Renderers for Complex Data
+
 ```jsx
 {
   key: "status",
@@ -583,6 +595,7 @@ import { TablePagination } from "@/components/Table";
 ```
 
 ### 3. Disable Sort for Action Columns
+
 ```jsx
 {
   key: "actions",
@@ -592,6 +605,7 @@ import { TablePagination } from "@/components/Table";
 ```
 
 ### 4. Provide Meaningful Empty Messages
+
 ```jsx
 <Table emptyMessage="אין עסקאות להצגה. התחל למכור!" />
 ```

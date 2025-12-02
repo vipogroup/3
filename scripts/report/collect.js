@@ -1,9 +1,25 @@
 const fs = require('fs');
 const path = require('path');
 
-function ensureDir(p) { try { fs.mkdirSync(p, { recursive: true }); } catch {} }
-function exists(p) { try { return fs.existsSync(p); } catch { return false; } }
-function readJSON(p, fallback = null) { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return fallback; } }
+function ensureDir(p) {
+  try {
+    fs.mkdirSync(p, { recursive: true });
+  } catch {}
+}
+function exists(p) {
+  try {
+    return fs.existsSync(p);
+  } catch {
+    return false;
+  }
+}
+function readJSON(p, fallback = null) {
+  try {
+    return JSON.parse(fs.readFileSync(p, 'utf8'));
+  } catch {
+    return fallback;
+  }
+}
 
 function collectStage(n) {
   const f = path.join(process.cwd(), 'reports', 'tests', `stage${n}.json`);
@@ -12,7 +28,7 @@ function collectStage(n) {
 
 function summarize(checks) {
   const total = checks.length;
-  const passed = checks.filter(c => c.passed).length;
+  const passed = checks.filter((c) => c.passed).length;
   const failed = total - passed;
   const status = total === 0 ? 'MISSING' : failed === 0 ? 'PASSED' : 'FAILED';
   return { total, passed, failed, status };
@@ -20,7 +36,7 @@ function summarize(checks) {
 
 function actionItems(checks) {
   if (checks.length === 0) return ['- No checks found: endpoints likely missing'];
-  return checks.filter(c => !c.passed).map(c => `- ${c.name}: ${c.hint || 'Fix required'}`);
+  return checks.filter((c) => !c.passed).map((c) => `- ${c.name}: ${c.hint || 'Fix required'}`);
 }
 
 function mdHeader() {

@@ -1,6 +1,7 @@
 # 👥 משתמשי בדיקה - הוראות יצירה ידנית
 
 ## 🎯 מטרה
+
 יצירת 3 משתמשי בדיקה לכל הדשבורדים עם סיסמה "admin"
 
 ---
@@ -8,6 +9,7 @@
 ## 📋 משתמשים ליצירה
 
 ### 1. 👑 Admin (מנהל)
+
 - **שם:** Admin Test
 - **אימייל:** admin@test.com
 - **טלפון:** 050-1234567
@@ -16,6 +18,7 @@
 - **דשבורד:** `/admin` או `/dashboard`
 
 ### 2. 🤝 Agent (סוכן)
+
 - **שם:** Agent Test
 - **אימייל:** agent@test.com
 - **טלפון:** 050-1234568
@@ -24,6 +27,7 @@
 - **דשבורד:** `/agent`
 
 ### 3. 🛒 Customer (לקוח)
+
 - **שם:** Customer Test
 - **אימייל:** customer@test.com
 - **טלפון:** 050-1234569
@@ -36,11 +40,13 @@
 ## 🚀 איך ליצור (ידנית)
 
 ### שלב 1: פתח דף הרשמה
+
 ```
 http://localhost:3001/register
 ```
 
 ### שלב 2: צור Admin
+
 1. מלא:
    - שם מלא: `Admin Test`
    - אימייל: `admin@test.com`
@@ -51,6 +57,7 @@ http://localhost:3001/register
 3. יופיע: "נרשמת בהצלחה! המתן לאישור מנהל..."
 
 ### שלב 3: צור Agent
+
 1. פתח שוב: http://localhost:3001/register
 2. מלא:
    - שם מלא: `Agent Test`
@@ -61,6 +68,7 @@ http://localhost:3001/register
 3. לחץ "הירשם עכשיו"
 
 ### שלב 4: צור Customer
+
 1. פתח שוב: http://localhost:3001/register
 2. מלא:
    - שם מלא: `Customer Test`
@@ -78,16 +86,19 @@ http://localhost:3001/register
 אחרי יצירת המשתמשים, פתח: http://localhost:3001/login
 
 ### Admin Login:
+
 - אימייל: `admin@test.com`
 - סיסמה: `admin`
 - → יעבור ל-`/dashboard` (דשבורד מנהל)
 
 ### Agent Login:
+
 - אימייל: `agent@test.com`
 - סיסמה: `admin`
 - → יעבור ל-`/agent` (דשבורד סוכן)
 
 ### Customer Login:
+
 - אימייל: `customer@test.com`
 - סיסמה: `admin`
 - → יעבור ל-`/customer` (דשבורד לקוח)
@@ -97,6 +108,7 @@ http://localhost:3001/register
 ## 🎯 בדיקות
 
 ### בדיקה 1: Customer Dashboard
+
 ```
 1. התחבר עם customer@test.com / admin
 2. ✅ אמור להגיע ל-/customer
@@ -106,6 +118,7 @@ http://localhost:3001/register
 ```
 
 ### בדיקה 2: Agent Dashboard
+
 ```
 1. התחבר עם agent@test.com / admin
 2. ✅ אמור להגיע ל-/agent
@@ -113,6 +126,7 @@ http://localhost:3001/register
 ```
 
 ### בדיקה 3: Admin Dashboard
+
 ```
 1. התחבר עם admin@test.com / admin
 2. ✅ אמור להגיע ל-/dashboard
@@ -143,7 +157,7 @@ async function createTestUser(userData) {
   const response = await fetch('/api/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(userData)
+    body: JSON.stringify(userData),
   });
   const result = await response.json();
   console.log(`${userData.role}: ${result.ok ? '✅ Created' : '❌ ' + result.error}`);
@@ -155,23 +169,23 @@ await createTestUser({
   email: 'admin@test.com',
   phone: '050-1234567',
   password: 'admin',
-  role: 'admin'
+  role: 'admin',
 });
 
 await createTestUser({
   fullName: 'Agent Test',
-  email: 'agent@test.com', 
+  email: 'agent@test.com',
   phone: '050-1234568',
   password: 'admin',
-  role: 'agent'
+  role: 'agent',
 });
 
 await createTestUser({
   fullName: 'Customer Test',
   email: 'customer@test.com',
-  phone: '050-1234569', 
+  phone: '050-1234569',
   password: 'admin',
-  role: 'customer'
+  role: 'customer',
 });
 
 console.log('🎉 All test users created!');
@@ -184,7 +198,7 @@ console.log('🎉 All test users created!');
 אחרי יצירת המשתמשים תוכל:
 
 1. ✅ **לבדוק דשבורד לקוחות** - customer@test.com / admin
-2. ✅ **לבדוק דשבורד סוכנים** - agent@test.com / admin  
+2. ✅ **לבדוק דשבורד סוכנים** - agent@test.com / admin
 3. ✅ **לבדוק דשבורד מנהלים** - admin@test.com / admin
 4. ✅ **לבדוק מערכת מוצרים** - הוסף/ערוך/מחק מוצרים
 5. ✅ **לבדוק הפניות אוטומטיות** - כל תפקיד לדשבורד שלו

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export default function CommissionStats() {
   const [user, setUser] = useState(null);
@@ -8,9 +8,9 @@ export default function CommissionStats() {
 
   useEffect(() => {
     // Fetch current user data
-    fetch("/api/auth/me", { credentials: "include" })
-      .then(r => r.json())
-      .then(data => {
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data) => {
         setUser(data);
         setLoading(false);
       })
@@ -42,15 +42,15 @@ export default function CommissionStats() {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-gray-600 mb-1">יתרת קרדיט</p>
-            <p className="text-3xl font-bold text-green-600">₪{commissionBalance.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-green-600">
+              ₪{commissionBalance.toLocaleString()}
+            </p>
           </div>
           <div className="bg-green-500 w-16 h-16 rounded-full flex items-center justify-center text-3xl">
             💰
           </div>
         </div>
-        <p className="text-xs text-gray-500 mt-4">
-          קרדיט שנצבר מהפניות מוצלחות
-        </p>
+        <p className="text-xs text-gray-500 mt-4">קרדיט שנצבר מהפניות מוצלחות</p>
       </div>
 
       {/* Referral Count Card */}
@@ -64,9 +64,7 @@ export default function CommissionStats() {
             👥
           </div>
         </div>
-        <p className="text-xs text-gray-500 mt-4">
-          משתמשים שהצטרפו דרך הלינק שלך
-        </p>
+        <p className="text-xs text-gray-500 mt-4">משתמשים שהצטרפו דרך הלינק שלך</p>
       </div>
     </div>
   );

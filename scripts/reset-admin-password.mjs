@@ -11,16 +11,18 @@ async function run() {
 
   const result = await User.updateOne(
     { email: 'admin@vipo.local' },
-    { $set: { passwordHash: hash } }
+    { $set: { passwordHash: hash } },
   );
 
   console.log('Matched:', result.matchedCount, 'Modified:', result.modifiedCount);
 }
 
-run().then(() => {
-  console.log('Password updated successfully.');
-  process.exit(0);
-}).catch((err) => {
-  console.error('Failed to update password:', err);
-  process.exit(1);
-});
+run()
+  .then(() => {
+    console.log('Password updated successfully.');
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.error('Failed to update password:', err);
+    process.exit(1);
+  });

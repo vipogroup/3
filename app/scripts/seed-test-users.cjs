@@ -29,7 +29,7 @@ const TEST_USERS = [
     role: 'admin',
     isActive: true,
   },
-  
+
   // סוכנים
   {
     fullName: 'דני כהן - סוכן בכיר',
@@ -55,7 +55,7 @@ const TEST_USERS = [
     role: 'agent',
     isActive: true,
   },
-  
+
   // לקוחות
   {
     fullName: 'משה ישראלי',
@@ -101,23 +101,23 @@ const TEST_USERS = [
 
 async function seedUsers() {
   const client = new MongoClient(uri);
-  
+
   try {
     console.log('\n🌱 מתחיל יצירת משתמשי בדיקה...\n');
     console.log('='.repeat(60));
-    
+
     await client.connect();
     const db = client.db();
     const users = db.collection('users');
-    
+
     let created = 0;
     let updated = 0;
     let skipped = 0;
-    
+
     for (const user of TEST_USERS) {
       const { password, ...userData } = user;
       const passwordHash = await bcrypt.hash(password, 10);
-      
+
       const result = await users.updateOne(
         { email: user.email },
         {
@@ -130,9 +130,9 @@ async function seedUsers() {
             createdAt: new Date(),
           },
         },
-        { upsert: true }
+        { upsert: true },
       );
-      
+
       if (result.upsertedId) {
         created++;
         console.log(`✅ נוצר: ${user.fullName} (${user.role}) - ${user.email}`);
@@ -144,35 +144,34 @@ async function seedUsers() {
         console.log(`⏭️  קיים: ${user.fullName} (${user.role}) - ${user.email}`);
       }
     }
-    
+
     console.log('\n' + '='.repeat(60));
     console.log('\n📊 סיכום:\n');
     console.log(`✅ נוצרו: ${created} משתמשים חדשים`);
     console.log(`🔄 עודכנו: ${updated} משתמשים קיימים`);
     console.log(`⏭️  דילגו: ${skipped} משתמשים (ללא שינוי)`);
     console.log(`📝 סה"כ: ${TEST_USERS.length} משתמשים במערכת`);
-    
+
     console.log('\n' + '='.repeat(60));
     console.log('\n🔐 פרטי התחברות:\n');
-    
+
     console.log('👨‍💼 מנהלים:');
-    TEST_USERS.filter(u => u.role === 'admin').forEach(u => {
+    TEST_USERS.filter((u) => u.role === 'admin').forEach((u) => {
       console.log(`   📧 ${u.email} / 🔑 ${u.password}`);
     });
-    
+
     console.log('\n👔 סוכנים:');
-    TEST_USERS.filter(u => u.role === 'agent').forEach(u => {
+    TEST_USERS.filter((u) => u.role === 'agent').forEach((u) => {
       console.log(`   📧 ${u.email} / 🔑 ${u.password}`);
     });
-    
+
     console.log('\n👥 לקוחות:');
-    TEST_USERS.filter(u => u.role === 'customer').forEach(u => {
+    TEST_USERS.filter((u) => u.role === 'customer').forEach((u) => {
       console.log(`   📧 ${u.email} / 🔑 ${u.password}`);
     });
-    
+
     console.log('\n' + '='.repeat(60));
     console.log('\n✅ הושלם בהצלחה!\n');
-    
   } catch (err) {
     console.error('\n❌ שגיאה:', err.message);
     console.error(err.stack);

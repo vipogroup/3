@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import Chart from "chart.js/auto";
+import { useEffect, useRef, useState } from 'react';
+import Chart from 'chart.js/auto';
 
 /**
  * Sales chart component that displays sales data grouped by day
@@ -25,47 +25,47 @@ export default function SalesChart({ data, from, to }) {
     // Group sales by day
     const salesByDay = data.reduce((acc, sale) => {
       const date = new Date(sale.createdAt);
-      const dateString = date.toISOString().split("T")[0]; // YYYY-MM-DD format
-      
+      const dateString = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+
       if (!acc[dateString]) {
         acc[dateString] = 0;
       }
-      
+
       acc[dateString] += sale.salePrice;
       return acc;
     }, {});
 
     // Sort dates
     const sortedDates = Object.keys(salesByDay).sort();
-    
+
     // Fill in missing dates if from and to are provided
     if (from && to) {
       const startDate = new Date(from);
       const endDate = new Date(to);
-      
+
       // Ensure end date is set to end of day
       endDate.setHours(23, 59, 59, 999);
-      
+
       const dateArray = [];
       const currentDate = new Date(startDate);
-      
+
       // Create array of all dates in range
       while (currentDate <= endDate) {
-        const dateString = currentDate.toISOString().split("T")[0];
+        const dateString = currentDate.toISOString().split('T')[0];
         dateArray.push(dateString);
         currentDate.setDate(currentDate.getDate() + 1);
       }
-      
+
       // Use all dates in range
       const labels = dateArray;
-      const values = labels.map(date => salesByDay[date] || 0);
-      
+      const values = labels.map((date) => salesByDay[date] || 0);
+
       setChartData({ labels, values });
     } else {
       // Use only dates with sales
       const labels = sortedDates;
-      const values = labels.map(date => salesByDay[date]);
-      
+      const values = labels.map((date) => salesByDay[date]);
+
       setChartData({ labels, values });
     }
   }, [data, from, to]);
@@ -73,14 +73,14 @@ export default function SalesChart({ data, from, to }) {
   // Create or update chart
   useEffect(() => {
     if (!chartData) return;
-    
+
     // Format labels for display (Hebrew date format)
-    const formattedLabels = chartData.labels.map(dateStr => {
+    const formattedLabels = chartData.labels.map((dateStr) => {
       const date = new Date(dateStr);
-      return new Intl.DateTimeFormat("he-IL", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
+      return new Intl.DateTimeFormat('he-IL', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
       }).format(date);
     });
 
@@ -90,17 +90,17 @@ export default function SalesChart({ data, from, to }) {
     }
 
     // Create new chart
-    const ctx = chartRef.current.getContext("2d");
+    const ctx = chartRef.current.getContext('2d');
     chartInstance.current = new Chart(ctx, {
-      type: "line",
+      type: 'line',
       data: {
         labels: formattedLabels,
         datasets: [
           {
-            label: "סך מכירות ליום",
+            label: 'סך מכירות ליום',
             data: chartData.values,
-            borderColor: "rgb(59, 130, 246)",
-            backgroundColor: "rgba(59, 130, 246, 0.1)",
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
             borderWidth: 2,
             fill: true,
             tension: 0.3,
@@ -112,49 +112,49 @@ export default function SalesChart({ data, from, to }) {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: "top",
-            align: "end",
+            position: 'top',
+            align: 'end',
             rtl: true,
             labels: {
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
           },
           tooltip: {
             callbacks: {
-              label: function(context) {
-                let label = context.dataset.label || "";
+              label: function (context) {
+                let label = context.dataset.label || '';
                 if (label) {
-                  label += ": ";
+                  label += ': ';
                 }
                 if (context.parsed.y !== null) {
-                  label += new Intl.NumberFormat("he-IL", {
-                    style: "currency",
-                    currency: "ILS",
+                  label += new Intl.NumberFormat('he-IL', {
+                    style: 'currency',
+                    currency: 'ILS',
                   }).format(context.parsed.y);
                 }
                 return label;
-              }
-            }
-          }
+              },
+            },
+          },
         },
         scales: {
           x: {
             ticks: {
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
           },
           y: {
             beginAtZero: true,
             ticks: {
-              callback: function(value) {
-                return "₪" + value.toLocaleString("he-IL");
+              callback: function (value) {
+                return '₪' + value.toLocaleString('he-IL');
               },
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
           },

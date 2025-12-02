@@ -10,7 +10,7 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:3001';
 // Test credentials
 const ADMIN_USER = {
   email: 'admin@vipo.local',
-  password: '12345678A'
+  password: '12345678A',
 };
 
 // Pages to test
@@ -31,10 +31,10 @@ test.describe('Visual Regression - Public Pages', () => {
   publicPages.forEach(({ name, url }) => {
     test(`${name} page visual snapshot`, async ({ page }) => {
       await page.goto(`${BASE_URL}${url}`);
-      
+
       // Wait for page to be fully loaded
       await page.waitForLoadState('networkidle');
-      
+
       // Take screenshot
       await expect(page).toHaveScreenshot(`${name.toLowerCase().replace(/\s+/g, '-')}.png`, {
         fullPage: true,
@@ -46,10 +46,10 @@ test.describe('Visual Regression - Public Pages', () => {
     test(`${name} page mobile visual snapshot`, async ({ page }) => {
       // Set mobile viewport
       await page.setViewportSize({ width: 375, height: 667 });
-      
+
       await page.goto(`${BASE_URL}${url}`);
       await page.waitForLoadState('networkidle');
-      
+
       await expect(page).toHaveScreenshot(`${name.toLowerCase().replace(/\s+/g, '-')}-mobile.png`, {
         fullPage: true,
         maxDiffPixels: 100,
@@ -73,7 +73,7 @@ test.describe('Visual Regression - Authenticated Pages', () => {
     test(`${name} page visual snapshot`, async ({ page }) => {
       await page.goto(`${BASE_URL}${url}`);
       await page.waitForLoadState('networkidle');
-      
+
       await expect(page).toHaveScreenshot(`${name.toLowerCase().replace(/\s+/g, '-')}.png`, {
         fullPage: true,
         maxDiffPixels: 100,
@@ -83,10 +83,10 @@ test.describe('Visual Regression - Authenticated Pages', () => {
 
     test(`${name} page mobile visual snapshot`, async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
-      
+
       await page.goto(`${BASE_URL}${url}`);
       await page.waitForLoadState('networkidle');
-      
+
       await expect(page).toHaveScreenshot(`${name.toLowerCase().replace(/\s+/g, '-')}-mobile.png`, {
         fullPage: true,
         maxDiffPixels: 100,
@@ -100,10 +100,10 @@ test.describe('Visual Regression - Components', () => {
   test('Toast notification visual', async ({ page }) => {
     await page.goto(`${BASE_URL}/join?ref=TEST123`);
     await page.waitForLoadState('networkidle');
-    
+
     // Wait for toast to appear
     await page.waitForSelector('[role="alert"]', { timeout: 5000 });
-    
+
     // Screenshot just the toast
     const toast = await page.locator('[role="alert"]');
     await expect(toast).toHaveScreenshot('toast-notification.png', {
@@ -118,11 +118,11 @@ test.describe('Visual Regression - Components', () => {
     await page.fill('input[type="password"]', ADMIN_USER.password);
     await page.click('button[type="submit"]');
     await page.waitForURL(/\/(admin|dashboard)/);
-    
+
     // Navigate to page with empty state
     await page.goto(`${BASE_URL}/agent`);
     await page.waitForLoadState('networkidle');
-    
+
     // If there's an empty state, screenshot it
     const emptyState = await page.locator('text=אין').first();
     if (await emptyState.isVisible()) {
@@ -139,10 +139,10 @@ test.describe('Visual Regression - Components', () => {
     await page.fill('input[type="password"]', ADMIN_USER.password);
     await page.click('button[type="submit"]');
     await page.waitForURL(/\/(admin|dashboard)/);
-    
+
     await page.goto(`${BASE_URL}/admin`);
     await page.waitForLoadState('networkidle');
-    
+
     // Screenshot table if exists
     const table = await page.locator('table').first();
     if (await table.isVisible()) {
@@ -166,7 +166,7 @@ test.describe('Visual Regression - Responsive', () => {
       await page.setViewportSize({ width, height });
       await page.goto(`${BASE_URL}/`);
       await page.waitForLoadState('networkidle');
-      
+
       await expect(page).toHaveScreenshot(`home-${name.toLowerCase()}.png`, {
         fullPage: true,
         maxDiffPixels: 100,
@@ -180,10 +180,10 @@ test.describe('Visual Regression - Dark Mode', () => {
   test('Home page dark mode', async ({ page }) => {
     // Enable dark mode
     await page.emulateMedia({ colorScheme: 'dark' });
-    
+
     await page.goto(`${BASE_URL}/`);
     await page.waitForLoadState('networkidle');
-    
+
     await expect(page).toHaveScreenshot('home-dark.png', {
       fullPage: true,
       maxDiffPixels: 100,
@@ -196,10 +196,10 @@ test.describe('Visual Regression - Interactions', () => {
   test('Button hover state', async ({ page }) => {
     await page.goto(`${BASE_URL}/login`);
     await page.waitForLoadState('networkidle');
-    
+
     const button = await page.locator('button[type="submit"]');
     await button.hover();
-    
+
     await expect(button).toHaveScreenshot('button-hover.png', {
       maxDiffPixels: 50,
       threshold: 0.1,
@@ -209,10 +209,10 @@ test.describe('Visual Regression - Interactions', () => {
   test('Input focus state', async ({ page }) => {
     await page.goto(`${BASE_URL}/login`);
     await page.waitForLoadState('networkidle');
-    
+
     const input = await page.locator('input[type="email"]');
     await input.focus();
-    
+
     await expect(input).toHaveScreenshot('input-focus.png', {
       maxDiffPixels: 50,
       threshold: 0.1,

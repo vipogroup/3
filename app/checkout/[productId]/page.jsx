@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { useRouter, useParams } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-import { getProductById } from "@/app/lib/products";
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
+import { getProductById } from '@/app/lib/products';
 
 export default function CheckoutPage() {
   const params = useParams();
@@ -16,54 +16,55 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    zipCode: "",
-    paymentMethod: "credit_card",
-    agreeToTerms: false
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    zipCode: '',
+    paymentMethod: 'credit_card',
+    agreeToTerms: false,
   });
 
   const gradientStyle = useMemo(
     () => ({
-      background: "linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%)",
+      background:
+        'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%)',
     }),
-    []
+    [],
   );
 
   const loadData = useCallback(async () => {
     if (!productId) return;
     setLoading(true);
-    
+
     // Load product
     const prod = getProductById(productId);
     if (!prod) {
-      alert("מוצר לא נמצא");
-      router.push("/products");
+      alert('מוצר לא נמצא');
+      router.push('/products');
       return;
     }
     setProduct(prod);
 
     // Load user if logged in
     try {
-      const res = await fetch("/api/auth/me");
+      const res = await fetch('/api/auth/me');
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
         // Pre-fill form with user data
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          fullName: data.user.fullName || "",
-          email: data.user.email || "",
-          phone: data.user.phone || ""
+          fullName: data.user.fullName || '',
+          email: data.user.email || '',
+          phone: data.user.phone || '',
         }));
       }
     } catch (error) {
-      console.error("Failed to load user:", error);
+      console.error('Failed to load user:', error);
     }
-    
+
     setLoading(false);
   }, [productId, router]);
 
@@ -73,17 +74,17 @@ export default function CheckoutPage() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.agreeToTerms) {
-      alert("עליך לאשר את התנאים וההגבלות");
+      alert('עליך לאשר את התנאים וההגבלות');
       return;
     }
 
@@ -91,9 +92,9 @@ export default function CheckoutPage() {
 
     try {
       // Create order
-      const orderRes = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const orderRes = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           productId: product._id,
           productName: product.name,
@@ -105,39 +106,38 @@ export default function CheckoutPage() {
             phone: formData.phone,
             address: formData.address,
             city: formData.city,
-            zipCode: formData.zipCode
+            zipCode: formData.zipCode,
           },
-          paymentMethod: formData.paymentMethod
-        })
+          paymentMethod: formData.paymentMethod,
+        }),
       });
 
       if (!orderRes.ok) {
-        throw new Error("Failed to create order");
+        throw new Error('Failed to create order');
       }
 
       const orderData = await orderRes.json();
-      
+
       // Create sale record
       if (user) {
-        await fetch("/api/sales", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        await fetch('/api/sales', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             customerId: user.id,
             productId: product._id,
             productName: product.name,
-            salePrice: product.price
-          })
+            salePrice: product.price,
+          }),
         });
       }
 
       // Success
-      alert("✅ ההזמנה בוצעה בהצלחה!\n\nמספר הזמנה: " + orderData.orderId);
-      router.push("/customer");
-      
+      alert('✅ ההזמנה בוצעה בהצלחה!\n\nמספר הזמנה: ' + orderData.orderId);
+      router.push('/customer');
     } catch (error) {
-      console.error("Checkout error:", error);
-      alert("שגיאה בביצוע ההזמנה. אנא נסה שוב.");
+      console.error('Checkout error:', error);
+      alert('שגיאה בביצוע ההזמנה. אנא נסה שוב.');
     } finally {
       setProcessing(false);
     }
@@ -181,7 +181,7 @@ export default function CheckoutPage() {
                   <span>👤</span>
                   <span>פרטים אישיים</span>
                 </h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
@@ -236,7 +236,7 @@ export default function CheckoutPage() {
                   <span>📦</span>
                   <span>כתובת למשלוח</span>
                 </h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
@@ -254,9 +254,7 @@ export default function CheckoutPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      עיר *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">עיר *</label>
                     <input
                       type="text"
                       name="city"
@@ -291,14 +289,14 @@ export default function CheckoutPage() {
                   <span>💳</span>
                   <span>אמצעי תשלום</span>
                 </h2>
-                
+
                 <div className="space-y-3">
                   <label className="flex items-center p-4 border-2 border-gray-300 rounded-xl cursor-pointer hover:border-purple-600 transition-all">
                     <input
                       type="radio"
                       name="paymentMethod"
                       value="credit_card"
-                      checked={formData.paymentMethod === "credit_card"}
+                      checked={formData.paymentMethod === 'credit_card'}
                       onChange={handleChange}
                       className="w-5 h-5 text-purple-600"
                     />
@@ -310,7 +308,7 @@ export default function CheckoutPage() {
                       type="radio"
                       name="paymentMethod"
                       value="paypal"
-                      checked={formData.paymentMethod === "paypal"}
+                      checked={formData.paymentMethod === 'paypal'}
                       onChange={handleChange}
                       className="w-5 h-5 text-purple-600"
                     />
@@ -322,7 +320,7 @@ export default function CheckoutPage() {
                       type="radio"
                       name="paymentMethod"
                       value="bank_transfer"
-                      checked={formData.paymentMethod === "bank_transfer"}
+                      checked={formData.paymentMethod === 'bank_transfer'}
                       onChange={handleChange}
                       className="w-5 h-5 text-purple-600"
                     />
@@ -342,11 +340,11 @@ export default function CheckoutPage() {
                     className="w-5 h-5 text-purple-600 rounded mt-1"
                   />
                   <span className="text-sm text-gray-700">
-                    אני מאשר/ת את{" "}
+                    אני מאשר/ת את{' '}
                     <Link href="/terms" className="text-purple-600 hover:underline font-semibold">
                       התנאים וההגבלות
-                    </Link>
-                    {" "}ואת{" "}
+                    </Link>{' '}
+                    ואת{' '}
                     <Link href="/privacy" className="text-purple-600 hover:underline font-semibold">
                       מדיניות הפרטיות
                     </Link>
@@ -360,20 +358,32 @@ export default function CheckoutPage() {
                 disabled={processing || !formData.agreeToTerms}
                 className={`w-full py-4 rounded-xl font-bold text-lg transition-all shadow-lg ${
                   processing || !formData.agreeToTerms
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     : `bg-gradient-to-r ${theme.buttonGradient} text-white hover:shadow-xl`
                 }`}
               >
                 {processing ? (
                   <span className="flex items-center justify-center gap-2">
                     <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
                     </svg>
                     מעבד...
                   </span>
                 ) : (
-                  "✅ אשר הזמנה ושלם"
+                  '✅ אשר הזמנה ושלם'
                 )}
               </button>
             </form>
@@ -383,13 +393,13 @@ export default function CheckoutPage() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">סיכום הזמנה</h2>
-              
+
               {/* Product */}
               <div className="mb-6 pb-6 border-b border-gray-200">
                 <div className="flex gap-4">
                   <Image
-                    src={product.image || "https://placehold.co/120x120?text=VIPO"}
-                    alt={product.name || "מוצר"}
+                    src={product.image || 'https://placehold.co/120x120?text=VIPO'}
+                    alt={product.name || 'מוצר'}
                     width={120}
                     height={120}
                     className="w-20 h-20 object-cover rounded-xl"
@@ -415,9 +425,7 @@ export default function CheckoutPage() {
                 {product.originalPrice && (
                   <div className="flex justify-between text-sm text-green-600">
                     <span>חסכת:</span>
-                    <span className="font-semibold">
-                      ₪{product.originalPrice - product.price}
-                    </span>
+                    <span className="font-semibold">₪{product.originalPrice - product.price}</span>
                   </div>
                 )}
               </div>
@@ -426,9 +434,7 @@ export default function CheckoutPage() {
               <div className="pt-6 border-t-2 border-gray-300">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-xl font-bold text-gray-900">{'סה&quot;כ לתשלום:'}</span>
-                  <span className="text-3xl font-bold text-purple-600">
-                    ₪{product.price}
-                  </span>
+                  <span className="text-3xl font-bold text-purple-600">₪{product.price}</span>
                 </div>
               </div>
 
@@ -438,9 +444,7 @@ export default function CheckoutPage() {
                   <span className="text-2xl">🔒</span>
                   <span className="font-bold text-green-900">תשלום מאובטח</span>
                 </div>
-                <p className="text-sm text-green-800">
-                  התשלום שלך מוגן בהצפנה ברמה הגבוהה ביותר
-                </p>
+                <p className="text-sm text-green-800">התשלום שלך מוגן בהצפנה ברמה הגבוהה ביותר</p>
               </div>
             </div>
           </div>

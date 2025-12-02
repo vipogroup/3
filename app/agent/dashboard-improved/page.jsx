@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import ContactManagerButton from "@/app/components/agent/ContactManagerButton";
-import { buildManagerWhatsAppUrl } from "@/lib/whatsapp";
-import AgentChart from "@/app/dashboard/agent/components/AgentChart";
-import RecentSalesTable from "@/app/dashboard/agent/components/RecentSalesTable";
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import ContactManagerButton from '@/app/components/agent/ContactManagerButton';
+import { buildManagerWhatsAppUrl } from '@/lib/whatsapp';
+import AgentChart from '@/app/dashboard/agent/components/AgentChart';
+import RecentSalesTable from '@/app/dashboard/agent/components/RecentSalesTable';
 
 const LEVELS = [
-  { level: 1, threshold: 0, title: "סוכן חדש" },
-  { level: 2, threshold: 5, title: "בדרך להצלחה" },
-  { level: 3, threshold: 15, title: "סוכן מקצוען" },
-  { level: 4, threshold: 30, title: "סוכן אלוף" },
-  { level: 5, threshold: 60, title: "אגדת VIPO" },
+  { level: 1, threshold: 0, title: 'סוכן חדש' },
+  { level: 2, threshold: 5, title: 'בדרך להצלחה' },
+  { level: 3, threshold: 15, title: 'סוכן מקצוען' },
+  { level: 4, threshold: 30, title: 'סוכן אלוף' },
+  { level: 5, threshold: 60, title: 'אגדת VIPO' },
 ];
 
 function calculateLevelProgress(totalSales = 0) {
@@ -49,7 +49,7 @@ function calculateLevelProgress(totalSales = 0) {
   };
 }
 
-const WaveIcon = ({ className = "w-6 h-6" }) => (
+const WaveIcon = ({ className = 'w-6 h-6' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -64,7 +64,7 @@ const WaveIcon = ({ className = "w-6 h-6" }) => (
   </svg>
 );
 
-const TrophyIcon = ({ className = "w-10 h-10" }) => (
+const TrophyIcon = ({ className = 'w-10 h-10' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -83,7 +83,7 @@ const TrophyIcon = ({ className = "w-10 h-10" }) => (
   </svg>
 );
 
-const ShoppingBagIcon = ({ className = "w-6 h-6" }) => (
+const ShoppingBagIcon = ({ className = 'w-6 h-6' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -100,7 +100,7 @@ const ShoppingBagIcon = ({ className = "w-6 h-6" }) => (
   </svg>
 );
 
-const LogoutIcon = ({ className = "w-6 h-6" }) => (
+const LogoutIcon = ({ className = 'w-6 h-6' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -117,7 +117,7 @@ const LogoutIcon = ({ className = "w-6 h-6" }) => (
   </svg>
 );
 
-const LinkIcon = ({ className = "w-7 h-7" }) => (
+const LinkIcon = ({ className = 'w-7 h-7' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -133,7 +133,7 @@ const LinkIcon = ({ className = "w-7 h-7" }) => (
   </svg>
 );
 
-const CartIcon = ({ className = "w-7 h-7" }) => (
+const CartIcon = ({ className = 'w-7 h-7' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -150,7 +150,7 @@ const CartIcon = ({ className = "w-7 h-7" }) => (
   </svg>
 );
 
-const WalletIcon = ({ className = "w-7 h-7" }) => (
+const WalletIcon = ({ className = 'w-7 h-7' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -167,7 +167,7 @@ const WalletIcon = ({ className = "w-7 h-7" }) => (
   </svg>
 );
 
-const ChartIcon = ({ className = "w-7 h-7" }) => (
+const ChartIcon = ({ className = 'w-7 h-7' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -185,7 +185,7 @@ const ChartIcon = ({ className = "w-7 h-7" }) => (
   </svg>
 );
 
-const TagIcon = ({ className = "w-8 h-8" }) => (
+const TagIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -201,7 +201,7 @@ const TagIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const UsersIcon = ({ className = "w-8 h-8" }) => (
+const UsersIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -219,7 +219,7 @@ const UsersIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const DiamondIcon = ({ className = "w-8 h-8" }) => (
+const DiamondIcon = ({ className = 'w-8 h-8' }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -243,27 +243,27 @@ export default function AgentDashboardPage() {
   const [referredCustomers, setReferredCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [copiedStatus, setCopiedStatus] = useState("");
+  const [copiedStatus, setCopiedStatus] = useState('');
 
   const loadData = useCallback(async () => {
     try {
       // Get current user
-      const userRes = await fetch("/api/auth/me");
+      const userRes = await fetch('/api/auth/me');
       if (!userRes.ok) {
-        router.push("/login");
+        router.push('/login');
         return;
       }
       const userData = await userRes.json();
-      
-      if (userData.user.role !== "agent") {
-        router.push("/");
+
+      if (userData.user.role !== 'agent') {
+        router.push('/');
         return;
       }
-      
+
       setUser(userData.user);
 
       // Fetch coupon information
-      const couponRes = await fetch("/api/agent/coupon");
+      const couponRes = await fetch('/api/agent/coupon');
       if (couponRes.ok) {
         const couponData = await couponRes.json();
         if (couponData?.coupon) {
@@ -296,7 +296,7 @@ export default function AgentDashboardPage() {
       }
 
       // Get recent sales for chart & table
-      const salesRes = await fetch("/api/sales?self=true", { cache: "no-store" });
+      const salesRes = await fetch('/api/sales?self=true', { cache: 'no-store' });
       if (salesRes.ok) {
         const salesData = await salesRes.json();
         if (Array.isArray(salesData)) {
@@ -307,9 +307,8 @@ export default function AgentDashboardPage() {
       } else {
         setSales([]);
       }
-
     } catch (error) {
-      console.error("Failed to load agent data:", error);
+      console.error('Failed to load agent data:', error);
     } finally {
       setLoading(false);
     }
@@ -323,10 +322,10 @@ export default function AgentDashboardPage() {
     if (!coupon?.code) return;
     navigator.clipboard.writeText(coupon.code.toUpperCase());
     setCopied(true);
-    setCopiedStatus("code");
+    setCopiedStatus('code');
     setTimeout(() => {
       setCopied(false);
-      setCopiedStatus("");
+      setCopiedStatus('');
     }, 2000);
   }
 
@@ -335,10 +334,10 @@ export default function AgentDashboardPage() {
     const message = `היי! הקוד שלי לרכישה עם הנחה הוא ${coupon.code.toUpperCase()}. הזן אותו בקופה ותקבל/י ${coupon.discountPercent || 0}% הנחה.`;
     navigator.clipboard.writeText(message);
     setCopied(true);
-    setCopiedStatus("message");
+    setCopiedStatus('message');
     setTimeout(() => {
       setCopied(false);
-      setCopiedStatus("");
+      setCopiedStatus('');
     }, 2000);
   }
 
@@ -358,11 +357,9 @@ export default function AgentDashboardPage() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            דשבורד סוכן
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">דשבורד סוכן</h1>
           <p className="text-gray-600">
-            שלום {user?.fullName || "סוכן"}! כאן תוכל לעקוב אחר הביצועים שלך
+            שלום {user?.fullName || 'סוכן'}! כאן תוכל לעקוב אחר הביצועים שלך
           </p>
         </div>
 
@@ -371,9 +368,9 @@ export default function AgentDashboardPage() {
           {(() => {
             const totalSales = stats?.totalSales ?? 0;
             const levelProgress = calculateLevelProgress(totalSales);
-            const currentXpLabel = levelProgress.currentXp.toLocaleString("he-IL");
+            const currentXpLabel = levelProgress.currentXp.toLocaleString('he-IL');
             const nextXpLabel = levelProgress.nextLevelXp
-              ? levelProgress.nextLevelXp.toLocaleString("he-IL")
+              ? levelProgress.nextLevelXp.toLocaleString('he-IL')
               : null;
 
             return (
@@ -407,7 +404,7 @@ export default function AgentDashboardPage() {
                   <div className="flex items-center justify-between text-xs md:text-sm font-semibold text-white/70 mb-2">
                     <span>XP {currentXpLabel}</span>
                     <span>
-                      {nextXpLabel ? `יעד הבא · ${nextXpLabel} XP` : "הגעת לרמה המקסימלית"}
+                      {nextXpLabel ? `יעד הבא · ${nextXpLabel} XP` : 'הגעת לרמה המקסימלית'}
                     </span>
                   </div>
                   <div className="h-3 md:h-3.5 bg-white/25 rounded-full overflow-hidden">
@@ -419,11 +416,11 @@ export default function AgentDashboardPage() {
                   <p className="text-xs md:text-sm text-white/85 font-medium mt-3">
                     {levelProgress.nextLevel ? (
                       <>
-                        עוד <span className="font-semibold">{levelProgress.xpToNextLevel}</span> לקוחות כדי
-                        להגיע לרמה {levelProgress.nextLevel}
+                        עוד <span className="font-semibold">{levelProgress.xpToNextLevel}</span>{' '}
+                        לקוחות כדי להגיע לרמה {levelProgress.nextLevel}
                       </>
                     ) : (
-                      "תותח! הגעת לרמה הגבוהה ביותר שלנו."
+                      'תותח! הגעת לרמה הגבוהה ביותר שלנו.'
                     )}
                   </p>
                 </div>
@@ -436,7 +433,9 @@ export default function AgentDashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 mb-8">
           <div className="bg-white rounded-3xl shadow-md hover:shadow-2xl p-7 transition-all duration-300 hover:-translate-y-1 border border-gray-100">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-gray-600 tracking-wide">{'סה&quot;כ הפניות'}</h3>
+              <h3 className="text-sm font-semibold text-gray-600 tracking-wide">
+                {'סה&quot;כ הפניות'}
+              </h3>
               <div className="p-2.5 bg-blue-50 rounded-xl">
                 <LinkIcon className="text-blue-600 w-5 h-5" />
               </div>
@@ -449,7 +448,9 @@ export default function AgentDashboardPage() {
 
           <div className="bg-white rounded-3xl shadow-md hover:shadow-2xl p-7 transition-all duration-300 hover:-translate-y-1 border border-gray-100">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-gray-600 tracking-wide">{'סה&quot;כ מכירות'}</h3>
+              <h3 className="text-sm font-semibold text-gray-600 tracking-wide">
+                {'סה&quot;כ מכירות'}
+              </h3>
               <div className="p-2.5 bg-blue-50 rounded-xl">
                 <CartIcon className="text-blue-500 w-5 h-5" />
               </div>
@@ -493,7 +494,9 @@ export default function AgentDashboardPage() {
           <section className="bg-white rounded-3xl shadow-md hover:shadow-xl p-7 transition-all duration-300 border border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">קוד הקופון שלך</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">
+                  קוד הקופון שלך
+                </h2>
                 <p className="text-sm text-gray-500 mt-1.5 font-medium">
                   שתף את הקוד כדי שלקוחות יקבלו {coupon?.discountPercent ?? 0}% הנחה
                 </p>
@@ -506,9 +509,11 @@ export default function AgentDashboardPage() {
               <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200/50 shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   <div className="flex-1">
-                    <p className="text-sm font-semibold text-gray-600 mb-2 tracking-wide">קוד קופון:</p>
+                    <p className="text-sm font-semibold text-gray-600 mb-2 tracking-wide">
+                      קוד קופון:
+                    </p>
                     <code className="block bg-white px-5 py-4 rounded-xl font-mono text-xl font-bold tracking-widest text-center sm:text-left shadow-sm border border-blue-100">
-                      {coupon?.code ? coupon.code.toUpperCase() : "טוען..."}
+                      {coupon?.code ? coupon.code.toUpperCase() : 'טוען...'}
                     </code>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2.5 w-full sm:w-auto">
@@ -517,29 +522,37 @@ export default function AgentDashboardPage() {
                       disabled={!coupon?.code}
                       className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-xl transition-all duration-200 font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5"
                     >
-                      {copied && copiedStatus === "code" ? "✓ הועתק!" : "העתק קוד"}
+                      {copied && copiedStatus === 'code' ? '✓ הועתק!' : 'העתק קוד'}
                     </button>
                     <button
                       onClick={copyCouponMessage}
                       disabled={!coupon?.code}
                       className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-lg transition font-semibold shadow-md"
                     >
-                      {copied && copiedStatus === "message" ? "✓ הודעה הועתקה" : "העתק הודעה"}
+                      {copied && copiedStatus === 'message' ? '✓ הודעה הועתקה' : 'העתק הודעה'}
                     </button>
                   </div>
                 </div>
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-gray-700">
                   <div className="p-4 bg-white rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
                     <p className="font-bold text-blue-600 text-xs tracking-wide mb-1">הנחה ללקוח</p>
-                    <p className="text-lg font-extrabold text-gray-900">{coupon?.discountPercent ?? 0}%</p>
+                    <p className="text-lg font-extrabold text-gray-900">
+                      {coupon?.discountPercent ?? 0}%
+                    </p>
                   </div>
                   <div className="p-4 bg-white rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
-                    <p className="font-bold text-orange-600 text-xs tracking-wide mb-1">עמלה עבורך</p>
-                    <p className="text-lg font-extrabold text-gray-900">{coupon?.commissionPercent ?? 0}%</p>
+                    <p className="font-bold text-orange-600 text-xs tracking-wide mb-1">
+                      עמלה עבורך
+                    </p>
+                    <p className="text-lg font-extrabold text-gray-900">
+                      {coupon?.commissionPercent ?? 0}%
+                    </p>
                   </div>
                   <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                     <p className="font-bold text-gray-600 text-xs tracking-wide mb-1">סטטוס</p>
-                    <p className="text-lg font-extrabold text-gray-900">{coupon?.status === "active" ? "פעיל" : "לא פעיל"}</p>
+                    <p className="text-lg font-extrabold text-gray-900">
+                      {coupon?.status === 'active' ? 'פעיל' : 'לא פעיל'}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -549,7 +562,9 @@ export default function AgentDashboardPage() {
 
               <div className="grid grid-cols-2 gap-3 mt-4">
                 <a
-                  href={buildManagerWhatsAppUrl(`היי, כאן ${user?.fullName || "סוכן"}. קוד הקופון שלי הוא ${coupon?.code?.toUpperCase() || "..."}`)}
+                  href={buildManagerWhatsAppUrl(
+                    `היי, כאן ${user?.fullName || 'סוכן'}. קוד הקופון שלי הוא ${coupon?.code?.toUpperCase() || '...'}`,
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
@@ -561,7 +576,9 @@ export default function AgentDashboardPage() {
                   disabled={!coupon?.code}
                   className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
                 >
-                  <span>{copied && copiedStatus === "message" ? "✓ הודעה הועתקה" : "העתק להודעה"}</span>
+                  <span>
+                    {copied && copiedStatus === 'message' ? '✓ הודעה הועתקה' : 'העתק להודעה'}
+                  </span>
                 </button>
               </div>
             </div>
@@ -589,7 +606,7 @@ export default function AgentDashboardPage() {
                         {customer.fullName || customer.email || customer.phone}
                       </p>
                       <p className="text-xs text-gray-500 font-medium mt-0.5">
-                        {new Date(customer.createdAt).toLocaleDateString("he-IL")}
+                        {new Date(customer.createdAt).toLocaleDateString('he-IL')}
                       </p>
                     </div>
                     <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -600,9 +617,7 @@ export default function AgentDashboardPage() {
               ) : (
                 <div className="text-center py-12 bg-gray-50 rounded-xl">
                   <p className="text-gray-500 font-semibold text-lg">עדיין אין לקוחות</p>
-                  <p className="text-sm text-gray-400 mt-2 font-medium">
-                    התחל לשתף את הקישור שלך!
-                  </p>
+                  <p className="text-sm text-gray-400 mt-2 font-medium">התחל לשתף את הקישור שלך!</p>
                 </div>
               )}
             </div>
@@ -640,25 +655,35 @@ export default function AgentDashboardPage() {
           <div className="bg-white rounded-3xl shadow-md hover:shadow-xl p-7 transition-all duration-300 border border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">מגמת מכירות חודשית</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">
+                  מגמת מכירות חודשית
+                </h2>
                 <p className="text-sm text-gray-500 mt-1 font-medium">
                   מבט על סך המכירות שבוצעו במהלך החודש הנוכחי
                 </p>
               </div>
             </div>
-            <AgentChart data={sales} className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl border border-blue-100 p-4 h-72" />
+            <AgentChart
+              data={sales}
+              className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl border border-blue-100 p-4 h-72"
+            />
           </div>
 
           <div className="bg-white rounded-3xl shadow-md hover:shadow-xl p-7 transition-all duration-300 border border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">מכירות אחרונות</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">
+                  מכירות אחרונות
+                </h2>
                 <p className="text-sm text-gray-500 mt-1 font-medium">
                   עשר העסקאות האחרונות שנרשמו עבורך במערכת
                 </p>
               </div>
             </div>
-            <RecentSalesTable rows={sales} className="bg-transparent border-0 shadow-none rounded-none" />
+            <RecentSalesTable
+              rows={sales}
+              className="bg-transparent border-0 shadow-none rounded-none"
+            />
           </div>
         </section>
       </div>

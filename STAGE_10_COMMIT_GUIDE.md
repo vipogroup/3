@@ -1,6 +1,7 @@
 # 📝 Stage 10 - Commit & PR Guidelines
 
 ## 🎯 מטרה
+
 פיצול העבודה ל-commits הגיוניים ויצירת PR מסודר.
 
 ---
@@ -14,6 +15,7 @@
 ## Commit 1: Scaffold + Layout
 
 ### קבצים:
+
 ```
 app/admin/layout.js
 app/admin/page.js
@@ -26,6 +28,7 @@ lib/auth/server.js
 ```
 
 ### Commit Message:
+
 ```
 feat(admin): add admin dashboard scaffold and layout
 
@@ -40,6 +43,7 @@ Sidebar includes: Dashboard, Agents, Users, Products, Orders, Settings
 ```
 
 ### Command:
+
 ```bash
 git add app/admin/layout.js app/admin/page.js app/admin/*/page.js lib/auth/server.js
 git commit -m "feat(admin): add admin dashboard scaffold and layout"
@@ -50,11 +54,13 @@ git commit -m "feat(admin): add admin dashboard scaffold and layout"
 ## Commit 2: Guards + Dashboard KPIs
 
 ### קבצים:
+
 ```
 app/admin/page.js (updated with KPIs)
 ```
 
 ### Commit Message:
+
 ```
 feat(admin): add dashboard KPI cards and quick actions
 
@@ -67,6 +73,7 @@ Dashboard loads fast with all statistics visible.
 ```
 
 ### Command:
+
 ```bash
 git add app/admin/page.js
 git commit -m "feat(admin): add dashboard KPI cards and quick actions"
@@ -77,6 +84,7 @@ git commit -m "feat(admin): add dashboard KPI cards and quick actions"
 ## Commit 3: Agents + Users Management
 
 ### קבצים:
+
 ```
 app/components/admin/AgentsList.jsx
 app/components/admin/UsersList.jsx
@@ -85,6 +93,7 @@ app/admin/users/page.js (updated)
 ```
 
 ### Commit Message:
+
 ```
 feat(admin): add agents and users management screens
 
@@ -103,6 +112,7 @@ Both screens include error handling and success feedback.
 ```
 
 ### Command:
+
 ```bash
 git add app/components/admin/AgentsList.jsx app/components/admin/UsersList.jsx
 git add app/admin/agents/page.js app/admin/users/page.js
@@ -114,6 +124,7 @@ git commit -m "feat(admin): add agents and users management screens"
 ## Commit 4: Products + Orders + Settings
 
 ### קבצים:
+
 ```
 app/components/admin/ProductsList.jsx
 app/components/admin/OrdersList.jsx
@@ -124,6 +135,7 @@ app/admin/settings/page.js (updated)
 ```
 
 ### Commit Message:
+
 ```
 feat(admin): add products, orders, and settings management
 
@@ -155,6 +167,7 @@ All screens include comprehensive error handling.
 ```
 
 ### Command:
+
 ```bash
 git add app/components/admin/ProductsList.jsx app/components/admin/OrdersList.jsx app/components/admin/SettingsForm.jsx
 git add app/admin/products/page.js app/admin/orders/page.js app/admin/settings/page.js
@@ -166,43 +179,51 @@ git commit -m "feat(admin): add products, orders, and settings management"
 ## 🔀 Pull Request
 
 ### PR Title:
+
 ```
 feat: Stage 10 - Admin Dashboard (scaffold, guards, CRUD, settings)
 ```
 
 ### PR Description:
+
 ```markdown
 # Stage 10: Admin Dashboard
 
 ## 📋 Summary
+
 Complete admin dashboard implementation with full CRUD operations for agents, users, products, orders, and system settings.
 
 ## ✨ Features
 
 ### Core Infrastructure
+
 - ✅ Admin route structure under `/admin`
 - ✅ Sidebar navigation with RTL support
 - ✅ Admin-only authorization guards
 - ✅ Responsive layout (desktop/tablet/mobile)
 
 ### Dashboard
+
 - ✅ 6 KPI cards (users, agents, products, orders, pending, revenue)
 - ✅ Quick actions section
 - ✅ Responsive grid layout
 
 ### Agents Management
+
 - ✅ List view with table
 - ✅ Create/Edit modal
 - ✅ Form validation
 - ✅ API integration
 
 ### Users Management
+
 - ✅ List view with role badges
 - ✅ Role change dropdown
 - ✅ Protection against removing last admin
 - ✅ Cannot change own role
 
 ### Products Management
+
 - ✅ Grid view with images
 - ✅ Full CRUD operations
 - ✅ Cloudinary image upload
@@ -210,6 +231,7 @@ Complete admin dashboard implementation with full CRUD operations for agents, us
 - ✅ Delete confirmation
 
 ### Orders Management
+
 - ✅ Table view
 - ✅ Status update
 - ✅ Filter by status
@@ -217,6 +239,7 @@ Complete admin dashboard implementation with full CRUD operations for agents, us
 - ✅ Optimistic UI
 
 ### Settings
+
 - ✅ Logo upload
 - ✅ Color picker
 - ✅ Site name
@@ -224,6 +247,7 @@ Complete admin dashboard implementation with full CRUD operations for agents, us
 - ✅ Save/Load from DB
 
 ## 🧪 Testing
+
 - [x] All routes load without 404
 - [x] Authorization guards work
 - [x] Non-admin users redirected to login
@@ -232,7 +256,9 @@ Complete admin dashboard implementation with full CRUD operations for agents, us
 - [x] Responsive design tested
 
 ## 📝 API Endpoints Required
+
 The following API endpoints need to be implemented:
+
 - `GET/POST/PUT /api/agents`
 - `GET /api/users`
 - `PATCH /api/users/role`
@@ -242,13 +268,16 @@ The following API endpoints need to be implemented:
 - `GET/POST /api/settings`
 
 ## 🔗 Related
+
 - Depends on: Stage 9 (Cloudinary for image uploads)
 - Depends on: Auth system (JWT, cookies)
 
 ## 📸 Screenshots
+
 (Add screenshots here if needed)
 
 ## ✅ Checklist
+
 - [x] Code follows project standards
 - [x] All components use Tailwind CSS
 - [x] RTL support implemented
@@ -259,6 +288,7 @@ The following API endpoints need to be implemented:
 - [x] No breaking changes
 
 ## 🚀 Deployment Notes
+
 - Ensure all API endpoints are implemented before deploying
 - Test with real data in staging environment
 - Verify authorization guards in production
@@ -269,6 +299,7 @@ The following API endpoints need to be implemented:
 ```
 
 ### Create PR:
+
 ```bash
 # Push to remote
 git push origin feature/stage-10-admin-dashboard
@@ -282,11 +313,13 @@ git push origin feature/stage-10-admin-dashboard
 ## 📊 Commit Statistics
 
 ### Expected Stats:
+
 - **Files Changed:** ~15-20
 - **Insertions:** ~2000-2500 lines
 - **Deletions:** ~50-100 lines (placeholders)
 
 ### Breakdown:
+
 - Commit 1: ~500 lines (scaffold + layout)
 - Commit 2: ~200 lines (dashboard KPIs)
 - Commit 3: ~600 lines (agents + users)
@@ -297,6 +330,7 @@ git push origin feature/stage-10-admin-dashboard
 ## ✅ Pre-Merge Checklist
 
 Before merging the PR:
+
 - [ ] All commits have clear messages
 - [ ] PR description is complete
 - [ ] Manual testing completed (use QA checklist)
@@ -310,6 +344,7 @@ Before merging the PR:
 ## 🎯 After Merge
 
 1. **Tag the release:**
+
    ```bash
    git tag -a v1.10.0 -m "Stage 10: Admin Dashboard"
    git push origin v1.10.0
@@ -336,12 +371,14 @@ Before merging the PR:
 ## 📝 Commit Best Practices
 
 ### DO:
+
 ✅ Use conventional commits (feat, fix, docs, etc.)
 ✅ Write clear, descriptive messages
 ✅ Keep commits focused and atomic
 ✅ Test before committing
 
 ### DON'T:
+
 ❌ Mix unrelated changes
 ❌ Commit broken code
 ❌ Use vague messages ("fix stuff", "update")

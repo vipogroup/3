@@ -5,7 +5,7 @@
 module.exports = function parse(text) {
   const lines = text
     .split('\n')
-    .map(l => l.trim())
+    .map((l) => l.trim())
     .filter(Boolean);
 
   const items = [];
@@ -18,7 +18,7 @@ module.exports = function parse(text) {
       current = {
         name: line.replace(/^\d+[\.)]\s+/, ''),
         dimensions: '',
-        price: ''
+        price: '',
       };
       continue;
     }

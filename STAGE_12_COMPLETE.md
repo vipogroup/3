@@ -13,19 +13,23 @@ Stage 12 הושלם! נבנתה מערכת עמלות וקרדיט מלאה שמ
 ## 🎯 מה הושלם?
 
 ### 12.1 - הרחבת סכמת User ✅
+
 **קובץ:** `models/User.js`
 
 **שדות חדשים:**
+
 - `referralCount`: Number (default: 0) - כמות הפניות
 - `commissionBalance`: Number (default: 0) - יתרת עמלות בש"ח
 
 **עדכונים:**
+
 - שדות כלולים ב-`toPublicUser()`
 - תמיכה מלאה ב-JSON serialization
 
 ---
 
 ### 12.2 - קבוע עמלות גלובלי ✅
+
 **קובץ:** `app/config/commissions.js`
 
 ```javascript
@@ -33,6 +37,7 @@ export const commissionPerReferral = 150; // ILS
 ```
 
 **יתרונות:**
+
 - ניהול מרכזי של ערכי עמלות
 - קל לשינוי עתידי
 - עקביות בכל המערכת
@@ -40,9 +45,11 @@ export const commissionPerReferral = 150; // ILS
 ---
 
 ### 12.3 - לוגיקת עמלות בהרשמה ✅
+
 **קובץ:** `app/api/auth/register/route.js`
 
 **לוגיקה:**
+
 1. משתמש חדש נרשם עם `referredBy`
 2. מערכת מעדכנת את המפנה:
    - `referralCount` +1
@@ -53,6 +60,7 @@ export const commissionPerReferral = 150; // ILS
 5. לא חוסם הרשמה אם עדכון נכשל
 
 **תכונות אבטחה:**
+
 - מניעת self-referral
 - ולידציה של referrer קיים
 - Try-catch עם לוגים
@@ -60,11 +68,13 @@ export const commissionPerReferral = 150; // ILS
 ---
 
 ### 12.4 - API רשימת מופנים ✅
+
 **קובץ:** `app/api/referrals/list/route.js`
 
 **Endpoint:** `GET /api/referrals/list`
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -83,6 +93,7 @@ export const commissionPerReferral = 150; // ILS
 ```
 
 **אבטחה:**
+
 - דורש authentication
 - מחזיר רק מופנים של המשתמש המחובר
 - Projection בטוח (ללא sensitive data)
@@ -94,6 +105,7 @@ export const commissionPerReferral = 150; // ILS
 #### רכיבים שנוצרו:
 
 **1. CommissionStats.jsx**
+
 - 2 כרטיסי KPI:
   - יתרת קרדיט (₪)
   - כמות הפניות
@@ -101,12 +113,14 @@ export const commissionPerReferral = 150; // ILS
 - Responsive
 
 **2. ReferralsTable.jsx**
+
 - טבלה מלאה של מופנים
 - עמודות: שם, אימייל/טלפון, תפקיד, תאריך
 - Empty state: "אין עדיין הפניות"
 - Sorting לפי תאריך (חדשים ראשון)
 
 **שימוש:**
+
 ```jsx
 import CommissionStats from "@/components/CommissionStats";
 import ReferralsTable from "@/components/ReferralsTable";
@@ -120,6 +134,7 @@ import ReferralsTable from "@/components/ReferralsTable";
 ### 12.6 - בקשת משיכת קרדיט ✅
 
 #### מודל:
+
 **קובץ:** `models/WithdrawalRequest.js`
 
 ```javascript
@@ -137,21 +152,26 @@ import ReferralsTable from "@/components/ReferralsTable";
 ```
 
 #### API:
+
 **קובץ:** `app/api/withdrawals/route.js`
 
 **Endpoints:**
+
 - `POST /api/withdrawals` - יצירת בקשה
 - `GET /api/withdrawals` - רשימת בקשות
 
 **ולידציות:**
+
 - סכום > 0
 - סכום <= יתרה
 - משתמש מחובר
 
 #### UI:
+
 **קובץ:** `app/components/WithdrawalForm.jsx`
 
 **תכונות:**
+
 - הצגת יתרה זמינה
 - טופס עם סכום והערות
 - ולידציה client-side
@@ -163,6 +183,7 @@ import ReferralsTable from "@/components/ReferralsTable";
 ### 12.7 - אבטחה והרשאות ✅
 
 **מיושם:**
+
 - ✅ כל ה-APIs דורשים authentication
 - ✅ משתמש רואה רק את המופנים שלו
 - ✅ לא ניתן לשנות userId בבקשות
@@ -174,6 +195,7 @@ import ReferralsTable from "@/components/ReferralsTable";
 ### 12.8 - בדיקות ידניות ✅
 
 **Checklist:**
+
 1. ✅ הרשמת משתמש B עם referredBy=A
 2. ✅ A.referralCount +1
 3. ✅ A.commissionBalance +150
@@ -187,6 +209,7 @@ import ReferralsTable from "@/components/ReferralsTable";
 ### 12.9 - טיפול בקצה ושגיאות ✅
 
 **מקרים שטופלו:**
+
 - ✅ referredBy לא תקין → ignore, log warn
 - ✅ Self-referral → מנוטרל
 - ✅ Duplicate referral → logic runs once
@@ -198,20 +221,27 @@ import ReferralsTable from "@/components/ReferralsTable";
 ### 12.10 - טלמטריה ולוגים ✅
 
 **לוגים מיושמים:**
+
 ```javascript
 // Success
-console.log("REFERRAL_APPLIED", {
-  referrerId, newUserId, delta: 150
+console.log('REFERRAL_APPLIED', {
+  referrerId,
+  newUserId,
+  delta: 150,
 });
 
 // Failure
-console.error("REFERRAL_APPLY_FAILED", {
-  referrerId, newUserId, reason
+console.error('REFERRAL_APPLY_FAILED', {
+  referrerId,
+  newUserId,
+  reason,
 });
 
 // Withdrawal
-console.log("WITHDRAWAL_REQUESTED", {
-  userId, amount, requestId
+console.log('WITHDRAWAL_REQUESTED', {
+  userId,
+  amount,
+  requestId,
 });
 ```
 
@@ -220,6 +250,7 @@ console.log("WITHDRAWAL_REQUESTED", {
 ### 12.11 - Git Commits ✅
 
 **מבנה מומלץ:**
+
 ```bash
 # Commit 1
 git add models/User.js
@@ -243,10 +274,12 @@ git commit -m "feat(withdrawal): create pending withdrawal request"
 ## 📁 קבצים שנוצרו/עודכנו
 
 ### עודכנו (2):
+
 1. `models/User.js` - הוספת שדות commission
 2. `app/api/auth/register/route.js` - לוגיקת עמלות
 
 ### נוצרו (8):
+
 3. `app/config/commissions.js` - קבועי עמלות
 4. `app/api/referrals/list/route.js` - API רשימת מופנים
 5. `app/components/CommissionStats.jsx` - כרטיסי KPI
@@ -288,11 +321,13 @@ git commit -m "feat(withdrawal): create pending withdrawal request"
 ## 💰 מערכת העמלות
 
 ### ערכים נוכחיים:
+
 - **עמלה להפניה:** ₪150
 - **מינימום משיכה:** ₪1
 - **סטטוס ברירת מחדל:** pending
 
 ### חישוב דוגמה:
+
 ```
 5 הפניות × ₪150 = ₪750
 בקשת משיכה: ₪500
@@ -304,6 +339,7 @@ git commit -m "feat(withdrawal): create pending withdrawal request"
 ## 🎨 UI Components
 
 ### CommissionStats:
+
 ```
 ┌─────────────────────┬─────────────────────┐
 │ יתרת קרדיט         │ כמות הפניות        │
@@ -313,6 +349,7 @@ git commit -m "feat(withdrawal): create pending withdrawal request"
 ```
 
 ### ReferralsTable:
+
 ```
 ┌──────────────────────────────────────────┐
 │ המופנים שלי                    סה״כ: 5  │
@@ -325,6 +362,7 @@ git commit -m "feat(withdrawal): create pending withdrawal request"
 ```
 
 ### WithdrawalForm:
+
 ```
 ┌─────────────────────────────────────────┐
 │ בקשת משיכת קרדיט                       │
@@ -346,21 +384,21 @@ git commit -m "feat(withdrawal): create pending withdrawal request"
 
 ```jsx
 // app/agent/page.jsx (or dashboard)
-import CommissionStats from "@/components/CommissionStats";
-import ReferralsTable from "@/components/ReferralsTable";
-import WithdrawalForm from "@/components/WithdrawalForm";
+import CommissionStats from '@/components/CommissionStats';
+import ReferralsTable from '@/components/ReferralsTable';
+import WithdrawalForm from '@/components/WithdrawalForm';
 
 export default function AgentDashboard() {
   return (
     <div className="p-8">
       <h1>דשבורד סוכן</h1>
-      
+
       {/* Commission KPIs */}
       <CommissionStats />
-      
+
       {/* Referrals List */}
       <ReferralsTable />
-      
+
       {/* Withdrawal Form */}
       <WithdrawalForm />
     </div>
@@ -369,6 +407,7 @@ export default function AgentDashboard() {
 ```
 
 ### למשתמש:
+
 1. הפנה חברים דרך הלינק האישי
 2. צפה ביתרה הצוברת בדשבורד
 3. בקש משיכה כשמגיע לסכום רצוי
@@ -379,10 +418,11 @@ export default function AgentDashboard() {
 ## 📊 Database Schema
 
 ### users collection (עדכון):
+
 ```javascript
 {
   // ... existing fields
-  
+
   // Stage 12 additions:
   referralCount: 5,
   commissionBalance: 750,
@@ -390,6 +430,7 @@ export default function AgentDashboard() {
 ```
 
 ### withdrawalRequests collection (חדש):
+
 ```javascript
 {
   _id: ObjectId("..."),
@@ -410,6 +451,7 @@ export default function AgentDashboard() {
 ## 🔌 API Endpoints
 
 ### 1. Referrals List
+
 ```
 GET /api/referrals/list
 Headers: Cookie: token=<JWT>
@@ -417,6 +459,7 @@ Response: { ok, count, referrals: [...] }
 ```
 
 ### 2. Create Withdrawal
+
 ```
 POST /api/withdrawals
 Headers: Cookie: token=<JWT>
@@ -425,6 +468,7 @@ Response: { ok, requestId, amount, status }
 ```
 
 ### 3. List Withdrawals
+
 ```
 GET /api/withdrawals
 Headers: Cookie: token=<JWT>
@@ -436,12 +480,14 @@ Response: { ok, requests: [...] }
 ## ⚙️ Configuration
 
 ### Environment Variables:
+
 ```env
 # No new variables needed
 # Uses existing: MONGODB_URI, JWT_SECRET
 ```
 
 ### Commission Settings:
+
 ```javascript
 // app/config/commissions.js
 export const commissionPerReferral = 150; // Change here
@@ -452,6 +498,7 @@ export const commissionPerReferral = 150; // Change here
 ## 🛡️ Security Features
 
 ### Implemented:
+
 - ✅ Authentication required for all APIs
 - ✅ User can only see their own data
 - ✅ Atomic updates ($inc) for concurrency
@@ -461,6 +508,7 @@ export const commissionPerReferral = 150; // Change here
 - ✅ Self-referral prevention
 
 ### TODO (Future):
+
 - ⏳ Rate limiting on withdrawal requests
 - ⏳ Maximum withdrawal per day/week
 - ⏳ Email notifications
@@ -471,6 +519,7 @@ export const commissionPerReferral = 150; // Change here
 ## 🧪 Testing
 
 ### Manual Testing:
+
 ```bash
 # 1. Register user B with referral
 POST /api/auth/register
@@ -505,21 +554,27 @@ db.withdrawalRequests.find({ userId: ObjectId("<USER_A_ID>") })
 ## 🐛 Troubleshooting
 
 ### Problem: Commission not added
+
 **Solution:**
+
 - Check referredBy is valid ObjectId
 - Check user exists in DB
 - Check console logs for REFERRAL_APPLIED
 - Verify commissionPerReferral is imported
 
 ### Problem: Withdrawal fails
+
 **Solution:**
+
 - Check balance >= amount
 - Check user is authenticated
 - Check amount > 0
 - Check DB connection
 
 ### Problem: KPIs not showing
+
 **Solution:**
+
 - Check /api/auth/me returns user data
 - Check commissionBalance and referralCount fields exist
 - Refresh page
@@ -532,18 +587,21 @@ db.withdrawalRequests.find({ userId: ObjectId("<USER_A_ID>") })
 אם צריך לבטל:
 
 ### Option 1: Disable Commission Logic
+
 ```javascript
 // In app/api/auth/register/route.js
 // Comment out lines 78-106 (commission update)
 ```
 
 ### Option 2: Set Commission to 0
+
 ```javascript
 // In app/config/commissions.js
 export const commissionPerReferral = 0;
 ```
 
 ### Option 3: Hide UI
+
 ```javascript
 // Remove components from dashboard
 // <CommissionStats />
@@ -571,6 +629,7 @@ export const commissionPerReferral = 0;
 ## 🎯 Next Steps
 
 ### Stage 13 (Admin Approval):
+
 - Admin dashboard for withdrawal requests
 - Approve/Reject workflow
 - Deduct balance on approval
@@ -578,6 +637,7 @@ export const commissionPerReferral = 0;
 - Transaction history
 
 ### Or:
+
 - Deploy to production
 - Monitor commission metrics
 - A/B test commission amounts
@@ -588,6 +648,7 @@ export const commissionPerReferral = 0;
 ## 📝 Notes
 
 ### Best Practices:
+
 - Always use atomic operations ($inc)
 - Don't block registration on commission failure
 - Log all commission events
@@ -595,12 +656,14 @@ export const commissionPerReferral = 0;
 - Use centralized constants
 
 ### Performance:
+
 - Indexed fields (userId, status)
 - Atomic updates (no race conditions)
 - Minimal DB queries
 - Cached balance in user document
 
 ### Business Logic:
+
 - Commission: ₪150 per referral
 - No automatic deduction (pending approval)
 - Minimum withdrawal: ₪1
@@ -613,6 +676,7 @@ export const commissionPerReferral = 0;
 **Stage 12 הושלם בהצלחה!**
 
 נבנתה מערכת עמלות וקרדיט מלאה עם:
+
 - ✅ Tracking עמלות אוטומטי
 - ✅ Dashboard KPIs מעודכנים
 - ✅ רשימת מופנים מלאה

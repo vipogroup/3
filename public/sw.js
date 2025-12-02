@@ -1,12 +1,11 @@
-
 // Basic service worker (app shell cache)
-const CACHE = "v1";
-const ASSETS = ["/", "/manifest.webmanifest"];
-self.addEventListener("install", e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+const CACHE = 'v1';
+const ASSETS = ['/', '/manifest.webmanifest'];
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)));
 });
-self.addEventListener("fetch", e => {
+self.addEventListener('fetch', (e) => {
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match("/")))
+    caches.match(e.request).then((r) => r || fetch(e.request).catch(() => caches.match('/'))),
   );
 });

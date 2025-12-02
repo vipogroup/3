@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 export default function WithdrawalForm() {
-  const [amount, setAmount] = useState("");
-  const [notes, setNotes] = useState("");
+  const [amount, setAmount] = useState('');
+  const [notes, setNotes] = useState('');
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     // Fetch user balance
-    fetch("/api/auth/me", { credentials: "include" })
-      .then(r => r.json())
-      .then(data => {
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data) => {
         setBalance(data.commissionBalance || 0);
       })
       .catch(() => {
@@ -24,14 +24,14 @@ export default function WithdrawalForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
-    setMessage("");
+    setError('');
+    setMessage('');
     setLoading(true);
 
     const amountNum = parseFloat(amount);
 
     if (!amountNum || amountNum < 1) {
-      setError("סכום לא תקין");
+      setError('סכום לא תקין');
       setLoading(false);
       return;
     }
@@ -43,28 +43,27 @@ export default function WithdrawalForm() {
     }
 
     try {
-      const res = await fetch("/api/withdrawals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+      const res = await fetch('/api/withdrawals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ amount: amountNum, notes }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to create request");
+        throw new Error(data.error || 'Failed to create request');
       }
 
-      setMessage("✅ בקשת המשיכה נשלחה בהצלחה! תטופל בקרוב.");
-      setAmount("");
-      setNotes("");
-      
+      setMessage('✅ בקשת המשיכה נשלחה בהצלחה! תטופל בקרוב.');
+      setAmount('');
+      setNotes('');
+
       // Refresh after 2 seconds
       setTimeout(() => {
         window.location.reload();
       }, 2000);
-
     } catch (err) {
       setError(err.message);
     } finally {
@@ -75,7 +74,7 @@ export default function WithdrawalForm() {
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h3 className="text-lg font-bold mb-4">בקשת משיכת קרדיט</h3>
-      
+
       <div className="mb-4 p-4 bg-blue-50 rounded-lg">
         <p className="text-sm text-gray-700">
           <strong>יתרה זמינה:</strong> ₪{balance.toLocaleString()}
@@ -128,19 +127,18 @@ export default function WithdrawalForm() {
           disabled={loading || balance === 0}
           className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
         >
-          {loading ? "שולח..." : "שלח בקשה"}
+          {loading ? 'שולח...' : 'שלח בקשה'}
         </button>
 
         {balance === 0 && (
-          <p className="text-sm text-gray-500 text-center">
-            אין יתרה זמינה למשיכה
-          </p>
+          <p className="text-sm text-gray-500 text-center">אין יתרה זמינה למשיכה</p>
         )}
       </form>
 
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
         <p className="text-xs text-gray-600">
-          💡 <strong>שים לב:</strong> הבקשה תטופל על ידי המנהל. לאחר אישור, הסכום יועבר לחשבון הבנק שלך.
+          💡 <strong>שים לב:</strong> הבקשה תטופל על ידי המנהל. לאחר אישור, הסכום יועבר לחשבון הבנק
+          שלך.
         </p>
       </div>
     </div>

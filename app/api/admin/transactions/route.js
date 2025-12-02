@@ -1,9 +1,9 @@
-export const runtime = "nodejs";
+export const runtime = 'nodejs';
 
-import Transaction from "@/models/Transaction";
-import { getDb } from "@/lib/db";
-import { requireAdmin } from "@/lib/authz";
-import { NextResponse } from "next/server";
+import Transaction from '@/models/Transaction';
+import { getDb } from '@/lib/db';
+import { requireAdmin } from '@/lib/authz';
+import { NextResponse } from 'next/server';
 
 /**
  * GET /api/admin/transactions
@@ -11,21 +11,21 @@ import { NextResponse } from "next/server";
  */
 export async function GET(req) {
   try {
-    if (process.env.NEXT_PHASE === "phase-export") {
+    if (process.env.NEXT_PHASE === 'phase-export') {
       return NextResponse.json({ success: false, skip: true });
     }
 
     await getDb();
-    
+
     // Verify admin access
     const admin = await requireAdmin();
 
     const { searchParams } = new URL(req.url);
-    const status = searchParams.get("status"); // optional
-    const since = searchParams.get("since");  // ISO optional
+    const status = searchParams.get('status'); // optional
+    const since = searchParams.get('since'); // ISO optional
 
     const db = await getDb();
-    const transactions = db.collection("transactions");
+    const transactions = db.collection('transactions');
 
     // Build query
     const query = {};
@@ -33,38 +33,37 @@ export async function GET(req) {
     if (since) query.createdAt = { $gte: new Date(since) };
 
     // Get transactions
-    const items = await transactions
-      .find(query)
-      .sort({ createdAt: -1 })
-      .toArray();
+    const items = await transactions.find(query).sort({ createdAt: -1 }).toArray();
 
     // Get user and product details
-    const userIds = [...new Set(items.map(t => t.userId).filter(Boolean))];
-    const productIds = [...new Set(items.map(t => t.productId).filter(Boolean))];
+    const userIds = [...new Set(items.map((t) => t.userId).filter(Boolean))];
+    const productIds = [...new Set(items.map((t) => t.productId).filter(Boolean))];
 
-    const users = await db.collection("users")
+    const users = await db
+      .collection('users')
       .find({ _id: { $in: userIds } })
       .project({ fullName: 1, email: 1, role: 1 })
       .toArray();
 
-    const products = await db.collection("products")
+    const products = await db
+      .collection('products')
       .find({ _id: { $in: productIds } })
       .project({ title: 1, price: 1, slug: 1 })
       .toArray();
 
     // Create maps
     const userMap = {};
-    users.forEach(u => {
+    users.forEach((u) => {
       userMap[String(u._id)] = u;
     });
 
     const productMap = {};
-    products.forEach(p => {
+    products.forEach((p) => {
       productMap[String(p._id)] = p;
     });
 
     // Enrich transactions
-    const enrichedItems = items.map(t => ({
+    const enrichedItems = items.map((t) => ({
       _id: String(t._id),
       userId: String(t.userId),
       user: userMap[String(t.userId)] || null,
@@ -74,7 +73,7 @@ export async function GET(req) {
       status: t.status,
       referredBy: t.referredBy ? String(t.referredBy) : null,
       createdAt: t.createdAt,
-      updatedAt: t.updatedAt
+      updatedAt: t.updatedAt,
     }));
 
     // Calculate summary
@@ -84,19 +83,18 @@ export async function GET(req) {
       ok: true,
       count: items.length,
       totalAmount,
-      items: enrichedItems
+      items: enrichedItems,
     });
-
   } catch (err) {
-    console.error("ADMIN_TRANSACTIONS_ERROR:", err);
-    
+    console.error('ADMIN_TRANSACTIONS_ERROR:', err);
+
     if (err.status === 401) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     if (err.status === 403) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
-    
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

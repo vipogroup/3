@@ -1,18 +1,16 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-const baseLinkClasses =
-  "flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-medium";
+const baseLinkClasses = 'flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-medium';
 
-const iconWrapperClasses =
-  "w-5 h-5 flex items-center justify-center";
+const iconWrapperClasses = 'w-5 h-5 flex items-center justify-center';
 
 const navItems = [
   {
-    href: "/customer",
-    label: "אזור אישי",
+    href: '/customer',
+    label: 'אזור אישי',
     icon: (
       <svg className={iconWrapperClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -25,8 +23,8 @@ const navItems = [
     ),
   },
   {
-    href: "/customer/orders",
-    label: "הזמנות",
+    href: '/customer/orders',
+    label: 'הזמנות',
     icon: (
       <svg className={iconWrapperClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -39,8 +37,8 @@ const navItems = [
     ),
   },
   {
-    href: "/products",
-    label: "מוצרים",
+    href: '/products',
+    label: 'מוצרים',
     icon: (
       <svg className={iconWrapperClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -53,8 +51,8 @@ const navItems = [
     ),
   },
   {
-    href: "/contact",
-    label: "תמיכה",
+    href: '/contact',
+    label: 'תמיכה',
     icon: (
       <svg className={iconWrapperClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -82,8 +80,8 @@ export default function CustomerNav() {
                 href={href}
                 className={`${baseLinkClasses} ${
                   isActive
-                    ? "bg-purple-500 text-white shadow-md"
-                    : "text-gray-700 hover:bg-gray-100"
+                    ? 'bg-purple-500 text-white shadow-md'
+                    : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 {icon}

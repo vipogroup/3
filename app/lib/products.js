@@ -1,8 +1,8 @@
 // מקור מוצרים מרכזי - ישמש את כל המערכת
-export const PRODUCT_DATA_VERSION = "2025-11-19-empty-catalog";
+export const PRODUCT_DATA_VERSION = '2025-11-19-empty-catalog';
 
-const API_PRODUCTS_URL = "/api/products";
-const PLACEHOLDER_IMAGE = "https://via.placeholder.com/800x600?text=Product";
+const API_PRODUCTS_URL = '/api/products';
+const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/800x600?text=Product';
 
 const INITIAL_PRODUCTS = [];
 
@@ -15,23 +15,24 @@ function normalizeProductShape(product) {
 
   const normalized = {
     ...product,
-    _id: String(product._id ?? product.legacyId ?? product.id ?? ""),
+    _id: String(product._id ?? product.legacyId ?? product.id ?? ''),
     legacyId: product.legacyId ?? product._id ?? product.id ?? null,
     image: product.image || product.imageUrl || PLACEHOLDER_IMAGE,
     imageUrl: product.imageUrl || product.image || PLACEHOLDER_IMAGE,
-    images: Array.isArray(product.images) && product.images.length
-      ? product.images
-      : [product.image || PLACEHOLDER_IMAGE],
-    fullDescription: product.fullDescription || product.description || "",
-    description: product.description || product.fullDescription || "",
-    specs: typeof product.specs === "object" && product.specs !== null ? product.specs : {},
+    images:
+      Array.isArray(product.images) && product.images.length
+        ? product.images
+        : [product.image || PLACEHOLDER_IMAGE],
+    fullDescription: product.fullDescription || product.description || '',
+    description: product.description || product.fullDescription || '',
+    specs: typeof product.specs === 'object' && product.specs !== null ? product.specs : {},
     features: Array.isArray(product.features) ? product.features : [],
     catalogId: product.catalogId ?? product.catalog?._id ?? null,
-    catalogSlug: product.catalogSlug ?? product.catalog?.slug ?? "",
+    catalogSlug: product.catalogSlug ?? product.catalog?.slug ?? '',
   };
 
   if (!normalized.description) {
-    normalized.description = "פרטי המוצר יעודכנו בקרוב.";
+    normalized.description = 'פרטי המוצר יעודכנו בקרוב.';
   }
 
   if (!normalized.fullDescription) {
@@ -60,12 +61,12 @@ function setProducts(list, { persist = true } = {}) {
 }
 
 async function fetchProductsFromApi() {
-  if (typeof fetch === "undefined") {
+  if (typeof fetch === 'undefined') {
     return null;
   }
 
   try {
-    const response = await fetch(API_PRODUCTS_URL, { cache: "no-store" });
+    const response = await fetch(API_PRODUCTS_URL, { cache: 'no-store' });
     if (!response.ok) {
       throw new Error(`Failed to fetch products: status ${response.status}`);
     }
@@ -74,18 +75,18 @@ async function fetchProductsFromApi() {
     const list = Array.isArray(payload?.products)
       ? payload.products
       : Array.isArray(payload)
-      ? payload
-      : [];
+        ? payload
+        : [];
 
     return list;
   } catch (err) {
-    console.error("fetchProductsFromApi error:", err);
+    console.error('fetchProductsFromApi error:', err);
     return null;
   }
 }
 
 function scheduleApiSync({ force = false } = {}) {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return;
   }
 
@@ -113,7 +114,7 @@ export async function refreshProductsFromApi() {
 export async function fetchProductById(id) {
   if (!id) return null;
 
-  if (typeof window !== "undefined") {
+  if (typeof window !== 'undefined') {
     scheduleApiSync({ force: true });
     if (apiSyncPromise) {
       await apiSyncPromise;
@@ -183,7 +184,7 @@ function saveProducts() {
 export function getProducts() {
   syncFromStorage();
   scheduleApiSync();
-  return PRODUCTS.filter(p => p.active);
+  return PRODUCTS.filter((p) => p.active);
 }
 
 export function getAllProducts() {
@@ -195,12 +196,12 @@ export function getAllProducts() {
 export function getProductById(id) {
   syncFromStorage();
   scheduleApiSync();
-  return PRODUCTS.find(p => p._id === id);
+  return PRODUCTS.find((p) => p._id === id);
 }
 
 export function getProductsByCategory(category) {
   syncFromStorage();
-  return PRODUCTS.filter(p => p.active && p.category === category);
+  return PRODUCTS.filter((p) => p.active && p.category === category);
 }
 
 export function calculateCommission(productId) {
@@ -218,13 +219,13 @@ export function addProduct(product) {
     createdAt: new Date(),
     updatedAt: new Date(),
     // ערכי ברירת מחדל לשדות חסרים
-    fullDescription: product.fullDescription || product.description || "",
+    fullDescription: product.fullDescription || product.description || '',
     images: product.images || (product.image ? [product.image] : []),
     inStock: product.inStock !== undefined ? product.inStock : true,
     rating: product.rating || 0,
     reviews: product.reviews || 0,
     features: product.features || [],
-    specs: product.specs || {}
+    specs: product.specs || {},
   };
   PRODUCTS.push(newProduct);
   saveProducts();
@@ -233,13 +234,13 @@ export function addProduct(product) {
 
 // עדכון מוצר
 export function updateProduct(id, updates) {
-  const index = PRODUCTS.findIndex(p => p._id === id);
+  const index = PRODUCTS.findIndex((p) => p._id === id);
   if (index !== -1) {
     PRODUCTS[index] = {
       ...PRODUCTS[index],
       ...updates,
       commission: updates.price ? updates.price * 0.1 : PRODUCTS[index].commission,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
     saveProducts();
     return PRODUCTS[index];
@@ -249,7 +250,7 @@ export function updateProduct(id, updates) {
 
 // מחיקת מוצר
 export function deleteProduct(id) {
-  const index = PRODUCTS.findIndex(p => p._id === id);
+  const index = PRODUCTS.findIndex((p) => p._id === id);
   if (index !== -1) {
     PRODUCTS.splice(index, 1);
     saveProducts();

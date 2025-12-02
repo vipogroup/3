@@ -43,12 +43,12 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASS || '12345678A!';
           createdAt: new Date(),
         },
       },
-      { upsert: true }
+      { upsert: true },
     );
 
     console.log(
       '✅ Admin user reset successfully:',
-      res.upsertedId ? `created (${res.upsertedId})` : 'updated'
+      res.upsertedId ? `created (${res.upsertedId})` : 'updated',
     );
   } catch (e) {
     exitCode = 1;

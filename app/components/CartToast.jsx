@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
-import { useCartContext } from "@/app/context/CartContext";
+import { useCartContext } from '@/app/context/CartContext';
 
 export default function CartToast() {
   const { lastAdded, dismissLastAdded } = useCartContext();
@@ -32,9 +32,7 @@ export default function CartToast() {
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-sm text-gray-500">נוסף לסל</p>
-            <p className="text-base font-semibold text-gray-900">
-              {lastAdded.name}
-            </p>
+            <p className="text-base font-semibold text-gray-900">{lastAdded.name}</p>
           </div>
           <button
             type="button"
@@ -48,9 +46,7 @@ export default function CartToast() {
             ×
           </button>
         </div>
-        <div className="text-sm text-gray-600">
-          כמות בסל: {lastAdded.totalQuantity}
-        </div>
+        <div className="text-sm text-gray-600">כמות בסל: {lastAdded.totalQuantity}</div>
         <Link
           href="/cart"
           className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all"

@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useMemo } from "react";
-import Image from "next/image";
-import { formatCurrencyILS } from "@/app/utils/date";
-import ImageUpload from "@/components/ImageUpload";
+import { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
+import { formatCurrencyILS } from '@/app/utils/date';
+import ImageUpload from '@/components/ImageUpload';
 
 export default function ProductsList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
   // Form state
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: "",
-    category: "",
-    imageUrl: "",
+    name: '',
+    description: '',
+    price: '',
+    category: '',
+    imageUrl: '',
   });
 
   useEffect(() => {
@@ -28,8 +28,8 @@ export default function ProductsList() {
   async function fetchProducts() {
     try {
       setLoading(true);
-      const res = await fetch("/api/products");
-      if (!res.ok) throw new Error("Failed to fetch products");
+      const res = await fetch('/api/products');
+      if (!res.ok) throw new Error('Failed to fetch products');
       const data = await res.json();
       setProducts(data.products || []);
     } catch (err) {
@@ -41,26 +41,26 @@ export default function ProductsList() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
+    setError('');
 
     // Validation
     if (!formData.name || !formData.price) {
-      setError("שם ומחיר הם שדות חובה");
+      setError('שם ומחיר הם שדות חובה');
       return;
     }
 
     if (parseFloat(formData.price) <= 0) {
-      setError("המחיר חייב להיות גדול מ-0");
+      setError('המחיר חייב להיות גדול מ-0');
       return;
     }
 
     try {
-      const url = editingProduct ? `/api/products/${editingProduct._id}` : "/api/products";
-      const method = editingProduct ? "PUT" : "POST";
+      const url = editingProduct ? `/api/products/${editingProduct._id}` : '/api/products';
+      const method = editingProduct ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
           price: parseFloat(formData.price),
@@ -69,7 +69,7 @@ export default function ProductsList() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to save product");
+        throw new Error(data.error || 'Failed to save product');
       }
 
       // Reset form and refresh list
@@ -87,12 +87,12 @@ export default function ProductsList() {
 
     try {
       const res = await fetch(`/api/products/${productId}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to delete product");
+        throw new Error(data.error || 'Failed to delete product');
       }
 
       fetchProducts();
@@ -105,10 +105,10 @@ export default function ProductsList() {
     setEditingProduct(product);
     setFormData({
       name: product.name,
-      description: product.description || "",
+      description: product.description || '',
       price: product.price.toString(),
-      category: product.category || "",
-      imageUrl: product.imageUrl || "",
+      category: product.category || '',
+      imageUrl: product.imageUrl || '',
     });
     setShowForm(true);
   }
@@ -117,13 +117,13 @@ export default function ProductsList() {
     setShowForm(false);
     setEditingProduct(null);
     setFormData({
-      name: "",
-      description: "",
-      price: "",
-      category: "",
-      imageUrl: "",
+      name: '',
+      description: '',
+      price: '',
+      category: '',
+      imageUrl: '',
     });
-    setError("");
+    setError('');
   }
 
   if (loading) {
@@ -157,7 +157,7 @@ export default function ProductsList() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl m-4">
             <h3 className="text-xl font-bold mb-4">
-              {editingProduct ? "עריכת מוצר" : "הוספת מוצר חדש"}
+              {editingProduct ? 'עריכת מוצר' : 'הוספת מוצר חדש'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -170,7 +170,7 @@ export default function ProductsList() {
                   required
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium mb-1">תיאור</label>
                 <textarea
@@ -180,7 +180,7 @@ export default function ProductsList() {
                   rows={3}
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">מחיר (₪) *</label>
@@ -194,7 +194,7 @@ export default function ProductsList() {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-1">קטגוריה</label>
                   <input
@@ -211,7 +211,7 @@ export default function ProductsList() {
                 onChange={(url) => setFormData({ ...formData, imageUrl: url })}
                 label="תמונת מוצר"
               />
-              
+
               <div className="flex gap-2 justify-end pt-4">
                 <button
                   type="button"
@@ -224,7 +224,7 @@ export default function ProductsList() {
                   type="submit"
                   className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
                 >
-                  {editingProduct ? "עדכן" : "הוסף"}
+                  {editingProduct ? 'עדכן' : 'הוסף'}
                 </button>
               </div>
             </form>
@@ -235,12 +235,15 @@ export default function ProductsList() {
       {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
-          <div key={product._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div
+            key={product._id}
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+          >
             {product.imageUrl && (
               <div className="h-48 bg-gray-200 relative">
                 <Image
                   src={product.imageUrl}
-                  alt={product.name || "מוצר"}
+                  alt={product.name || 'מוצר'}
                   fill
                   sizes="(min-width: 1024px) 25vw, 100vw"
                   className="object-cover"
@@ -253,7 +256,9 @@ export default function ProductsList() {
                 <p className="text-sm text-gray-600 mb-2 line-clamp-2">{product.description}</p>
               )}
               <div className="flex justify-between items-center mb-3">
-                <span className="text-2xl font-bold text-purple-600">{formatCurrencyILS(product.price)}</span>
+                <span className="text-2xl font-bold text-purple-600">
+                  {formatCurrencyILS(product.price)}
+                </span>
                 {product.category && (
                   <span className="text-xs bg-gray-100 px-2 py-1 rounded">{product.category}</span>
                 )}

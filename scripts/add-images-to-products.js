@@ -53,13 +53,13 @@ async function addImagesToProducts() {
 
     for (let i = 0; i < products.length; i++) {
       const product = products[i];
-      
+
       // Select random image
       const randomImage = sampleImages[i % sampleImages.length];
-      
+
       // Select random video
       const randomVideo = sampleVideos[i % sampleVideos.length];
-      
+
       // Create array of 3 images (main + 2 variations)
       const imageIndex = i % sampleImages.length;
       const images = [
@@ -75,7 +75,7 @@ async function addImagesToProducts() {
           imageUrl: randomImage,
           images: images,
           videoUrl: randomVideo,
-        }
+        },
       });
 
       updated++;
@@ -83,7 +83,6 @@ async function addImagesToProducts() {
     }
 
     console.log(`\n🎉 Successfully updated ${updated} products with images and videos!`);
-    
   } catch (error) {
     console.error('❌ Error:', error);
   } finally {

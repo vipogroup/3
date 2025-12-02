@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
 /**
  * Progress Stepper Component
  * Stage 15.5 - Group-Buy Funnel UI Harmonization
- * 
+ *
  * Shows user progress through the purchase funnel
  */
 
 export default function ProgressStepper({ currentStep = 1 }) {
   const steps = [
-    { number: 1, label: "הצטרפות", path: "/join" },
-    { number: 2, label: "סיכום", path: "/summary" },
-    { number: 3, label: "תשלום", path: "/payment" },
-    { number: 4, label: "אישור", path: "/thankyou" },
+    { number: 1, label: 'הצטרפות', path: '/join' },
+    { number: 2, label: 'סיכום', path: '/summary' },
+    { number: 3, label: 'תשלום', path: '/payment' },
+    { number: 4, label: 'אישור', path: '/thankyou' },
   ];
 
   return (
@@ -29,10 +29,10 @@ export default function ProgressStepper({ currentStep = 1 }) {
                   transition-all duration-300
                   ${
                     step.number < currentStep
-                      ? "bg-green-500 text-white" // Completed
+                      ? 'bg-green-500 text-white' // Completed
                       : step.number === currentStep
-                      ? "bg-blue-600 text-white ring-4 ring-blue-200" // Current
-                      : "bg-gray-200 text-gray-500" // Upcoming
+                        ? 'bg-blue-600 text-white ring-4 ring-blue-200' // Current
+                        : 'bg-gray-200 text-gray-500' // Upcoming
                   }
                 `}
               >
@@ -52,11 +52,7 @@ export default function ProgressStepper({ currentStep = 1 }) {
               <span
                 className={`
                   mt-2 text-sm font-medium
-                  ${
-                    step.number <= currentStep
-                      ? "text-gray-900"
-                      : "text-gray-500"
-                  }
+                  ${step.number <= currentStep ? 'text-gray-900' : 'text-gray-500'}
                 `}
               >
                 {step.label}
@@ -68,11 +64,7 @@ export default function ProgressStepper({ currentStep = 1 }) {
               <div
                 className={`
                   w-16 h-0.5 mx-2 transition-all duration-300
-                  ${
-                    step.number < currentStep
-                      ? "bg-green-500"
-                      : "bg-gray-300"
-                  }
+                  ${step.number < currentStep ? 'bg-green-500' : 'bg-gray-300'}
                 `}
               />
             )}
@@ -90,7 +82,7 @@ export default function ProgressStepper({ currentStep = 1 }) {
             {steps[currentStep - 1]?.label}
           </span>
         </div>
-        
+
         {/* Progress Bar */}
         <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
           <div
@@ -106,11 +98,7 @@ export default function ProgressStepper({ currentStep = 1 }) {
               key={step.number}
               className={`
                 text-xs
-                ${
-                  step.number <= currentStep
-                    ? "text-gray-900 font-medium"
-                    : "text-gray-400"
-                }
+                ${step.number <= currentStep ? 'text-gray-900 font-medium' : 'text-gray-400'}
               `}
             >
               {step.label}

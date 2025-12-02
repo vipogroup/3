@@ -1,6 +1,7 @@
 # 🔍 Stage 15.1 - Build Audit & Dependencies
 
 ## תאריך: 2025-11-01
+
 ## סטטוס: In Progress
 
 ---
@@ -8,9 +9,11 @@
 ## 📋 משימות
 
 ### ✅ 1. בדיקת package.json
+
 **תוצאה:** קובץ נקרא בהצלחה
 
 **תלויות ייצור (dependencies):**
+
 - bcrypt: ^6.0.0
 - bcryptjs: 2.4.3
 - chart.js: ^4.5.1
@@ -32,6 +35,7 @@
 - zod: 3.23.8
 
 **תלויות פיתוח (devDependencies):**
+
 - @playwright/test: ^1.56.1
 - autoprefixer: 10.4.19
 - cross-env: ^10.1.0
@@ -46,16 +50,20 @@
 ---
 
 ### ⚠️ 2. npm ci - בעיית הרשאות
-**בעיה:** 
+
+**בעיה:**
+
 ```
 EPERM: operation not permitted, unlink 'node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node'
 ```
 
 **סיבה אפשרית:**
+
 - קובץ נעול על ידי תהליך אחר (Next.js dev server, VS Code, Antivirus)
 - חוסר הרשאות
 
 **פתרון מומלץ:**
+
 1. סגור את כל תהליכי Node.js הפעילים
 2. סגור VS Code
 3. הרץ כ-Administrator:
@@ -67,9 +75,11 @@ EPERM: operation not permitted, unlink 'node_modules\@next\swc-win32-x64-msvc\ne
 ---
 
 ### 🔄 3. npm run build - ממתין להתקנת תלויות
+
 **סטטוס:** לא ניתן להריץ ללא node_modules
 
 **צעדים הבאים:**
+
 1. התקן תלויות: `npm install`
 2. הרץ build: `npm run build`
 3. תקן אזהרות ושגיאות
@@ -77,9 +87,11 @@ EPERM: operation not permitted, unlink 'node_modules\@next\swc-win32-x64-msvc\ne
 ---
 
 ### 🔒 4. npm audit - ממתין להתקנת תלויות
+
 **סטטוס:** טרם הורץ
 
 **צעדים מתוכננים:**
+
 ```bash
 # בדיקת אבטחה
 npm audit --production
@@ -99,6 +111,7 @@ npm audit --json > audit-report.json
 ## 📊 ממצאים ראשוניים
 
 ### תלויות שעשויות להיות מיותרות:
+
 1. **bcrypt** + **bcryptjs** - יש שתיים! צריך רק אחת
    - המלצה: השאר רק `bcryptjs` (pure JS, cross-platform)
    - הסר את `bcrypt` (native, בעיות compilation)
@@ -109,6 +122,7 @@ npm audit --json > audit-report.json
    - `jsonwebtoken` - ותיק, יציב
 
 ### תלויות שחסרות (אם נדרשות):
+
 - **@types/node** - אם משתמשים ב-TypeScript
 - **@types/react** - אם משתמשים ב-TypeScript
 - **eslint-plugin-react** - לכללי ESLint של React
@@ -118,6 +132,7 @@ npm audit --json > audit-report.json
 ## 🎯 תוכנית פעולה
 
 ### שלב 1: ניקוי תלויות כפולות
+
 ```bash
 # הסר bcrypt (השאר bcryptjs)
 npm uninstall bcrypt
@@ -130,6 +145,7 @@ npm uninstall jose
 ```
 
 ### שלב 2: עדכון תלויות
+
 ```bash
 # בדוק עדכונים
 npm outdated
@@ -142,6 +158,7 @@ npm install next@latest react@latest react-dom@latest
 ```
 
 ### שלב 3: Build & Audit
+
 ```bash
 # התקן תלויות נקיות
 npm ci
@@ -155,6 +172,7 @@ npm audit fix
 ```
 
 ### שלב 4: תיעוד
+
 - צלם screenshots של warnings/errors
 - תעד כל שגיאה ופתרון
 - צור PR: "15.1 – Build & Security Dependencies Cleanup"
@@ -164,23 +182,28 @@ npm audit fix
 ## 🐛 בעיות ידועות
 
 ### 1. EPERM on Windows
+
 **תיאור:** Windows נועל קבצים בשימוש
 
 **פתרונות:**
+
 - סגור כל תהליכי Node.js
 - הרץ Terminal כ-Administrator
 - השתמש ב-`npm install` במקום `npm ci`
 - נסה `rimraf node_modules && npm install`
 
 ### 2. bcrypt compilation
+
 **תיאור:** bcrypt דורש Python + Visual Studio Build Tools
 
 **פתרון:** השתמש ב-bcryptjs במקום
 
 ### 3. Sharp on Windows
+
 **תיאור:** Sharp עשוי לדרוש dependencies נוספות
 
-**פתרון:** 
+**פתרון:**
+
 ```bash
 npm install --platform=win32 --arch=x64 sharp
 ```
@@ -190,12 +213,14 @@ npm install --platform=win32 --arch=x64 sharp
 ## 📝 הערות
 
 ### תלויות קריטיות לבדיקה:
+
 1. **mongoose** - וודא תאימות עם MongoDB version
 2. **next** - בדוק changelog ל-breaking changes
 3. **sharp** - תלות native, בדוק platform support
 4. **bcryptjs** - וודא שכל הקוד משתמש בזה ולא ב-bcrypt
 
 ### Security Best Practices:
+
 - הרץ `npm audit` לפני כל deployment
 - עדכן תלויות באופן קבוע
 - השתמש ב-`npm ci` ב-CI/CD
@@ -218,12 +243,14 @@ npm install --platform=win32 --arch=x64 sharp
 ## 🔄 Status Updates
 
 **2025-11-01 01:57:**
+
 - ✅ package.json נקרא
 - ⚠️ npm ci נכשל (EPERM)
 - ⏳ ממתין לפתרון בעיית הרשאות
 - 📝 תיעוד נוצר
 
 **הצעד הבא:**
+
 1. המשתמש יסגור תהליכים פעילים
 2. ינסה שוב `npm install` או `npm ci`
 3. נמשיך עם Build & Audit

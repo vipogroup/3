@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import Chart from "chart.js/auto";
-import { groupSalesByDay } from "@/app/utils/date";
+import { useEffect, useRef, useState } from 'react';
+import Chart from 'chart.js/auto';
+import { groupSalesByDay } from '@/app/utils/date';
 
 /**
  * Monthly sales chart component
@@ -25,10 +25,10 @@ export default function MonthChart({ data }) {
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    
+
     const from = firstDay.toISOString().split('T')[0];
     const to = lastDay.toISOString().split('T')[0];
-    
+
     // Group sales by day
     const { labels, values } = groupSalesByDay(data, from, to);
     setChartData({ labels, values });
@@ -37,13 +37,13 @@ export default function MonthChart({ data }) {
   // Create or update chart
   useEffect(() => {
     if (!chartData) return;
-    
+
     // Format labels for display (Hebrew date format)
-    const formattedLabels = chartData.labels.map(dateStr => {
+    const formattedLabels = chartData.labels.map((dateStr) => {
       const date = new Date(dateStr);
-      return new Intl.DateTimeFormat("he-IL", {
-        day: "2-digit",
-        month: "2-digit",
+      return new Intl.DateTimeFormat('he-IL', {
+        day: '2-digit',
+        month: '2-digit',
       }).format(date);
     });
 
@@ -53,17 +53,17 @@ export default function MonthChart({ data }) {
     }
 
     // Create new chart
-    const ctx = chartRef.current.getContext("2d");
+    const ctx = chartRef.current.getContext('2d');
     chartInstance.current = new Chart(ctx, {
-      type: "line",
+      type: 'line',
       data: {
         labels: formattedLabels,
         datasets: [
           {
-            label: "סך מכירות",
+            label: 'סך מכירות',
             data: chartData.values,
-            borderColor: "rgb(59, 130, 246)",
-            backgroundColor: "rgba(59, 130, 246, 0.1)",
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
             borderWidth: 2,
             fill: true,
             tension: 0.3,
@@ -75,45 +75,45 @@ export default function MonthChart({ data }) {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: "top",
-            align: "end",
+            position: 'top',
+            align: 'end',
             rtl: true,
             labels: {
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
           },
           tooltip: {
             callbacks: {
-              label: function(context) {
-                let label = context.dataset.label || "";
+              label: function (context) {
+                let label = context.dataset.label || '';
                 if (label) {
-                  label += ": ";
+                  label += ': ';
                 }
                 if (context.parsed.y !== null) {
-                  label += new Intl.NumberFormat("he-IL", {
-                    style: "currency",
-                    currency: "ILS",
+                  label += new Intl.NumberFormat('he-IL', {
+                    style: 'currency',
+                    currency: 'ILS',
                   }).format(context.parsed.y);
                 }
                 return label;
-              }
-            }
-          }
+              },
+            },
+          },
         },
         scales: {
           x: {
             title: {
               display: true,
-              text: "יום",
+              text: 'יום',
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
             ticks: {
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
           },
@@ -121,17 +121,17 @@ export default function MonthChart({ data }) {
             beginAtZero: true,
             title: {
               display: true,
-              text: "סך מכירות",
+              text: 'סך מכירות',
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
             ticks: {
-              callback: function(value) {
-                return "₪" + value.toLocaleString("he-IL");
+              callback: function (value) {
+                return '₪' + value.toLocaleString('he-IL');
               },
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
           },

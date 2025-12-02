@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema(
     // Stage 11 – Referral System (חבר-מביא-חבר)
     referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true }, // מי הפנה
     referralsCount: { type: Number, default: 0 }, // כמות הפניות (לסטטיסטיקה מהירה)
-    
+
     // Stage 12 – Commission/Credit System
     referralCount: { type: Number, default: 0 }, // כמות הפניות (שם חלופי)
     commissionBalance: { type: Number, default: 0 }, // יתרת עמלות בש"ח
@@ -47,8 +47,8 @@ const UserSchema = new mongoose.Schema(
     commissionPercent: { type: Number, default: 12, min: 0 },
     couponStatus: {
       type: String,
-      enum: ["active", "inactive"],
-      default: "active",
+      enum: ['active', 'inactive'],
+      default: 'active',
     },
 
     // תאימות למודל הקודם
@@ -58,7 +58,7 @@ const UserSchema = new mongoose.Schema(
   {
     timestamps: true, // מוסיף updatedAt בנוסף ל-createdAt לוגי
     versionKey: false,
-  }
+  },
 );
 
 /** Validator דומה ל-validateUserShape הישן */
@@ -72,7 +72,7 @@ UserSchema.statics.validateUserShape = function (obj = {}) {
 };
 
 /** Virtual property: refLink - לינק הפניה אישי */
-UserSchema.virtual('refLink').get(function() {
+UserSchema.virtual('refLink').get(function () {
   const base = process.env.PUBLIC_URL || 'http://localhost:3001';
   return `${base}/?ref=${this._id}`;
 });

@@ -1,15 +1,15 @@
 // models/Product.js
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const ProductSchema = new mongoose.Schema(
   {
     legacyId: { type: String, index: true, unique: true, sparse: true },
     name: { type: String, required: true, trim: true },
     description: { type: String, required: true },
-    fullDescription: { type: String, default: "" },
+    fullDescription: { type: String, default: '' },
     category: { type: String, required: true, trim: true },
-    catalogId: { type: mongoose.Schema.Types.ObjectId, ref: "Catalog", default: null, index: true },
-    catalogSlug: { type: String, trim: true, lowercase: true, default: "" },
+    catalogId: { type: mongoose.Schema.Types.ObjectId, ref: 'Catalog', default: null, index: true },
+    catalogSlug: { type: String, trim: true, lowercase: true, default: '' },
 
     price: { type: Number, required: true, min: 0 },
     originalPrice: { type: Number, default: null },
@@ -18,14 +18,14 @@ const ProductSchema = new mongoose.Schema(
     // Purchase types
     type: {
       type: String,
-      enum: ["online", "group"],
-      default: "online",
+      enum: ['online', 'group'],
+      default: 'online',
       required: true,
     },
     purchaseType: {
       type: String,
-      enum: ["regular", "group"],
-      default: "regular",
+      enum: ['regular', 'group'],
+      default: 'regular',
       required: true,
     },
 
@@ -43,11 +43,11 @@ const ProductSchema = new mongoose.Schema(
     },
 
     // Media
-    image: { type: String, default: "" },
-    imageUrl: { type: String, default: "" },
+    image: { type: String, default: '' },
+    imageUrl: { type: String, default: '' },
     images: { type: [String], default: [] },
-    videoUrl: { type: String, default: "" },
-    imagePath: { type: String, default: "" },
+    videoUrl: { type: String, default: '' },
+    imagePath: { type: String, default: '' },
 
     // Stock management
     inStock: { type: Boolean, default: true },
@@ -61,7 +61,7 @@ const ProductSchema = new mongoose.Schema(
 
     active: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export default mongoose.models.Product || mongoose.model("Product", ProductSchema);
+export default mongoose.models.Product || mongoose.model('Product', ProductSchema);

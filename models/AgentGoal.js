@@ -1,72 +1,72 @@
 // models/AgentGoal.js
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const AgentGoalSchema = new mongoose.Schema(
   {
-    agentId: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "User", 
-      required: true 
+    agentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
-    month: { 
-      type: Number, 
+    month: {
+      type: Number,
       required: true,
       min: 1,
-      max: 12
+      max: 12,
     },
-    year: { 
-      type: Number, 
+    year: {
+      type: Number,
       required: true,
       min: 2020,
-      max: 2100
+      max: 2100,
     },
-    targetSalesAmount: { 
-      type: Number, 
+    targetSalesAmount: {
+      type: Number,
       required: true,
-      min: 0 
+      min: 0,
     },
-    targetDeals: { 
-      type: Number, 
+    targetDeals: {
+      type: Number,
       required: true,
-      min: 0 
+      min: 0,
     },
     bonusOnHit: {
-      fixedAmount: { 
+      fixedAmount: {
         type: Number,
-        min: 0
+        min: 0,
       },
-      percentBoostPct: { 
+      percentBoostPct: {
         type: Number,
-        min: 0
-      }
+        min: 0,
+      },
     },
-    isActive: { 
-      type: Boolean, 
-      default: true 
+    isActive: {
+      type: Boolean,
+      default: true,
     },
-    createdAt: { 
-      type: Date, 
-      default: Date.now 
-    }
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Validation: ensure at least one bonus is specified
-AgentGoalSchema.pre('validate', function(next) {
+AgentGoalSchema.pre('validate', function (next) {
   // Check if at least one bonus is specified
-  const hasBonus = 
+  const hasBonus =
     (this.bonusOnHit.fixedAmount !== undefined && this.bonusOnHit.fixedAmount !== null) ||
     (this.bonusOnHit.percentBoostPct !== undefined && this.bonusOnHit.percentBoostPct !== null);
-  
+
   if (!hasBonus) {
     this.invalidate('bonusOnHit', 'At least one bonus type must be specified');
   }
-  
+
   next();
 });
 
 // Compound index to ensure uniqueness of agent goals per month/year
 AgentGoalSchema.index({ agentId: 1, month: 1, year: 1 }, { unique: true });
 
-export default mongoose.models.AgentGoal || mongoose.model("AgentGoal", AgentGoalSchema);
+export default mongoose.models.AgentGoal || mongoose.model('AgentGoal', AgentGoalSchema);

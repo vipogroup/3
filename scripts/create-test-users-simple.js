@@ -7,27 +7,27 @@ const testUsers = [
     email: 'admin@test.com',
     phone: '050-1234567',
     password: 'admin',
-    role: 'admin'
+    role: 'admin',
   },
   {
-    fullName: 'Agent Test', 
+    fullName: 'Agent Test',
     email: 'agent@test.com',
     phone: '050-1234568',
     password: 'admin',
-    role: 'agent'
+    role: 'agent',
   },
   {
     fullName: 'Customer Test',
-    email: 'customer@test.com', 
+    email: 'customer@test.com',
     phone: '050-1234569',
     password: 'admin',
-    role: 'customer'
-  }
+    role: 'customer',
+  },
 ];
 
 async function createTestUsers() {
   console.log('🔧 Creating test users via API...\n');
-  
+
   for (const user of testUsers) {
     try {
       const response = await fetch('http://localhost:3001/api/auth/register', {
@@ -35,11 +35,11 @@ async function createTestUsers() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(user)
+        body: JSON.stringify(user),
       });
-      
+
       const result = await response.json();
-      
+
       if (response.ok && result.ok) {
         console.log(`✅ Created ${user.role}: ${user.email} | Password: ${user.password}`);
       } else if (result.error === 'user exists') {
@@ -51,7 +51,7 @@ async function createTestUsers() {
       console.log(`❌ Network error for ${user.email}: ${error.message}`);
     }
   }
-  
+
   console.log('\n📋 Login credentials:');
   console.log('┌─────────────────────────────────────────────────┐');
   console.log('│ ADMIN Dashboard (/admin or /dashboard)         │');

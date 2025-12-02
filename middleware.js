@@ -12,14 +12,14 @@ export async function middleware(req) {
     console.log('[LOGIN_DEBUG] middleware', { path: url.pathname, hasToken: !!token });
   }
 
-  if (PUBLIC_PATHS.some(p => url.pathname === p)) {
+  if (PUBLIC_PATHS.some((p) => url.pathname === p)) {
     if (token) {
       return NextResponse.redirect(new URL('/dashboard', req.url));
     }
     return NextResponse.next();
   }
 
-  const needsAuth = PROTECTED_PREFIXES.some(p => url.pathname.startsWith(p));
+  const needsAuth = PROTECTED_PREFIXES.some((p) => url.pathname.startsWith(p));
   if (!needsAuth) return NextResponse.next();
 
   if (!token) {

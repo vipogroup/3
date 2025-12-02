@@ -13,13 +13,13 @@ function request(path) {
       path: url.pathname,
       method: 'GET',
       headers: {
-        'Accept': 'text/html,application/json',
+        Accept: 'text/html,application/json',
       },
     };
 
     const req = http.request(opts, (res) => {
       let data = '';
-      res.on('data', chunk => data += chunk);
+      res.on('data', (chunk) => (data += chunk));
       res.on('end', () => {
         resolve({
           status: res.statusCode,
@@ -58,7 +58,7 @@ async function runTests() {
   for (const route of routes) {
     try {
       const res = await request(route.path);
-      
+
       if (route.expectRedirect) {
         if (res.status === 307 || res.status === 302) {
           const location = res.headers.location || '';
@@ -80,8 +80,7 @@ async function runTests() {
         if (res.status === 200) {
           log(route.name, 'PASS', 'Loads successfully');
         } else if (res.status === 500) {
-          log(route.name, 'WARN', 'Returns 500 - check server logs', 
-              res.body.substring(0, 100));
+          log(route.name, 'WARN', 'Returns 500 - check server logs', res.body.substring(0, 100));
         } else {
           log(route.name, 'FAIL', `Expected 200, got ${res.status}`);
         }
@@ -93,7 +92,7 @@ async function runTests() {
 
   // Test API endpoints
   console.log('\n📍 Testing API Endpoints...');
-  
+
   const apiEndpoints = [
     '/api/auth/login',
     '/api/auth/logout',
@@ -118,29 +117,31 @@ async function runTests() {
   // Summary
   console.log('\n' + '='.repeat(60));
   console.log('📊 UI Test Summary\n');
-  
-  const passed = testResults.filter(r => r.status === 'PASS').length;
-  const failed = testResults.filter(r => r.status === 'FAIL').length;
-  const warned = testResults.filter(r => r.status === 'WARN').length;
-  
+
+  const passed = testResults.filter((r) => r.status === 'PASS').length;
+  const failed = testResults.filter((r) => r.status === 'FAIL').length;
+  const warned = testResults.filter((r) => r.status === 'WARN').length;
+
   console.log(`✅ Passed: ${passed}`);
   console.log(`❌ Failed: ${failed}`);
   console.log(`⚠️  Warnings: ${warned}`);
   console.log(`📝 Total: ${testResults.length}`);
-  
+
   if (failed > 0) {
     console.log('\n❌ Failed Tests:');
-    testResults.filter(r => r.status === 'FAIL').forEach(r => {
-      console.log(`   - ${r.test}: ${r.message}`);
-    });
+    testResults
+      .filter((r) => r.status === 'FAIL')
+      .forEach((r) => {
+        console.log(`   - ${r.test}: ${r.message}`);
+      });
   }
-  
+
   console.log('\n' + '='.repeat(60));
-  
+
   process.exit(failed > 0 ? 1 : 0);
 }
 
-runTests().catch(err => {
+runTests().catch((err) => {
   console.error('❌ Test suite failed:', err);
   process.exit(1);
 });

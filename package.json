@@ -20,7 +20,10 @@
     "import:agents": "node tools/import-agents-from-pdf.js",
     "import:agents:pdf": "node tools/import-agents-from-pdf.js",
     "import:products": "node scripts/import-products.js",
-    "serve:agents": "npx http-server export_vipo_products_ui -p 3005"
+    "serve:agents": "npx http-server export_vipo_products_ui -p 3005",
+    "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -57,6 +60,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
     "postcss": "8.4.47",
+    "prettier": "^3.7.3",
     "supertest": "^7.1.4",
     "tailwindcss": "3.4.13",
     "vitest": "^4.0.5"

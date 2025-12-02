@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 /**
  * Component for admin-only actions (edit/delete buttons)
@@ -26,11 +26,11 @@ export default function AdminActions({ saleId, isAdmin, onDelete }) {
     setIsDeleting(true);
     try {
       const res = await fetch(`/api/sales/${saleId}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
 
       if (!res.ok) {
-        throw new Error("Failed to delete sale");
+        throw new Error('Failed to delete sale');
       }
 
       // Call the onDelete callback if provided
@@ -38,13 +38,13 @@ export default function AdminActions({ saleId, isAdmin, onDelete }) {
         onDelete(saleId);
       } else {
         // Otherwise redirect to sales page
-        router.push("/sales");
+        router.push('/sales');
         // Show toast notification
-        alert("המכירה נמחקה בהצלחה"); // Replace with toast in production
+        alert('המכירה נמחקה בהצלחה'); // Replace with toast in production
       }
     } catch (error) {
-      console.error("Delete error:", error);
-      alert("פעולה נכשלה, נסה שוב"); // Replace with toast in production
+      console.error('Delete error:', error);
+      alert('פעולה נכשלה, נסה שוב'); // Replace with toast in production
     } finally {
       setIsDeleting(false);
       setShowConfirm(false);
@@ -64,7 +64,7 @@ export default function AdminActions({ saleId, isAdmin, onDelete }) {
         className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
         disabled={isDeleting}
       >
-        {isDeleting ? "מוחק..." : "מחיקה"}
+        {isDeleting ? 'מוחק...' : 'מחיקה'}
       </button>
 
       {showConfirm && (
@@ -85,7 +85,7 @@ export default function AdminActions({ saleId, isAdmin, onDelete }) {
                 className="px-4 py-2 bg-red-600 text-white rounded"
                 disabled={isDeleting}
               >
-                {isDeleting ? "מוחק..." : "מחק"}
+                {isDeleting ? 'מוחק...' : 'מחק'}
               </button>
             </div>
           </div>

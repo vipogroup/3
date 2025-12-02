@@ -5,9 +5,9 @@ const OrderSchema = new mongoose.Schema(
     status: { type: String, default: 'pending' },
 
     // Referral tracking
-    refSource: { type: String, default: null },           // הערך הגולמי מה-cookie
+    refSource: { type: String, default: null }, // הערך הגולמי מה-cookie
     refAgentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    commissionReferral: { type: Number, default: 0 },     // סכום העמלה (במטבע העסקה)
+    commissionReferral: { type: Number, default: 0 }, // סכום העמלה (במטבע העסקה)
 
     // Coupon tracking
     appliedCouponCode: { type: String, default: null },
@@ -26,7 +26,7 @@ const OrderSchema = new mongoose.Schema(
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 export default mongoose.models.Order || mongoose.model('Order', OrderSchema);

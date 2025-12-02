@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export default function ReferralCard() {
   const [data, setData] = useState(null);
@@ -8,9 +8,9 @@ export default function ReferralCard() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    fetch("/api/referrals/summary", { credentials: "include" })
-      .then(r => r.json())
-      .then(data => {
+    fetch('/api/referrals/summary', { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
@@ -31,7 +31,7 @@ export default function ReferralCard() {
   if (!data?.ok) return null;
 
   const link = data.myRefLink;
-  const wa = `https://wa.me/?text=${encodeURIComponent("הצטרפו אליי למערכת VIPO: " + link)}`;
+  const wa = `https://wa.me/?text=${encodeURIComponent('הצטרפו אליי למערכת VIPO: ' + link)}`;
 
   async function handleCopy() {
     try {
@@ -39,7 +39,7 @@ export default function ReferralCard() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error("Failed to copy:", err);
+      console.error('Failed to copy:', err);
     }
   }
 
@@ -50,20 +50,16 @@ export default function ReferralCard() {
         <h3 className="text-xl font-bold text-gray-900">חבר-מביא-חבר</h3>
       </div>
 
-      <p className="text-sm text-gray-600 mb-4">
-        שתף את הלינק האישי שלך והרוויח על כל חבר שמצטרף!
-      </p>
+      <p className="text-sm text-gray-600 mb-4">שתף את הלינק האישי שלך והרוויח על כל חבר שמצטרף!</p>
 
       {/* Referral Link */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          הלינק האישי שלך:
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">הלינק האישי שלך:</label>
         <input
           type="text"
           value={link}
           readOnly
-          onFocus={e => e.target.select()}
+          onFocus={(e) => e.target.select()}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm font-mono"
         />
       </div>
@@ -74,7 +70,7 @@ export default function ReferralCard() {
           onClick={handleCopy}
           className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
         >
-          {copied ? "✓ הועתק!" : "📋 העתק לינק"}
+          {copied ? '✓ הועתק!' : '📋 העתק לינק'}
         </button>
         <a
           href={wa}

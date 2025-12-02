@@ -14,7 +14,7 @@ export async function GET(req) {
   res.cookies.set('token', token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: false,  // local only
+    secure: false, // local only
     path: '/',
     maxAge: 2 * 60 * 60,
   });

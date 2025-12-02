@@ -1,36 +1,36 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { api } from "@/lib/http";
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { api } from '@/lib/http';
 
 export default function AdminLogin() {
   const router = useRouter();
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
+    setError('');
 
-    const res = await api("/api/auth/login", {
-      method: "POST",
+    const res = await api('/api/auth/login', {
+      method: 'POST',
       body: JSON.stringify({ identifier: identifier.trim(), password }),
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.error || "שגיאה בהתחברות");
+      setError(data.error || 'שגיאה בהתחברות');
       return;
     }
 
-    if (!data?.role || data.role !== "admin") {
-      setError("אין לך הרשאות מנהל");
+    if (!data?.role || data.role !== 'admin') {
+      setError('אין לך הרשאות מנהל');
       return;
     }
 
-    router.push("/admin/dashboard");
+    router.push('/admin/dashboard');
   }
 
   return (

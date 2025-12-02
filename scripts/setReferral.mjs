@@ -6,7 +6,7 @@ import User from '../models/User.js';
 function loadEnvFiles() {
   const candidates = [
     path.resolve(process.cwd(), '.env.local'),
-    path.resolve(process.cwd(), '.env')
+    path.resolve(process.cwd(), '.env'),
   ];
   for (const file of candidates) {
     try {
@@ -38,7 +38,7 @@ const MONGODB_DB = process.env.MONGODB_DB || 'vipo';
     const doc = await User.findOneAndUpdate(
       { role: 'agent' },
       { $set: { referralId: ref } },
-      { new: true }
+      { new: true },
     ).lean();
 
     if (!doc) {
@@ -49,7 +49,9 @@ const MONGODB_DB = process.env.MONGODB_DB || 'vipo';
   } catch (e) {
     console.error('Update referralId error:', e);
   } finally {
-    try { await mongoose.disconnect(); } catch {}
+    try {
+      await mongoose.disconnect();
+    } catch {}
     process.exit(0);
   }
 })();

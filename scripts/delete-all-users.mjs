@@ -34,16 +34,18 @@ async function deleteAllUsers() {
     const allUsers = await users.find({}).toArray();
     console.log('\n📋 Users to be deleted:\n');
     allUsers.forEach((user, index) => {
-      console.log(`${index + 1}. ${user.fullName || 'No name'} (${user.email || user.phone || 'N/A'}) - ${user.role}`);
+      console.log(
+        `${index + 1}. ${user.fullName || 'No name'} (${user.email || user.phone || 'N/A'}) - ${user.role}`,
+      );
     });
 
     console.log('\n🗑️  Deleting all users...\n');
 
     // Delete all users
     const result = await users.deleteMany({});
-    
+
     console.log(`✅ Deleted ${result.deletedCount} users successfully`);
-    
+
     // Verify deletion
     const countAfter = await users.countDocuments();
     console.log(`📊 Remaining users: ${countAfter}`);
@@ -51,7 +53,6 @@ async function deleteAllUsers() {
     if (countAfter === 0) {
       console.log('\n✨ All users deleted! You can now register fresh users.');
     }
-
   } catch (error) {
     console.error('❌ Error:', error);
   } finally {

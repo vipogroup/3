@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-function DashboardIcon({ className = "w-6 h-6" }) {
+function DashboardIcon({ className = 'w-6 h-6' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="3" y="3" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.5" />
@@ -15,7 +15,7 @@ function DashboardIcon({ className = "w-6 h-6" }) {
   );
 }
 
-function PlusCircleIcon({ className = "w-6 h-6" }) {
+function PlusCircleIcon({ className = 'w-6 h-6' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="8.75" stroke="currentColor" strokeWidth="1.5" />
@@ -25,7 +25,7 @@ function PlusCircleIcon({ className = "w-6 h-6" }) {
   );
 }
 
-function SettingsIcon({ className = "w-6 h-6" }) {
+function SettingsIcon({ className = 'w-6 h-6' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
@@ -46,7 +46,7 @@ function SettingsIcon({ className = "w-6 h-6" }) {
   );
 }
 
-function UsersIcon({ className = "w-10 h-10" }) {
+function UsersIcon({ className = 'w-10 h-10' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
@@ -60,7 +60,7 @@ function UsersIcon({ className = "w-10 h-10" }) {
   );
 }
 
-function CartIcon({ className = "w-10 h-10" }) {
+function CartIcon({ className = 'w-10 h-10' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
@@ -74,7 +74,7 @@ function CartIcon({ className = "w-10 h-10" }) {
   );
 }
 
-function CubeIcon({ className = "w-10 h-10" }) {
+function CubeIcon({ className = 'w-10 h-10' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
@@ -88,7 +88,7 @@ function CubeIcon({ className = "w-10 h-10" }) {
   );
 }
 
-function CoinStackIcon({ className = "w-10 h-10" }) {
+function CoinStackIcon({ className = 'w-10 h-10' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <ellipse cx="12" cy="6.5" rx="7" ry="3.5" stroke="currentColor" strokeWidth="1.5" />
@@ -110,7 +110,7 @@ function CoinStackIcon({ className = "w-10 h-10" }) {
   );
 }
 
-function CursorIcon({ className = "w-10 h-10" }) {
+function CursorIcon({ className = 'w-10 h-10' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
@@ -124,18 +124,23 @@ function CursorIcon({ className = "w-10 h-10" }) {
   );
 }
 
-function UserPlusIcon({ className = "w-8 h-8" }) {
+function UserPlusIcon({ className = 'w-8 h-8' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="9" cy="10" r="3" stroke="currentColor" strokeWidth="1.5" />
-      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M4 20v-.75A5.25 5.25 0 019.25 14h1.5" />
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        d="M4 20v-.75A5.25 5.25 0 019.25 14h1.5"
+      />
       <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M16 8v4" />
       <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M14 10h4" />
     </svg>
   );
 }
 
-function SparkIcon({ className = "w-8 h-8" }) {
+function SparkIcon({ className = 'w-8 h-8' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
@@ -149,7 +154,7 @@ function SparkIcon({ className = "w-8 h-8" }) {
   );
 }
 
-function ClipboardIcon({ className = "w-8 h-8" }) {
+function ClipboardIcon({ className = 'w-8 h-8' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
@@ -166,30 +171,20 @@ function ClipboardIcon({ className = "w-8 h-8" }) {
   );
 }
 
-function AgentIcon({ className = "w-4 h-4" }) {
+function AgentIcon({ className = 'w-4 h-4' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="7" r="2.5" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="6.5" cy="16.5" r="2" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="17.5" cy="16.5" r="2" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        d="M10.4 9.4L8.3 13.6"
-      />
-      <path
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        d="M13.6 9.4l2.1 4.2"
-      />
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M10.4 9.4L8.3 13.6" />
+      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M13.6 9.4l2.1 4.2" />
       <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M8.5 16.5h7" />
     </svg>
   );
 }
 
-function ShieldIcon({ className = "w-4 h-4" }) {
+function ShieldIcon({ className = 'w-4 h-4' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
@@ -203,17 +198,22 @@ function ShieldIcon({ className = "w-4 h-4" }) {
   );
 }
 
-function UserCircleIcon({ className = "w-4 h-4" }) {
+function UserCircleIcon({ className = 'w-4 h-4' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="7.5" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="12" cy="10" r="3" stroke="currentColor" strokeWidth="1.5" />
-      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M8.5 17.5a3.5 3.5 0 017 0" />
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        d="M8.5 17.5a3.5 3.5 0 017 0"
+      />
     </svg>
   );
 }
 
-function LinkMarkIcon({ className = "w-4 h-4" }) {
+function LinkMarkIcon({ className = 'w-4 h-4' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="8.5" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
@@ -223,10 +223,16 @@ function LinkMarkIcon({ className = "w-4 h-4" }) {
   );
 }
 
-function ChartBarIcon({ className = "w-10 h-10" }) {
+function ChartBarIcon({ className = 'w-10 h-10' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M4 20h16" />
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4 20h16"
+      />
       <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M8 20v-8" />
       <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M12 20v-12" />
       <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M16 20v-5" />
@@ -236,12 +242,12 @@ function ChartBarIcon({ className = "w-10 h-10" }) {
 
 function getRoleBadge(role) {
   switch (role) {
-    case "agent":
-      return { label: "סוכן", className: "bg-purple-100 text-purple-700", Icon: AgentIcon };
-    case "admin":
-      return { label: "מנהל", className: "bg-red-100 text-red-700", Icon: ShieldIcon };
+    case 'agent':
+      return { label: 'סוכן', className: 'bg-purple-100 text-purple-700', Icon: AgentIcon };
+    case 'admin':
+      return { label: 'מנהל', className: 'bg-red-100 text-red-700', Icon: ShieldIcon };
     default:
-      return { label: "לקוח", className: "bg-blue-100 text-blue-700", Icon: UserCircleIcon };
+      return { label: 'לקוח', className: 'bg-blue-100 text-blue-700', Icon: UserCircleIcon };
   }
 }
 
@@ -254,28 +260,28 @@ export default function AdminDashboardClient() {
   const loadData = useCallback(async () => {
     try {
       // Get current user
-      const userRes = await fetch("/api/auth/me");
+      const userRes = await fetch('/api/auth/me');
       if (!userRes.ok) {
-        router.push("/login");
+        router.push('/login');
         return;
       }
       const userData = await userRes.json();
 
-      if (userData.user.role !== "admin") {
-        router.push("/");
+      if (userData.user.role !== 'admin') {
+        router.push('/');
         return;
       }
 
       setUser(userData.user);
 
       // Get dashboard data
-      const dashRes = await fetch("/api/admin/dashboard");
+      const dashRes = await fetch('/api/admin/dashboard');
       if (dashRes.ok) {
         const data = await dashRes.json();
         setDashboardData(data);
       }
     } catch (error) {
-      console.error("Failed to load admin dashboard:", error);
+      console.error('Failed to load admin dashboard:', error);
     } finally {
       setLoading(false);
     }
@@ -288,17 +294,24 @@ export default function AdminDashboardClient() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="bg-white rounded-xl p-8" style={{
-          border: '2px solid transparent',
-          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-          backgroundOrigin: 'border-box',
-          backgroundClip: 'padding-box, border-box',
-          boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
-        }}>
-          <div className="animate-spin rounded-full h-16 w-16 mx-auto mb-4" style={{
-            border: '4px solid rgba(8, 145, 178, 0.2)',
-            borderTopColor: '#0891b2'
-          }}></div>
+        <div
+          className="bg-white rounded-xl p-8"
+          style={{
+            border: '2px solid transparent',
+            backgroundImage:
+              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+            boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
+          }}
+        >
+          <div
+            className="animate-spin rounded-full h-16 w-16 mx-auto mb-4"
+            style={{
+              border: '4px solid rgba(8, 145, 178, 0.2)',
+              borderTopColor: '#0891b2',
+            }}
+          ></div>
           <p className="text-gray-600 text-center font-medium">טוען נתונים...</p>
         </div>
       </div>
@@ -313,13 +326,19 @@ export default function AdminDashboardClient() {
         {/* Header */}
         <div className="mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
-            <span className="flex items-center gap-2 sm:gap-3" style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              <DashboardIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" style={{ color: '#0891b2' }} />
+            <span
+              className="flex items-center gap-2 sm:gap-3"
+              style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              <DashboardIcon
+                className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8"
+                style={{ color: '#0891b2' }}
+              />
               דשבורד מנהל
             </span>
           </h1>
@@ -327,107 +346,151 @@ export default function AdminDashboardClient() {
 
         {/* Quick Actions */}
         <section className="mb-4 sm:mb-6">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <Link
-                href="/admin/users"
-                className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
-                style={{
-                  border: '2px solid transparent',
-                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                  backgroundOrigin: 'border-box',
-                  backgroundClip: 'padding-box, border-box',
-                  boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
-                }}
-              >
-                <div className="relative flex flex-col gap-2 sm:gap-3">
-                  <span className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg" style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
-                  }}>
-                    <UsersIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </span>
-                  <div>
-                    <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול משתמשים</p>
-                    <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">הוספה, עדכון ומעקב אחרי משתמשים רשומים</p>
-                  </div>
-                  <span className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block" style={{ color: '#0891b2' }}>כניסה לניהול משתמשים</span>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <Link
+              href="/admin/users"
+              className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+              style={{
+                border: '2px solid transparent',
+                backgroundImage:
+                  'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+                boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
+              }}
+            >
+              <div className="relative flex flex-col gap-2 sm:gap-3">
+                <span
+                  className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  }}
+                >
+                  <UsersIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </span>
+                <div>
+                  <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול משתמשים</p>
+                  <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
+                    הוספה, עדכון ומעקב אחרי משתמשים רשומים
+                  </p>
                 </div>
-              </Link>
+                <span
+                  className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block"
+                  style={{ color: '#0891b2' }}
+                >
+                  כניסה לניהול משתמשים
+                </span>
+              </div>
+            </Link>
 
-              <Link
-                href="/admin/products"
-                className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
-                style={{
-                  border: '2px solid transparent',
-                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                  backgroundOrigin: 'border-box',
-                  backgroundClip: 'padding-box, border-box',
-                  boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
-                }}
-              >
-                <div className="relative flex flex-col gap-2 sm:gap-3">
-                  <span className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg" style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
-                  }}>
-                    <CubeIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </span>
-                  <div>
-                    <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול מוצרים</p>
-                    <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">עדכון קטלוג, מלאי ומידע על מוצרים</p>
-                  </div>
-                  <span className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block" style={{ color: '#0891b2' }}>כניסה לניהול מוצרים</span>
+            <Link
+              href="/admin/products"
+              className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+              style={{
+                border: '2px solid transparent',
+                backgroundImage:
+                  'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+                boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
+              }}
+            >
+              <div className="relative flex flex-col gap-2 sm:gap-3">
+                <span
+                  className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  }}
+                >
+                  <CubeIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </span>
+                <div>
+                  <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול מוצרים</p>
+                  <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
+                    עדכון קטלוג, מלאי ומידע על מוצרים
+                  </p>
                 </div>
-              </Link>
+                <span
+                  className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block"
+                  style={{ color: '#0891b2' }}
+                >
+                  כניסה לניהול מוצרים
+                </span>
+              </div>
+            </Link>
 
-              <Link
-                href="/admin/orders"
-                className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
-                style={{
-                  border: '2px solid transparent',
-                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                  backgroundOrigin: 'border-box',
-                  backgroundClip: 'padding-box, border-box',
-                  boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
-                }}
-              >
-                <div className="relative flex flex-col gap-2 sm:gap-3">
-                  <span className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg" style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
-                  }}>
-                    <CartIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </span>
-                  <div>
-                    <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול הזמנות</p>
-                    <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">מעקב אחר סטטוסים, עמלות ותשלומים</p>
-                  </div>
-                  <span className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block" style={{ color: '#0891b2' }}>כניסה לרשימת ההזמנות</span>
+            <Link
+              href="/admin/orders"
+              className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+              style={{
+                border: '2px solid transparent',
+                backgroundImage:
+                  'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+                boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
+              }}
+            >
+              <div className="relative flex flex-col gap-2 sm:gap-3">
+                <span
+                  className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  }}
+                >
+                  <CartIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </span>
+                <div>
+                  <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול הזמנות</p>
+                  <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
+                    מעקב אחר סטטוסים, עמלות ותשלומים
+                  </p>
                 </div>
-              </Link>
+                <span
+                  className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block"
+                  style={{ color: '#0891b2' }}
+                >
+                  כניסה לרשימת ההזמנות
+                </span>
+              </div>
+            </Link>
 
-              <Link
-                href="/admin/reports"
-                className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
-                style={{
-                  border: '2px solid transparent',
-                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                  backgroundOrigin: 'border-box',
-                  backgroundClip: 'padding-box, border-box',
-                  boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)'
-                }}
-              >
-                <div className="relative flex flex-col gap-2 sm:gap-3">
-                  <span className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg" style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
-                  }}>
-                    <ChartBarIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </span>
-                  <div>
-                    <p className="text-sm sm:text-base font-semibold text-gray-900">דוחות וביצועים</p>
-                    <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">ניתוח נתונים והפקת תובנות עסקיות</p>
-                  </div>
-                  <span className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block" style={{ color: '#0891b2' }}>צפה בדוחות ובסטטיסטיקות</span>
+            <Link
+              href="/admin/reports"
+              className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
+              style={{
+                border: '2px solid transparent',
+                backgroundImage:
+                  'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+                boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
+              }}
+            >
+              <div className="relative flex flex-col gap-2 sm:gap-3">
+                <span
+                  className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  }}
+                >
+                  <ChartBarIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </span>
+                <div>
+                  <p className="text-sm sm:text-base font-semibold text-gray-900">דוחות וביצועים</p>
+                  <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
+                    ניתוח נתונים והפקת תובנות עסקיות
+                  </p>
                 </div>
-              </Link>
-            </div>
+                <span
+                  className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block"
+                  style={{ color: '#0891b2' }}
+                >
+                  צפה בדוחות ובסטטיסטיקות
+                </span>
+              </div>
+            </Link>
+          </div>
         </section>
 
         {/* Main Content Grid */}
@@ -435,13 +498,19 @@ export default function AdminDashboardClient() {
           {/* New Users Section */}
           <section className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <h2 className="text-base sm:text-lg font-bold flex items-center gap-2" style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-                <UserPlusIcon className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7" style={{ color: '#0891b2' }} />
+              <h2
+                className="text-base sm:text-lg font-bold flex items-center gap-2"
+                style={{
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                <UserPlusIcon
+                  className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7"
+                  style={{ color: '#0891b2' }}
+                />
                 <span>משתמשים חדשים</span>
               </h2>
             </div>
@@ -453,11 +522,12 @@ export default function AdminDashboardClient() {
                     className="flex items-start justify-between p-3 sm:p-4 rounded-lg transition-all"
                     style={{
                       border: '2px solid #e5e7eb',
-                      background: 'white'
+                      background: 'white',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.borderColor = '#0891b2';
-                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)';
+                      e.currentTarget.style.background =
+                        'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.borderColor = '#e5e7eb';
@@ -470,7 +540,11 @@ export default function AdminDashboardClient() {
                           {user.fullName || user.email || user.phone}
                         </p>
                         {(() => {
-                          const { label, className: roleClass, Icon: RoleIcon } = getRoleBadge(user.role);
+                          const {
+                            label,
+                            className: roleClass,
+                            Icon: RoleIcon,
+                          } = getRoleBadge(user.role);
                           return (
                             <span className={`text-xs px-2 py-1 rounded-full ${roleClass}`}>
                               <span className="flex items-center gap-1">
@@ -484,23 +558,23 @@ export default function AdminDashboardClient() {
                       {user.referrerName && (
                         <p className="text-xs text-green-600 mb-1 flex items-center gap-1">
                           <LinkMarkIcon className="w-4 h-4" />
-                          <span>{'הופנה ע&quot;י:'} {user.referrerName}</span>
+                          <span>
+                            {'הופנה ע&quot;י:'} {user.referrerName}
+                          </span>
                         </p>
                       )}
                       <p className="text-xs text-gray-500">
-                        {new Date(user.createdAt).toLocaleDateString("he-IL")} בשעה{" "}
-                        {new Date(user.createdAt).toLocaleTimeString("he-IL", {
-                          hour: "2-digit",
-                          minute: "2-digit",
+                        {new Date(user.createdAt).toLocaleDateString('he-IL')} בשעה{' '}
+                        {new Date(user.createdAt).toLocaleTimeString('he-IL', {
+                          hour: '2-digit',
+                          minute: '2-digit',
                         })}
                       </p>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-8 text-gray-500">
-                  אין משתמשים חדשים
-                </div>
+                <div className="text-center py-8 text-gray-500">אין משתמשים חדשים</div>
               )}
             </div>
           </section>
@@ -508,13 +582,19 @@ export default function AdminDashboardClient() {
           {/* Recent Orders Section */}
           <section className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <h2 className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2" style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-                <ClipboardIcon className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7" style={{ color: '#0891b2' }} />
+              <h2
+                className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2"
+                style={{
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                <ClipboardIcon
+                  className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7"
+                  style={{ color: '#0891b2' }}
+                />
                 <span>הזמנות אחרונות</span>
               </h2>
             </div>
@@ -526,38 +606,84 @@ export default function AdminDashboardClient() {
                   <table className="w-full">
                     <thead>
                       <tr style={{ borderBottom: '2px solid #0891b2' }}>
-                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>מוצר</th>
-                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>לקוח</th>
-                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>סכום</th>
-                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>עמלה</th>
-                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>סטטוס</th>
-                        <th className="text-right py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>תאריך</th>
+                        <th
+                          className="text-right py-3 px-3 text-sm font-semibold"
+                          style={{ color: '#1e3a8a' }}
+                        >
+                          מוצר
+                        </th>
+                        <th
+                          className="text-right py-3 px-3 text-sm font-semibold"
+                          style={{ color: '#1e3a8a' }}
+                        >
+                          לקוח
+                        </th>
+                        <th
+                          className="text-right py-3 px-3 text-sm font-semibold"
+                          style={{ color: '#1e3a8a' }}
+                        >
+                          סכום
+                        </th>
+                        <th
+                          className="text-right py-3 px-3 text-sm font-semibold"
+                          style={{ color: '#1e3a8a' }}
+                        >
+                          עמלה
+                        </th>
+                        <th
+                          className="text-right py-3 px-3 text-sm font-semibold"
+                          style={{ color: '#1e3a8a' }}
+                        >
+                          סטטוס
+                        </th>
+                        <th
+                          className="text-right py-3 px-3 text-sm font-semibold"
+                          style={{ color: '#1e3a8a' }}
+                        >
+                          תאריך
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {dashboardData.recentOrders.map((order) => (
-                        <tr key={order._id} className="border-b border-gray-100 transition-all" onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)'} onMouseLeave={(e) => e.currentTarget.style.background = 'white'}>
+                        <tr
+                          key={order._id}
+                          className="border-b border-gray-100 transition-all"
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.background =
+                              'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)')
+                          }
+                          onMouseLeave={(e) => (e.currentTarget.style.background = 'white')}
+                        >
                           <td className="py-3 px-3 text-sm">{order.productName}</td>
                           <td className="py-3 px-3 text-sm">{order.customerName}</td>
-                          <td className="py-3 px-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>
+                          <td
+                            className="py-3 px-3 text-sm font-semibold"
+                            style={{ color: '#1e3a8a' }}
+                          >
                             ₪{(order.totalAmount || 0).toLocaleString()}
                           </td>
-                          <td className="py-3 px-3 text-sm font-semibold" style={{ color: '#16a34a' }}>
+                          <td
+                            className="py-3 px-3 text-sm font-semibold"
+                            style={{ color: '#16a34a' }}
+                          >
                             ₪{(order.commissionAmount || 0).toLocaleString()}
                           </td>
                           <td className="py-3 px-3">
-                            <span className={`text-xs px-2 py-1 rounded-full ${
-                              order.status === "completed"
-                                ? "bg-green-100 text-green-700"
-                                : order.status === "pending"
-                                  ? "bg-yellow-100 text-yellow-700"
-                                  : "bg-gray-100 text-gray-700"
-                            }`}>
+                            <span
+                              className={`text-xs px-2 py-1 rounded-full ${
+                                order.status === 'completed'
+                                  ? 'bg-green-100 text-green-700'
+                                  : order.status === 'pending'
+                                    ? 'bg-yellow-100 text-yellow-700'
+                                    : 'bg-gray-100 text-gray-700'
+                              }`}
+                            >
                               {order.status}
                             </span>
                           </td>
                           <td className="py-3 px-3 text-xs text-gray-500">
-                            {new Date(order.createdAt).toLocaleDateString("he-IL")}
+                            {new Date(order.createdAt).toLocaleDateString('he-IL')}
                           </td>
                         </tr>
                       ))}
@@ -573,11 +699,12 @@ export default function AdminDashboardClient() {
                       className="p-4 rounded-lg transition-all"
                       style={{
                         border: '2px solid #e5e7eb',
-                        background: 'white'
+                        background: 'white',
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.borderColor = '#0891b2';
-                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)';
+                        e.currentTarget.style.background =
+                          'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.borderColor = '#e5e7eb';
@@ -586,16 +713,20 @@ export default function AdminDashboardClient() {
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
-                          <p className="text-sm font-semibold text-gray-900 mb-1">{order.productName}</p>
+                          <p className="text-sm font-semibold text-gray-900 mb-1">
+                            {order.productName}
+                          </p>
                           <p className="text-xs text-gray-500">{order.customerName}</p>
                         </div>
-                        <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
-                          order.status === "completed"
-                            ? "bg-green-100 text-green-700"
-                            : order.status === "pending"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-gray-100 text-gray-700"
-                        }`}>
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
+                            order.status === 'completed'
+                              ? 'bg-green-100 text-green-700'
+                              : order.status === 'pending'
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-gray-100 text-gray-700'
+                          }`}
+                        >
                           {order.status}
                         </span>
                       </div>
@@ -615,7 +746,7 @@ export default function AdminDashboardClient() {
                       </div>
                       <div className="mt-2 pt-2 border-t border-gray-100">
                         <p className="text-xs text-gray-500">
-                          {new Date(order.createdAt).toLocaleDateString("he-IL")}
+                          {new Date(order.createdAt).toLocaleDateString('he-IL')}
                         </p>
                       </div>
                     </div>
@@ -623,13 +754,10 @@ export default function AdminDashboardClient() {
                 </div>
               </>
             ) : (
-              <div className="text-center py-8 text-gray-500 text-sm">
-                אין הזמנות עדיין
-              </div>
+              <div className="text-center py-8 text-gray-500 text-sm">אין הזמנות עדיין</div>
             )}
           </section>
         </div>
-
       </div>
     </main>
   );

@@ -1,34 +1,34 @@
-import fs from "fs";
-import path from "path";
-import mongoose from "mongoose";
-import { createRequire } from "module";
+import fs from 'fs';
+import path from 'path';
+import mongoose from 'mongoose';
+import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
-require("dotenv").config({ path: ".env.local" });
-console.log("MONGODB_URI:", process.env.MONGODB_URI);
-const Product = require("../models/Product");
+require('dotenv').config({ path: '.env.local' });
+console.log('MONGODB_URI:', process.env.MONGODB_URI);
+const Product = require('../models/Product');
 const ProductModel = Product?.default || Product;
 let connectDB;
 
-const DEFAULT_IMAGE_URL = "https://via.placeholder.com/800x600?text=Product";
+const DEFAULT_IMAGE_URL = 'https://via.placeholder.com/800x600?text=Product';
 
 async function ensureMongooseConnection() {
   if (!process.env.MONGODB_URI) {
-    throw new Error("Missing MONGODB_URI environment variable");
+    throw new Error('Missing MONGODB_URI environment variable');
   }
 
   if (mongoose.connection.readyState === 0) {
     await mongoose.connect(process.env.MONGODB_URI, {
-      dbName: process.env.MONGODB_DB || "vipo",
+      dbName: process.env.MONGODB_DB || 'vipo',
       serverSelectionTimeoutMS: 30000,
     });
   }
 }
 
 function loadProductsFromFile() {
-  const dataDir = path.join(process.cwd(), "export_vipo_products_ui", "data");
-  const generatedPath = path.join(dataDir, "products.generated.json");
-  const defaultPath = path.join(dataDir, "products.json");
+  const dataDir = path.join(process.cwd(), 'export_vipo_products_ui', 'data');
+  const generatedPath = path.join(dataDir, 'products.generated.json');
+  const defaultPath = path.join(dataDir, 'products.json');
 
   const filePath = fs.existsSync(generatedPath) ? generatedPath : defaultPath;
 
@@ -36,7 +36,7 @@ function loadProductsFromFile() {
     throw new Error(`products.json not found at ${filePath}`);
   }
 
-  const raw = fs.readFileSync(filePath, "utf8");
+  const raw = fs.readFileSync(filePath, 'utf8');
   const parsed = JSON.parse(raw);
 
   if (Array.isArray(parsed)) {
@@ -52,10 +52,10 @@ function loadProductsFromFile() {
 
 function normalizeNumber(value, fallback = 0) {
   if (value === null || value === undefined) return fallback;
-  if (typeof value === "number" && Number.isFinite(value)) return value;
-  if (typeof value === "string") {
-    const cleaned = value.replace(/[^0-9.,-]/g, "").replace(/,/g, "");
-    if (cleaned === "" || cleaned === "-" || cleaned === ".") return fallback;
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/[^0-9.,-]/g, '').replace(/,/g, '');
+    if (cleaned === '' || cleaned === '-' || cleaned === '.') return fallback;
     const num = Number(cleaned);
     return Number.isFinite(num) ? num : fallback;
   }
@@ -64,9 +64,11 @@ function normalizeNumber(value, fallback = 0) {
 
 function extractPriceFromText(...inputs) {
   for (const input of inputs) {
-    if (!input || typeof input !== "string") continue;
+    if (!input || typeof input !== 'string') continue;
 
-    const matches = Array.from(input.matchAll(/([0-9]+(?:\.[0-9]+)?)/g)).map((match) => Number(match[1]));
+    const matches = Array.from(input.matchAll(/([0-9]+(?:\.[0-9]+)?)/g)).map((match) =>
+      Number(match[1]),
+    );
     const candidates = matches.filter((value) => Number.isFinite(value) && value > 0);
     if (!candidates.length) {
       continue;
@@ -89,35 +91,40 @@ function extractPriceFromText(...inputs) {
 }
 
 function normalizeBoolean(value, fallback = true) {
-  if (typeof value === "boolean") return value;
-  if (typeof value === "number") return value !== 0;
-  if (typeof value === "string") {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value !== 0;
+  if (typeof value === 'string') {
     const lower = value.trim().toLowerCase();
-    if (["true", "yes", "1", "y", "on"].includes(lower)) return true;
-    if (["false", "no", "0", "n", "off"].includes(lower)) return false;
+    if (['true', 'yes', '1', 'y', 'on'].includes(lower)) return true;
+    if (['false', 'no', '0', 'n', 'off'].includes(lower)) return false;
   }
   return fallback;
 }
 
 function pickIdentifier(item) {
-  if (item.sku) return { field: "sku", value: String(item.sku) };
-  if (item.legacyId) return { field: "legacyId", value: String(item.legacyId) };
-  if (item.id) return { field: "legacyId", value: String(item.id) };
-  if (item._id) return { field: "legacyId", value: String(item._id) };
-  if (item.name) return { field: "name", value: String(item.name) };
+  if (item.sku) return { field: 'sku', value: String(item.sku) };
+  if (item.legacyId) return { field: 'legacyId', value: String(item.legacyId) };
+  if (item.id) return { field: 'legacyId', value: String(item.id) };
+  if (item._id) return { field: 'legacyId', value: String(item._id) };
+  if (item.name) return { field: 'name', value: String(item.name) };
   return null;
 }
 
 function normalizeProduct(raw) {
   const identifier = pickIdentifier(raw);
   if (!identifier) {
-    console.warn("⚠️  Skipping product without identifier", raw);
+    console.warn('⚠️  Skipping product without identifier', raw);
     return null;
   }
 
   let price = normalizeNumber(raw.price, NaN);
   if (!Number.isFinite(price) || price <= 0) {
-    const extracted = extractPriceFromText(raw.priceText, raw.description, raw.fullDescription, raw.dimensions);
+    const extracted = extractPriceFromText(
+      raw.priceText,
+      raw.description,
+      raw.fullDescription,
+      raw.dimensions,
+    );
     if (Number.isFinite(extracted) && extracted > 0) {
       price = extracted;
     }
@@ -125,29 +132,25 @@ function normalizeProduct(raw) {
 
   const normalized = {
     [identifier.field]: identifier.value,
-    name: String(raw.name || identifier.value || "Unnamed product"),
-    description: raw.description || raw.fullDescription || raw.dimensions || raw.notes || "",
-    fullDescription: raw.fullDescription || raw.description || raw.dimensions || "",
-    category: raw.category || raw.section || "uncategorized",
+    name: String(raw.name || identifier.value || 'Unnamed product'),
+    description: raw.description || raw.fullDescription || raw.dimensions || raw.notes || '',
+    fullDescription: raw.fullDescription || raw.description || raw.dimensions || '',
+    category: raw.category || raw.section || 'uncategorized',
     price: Number.isFinite(price) && price > 0 ? price : normalizeNumber(raw.cost, 0),
     originalPrice: normalizeNumber(raw.originalPrice, null),
     commission: normalizeNumber(raw.commission, undefined),
-    type: raw.type === "group" || raw.purchaseType === "group" ? "group" : "online",
-    purchaseType: raw.purchaseType === "group" ? "group" : "regular",
+    type: raw.type === 'group' || raw.purchaseType === 'group' ? 'group' : 'online',
+    purchaseType: raw.purchaseType === 'group' ? 'group' : 'regular',
     inStock: normalizeBoolean(raw.inStock, true),
     stockCount: normalizeNumber(raw.stockCount, 0),
-    image: raw.image || raw.imageUrl || "",
-    imageUrl: raw.imageUrl || raw.image || "",
-    images: Array.isArray(raw.images)
-      ? raw.images.filter(Boolean)
-      : raw.image
-      ? [raw.image]
-      : [],
+    image: raw.image || raw.imageUrl || '',
+    imageUrl: raw.imageUrl || raw.image || '',
+    images: Array.isArray(raw.images) ? raw.images.filter(Boolean) : raw.image ? [raw.image] : [],
     features: Array.isArray(raw.features) ? raw.features : [],
-    specs: typeof raw.specs === "object" && raw.specs !== null ? raw.specs : {},
+    specs: typeof raw.specs === 'object' && raw.specs !== null ? raw.specs : {},
     rating: normalizeNumber(raw.rating, 0),
     reviews: normalizeNumber(raw.reviews, 0),
-    videoUrl: raw.videoUrl || "",
+    videoUrl: raw.videoUrl || '',
     groupEndDate: raw.groupEndDate ? new Date(raw.groupEndDate) : null,
     expectedDeliveryDays: normalizeNumber(raw.expectedDeliveryDays, null),
     groupMinQuantity: normalizeNumber(raw.groupMinQuantity, 1),
@@ -156,25 +159,22 @@ function normalizeProduct(raw) {
   };
 
   if (normalized.commission === undefined) {
-    normalized.commission = Number.isFinite(normalized.price) && normalized.price > 0
-      ? normalized.price * 0.1
-      : 0;
+    normalized.commission =
+      Number.isFinite(normalized.price) && normalized.price > 0 ? normalized.price * 0.1 : 0;
   }
 
   if (!normalized.description) {
     const details = [];
     if (raw.dimensions) details.push(`Dimensions: ${raw.dimensions}`);
     if (raw.materials) details.push(`Materials: ${raw.materials}`);
-    normalized.description = details.join(" | ") || "Product details will be updated soon.";
+    normalized.description = details.join(' | ') || 'Product details will be updated soon.';
   }
 
   if (!normalized.fullDescription) {
     const extra = [];
     if (raw.dimensions) extra.push(`מידות: ${raw.dimensions}`);
     if (raw.notes) extra.push(raw.notes);
-    normalized.fullDescription = extra.length
-      ? extra.join("\n")
-      : normalized.description;
+    normalized.fullDescription = extra.length ? extra.join('\n') : normalized.description;
   }
 
   if (!normalized.image) {
@@ -209,7 +209,7 @@ function normalizeProduct(raw) {
 async function importProducts() {
   try {
     if (!connectDB) {
-      ({ connectDB } = await import("../lib/db.js"));
+      ({ connectDB } = await import('../lib/db.js'));
     }
 
     await connectDB();
@@ -230,7 +230,7 @@ async function importProducts() {
 
       const filter = pickIdentifier(normalized);
       if (!filter) {
-        console.warn("⚠️  Unexpected missing identifier after normalization", normalized);
+        console.warn('⚠️  Unexpected missing identifier after normalization', normalized);
         skipped += 1;
         continue;
       }
@@ -238,14 +238,16 @@ async function importProducts() {
       await ProductModel.findOneAndUpdate(
         { [filter.field]: filter.value },
         { $set: normalized },
-        { upsert: true, new: true, setDefaultsOnInsert: true }
+        { upsert: true, new: true, setDefaultsOnInsert: true },
       );
       processed += 1;
     }
 
-    console.log(`✅ Import done. Processed: ${processed}, skipped: ${skipped}. Closing connection.`);
+    console.log(
+      `✅ Import done. Processed: ${processed}, skipped: ${skipped}. Closing connection.`,
+    );
   } catch (err) {
-    console.error("❌ Import failed:", err);
+    console.error('❌ Import failed:', err);
     process.exit(1);
   } finally {
     await mongoose.connection.close().catch(() => {});

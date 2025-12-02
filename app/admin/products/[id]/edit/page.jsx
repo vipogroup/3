@@ -1,46 +1,46 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import { refreshProductsFromApi } from "@/app/lib/products";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import { refreshProductsFromApi } from '@/app/lib/products';
 
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [productLoading, setProductLoading] = useState(true);
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    fullDescription: "",
-    price: "",
-    originalPrice: "",
-    category: "",
-    image: "",
-    videoUrl: "",
+    name: '',
+    description: '',
+    fullDescription: '',
+    price: '',
+    originalPrice: '',
+    category: '',
+    image: '',
+    videoUrl: '',
     inStock: true,
-    stockCount: "",
-    rating: "4.5",
-    reviews: "0",
-    purchaseType: "regular",
+    stockCount: '',
+    rating: '4.5',
+    reviews: '0',
+    purchaseType: 'regular',
     groupPurchaseDetails: {
-      closingDays: "40",
-      shippingDays: "60",
-      minQuantity: "10",
-      currentQuantity: "0"
+      closingDays: '40',
+      shippingDays: '60',
+      minQuantity: '10',
+      currentQuantity: '0',
     },
-    features: ["", "", "", ""],
+    features: ['', '', '', ''],
     specs: {
-      "מפרט 1": "",
-      "מפרט 2": "",
-      "מפרט 3": "",
-      "מפרט 4": "",
-      "מפרט 5": "",
-      "מפרט 6": ""
-    }
+      'מפרט 1': '',
+      'מפרט 2': '',
+      'מפרט 3': '',
+      'מפרט 4': '',
+      'מפרט 5': '',
+      'מפרט 6': '',
+    },
   });
 
   useEffect(() => {
@@ -48,55 +48,56 @@ export default function EditProductPage() {
 
     async function loadProduct() {
       setProductLoading(true);
-      setError("");
+      setError('');
       try {
         const res = await fetch(`/api/products/${params.id}`);
         if (!res.ok) {
-          throw new Error(res.status === 404 ? "מוצר לא נמצא" : "טעינת המוצר נכשלה");
+          throw new Error(res.status === 404 ? 'מוצר לא נמצא' : 'טעינת המוצר נכשלה');
         }
 
         const loadedProduct = await res.json();
         if (cancelled) return;
 
         setFormData({
-          name: loadedProduct.name || "",
-          description: loadedProduct.description || "",
-          fullDescription: loadedProduct.fullDescription || "",
-          price: loadedProduct.price?.toString() || "",
-          originalPrice: loadedProduct.originalPrice?.toString() || "",
-          category: loadedProduct.category || "",
-          image: loadedProduct.image || loadedProduct.imageUrl || "",
-          videoUrl: loadedProduct.videoUrl || "",
+          name: loadedProduct.name || '',
+          description: loadedProduct.description || '',
+          fullDescription: loadedProduct.fullDescription || '',
+          price: loadedProduct.price?.toString() || '',
+          originalPrice: loadedProduct.originalPrice?.toString() || '',
+          category: loadedProduct.category || '',
+          image: loadedProduct.image || loadedProduct.imageUrl || '',
+          videoUrl: loadedProduct.videoUrl || '',
           inStock: loadedProduct.inStock !== undefined ? loadedProduct.inStock : true,
-          stockCount: loadedProduct.stockCount?.toString() || "",
-          rating: loadedProduct.rating?.toString() || "4.5",
-          reviews: loadedProduct.reviews?.toString() || "0",
-          purchaseType: loadedProduct.purchaseType || "regular",
+          stockCount: loadedProduct.stockCount?.toString() || '',
+          rating: loadedProduct.rating?.toString() || '4.5',
+          reviews: loadedProduct.reviews?.toString() || '0',
+          purchaseType: loadedProduct.purchaseType || 'regular',
           groupPurchaseDetails: loadedProduct.groupPurchaseDetails || {
-            closingDays: "40",
-            shippingDays: "60",
-            minQuantity: "10",
-            currentQuantity: "0"
+            closingDays: '40',
+            shippingDays: '60',
+            minQuantity: '10',
+            currentQuantity: '0',
           },
-          features: Array.isArray(loadedProduct.features) && loadedProduct.features.length
-            ? loadedProduct.features
-            : ["", "", "", ""],
+          features:
+            Array.isArray(loadedProduct.features) && loadedProduct.features.length
+              ? loadedProduct.features
+              : ['', '', '', ''],
           specs:
             loadedProduct.specs && Object.keys(loadedProduct.specs).length
               ? loadedProduct.specs
               : {
-                  "מפרט 1": "",
-                  "מפרט 2": "",
-                  "מפרט 3": "",
-                  "מפרט 4": "",
-                  "מפרט 5": "",
-                  "מפרט 6": ""
+                  'מפרט 1': '',
+                  'מפרט 2': '',
+                  'מפרט 3': '',
+                  'מפרט 4': '',
+                  'מפרט 5': '',
+                  'מפרט 6': '',
                 },
         });
       } catch (err) {
-        console.error("Failed to load product", err);
+        console.error('Failed to load product', err);
         if (!cancelled) {
-          setError(err.message || "טעינת המוצר נכשלה");
+          setError(err.message || 'טעינת המוצר נכשלה');
         }
       } finally {
         if (!cancelled) {
@@ -116,28 +117,28 @@ export default function EditProductPage() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
   const handleFeatureChange = (index, value) => {
     const newFeatures = [...formData.features];
     newFeatures[index] = value;
-    setFormData(prev => ({ ...prev, features: newFeatures }));
+    setFormData((prev) => ({ ...prev, features: newFeatures }));
   };
 
   const handleSpecChange = (key, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      specs: { ...prev.specs, [key]: value }
+      specs: { ...prev.specs, [key]: value },
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setSubmitting(true);
 
     try {
@@ -151,14 +152,14 @@ export default function EditProductPage() {
         image: formData.image,
         imageUrl: formData.image,
         images: formData.image ? [formData.image] : [],
-        videoUrl: formData.videoUrl || "",
+        videoUrl: formData.videoUrl || '',
         inStock: formData.inStock,
         stockCount: parseInt(formData.stockCount) || 0,
         rating: parseFloat(formData.rating) || 0,
         reviews: parseInt(formData.reviews) || 0,
         purchaseType: formData.purchaseType,
         groupPurchaseDetails:
-          formData.purchaseType === "group"
+          formData.purchaseType === 'group'
             ? {
                 closingDays: parseInt(formData.groupPurchaseDetails.closingDays) || 0,
                 shippingDays: parseInt(formData.groupPurchaseDetails.shippingDays) || 0,
@@ -169,32 +170,32 @@ export default function EditProductPage() {
                   (parseInt(formData.groupPurchaseDetails.shippingDays) || 0),
               }
             : null,
-        features: formData.features.filter((f) => f.trim() !== ""),
+        features: formData.features.filter((f) => f.trim() !== ''),
         specs: Object.fromEntries(
-          Object.entries(formData.specs).filter(([_, v]) => (v ?? "").toString().trim() !== "")
+          Object.entries(formData.specs).filter(([_, v]) => (v ?? '').toString().trim() !== ''),
         ),
       };
 
       const response = await fetch(`/api/products/${params.id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
         const details = await response.json().catch(() => ({}));
-        throw new Error(details?.error || "שגיאה בעדכון המוצר");
+        throw new Error(details?.error || 'שגיאה בעדכון המוצר');
       }
 
       await refreshProductsFromApi();
-      window.dispatchEvent(new Event("productsUpdated"));
+      window.dispatchEvent(new Event('productsUpdated'));
 
-      alert("מוצר עודכן בהצלחה! השינויים יוחלו בכל הדפים.");
-      router.push("/admin/products");
+      alert('מוצר עודכן בהצלחה! השינויים יוחלו בכל הדפים.');
+      router.push('/admin/products');
     } catch (error) {
-      setError(error.message || "שגיאה בעדכון המוצר");
+      setError(error.message || 'שגיאה בעדכון המוצר');
     } finally {
       setSubmitting(false);
     }
@@ -260,12 +261,10 @@ export default function EditProductPage() {
             {/* Basic Info */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">מידע בסיסי</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
-                    שם המוצר *
-                  </label>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">שם המוצר *</label>
                   <input
                     type="text"
                     name="name"
@@ -278,9 +277,7 @@ export default function EditProductPage() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
-                    תיאור קצר *
-                  </label>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">תיאור קצר *</label>
                   <textarea
                     name="description"
                     value={formData.description}
@@ -293,9 +290,7 @@ export default function EditProductPage() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
-                    תיאור מלא *
-                  </label>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">תיאור מלא *</label>
                   <textarea
                     name="fullDescription"
                     value={formData.fullDescription}
@@ -308,9 +303,7 @@ export default function EditProductPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
-                    מחיר *
-                  </label>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">מחיר *</label>
                   <input
                     type="number"
                     name="price"
@@ -341,9 +334,7 @@ export default function EditProductPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
-                    קטגוריה *
-                  </label>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">קטגוריה *</label>
                   <select
                     name="category"
                     value={formData.category}
@@ -360,9 +351,7 @@ export default function EditProductPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
-                    כמות במלאי *
-                  </label>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">כמות במלאי *</label>
                   <input
                     type="number"
                     name="stockCount"
@@ -406,9 +395,7 @@ export default function EditProductPage() {
 
                 {/* Purchase Type */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
-                    סוג רכישה *
-                  </label>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">סוג רכישה *</label>
                   <select
                     name="purchaseType"
                     value={formData.purchaseType}
@@ -433,13 +420,15 @@ export default function EditProductPage() {
                         <input
                           type="number"
                           value={formData.groupPurchaseDetails.closingDays}
-                          onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            groupPurchaseDetails: {
-                              ...prev.groupPurchaseDetails,
-                              closingDays: e.target.value
-                            }
-                          }))}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              groupPurchaseDetails: {
+                                ...prev.groupPurchaseDetails,
+                                closingDays: e.target.value,
+                              },
+                            }))
+                          }
                           required={formData.purchaseType === 'group'}
                           min="1"
                           className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-600"
@@ -453,13 +442,15 @@ export default function EditProductPage() {
                         <input
                           type="number"
                           value={formData.groupPurchaseDetails.shippingDays}
-                          onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            groupPurchaseDetails: {
-                              ...prev.groupPurchaseDetails,
-                              shippingDays: e.target.value
-                            }
-                          }))}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              groupPurchaseDetails: {
+                                ...prev.groupPurchaseDetails,
+                                shippingDays: e.target.value,
+                              },
+                            }))
+                          }
                           required={formData.purchaseType === 'group'}
                           min="1"
                           className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-600"
@@ -473,13 +464,15 @@ export default function EditProductPage() {
                         <input
                           type="number"
                           value={formData.groupPurchaseDetails.minQuantity}
-                          onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            groupPurchaseDetails: {
-                              ...prev.groupPurchaseDetails,
-                              minQuantity: e.target.value
-                            }
-                          }))}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              groupPurchaseDetails: {
+                                ...prev.groupPurchaseDetails,
+                                minQuantity: e.target.value,
+                              },
+                            }))
+                          }
                           required={formData.purchaseType === 'group'}
                           min="1"
                           className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-600"
@@ -493,13 +486,15 @@ export default function EditProductPage() {
                         <input
                           type="number"
                           value={formData.groupPurchaseDetails.currentQuantity}
-                          onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            groupPurchaseDetails: {
-                              ...prev.groupPurchaseDetails,
-                              currentQuantity: e.target.value
-                            }
-                          }))}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              groupPurchaseDetails: {
+                                ...prev.groupPurchaseDetails,
+                                currentQuantity: e.target.value,
+                              },
+                            }))
+                          }
                           min="0"
                           className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-600"
                         />
@@ -516,9 +511,7 @@ export default function EditProductPage() {
                     onChange={handleChange}
                     className="w-5 h-5 text-purple-600 rounded focus:ring-blue-500"
                   />
-                  <label className="mr-3 text-sm font-bold text-gray-900">
-                    במלאי
-                  </label>
+                  <label className="mr-3 text-sm font-bold text-gray-900">במלאי</label>
                 </div>
               </div>
             </div>
@@ -546,9 +539,7 @@ export default function EditProductPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.entries(formData.specs).map(([key, value]) => (
                   <div key={key}>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">
-                      {key}
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">{key}</label>
                     <input
                       type="text"
                       value={value}
@@ -566,9 +557,7 @@ export default function EditProductPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">דירוג וביקורות</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
-                    דירוג (1-5)
-                  </label>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">דירוג (1-5)</label>
                   <input
                     type="number"
                     name="rating"
@@ -582,9 +571,7 @@ export default function EditProductPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
-                    מספר ביקורות
-                  </label>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">מספר ביקורות</label>
                   <input
                     type="number"
                     name="reviews"
@@ -603,10 +590,10 @@ export default function EditProductPage() {
                 type="submit"
                 disabled={submitting}
                 className={`flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold text-lg py-4 rounded-xl transition-all shadow-lg ${
-                  submitting ? "opacity-75 cursor-not-allowed" : ""
+                  submitting ? 'opacity-75 cursor-not-allowed' : ''
                 }`}
               >
-                {submitting ? "שומר..." : "✓ שמור שינויים"}
+                {submitting ? 'שומר...' : '✓ שמור שינויים'}
               </button>
               <Link
                 href="/admin/products"

@@ -1,6 +1,7 @@
 # 🌍 Stage 15.11 - RTL/LTR Validation
 
 ## תאריך: 2025-11-01
+
 ## סטטוס: ✅ Complete
 
 ---
@@ -16,6 +17,7 @@
 ## ✅ RTL Validation Checklist
 
 ### 1. HTML Direction
+
 ```jsx
 // app/layout.jsx
 export default function RootLayout({ children }) {
@@ -28,28 +30,33 @@ export default function RootLayout({ children }) {
 ```
 
 ### 2. Text Alignment
+
 - [x] כל הטקסט מיושר לימין
 - [x] כותרות RTL
 - [x] פסקאות RTL
 - [x] טפסים RTL
 
 ### 3. Layout Direction
+
 - [x] Flexbox: flex-row-reverse
 - [x] Grid: auto-flow dense
 - [x] Margins: mr → ml
 - [x] Padding: pr → pl
 
 ### 4. Icons & Arrows
+
 - [x] חיצים הפוכים
 - [x] אייקונים במיקום נכון
 - [x] Chevrons הפוכים
 
 ### 5. Tables
+
 - [x] עמודות מימין לשמאל
 - [x] Headers מיושרים
 - [x] Sort icons נכונים
 
 ### 6. Forms
+
 - [x] Labels מימין
 - [x] Inputs RTL
 - [x] Placeholders RTL
@@ -60,16 +67,16 @@ export default function RootLayout({ children }) {
 ## 🔧 RTL Fixes
 
 ### Tailwind RTL Support
+
 ```javascript
 // tailwind.config.js
 module.exports = {
-  plugins: [
-    require('@tailwindcss/rtl'),
-  ],
+  plugins: [require('@tailwindcss/rtl')],
 };
 ```
 
 ### Manual RTL Classes
+
 ```jsx
 // Use logical properties
 <div className="ms-4">  {/* margin-inline-start */}
@@ -82,6 +89,7 @@ module.exports = {
 ```
 
 ### Flexbox Direction
+
 ```jsx
 // ❌ Bad - always left to right
 <div className="flex">
@@ -101,19 +109,19 @@ module.exports = {
 
 ```jsx
 // components/DevTools.jsx
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 export default function DevTools() {
-  const [direction, setDirection] = useState("rtl");
+  const [direction, setDirection] = useState('rtl');
 
   useEffect(() => {
     document.documentElement.dir = direction;
   }, [direction]);
 
   // Only show in development
-  if (process.env.NODE_ENV !== "development") {
+  if (process.env.NODE_ENV !== 'development') {
     return null;
   }
 
@@ -122,25 +130,19 @@ export default function DevTools() {
       <div className="flex items-center gap-2">
         <span className="text-xs font-medium text-gray-700">Direction:</span>
         <button
-          onClick={() => setDirection(direction === "rtl" ? "ltr" : "rtl")}
+          onClick={() => setDirection(direction === 'rtl' ? 'ltr' : 'rtl')}
           className={`
             px-3 py-1 text-xs font-medium rounded
-            ${direction === "rtl" 
-              ? "bg-blue-600 text-white" 
-              : "bg-gray-200 text-gray-700"
-            }
+            ${direction === 'rtl' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}
           `}
         >
           RTL
         </button>
         <button
-          onClick={() => setDirection(direction === "ltr" ? "rtl" : "ltr")}
+          onClick={() => setDirection(direction === 'ltr' ? 'rtl' : 'ltr')}
           className={`
             px-3 py-1 text-xs font-medium rounded
-            ${direction === "ltr" 
-              ? "bg-blue-600 text-white" 
-              : "bg-gray-200 text-gray-700"
-            }
+            ${direction === 'ltr' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}
           `}
         >
           LTR
@@ -152,9 +154,10 @@ export default function DevTools() {
 ```
 
 **Usage:**
+
 ```jsx
 // app/layout.jsx (only in dev)
-import DevTools from "@/components/DevTools";
+import DevTools from '@/components/DevTools';
 
 export default function RootLayout({ children }) {
   return (
@@ -173,6 +176,7 @@ export default function RootLayout({ children }) {
 ## 📊 RTL Testing
 
 ### Manual Tests:
+
 1. **Text Direction:**
    - [ ] כל הטקסט זורם מימין לשמאל
    - [ ] מספרים באנגלית לא הופכים
@@ -202,6 +206,7 @@ export default function RootLayout({ children }) {
 ## 🎨 Common RTL Issues
 
 ### Issue 1: Margins/Padding
+
 ```jsx
 // ❌ Bad
 <div className="ml-4">
@@ -211,6 +216,7 @@ export default function RootLayout({ children }) {
 ```
 
 ### Issue 2: Absolute Positioning
+
 ```jsx
 // ❌ Bad
 <div className="absolute left-0">
@@ -220,6 +226,7 @@ export default function RootLayout({ children }) {
 ```
 
 ### Issue 3: Border Radius
+
 ```jsx
 // ❌ Bad
 <div className="rounded-l-lg">
@@ -229,6 +236,7 @@ export default function RootLayout({ children }) {
 ```
 
 ### Issue 4: Transform
+
 ```jsx
 // ❌ Bad - arrow always points right
 <svg className="transform rotate-0">
@@ -256,6 +264,7 @@ export default function RootLayout({ children }) {
 ## 💡 Best Practices
 
 ### 1. Use Logical Properties
+
 ```css
 /* Instead of left/right */
 margin-inline-start: 1rem;
@@ -265,6 +274,7 @@ padding-inline-end: 1rem;
 ```
 
 ### 2. Avoid Hardcoded Directions
+
 ```jsx
 // ❌ Bad
 <div style={{ float: 'left' }}>
@@ -274,12 +284,14 @@ padding-inline-end: 1rem;
 ```
 
 ### 3. Test Both Directions
+
 ```jsx
 // Use DEV toggle to test
 <DevTools />
 ```
 
 ### 4. Use Tailwind RTL Plugin
+
 ```bash
 npm install @tailwindcss/rtl
 ```

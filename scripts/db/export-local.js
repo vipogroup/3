@@ -50,7 +50,9 @@ async function exportDb() {
       const filePath = path.join(exportDir, `${colName}.json`);
       const json = EJSON.stringify(docs, null, 2);
       await fs.writeFile(filePath, json, 'utf8');
-      console.log(`   ↳ Saved ${docs.length} documents to ${path.relative(process.cwd(), filePath)}`);
+      console.log(
+        `   ↳ Saved ${docs.length} documents to ${path.relative(process.cwd(), filePath)}`,
+      );
     }
 
     console.log(`✅ Export complete. Files saved to ${path.relative(process.cwd(), exportDir)}`);

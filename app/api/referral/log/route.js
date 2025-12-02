@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
-import { ObjectId } from "mongodb";
-import { headers } from "next/headers";
+import { NextResponse } from 'next/server';
+import { getDb } from '@/lib/db';
+import { ObjectId } from 'mongodb';
+import { headers } from 'next/headers';
 
 /**
  * POST /api/referral/log
@@ -11,23 +11,20 @@ import { headers } from "next/headers";
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { agentId, productId, action = "click", url } = body;
+    const { agentId, productId, action = 'click', url } = body;
 
     if (!agentId || !url) {
-      return NextResponse.json(
-        { ok: false, error: "agentId and url required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'agentId and url required' }, { status: 400 });
     }
 
     const db = await getDb();
-    const referralLogs = db.collection("referral_logs");
+    const referralLogs = db.collection('referral_logs');
 
     // Get request headers for tracking
     const headersList = headers();
-    const ip = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || "unknown";
-    const userAgent = headersList.get("user-agent") || "unknown";
-    const referer = headersList.get("referer") || null;
+    const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || 'unknown';
+    const userAgent = headersList.get('user-agent') || 'unknown';
+    const referer = headersList.get('referer') || null;
 
     // Create log document
     const logDoc = {
@@ -48,11 +45,8 @@ export async function POST(req) {
       logId: String(result.insertedId),
     });
   } catch (error) {
-    console.error("REFERRAL_LOG_ERROR:", error);
-    return NextResponse.json(
-      { ok: false, error: "server error" },
-      { status: 500 }
-    );
+    console.error('REFERRAL_LOG_ERROR:', error);
+    return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
   }
 }
 
@@ -63,13 +57,13 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
-    const agentId = searchParams.get("agentId");
-    const productId = searchParams.get("productId");
-    const action = searchParams.get("action");
-    const limit = parseInt(searchParams.get("limit") || "100");
+    const agentId = searchParams.get('agentId');
+    const productId = searchParams.get('productId');
+    const action = searchParams.get('action');
+    const limit = parseInt(searchParams.get('limit') || '100');
 
     const db = await getDb();
-    const referralLogs = db.collection("referral_logs");
+    const referralLogs = db.collection('referral_logs');
 
     // Build query
     const query = {};
@@ -78,26 +72,24 @@ export async function GET(req) {
     if (action) query.action = action;
 
     // Get logs
-    const logs = await referralLogs
-      .find(query)
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .toArray();
+    const logs = await referralLogs.find(query).sort({ createdAt: -1 }).limit(limit).toArray();
 
     // Get stats
-    const stats = await referralLogs.aggregate([
-      { $match: query },
-      {
-        $group: {
-          _id: "$action",
-          count: { $sum: 1 }
-        }
-      }
-    ]).toArray();
+    const stats = await referralLogs
+      .aggregate([
+        { $match: query },
+        {
+          $group: {
+            _id: '$action',
+            count: { $sum: 1 },
+          },
+        },
+      ])
+      .toArray();
 
     return NextResponse.json({
       ok: true,
-      logs: logs.map(log => ({
+      logs: logs.map((log) => ({
         ...log,
         _id: String(log._id),
         agentId: String(log.agentId),
@@ -110,10 +102,7 @@ export async function GET(req) {
       total: logs.length,
     });
   } catch (error) {
-    console.error("REFERRAL_LOG_GET_ERROR:", error);
-    return NextResponse.json(
-      { ok: false, error: "server error" },
-      { status: 500 }
-    );
+    console.error('REFERRAL_LOG_GET_ERROR:', error);
+    return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
   }
 }

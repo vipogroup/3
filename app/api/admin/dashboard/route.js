@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
-import { ObjectId } from "mongodb";
+import { NextResponse } from 'next/server';
+import { getDb } from '@/lib/db';
+import { ObjectId } from 'mongodb';
 
 /**
  * GET /api/admin/dashboard
@@ -9,22 +9,22 @@ import { ObjectId } from "mongodb";
 export async function GET(req) {
   try {
     const db = await getDb();
-    const users = db.collection("users");
-    const orders = db.collection("orders");
-    const products = db.collection("products");
-    const referralLogs = db.collection("referral_logs");
+    const users = db.collection('users');
+    const orders = db.collection('orders');
+    const products = db.collection('products');
+    const referralLogs = db.collection('referral_logs');
 
     // Get total counts
     const totalUsers = await users.countDocuments();
-    const totalAgents = await users.countDocuments({ role: "agent" });
-    const totalCustomers = await users.countDocuments({ role: "customer" });
+    const totalAgents = await users.countDocuments({ role: 'agent' });
+    const totalCustomers = await users.countDocuments({ role: 'customer' });
     const totalOrders = await orders.countDocuments();
     const totalProducts = await products.countDocuments();
 
     // Get new users (last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
+
     const newUsers = await users
       .find(
         { createdAt: { $gte: thirtyDaysAgo } },
@@ -37,7 +37,7 @@ export async function GET(req) {
             createdAt: 1,
             referredBy: 1,
           },
-        }
+        },
       )
       .sort({ createdAt: -1 })
       .limit(20)
@@ -50,7 +50,7 @@ export async function GET(req) {
         if (user.referredBy) {
           const referrer = await users.findOne(
             { _id: user.referredBy },
-            { projection: { fullName: 1, email: 1 } }
+            { projection: { fullName: 1, email: 1 } },
           );
           referrerName = referrer ? referrer.fullName || referrer.email : null;
         }
@@ -64,13 +64,13 @@ export async function GET(req) {
           referredBy: user.referredBy ? String(user.referredBy) : null,
           referrerName,
         };
-      })
+      }),
     );
 
     // Get agent commission stats
     const agentStats = await users
       .find(
-        { role: "agent" },
+        { role: 'agent' },
         {
           projection: {
             fullName: 1,
@@ -79,41 +79,46 @@ export async function GET(req) {
             totalSales: 1,
             commissionBalance: 1,
           },
-        }
+        },
       )
       .sort({ commissionBalance: -1 })
       .limit(10)
       .toArray();
 
     // Get total commissions paid
-    const totalCommissions = await orders.aggregate([
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$commissionAmount" },
+    const totalCommissions = await orders
+      .aggregate([
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$commissionAmount' },
+          },
         },
-      },
-    ]).toArray();
+      ])
+      .toArray();
 
     // Get product stats
-    const groupProducts = await products.countDocuments({ type: "group" });
-    const onlineProducts = await products.countDocuments({ type: "online" });
+    const groupProducts = await products.countDocuments({ type: 'group' });
+    const onlineProducts = await products.countDocuments({ type: 'online' });
 
     // Get total clicks from referral logs
-    const totalClicks = await referralLogs.countDocuments({ action: "click" });
+    const totalClicks = await referralLogs.countDocuments({ action: 'click' });
 
     // Get recent orders
     const recentOrders = await orders
-      .find({}, {
-        projection: {
-          productName: 1,
-          customerName: 1,
-          totalAmount: 1,
-          commissionAmount: 1,
-          status: 1,
-          createdAt: 1,
+      .find(
+        {},
+        {
+          projection: {
+            productName: 1,
+            customerName: 1,
+            totalAmount: 1,
+            commissionAmount: 1,
+            status: 1,
+            createdAt: 1,
+          },
         },
-      })
+      )
       .sort({ createdAt: -1 })
       .limit(10)
       .toArray();
@@ -132,7 +137,7 @@ export async function GET(req) {
         totalClicks,
       },
       newUsers: newUsersWithReferrer,
-      agentStats: agentStats.map(a => ({
+      agentStats: agentStats.map((a) => ({
         _id: String(a._id),
         fullName: a.fullName,
         email: a.email,
@@ -140,7 +145,7 @@ export async function GET(req) {
         totalSales: a.totalSales || 0,
         commissionBalance: a.commissionBalance || 0,
       })),
-      recentOrders: recentOrders.map(o => ({
+      recentOrders: recentOrders.map((o) => ({
         _id: String(o._id),
         productName: o.productName,
         customerName: o.customerName,
@@ -151,10 +156,7 @@ export async function GET(req) {
       })),
     });
   } catch (error) {
-    console.error("ADMIN_DASHBOARD_ERROR:", error);
-    return NextResponse.json(
-      { ok: false, error: "server error" },
-      { status: 500 }
-    );
+    console.error('ADMIN_DASHBOARD_ERROR:', error);
+    return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
   }
 }

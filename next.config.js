@@ -1,16 +1,16 @@
-require("dotenv").config({ path: ".env.local" });
+require('dotenv').config({ path: '.env.local' });
 
 /** @type {import('next').NextConfig} */
-const path = require("path");
+const path = require('path');
 
 const nextConfig = {
   reactStrictMode: true,
-  
+
   webpack: (config) => {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
-      "@": path.resolve(__dirname),
+      '@': path.resolve(__dirname),
     };
     return config;
   },
@@ -19,23 +19,23 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
       },
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       },
       {
-        protocol: "https",
-        hostname: "m.media-amazon.com",
+        protocol: 'https',
+        hostname: 'm.media-amazon.com',
       },
       {
-        protocol: "https",
-        hostname: "placehold.co",
+        protocol: 'https',
+        hostname: 'placehold.co',
       },
     ],
-    formats: ["image/avif", "image/webp"],
+    formats: ['image/avif', 'image/webp'],
   },
 
   // Compression
@@ -45,31 +45,31 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/:path*",
+        source: '/:path*',
         headers: [
           // Prevent MIME type sniffing
           {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
           },
           // XSS Protection (legacy browsers)
           {
-            key: "X-XSS-Protection",
-            value: "1; mode=block",
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
           },
           // Referrer Policy
           {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
           },
           // Permissions Policy
           {
-            key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
           },
           // Content Security Policy
           {
-            key: "Content-Security-Policy",
+            key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Next.js requires unsafe-inline/eval
@@ -79,7 +79,7 @@ const nextConfig = {
               "connect-src 'self'",
               "frame-src 'self' https://vipogroup.github.io https://vipogroup.github.io/",
               "frame-ancestors 'none'",
-            ].join("; "),
+            ].join('; '),
           },
         ].filter(Boolean),
       },
@@ -87,10 +87,10 @@ const nextConfig = {
   },
 
   // Production optimizations
-  ...(process.env.NODE_ENV === "production" && {
+  ...(process.env.NODE_ENV === 'production' && {
     compiler: {
       removeConsole: {
-        exclude: ["error", "warn"],
+        exclude: ['error', 'warn'],
       },
     },
   }),

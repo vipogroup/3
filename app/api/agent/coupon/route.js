@@ -1,26 +1,26 @@
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
-import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
+import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
 
-import { getDb } from "@/lib/db";
-import { requireAuth } from "@/lib/auth/requireAuth";
+import { getDb } from '@/lib/db';
+import { requireAuth } from '@/lib/auth/requireAuth';
 
 export async function GET(req) {
   try {
     const me = await requireAuth(req);
     if (!me) {
-      return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+      return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
     }
 
-    if (me.role !== "agent") {
-      return NextResponse.json({ ok: false, error: "forbidden" }, { status: 403 });
+    if (me.role !== 'agent') {
+      return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
     }
 
     const db = await getDb();
-    const users = db.collection("users");
+    const users = db.collection('users');
 
-    const query = { role: "agent" };
+    const query = { role: 'agent' };
     if (ObjectId.isValid(me._id)) {
       query._id = new ObjectId(me._id);
     } else {
@@ -40,7 +40,7 @@ export async function GET(req) {
 
     const agent = await users.findOne(query, { projection });
     if (!agent) {
-      return NextResponse.json({ ok: false, error: "agent_not_found" }, { status: 404 });
+      return NextResponse.json({ ok: false, error: 'agent_not_found' }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -51,12 +51,12 @@ export async function GET(req) {
         sequence: agent.couponSequence,
         discountPercent: agent.discountPercent ?? 0,
         commissionPercent: agent.commissionPercent ?? 0,
-        status: agent.couponStatus || "inactive",
+        status: agent.couponStatus || 'inactive',
         updatedAt: agent.updatedAt || null,
       },
     });
   } catch (error) {
-    console.error("AGENT_COUPON_GET_ERROR", error);
-    return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
+    console.error('AGENT_COUPON_GET_ERROR', error);
+    return NextResponse.json({ ok: false, error: 'server_error' }, { status: 500 });
   }
 }

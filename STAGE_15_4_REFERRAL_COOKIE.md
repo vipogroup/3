@@ -1,6 +1,7 @@
 # 🍪 Stage 15.4 - Referral Cookie Validation
 
 ## תאריך: 2025-11-01
+
 ## סטטוס: ✅ Complete
 
 ---
@@ -18,6 +19,7 @@
 ### 1. Toast Component (`app/components/Toast.jsx`)
 
 רכיב toast מקצועי עם:
+
 - ✅ 4 סוגים: success, error, info, warning
 - ✅ Auto-dismiss (3 seconds default)
 - ✅ Close button
@@ -27,15 +29,16 @@
 - ✅ Hook API (`useToast`)
 
 **דוגמה:**
+
 ```jsx
-import Toast from "@/components/Toast";
+import Toast from '@/components/Toast';
 
 <Toast
   message="קישור שותפים הופעל בהצלחה ✓"
   type="success"
   duration={3000}
   onClose={() => setShowToast(false)}
-/>
+/>;
 ```
 
 ---
@@ -45,25 +48,27 @@ import Toast from "@/components/Toast";
 #### שיפורים:
 
 **Before:**
+
 ```jsx
 // Cookie saved silently
 document.cookie = `refSource=${refId}; Max-Age=...`;
-setStatus("saved");
+setStatus('saved');
 ```
 
 **After:**
+
 ```jsx
 // Cookie saved with feedback
 document.cookie = `refSource=${refId}; Max-Age=...`;
 
 // localStorage fallback
-localStorage.setItem("referrerId", refId);
+localStorage.setItem('referrerId', refId);
 
 // Show toast
 setShowToast(true);
 
 // Toast notification appears
-<Toast message="קישור שותפים הופעל בהצלחה ✓" />
+<Toast message="קישור שותפים הופעל בהצלחה ✓" />;
 ```
 
 #### תכונות חדשות:
@@ -76,7 +81,7 @@ setShowToast(true);
 
 2. **Cookie Duration:**
    - שונה מ-14 ל-**30 ימים** (כפי שנדרש)
-   - `Max-Age=2592000` (30 * 24 * 60 * 60)
+   - `Max-Age=2592000` (30 _ 24 _ 60 \* 60)
 
 3. **Redirect:**
    - שונה מ-`/` ל-`/register`
@@ -91,6 +96,7 @@ setShowToast(true);
 ### 3. Tailwind Animations (`tailwind.config.js`)
 
 הוספנו animations:
+
 ```javascript
 animation: {
   'slide-in-right': 'slideInRight 0.3s ease-out',
@@ -100,6 +106,7 @@ animation: {
 ```
 
 **Keyframes:**
+
 - `slideInRight` - Toast נכנס מימין
 - `fadeIn` - Fade in עדין
 - `fadeOut` - Fade out עדין
@@ -109,6 +116,7 @@ animation: {
 ## 🎨 Toast Component Features
 
 ### Types:
+
 ```jsx
 // Success (green)
 <Toast message="הצלחה!" type="success" />
@@ -124,17 +132,18 @@ animation: {
 ```
 
 ### Hook API:
+
 ```jsx
-import { useToast } from "@/components/Toast";
+import { useToast } from '@/components/Toast';
 
 function MyComponent() {
   const toast = useToast();
 
   const handleClick = () => {
-    toast.success("פעולה הצליחה!");
-    toast.error("משהו השתבש");
-    toast.info("מידע חשוב");
-    toast.warning("שים לב!");
+    toast.success('פעולה הצליחה!');
+    toast.error('משהו השתבש');
+    toast.info('מידע חשוב');
+    toast.warning('שים לב!');
   };
 
   return (
@@ -179,14 +188,16 @@ function MyComponent() {
 ## 🍪 Cookie Validation
 
 ### Cookie Attributes:
+
 ```
-refSource=ABC123; 
+refSource=ABC123;
 Max-Age=2592000;  // 30 days
-Path=/; 
+Path=/;
 SameSite=Lax
 ```
 
 **Verified:**
+
 - ✅ **Name:** refSource
 - ✅ **Duration:** 30 days (2,592,000 seconds)
 - ✅ **Path:** / (available site-wide)
@@ -194,6 +205,7 @@ SameSite=Lax
 - ⚠️ **Secure:** Not in dev (requires HTTPS)
 
 ### Validation:
+
 ```javascript
 // Regex validation
 const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
@@ -214,6 +226,7 @@ const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
 ## 📱 Responsive Design
 
 ### Desktop:
+
 ```
 ┌─────────────────────────────────┐
 │  קישור שותפים הופעל בהצלחה ✓   │ ← Toast (top-right)
@@ -227,6 +240,7 @@ const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
 ```
 
 ### Mobile:
+
 ```
 ┌─────────────────────┐
 │ קישור שותפים הופעל  │ ← Toast (top-right)
@@ -245,10 +259,11 @@ const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
 ## ♿ Accessibility
 
 ### Toast Accessibility:
+
 ```jsx
 <div
-  role="alert"           // Screen reader announces
-  aria-live="polite"     // Non-intrusive announcement
+  role="alert" // Screen reader announces
+  aria-live="polite" // Non-intrusive announcement
   className="..."
 >
   <p>קישור שותפים הופעל בהצלחה ✓</p>
@@ -257,6 +272,7 @@ const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
 ```
 
 **Features:**
+
 - ✅ `role="alert"` - Screen reader support
 - ✅ `aria-live="polite"` - Announces changes
 - ✅ `aria-label` on close button
@@ -270,6 +286,7 @@ const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
 ### Manual Tests:
 
 #### Test 1: Valid Referral
+
 ```
 1. Visit: http://localhost:3001/join?ref=ABC12345
 2. Expected:
@@ -280,6 +297,7 @@ const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
 ```
 
 #### Test 2: Invalid Referral
+
 ```
 1. Visit: http://localhost:3001/join?ref=abc
 2. Expected:
@@ -289,6 +307,7 @@ const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
 ```
 
 #### Test 3: Missing Referral
+
 ```
 1. Visit: http://localhost:3001/join
 2. Expected:
@@ -298,6 +317,7 @@ const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
 ```
 
 #### Test 4: Cookie Persistence
+
 ```
 1. Visit: /join?ref=ABC12345
 2. Close browser
@@ -311,47 +331,51 @@ const REF_ID_REGEX = /^[a-z0-9]{8,32}$/i;
 
 ## 📊 Comparison
 
-| Feature | Before | After |
-|---------|--------|-------|
-| User Feedback | ❌ None | ✅ Toast notification |
-| Cookie Duration | 14 days | ✅ 30 days |
-| Redirect | `/` | ✅ `/register` |
-| localStorage | ❌ None | ✅ Fallback |
-| Accessibility | ⚠️ Basic | ✅ ARIA + Screen reader |
-| Visual Feedback | ⚠️ Text only | ✅ Animated toast |
+| Feature         | Before       | After                   |
+| --------------- | ------------ | ----------------------- |
+| User Feedback   | ❌ None      | ✅ Toast notification   |
+| Cookie Duration | 14 days      | ✅ 30 days              |
+| Redirect        | `/`          | ✅ `/register`          |
+| localStorage    | ❌ None      | ✅ Fallback             |
+| Accessibility   | ⚠️ Basic     | ✅ ARIA + Screen reader |
+| Visual Feedback | ⚠️ Text only | ✅ Animated toast       |
 
 ---
 
 ## 🐛 Edge Cases Handled
 
 ### 1. localStorage Unavailable
+
 ```javascript
 try {
-  localStorage.setItem("referrerId", refId);
+  localStorage.setItem('referrerId', refId);
 } catch (e) {
-  console.log("localStorage not available");
+  console.log('localStorage not available');
   // Cookie still works
 }
 ```
 
 ### 2. Invalid Ref Format
+
 ```javascript
 if (!REF_ID_REGEX.test(refId)) {
-  setStatus("invalid");
+  setStatus('invalid');
   // No cookie set, no toast
 }
 ```
 
 ### 3. Missing Ref Parameter
+
 ```javascript
 if (!refId) {
   // Clear existing cookie
   document.cookie = `refSource=; Max-Age=0`;
-  setStatus("missing");
+  setStatus('missing');
 }
 ```
 
 ### 4. Toast Already Showing
+
 ```javascript
 // Toast auto-dismisses after 3s
 // New toast replaces old one
@@ -378,13 +402,16 @@ if (!refId) {
 ## 📦 Files Created/Modified
 
 ### Created (1):
+
 1. ✅ `app/components/Toast.jsx` - Toast component + hook
 
 ### Modified (2):
+
 2. ✅ `app/join/page.jsx` - Added toast notification
 3. ✅ `tailwind.config.js` - Added animations
 
 ### No Changes:
+
 - ❌ Server code
 - ❌ API routes
 - ❌ Database
@@ -395,38 +422,37 @@ if (!refId) {
 ## 🚀 Usage Examples
 
 ### Basic Toast:
-```jsx
-import Toast from "@/components/Toast";
 
-<Toast message="הצלחה!" type="success" />
+```jsx
+import Toast from '@/components/Toast';
+
+<Toast message="הצלחה!" type="success" />;
 ```
 
 ### With Hook:
+
 ```jsx
-import { useToast } from "@/components/Toast";
+import { useToast } from '@/components/Toast';
 
 function MyComponent() {
   const toast = useToast();
-  
-  return (
-    <button onClick={() => toast.success("נשמר!")}>
-      שמור
-    </button>
-  );
+
+  return <button onClick={() => toast.success('נשמר!')}>שמור</button>;
 }
 ```
 
 ### Multiple Toasts:
+
 ```jsx
-import { ToastContainer, useToast } from "@/components/Toast";
+import { ToastContainer, useToast } from '@/components/Toast';
 
 function App() {
   const toast = useToast();
-  
+
   return (
     <>
-      <button onClick={() => toast.success("1")}>Toast 1</button>
-      <button onClick={() => toast.info("2")}>Toast 2</button>
+      <button onClick={() => toast.success('1')}>Toast 1</button>
+      <button onClick={() => toast.info('2')}>Toast 2</button>
       <ToastContainer toasts={toast.toasts} onRemove={toast.removeToast} />
     </>
   );
@@ -438,6 +464,7 @@ function App() {
 ## 💡 Future Enhancements
 
 ### Possible Improvements:
+
 1. **Toast Queue:** Limit to 3 toasts max
 2. **Position Options:** top-left, bottom-right, etc.
 3. **Custom Icons:** Allow custom SVG icons
@@ -450,16 +477,19 @@ function App() {
 ## 📝 Notes
 
 ### Why Client-Side Cookie?
+
 - Need to read cookie in browser (localStorage fallback)
 - HttpOnly would prevent client access
 - Server reads cookie during registration
 
 ### Why 30 Days?
+
 - Long enough for user to decide
 - Not too long (privacy concerns)
 - Standard referral cookie duration
 
 ### Why Redirect to /register?
+
 - Better UX - direct path to conversion
 - User already has referral attached
 - Reduces friction
@@ -472,7 +502,7 @@ When user registers, the referral is picked up:
 
 ```javascript
 // In register page
-const referrerId = localStorage.getItem("referrerId");
+const referrerId = localStorage.getItem('referrerId');
 
 // Or from cookie (server-side)
 const cookie = req.headers.get('cookie');

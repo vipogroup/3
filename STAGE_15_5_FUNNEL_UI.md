@@ -1,6 +1,7 @@
 # 🛒 Stage 15.5 - Group-Buy Funnel UI Harmonization
 
 ## תאריך: 2025-11-01
+
 ## סטטוס: ✅ Complete
 
 ---
@@ -29,6 +30,7 @@
 רכיב מקצועי להצגת התקדמות המשתמש:
 
 **Desktop View:**
+
 ```
 ┌───┐────┌───┐────┌───┐────┌───┐
 │ ✓ │────│ 2 │────│ 3 │────│ 4 │
@@ -37,6 +39,7 @@
 ```
 
 **Mobile View:**
+
 ```
 שלב 2 מתוך 4                סיכום
 [████████░░░░░░░░░░░░░░] 50%
@@ -44,6 +47,7 @@
 ```
 
 **תכונות:**
+
 - ✅ 4 שלבים ברורים
 - ✅ Checkmark לשלבים שהושלמו
 - ✅ Ring animation לשלב נוכחי
@@ -51,10 +55,11 @@
 - ✅ Responsive design
 
 **שימוש:**
-```jsx
-import ProgressStepper from "@/components/ProgressStepper";
 
-<ProgressStepper currentStep={2} />
+```jsx
+import ProgressStepper from '@/components/ProgressStepper';
+
+<ProgressStepper currentStep={2} />;
 ```
 
 ---
@@ -64,6 +69,7 @@ import ProgressStepper from "@/components/ProgressStepper";
 סיכום הזמנה sticky למובייל:
 
 **Mobile (Sticky Bottom):**
+
 ```
 ┌─────────────────────────────────┐
 │ סה"כ לתשלום        ₪1,299      │
@@ -72,6 +78,7 @@ import ProgressStepper from "@/components/ProgressStepper";
 ```
 
 **Desktop (Sidebar):**
+
 ```
 ┌─────────────────────────────────┐
 │ סיכום הזמנה                     │
@@ -91,6 +98,7 @@ import ProgressStepper from "@/components/ProgressStepper";
 ```
 
 **תכונות:**
+
 - ✅ Sticky למובייל (bottom)
 - ✅ Sidebar לדסקטופ (top sticky)
 - ✅ חישוב הנחות אוטומטי
@@ -98,6 +106,7 @@ import ProgressStepper from "@/components/ProgressStepper";
 - ✅ כפתור CTA בולט
 
 **שימוש:**
+
 ```jsx
 import OrderSummary, { SidebarSummary } from "@/components/OrderSummary";
 
@@ -126,6 +135,7 @@ import OrderSummary, { SidebarSummary } from "@/components/OrderSummary";
 כפתורים אחידים בכל האפליקציה:
 
 **Variants:**
+
 ```jsx
 // Primary (default)
 <Button variant="primary">המשך</Button>
@@ -147,6 +157,7 @@ import OrderSummary, { SidebarSummary } from "@/components/OrderSummary";
 ```
 
 **Sizes:**
+
 ```jsx
 <Button size="sm">קטן</Button>
 <Button size="md">בינוני</Button>
@@ -154,6 +165,7 @@ import OrderSummary, { SidebarSummary } from "@/components/OrderSummary";
 ```
 
 **States:**
+
 ```jsx
 // Loading
 <Button loading>שומר...</Button>
@@ -166,6 +178,7 @@ import OrderSummary, { SidebarSummary } from "@/components/OrderSummary";
 ```
 
 **תכונות:**
+
 - ✅ 6 variants
 - ✅ 3 sizes
 - ✅ Loading state עם spinner
@@ -180,6 +193,7 @@ import OrderSummary, { SidebarSummary } from "@/components/OrderSummary";
 Layout אחיד לכל דפי הרכישה:
 
 **מבנה:**
+
 ```
 ┌─────────────────────────────────┐
 │ Header (Logo + Help)            │
@@ -195,6 +209,7 @@ Layout אחיד לכל דפי הרכישה:
 ```
 
 **תכונות:**
+
 - ✅ Header עם לוגו
 - ✅ Progress stepper
 - ✅ Gradient background
@@ -203,25 +218,24 @@ Layout אחיד לכל דפי הרכישה:
 - ✅ Responsive
 
 **שימוש:**
+
 ```jsx
-import FunnelLayout from "@/components/FunnelLayout";
+import FunnelLayout from '@/components/FunnelLayout';
 
 <FunnelLayout currentStep={2}>
   <h1>סיכום הזמנה</h1>
   {/* Content */}
-</FunnelLayout>
+</FunnelLayout>;
 ```
 
 **Two Column Layout:**
-```jsx
-import { TwoColumnFunnelLayout } from "@/components/FunnelLayout";
 
-<TwoColumnFunnelLayout
-  currentStep={3}
-  sidebar={<OrderSummary {...props} />}
->
+```jsx
+import { TwoColumnFunnelLayout } from '@/components/FunnelLayout';
+
+<TwoColumnFunnelLayout currentStep={3} sidebar={<OrderSummary {...props} />}>
   <PaymentForm />
-</TwoColumnFunnelLayout>
+</TwoColumnFunnelLayout>;
 ```
 
 ---
@@ -229,6 +243,7 @@ import { TwoColumnFunnelLayout } from "@/components/FunnelLayout";
 ## 🎨 Design System
 
 ### Color Palette:
+
 ```css
 /* Primary */
 --blue-600: #2563eb;
@@ -249,6 +264,7 @@ import { TwoColumnFunnelLayout } from "@/components/FunnelLayout";
 ```
 
 ### Typography:
+
 ```css
 /* Headings */
 h1: text-3xl font-bold (30px)
@@ -262,6 +278,7 @@ tiny: text-xs (12px)
 ```
 
 ### Spacing:
+
 ```css
 /* Consistent spacing */
 gap-2: 0.5rem (8px)
@@ -276,6 +293,7 @@ p-8: 2rem (32px)
 ```
 
 ### Border Radius:
+
 ```css
 rounded-lg: 0.5rem (8px)
 rounded-xl: 0.75rem (12px)
@@ -288,6 +306,7 @@ rounded-full: 9999px
 ## 📱 Responsive Breakpoints
 
 ### Mobile First:
+
 ```css
 /* Mobile: < 768px */
 - Single column
@@ -319,32 +338,32 @@ rounded-full: 9999px
    - Validate referral
    - Show toast
    - Redirect to register
-   
+
 2. /register
    ↓
    - Fill form
    - Auto-login
    - Redirect to products
-   
+
 3. /products
    ↓
    - Select product
    - Click "הצטרף"
-   
+
 4. /summary
    ↓
    [Progress: 2/4 - סיכום]
    - Review order
    - See price breakdown
    - Click "המשך לתשלום"
-   
+
 5. /payment
    ↓
    [Progress: 3/4 - תשלום]
    - Enter payment details
    - See order summary (sticky)
    - Click "אישור תשלום"
-   
+
 6. /thankyou
    ↓
    [Progress: 4/4 - אישור]
@@ -358,6 +377,7 @@ rounded-full: 9999px
 ## 🎭 Component States
 
 ### Progress Stepper States:
+
 ```jsx
 // Completed step
 <div className="bg-green-500 text-white">✓</div>
@@ -370,6 +390,7 @@ rounded-full: 9999px
 ```
 
 ### Button States:
+
 ```jsx
 // Default
 <button className="bg-blue-600 hover:bg-blue-700">
@@ -384,6 +405,7 @@ rounded-full: 9999px
 ```
 
 ### Order Summary States:
+
 ```jsx
 // Compact (mobile sticky)
 <OrderSummary showDetails={false} />
@@ -397,6 +419,7 @@ rounded-full: 9999px
 ## ♿ Accessibility
 
 ### Progress Stepper:
+
 ```jsx
 <div role="progressbar" aria-valuenow={2} aria-valuemin={1} aria-valuemax={4}>
   <span className="sr-only">שלב 2 מתוך 4: סיכום</span>
@@ -404,16 +427,15 @@ rounded-full: 9999px
 ```
 
 ### Buttons:
+
 ```jsx
-<button
-  aria-label="המשך לתשלום"
-  aria-disabled={loading}
->
+<button aria-label="המשך לתשלום" aria-disabled={loading}>
   המשך
 </button>
 ```
 
 ### Order Summary:
+
 ```jsx
 <div role="complementary" aria-label="סיכום הזמנה">
   <h3>סיכום הזמנה</h3>
@@ -426,6 +448,7 @@ rounded-full: 9999px
 ## 📊 Before & After
 
 ### Before:
+
 ```
 ❌ כל דף עם עיצוב שונה
 ❌ אין progress indicator
@@ -435,6 +458,7 @@ rounded-full: 9999px
 ```
 
 ### After:
+
 ```
 ✅ עיצוב אחיד בכל הדפים
 ✅ Progress stepper בכל דף
@@ -450,6 +474,7 @@ rounded-full: 9999px
 ## 🧪 Testing Checklist
 
 ### Desktop:
+
 - [ ] Progress stepper מוצג נכון
 - [ ] Sidebar summary sticky
 - [ ] כפתורים אחידים
@@ -457,6 +482,7 @@ rounded-full: 9999px
 - [ ] Footer מוצג
 
 ### Mobile:
+
 - [ ] Progress bar מוצג
 - [ ] Summary sticky bottom
 - [ ] כפתורים full width
@@ -464,6 +490,7 @@ rounded-full: 9999px
 - [ ] Touch-friendly
 
 ### Interactions:
+
 - [ ] Click על step (future: navigation)
 - [ ] Hover על כפתורים
 - [ ] Loading states
@@ -489,12 +516,14 @@ rounded-full: 9999px
 ## 📦 Files Created
 
 ### Components (4):
+
 1. ✅ `app/components/ProgressStepper.jsx` - Progress indicator
 2. ✅ `app/components/OrderSummary.jsx` - Sticky summary
 3. ✅ `app/components/Button.jsx` - Unified buttons
 4. ✅ `app/components/FunnelLayout.jsx` - Layout wrapper
 
 ### Documentation (1):
+
 5. ✅ `STAGE_15_5_FUNNEL_UI.md` - This file
 
 ---
@@ -502,9 +531,10 @@ rounded-full: 9999px
 ## 🚀 Usage Examples
 
 ### Example 1: Simple Page
+
 ```jsx
-import FunnelLayout from "@/components/FunnelLayout";
-import Button from "@/components/Button";
+import FunnelLayout from '@/components/FunnelLayout';
+import Button from '@/components/Button';
 
 export default function SummaryPage() {
   return (
@@ -512,7 +542,7 @@ export default function SummaryPage() {
       <div className="bg-white rounded-lg p-6">
         <h1 className="text-2xl font-bold mb-4">סיכום הזמנה</h1>
         <p>פרטי ההזמנה שלך...</p>
-        
+
         <Button fullWidth onClick={handleContinue}>
           המשך לתשלום
         </Button>
@@ -523,10 +553,11 @@ export default function SummaryPage() {
 ```
 
 ### Example 2: Two Column Layout
+
 ```jsx
-import { TwoColumnFunnelLayout } from "@/components/FunnelLayout";
-import { SidebarSummary } from "@/components/OrderSummary";
-import Button from "@/components/Button";
+import { TwoColumnFunnelLayout } from '@/components/FunnelLayout';
+import { SidebarSummary } from '@/components/OrderSummary';
+import Button from '@/components/Button';
 
 export default function PaymentPage() {
   return (
@@ -544,10 +575,10 @@ export default function PaymentPage() {
     >
       <div className="bg-white rounded-lg p-6">
         <h1 className="text-2xl font-bold mb-6">פרטי תשלום</h1>
-        
+
         <form onSubmit={handleSubmit}>
           {/* Payment form fields */}
-          
+
           <Button type="submit" fullWidth loading={loading}>
             אישור תשלום
           </Button>
@@ -559,16 +590,15 @@ export default function PaymentPage() {
 ```
 
 ### Example 3: Mobile Sticky Summary
+
 ```jsx
-import OrderSummary from "@/components/OrderSummary";
+import OrderSummary from '@/components/OrderSummary';
 
 export default function CheckoutPage() {
   return (
     <>
-      <div className="pb-24 md:pb-0">
-        {/* Main content */}
-      </div>
-      
+      <div className="pb-24 md:pb-0">{/* Main content */}</div>
+
       {/* Mobile sticky summary */}
       <OrderSummary
         productName="מוצר VIP"
@@ -586,6 +616,7 @@ export default function CheckoutPage() {
 ## 💡 Best Practices
 
 ### 1. Consistent Spacing
+
 ```jsx
 // Use consistent gap values
 <div className="space-y-4">  // 1rem
@@ -594,6 +625,7 @@ export default function CheckoutPage() {
 ```
 
 ### 2. Button Hierarchy
+
 ```jsx
 // Primary action
 <Button variant="primary">המשך</Button>
@@ -606,14 +638,14 @@ export default function CheckoutPage() {
 ```
 
 ### 3. Loading States
+
 ```jsx
 // Always show loading state
-<Button loading={isSubmitting}>
-  {isSubmitting ? "שומר..." : "שמור"}
-</Button>
+<Button loading={isSubmitting}>{isSubmitting ? 'שומר...' : 'שמור'}</Button>
 ```
 
 ### 4. Mobile First
+
 ```jsx
 // Start with mobile, then desktop
 <div className="w-full md:w-1/2">
@@ -627,29 +659,24 @@ export default function CheckoutPage() {
 ### To Apply to Existing Pages:
 
 1. **Update /join page:**
+
 ```jsx
-import FunnelLayout from "@/components/FunnelLayout";
+import FunnelLayout from '@/components/FunnelLayout';
 
 export default function JoinPage() {
-  return (
-    <FunnelLayout currentStep={1}>
-      {/* Existing content */}
-    </FunnelLayout>
-  );
+  return <FunnelLayout currentStep={1}>{/* Existing content */}</FunnelLayout>;
 }
 ```
 
 2. **Update /summary page:**
+
 ```jsx
-import { TwoColumnFunnelLayout } from "@/components/FunnelLayout";
-import { SidebarSummary } from "@/components/OrderSummary";
+import { TwoColumnFunnelLayout } from '@/components/FunnelLayout';
+import { SidebarSummary } from '@/components/OrderSummary';
 
 export default function SummaryPage() {
   return (
-    <TwoColumnFunnelLayout
-      currentStep={2}
-      sidebar={<SidebarSummary {...orderData} />}
-    >
+    <TwoColumnFunnelLayout currentStep={2} sidebar={<SidebarSummary {...orderData} />}>
       {/* Existing content */}
     </TwoColumnFunnelLayout>
   );
@@ -657,20 +684,18 @@ export default function SummaryPage() {
 ```
 
 3. **Update /payment page:**
+
 ```jsx
 // Same as summary, currentStep={3}
 ```
 
 4. **Update /thankyou page:**
+
 ```jsx
-import FunnelLayout from "@/components/FunnelLayout";
+import FunnelLayout from '@/components/FunnelLayout';
 
 export default function ThankYouPage() {
-  return (
-    <FunnelLayout currentStep={4}>
-      {/* Success message */}
-    </FunnelLayout>
-  );
+  return <FunnelLayout currentStep={4}>{/* Success message */}</FunnelLayout>;
 }
 ```
 

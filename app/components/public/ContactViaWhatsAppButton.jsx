@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { buildManagerWhatsAppUrl } from "@/lib/whatsapp";
+import { buildManagerWhatsAppUrl } from '@/lib/whatsapp';
 
 export default function ContactViaWhatsAppButton({ sourceLabel }) {
-  const message = `שלום, הגעתי דרך ${sourceLabel || "האתר של VIPO"} ואני מעוניין לקבל פרטים נוספים.`;
+  const message = `שלום, הגעתי דרך ${sourceLabel || 'האתר של VIPO'} ואני מעוניין לקבל פרטים נוספים.`;
   const url = buildManagerWhatsAppUrl(message);
 
   return (

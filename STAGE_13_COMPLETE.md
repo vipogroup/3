@@ -13,9 +13,11 @@ Stage 13 הושלם! נבנתה מערכת מעקב עסקאות מלאה שמא
 ## 🎯 מה הושלם?
 
 ### 13.1 - מודל Transaction ✅
+
 **קובץ:** `models/Transaction.js`
 
 **Schema:**
+
 ```javascript
 {
   userId: ObjectId (ref: User, indexed),
@@ -29,6 +31,7 @@ Stage 13 הושלם! נבנתה מערכת מעקב עסקאות מלאה שמא
 ```
 
 **אינדקסים:**
+
 - `userId + createdAt` - שאילתות משתמש
 - `status + createdAt` - פילטרים
 - `referredBy + status` - דוחות הפניות
@@ -36,17 +39,20 @@ Stage 13 הושלם! נבנתה מערכת מעקב עסקאות מלאה שמא
 ---
 
 ### 13.2 - API ציבורי לעסקאות ✅
+
 **קובץ:** `app/api/transactions/route.js`
 
 **Endpoints:**
 
 #### GET /api/transactions
+
 - מחזיר עסקאות של המשתמש המחובר
 - Populate product details
 - Sort: חדש לישן
 - דורש authentication
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -66,12 +72,14 @@ Stage 13 הושלם! נבנתה מערכת מעקב עסקאות מלאה שמא
 ```
 
 #### POST /api/transactions
+
 - יוצר עסקה חדשה
 - ולידציות: productId, amount > 0
 - שומר referredBy אוטומטית מהמשתמש
 - דורש authentication
 
 **Request:**
+
 ```json
 {
   "productId": "507f1f77bcf86cd799439011",
@@ -82,15 +90,18 @@ Stage 13 הושלם! נבנתה מערכת מעקב עסקאות מלאה שמא
 ---
 
 ### 13.3 - API מנהל לדוחות ✅
+
 **קובץ:** `app/api/admin/transactions/route.js`
 
 **Endpoint:** `GET /api/admin/transactions`
 
 **Query Parameters:**
+
 - `status` - פילטר לפי סטטוס (optional)
 - `since` - מתאריך (ISO format, optional)
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -110,12 +121,14 @@ Stage 13 הושלם! נבנתה מערכת מעקב עסקאות מלאה שמא
 ```
 
 **אבטחה:**
+
 - דורש admin role
 - 403 למשתמשים רגילים
 
 ---
 
 ### 13.4 - Utilities הרשאות ✅
+
 **קובץ:** `lib/authz.js`
 
 **פונקציות:**
@@ -132,8 +145,9 @@ await getUserFromSession(); // returns user or null
 ```
 
 **שימוש:**
+
 ```javascript
-import { requireAuth, requireAdmin } from "@/lib/authz";
+import { requireAuth, requireAdmin } from '@/lib/authz';
 
 // In API route
 const user = await requireAuth();
@@ -143,15 +157,18 @@ const admin = await requireAdmin();
 ---
 
 ### 13.5 - עדכון סטטוס עסקה ✅
+
 **קובץ:** `app/api/transactions/[id]/route.js`
 
 **Endpoint:** `PATCH /api/transactions/:id`
 
 **כללי הרשאות:**
+
 - משתמש רגיל: רק עסקאות שלו, רק ל-"paid"
 - Admin: כל עסקה, כל סטטוס
 
 **Request:**
+
 ```json
 {
   "status": "paid"
@@ -159,14 +176,18 @@ const admin = await requireAdmin();
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
-  "item": { /* updated transaction */ }
+  "item": {
+    /* updated transaction */
+  }
 }
 ```
 
 **לוגים:**
+
 ```javascript
 TRANSACTION_STATUS_UPDATED {
   transactionId, userId, oldStatus, newStatus, updatedBy
@@ -176,9 +197,11 @@ TRANSACTION_STATUS_UPDATED {
 ---
 
 ### 13.6 - כרטיס עסקאות לסוכן ✅
+
 **קובץ:** `app/components/TransactionsCard.jsx`
 
 **תכונות:**
+
 - 3 KPI cards:
   - סה״כ עסקאות
   - מחזור מכירות (₪)
@@ -188,18 +211,21 @@ TRANSACTION_STATUS_UPDATED {
 - Auto-refresh on mount
 
 **שימוש:**
-```jsx
-import TransactionsCard from "@/components/TransactionsCard";
 
-<TransactionsCard />
+```jsx
+import TransactionsCard from '@/components/TransactionsCard';
+
+<TransactionsCard />;
 ```
 
 ---
 
 ### 13.7 - דוחות מנהל ✅
+
 **קובץ:** `app/components/admin/TransactionsReport.jsx`
 
 **תכונות:**
+
 - פילטרים:
   - סטטוס (dropdown)
   - מתאריך (date picker)
@@ -211,10 +237,11 @@ import TransactionsCard from "@/components/TransactionsCard";
 - Auto-update on filter change
 
 **שימוש:**
-```jsx
-import TransactionsReport from "@/components/admin/TransactionsReport";
 
-<TransactionsReport />
+```jsx
+import TransactionsReport from '@/components/admin/TransactionsReport';
+
+<TransactionsReport />;
 ```
 
 ---
@@ -222,12 +249,14 @@ import TransactionsReport from "@/components/admin/TransactionsReport";
 ### 13.8 - בדיקות ידניות ✅
 
 #### Test 1: Unauthorized Access
+
 ```bash
 curl -i http://localhost:3001/api/transactions
 # Expected: 401 Unauthorized
 ```
 
 #### Test 2: Create Transaction
+
 ```bash
 # After login (cookie saved)
 curl -i -X POST http://localhost:3001/api/transactions \
@@ -238,6 +267,7 @@ curl -i -X POST http://localhost:3001/api/transactions \
 ```
 
 #### Test 3: Get Transactions
+
 ```bash
 curl -i http://localhost:3001/api/transactions \
   -H "Cookie: token=<JWT>"
@@ -245,6 +275,7 @@ curl -i http://localhost:3001/api/transactions \
 ```
 
 #### Test 4: Update Status (User → paid)
+
 ```bash
 curl -i -X PATCH http://localhost:3001/api/transactions/<TX_ID> \
   -H "Content-Type: application/json" \
@@ -254,6 +285,7 @@ curl -i -X PATCH http://localhost:3001/api/transactions/<TX_ID> \
 ```
 
 #### Test 5: Admin Reports
+
 ```bash
 curl -i "http://localhost:3001/api/admin/transactions?status=paid&since=2025-10-01" \
   -H "Cookie: token=<ADMIN_JWT>"
@@ -265,17 +297,19 @@ curl -i "http://localhost:3001/api/admin/transactions?status=paid&since=2025-10-
 ### 13.9 - אימות MongoDB ✅
 
 **בדיקה:**
+
 ```javascript
 // In mongosh
 use vipo_db;
 
 db.transactions.find(
-  {}, 
+  {},
   { userId:1, productId:1, amount:1, status:1, referredBy:1, createdAt:1 }
 ).sort({ createdAt:-1 }).limit(5);
 ```
 
 **ציפיות:**
+
 - רשומות תקינות
 - `status` default: "pending"
 - `referredBy` קיים כשיש הפניה
@@ -298,19 +332,23 @@ db.transactions.find(
 ## 📁 קבצים שנוצרו
 
 ### מודלים (1):
+
 1. `models/Transaction.js` - Mongoose model
 
 ### APIs (4):
+
 2. `lib/authz.js` - Authorization utilities
 3. `app/api/transactions/route.js` - Public API
 4. `app/api/transactions/[id]/route.js` - Update status
 5. `app/api/admin/transactions/route.js` - Admin reports
 
 ### UI Components (2):
+
 6. `app/components/TransactionsCard.jsx` - Agent dashboard
 7. `app/components/admin/TransactionsReport.jsx` - Admin reports
 
 ### Documentation (1):
+
 8. `STAGE_13_COMPLETE.md` - סיכום זה
 
 **סה״כ: 8 קבצים**
@@ -347,6 +385,7 @@ db.transactions.find(
 ## 🎨 UI Components
 
 ### TransactionsCard (Agent):
+
 ```
 ┌─────────────────────────────────────────┐
 │ העסקאות שלי                            │
@@ -361,6 +400,7 @@ db.transactions.find(
 ```
 
 ### TransactionsReport (Admin):
+
 ```
 ┌─────────────────────────────────────────┐
 │ פילטרים                                 │
@@ -382,9 +422,10 @@ db.transactions.find(
 ### למפתח - הוספת UI:
 
 #### Agent Dashboard:
+
 ```jsx
 // app/agent/page.jsx
-import TransactionsCard from "@/components/TransactionsCard";
+import TransactionsCard from '@/components/TransactionsCard';
 
 export default function AgentDashboard() {
   return (
@@ -397,14 +438,15 @@ export default function AgentDashboard() {
 ```
 
 #### Admin Reports:
+
 ```jsx
 // app/admin/reports/transactions/page.jsx
-import { requireAdmin } from "@/lib/auth/server";
-import TransactionsReport from "@/components/admin/TransactionsReport";
+import { requireAdmin } from '@/lib/auth/server';
+import TransactionsReport from '@/components/admin/TransactionsReport';
 
 export default async function TransactionsReportPage() {
   await requireAdmin();
-  
+
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-6">דוחות עסקאות</h1>
@@ -415,6 +457,7 @@ export default async function TransactionsReportPage() {
 ```
 
 ### למשתמש:
+
 1. צור עסקה חדשה (API או UI)
 2. צפה בעסקאות בדשבורד
 3. עדכן סטטוס ל-"paid"
@@ -425,6 +468,7 @@ export default async function TransactionsReportPage() {
 ## 📊 Database Schema
 
 ### transactions collection:
+
 ```javascript
 {
   _id: ObjectId("..."),
@@ -457,6 +501,7 @@ GET    /api/admin/transactions     - All transactions + filters
 ## ⚙️ Configuration
 
 ### Environment Variables:
+
 ```env
 # No new variables needed
 # Uses existing: MONGODB_URI, JWT_SECRET
@@ -467,6 +512,7 @@ GET    /api/admin/transactions     - All transactions + filters
 ## 🛡️ Security Features
 
 ### Implemented:
+
 - ✅ Authentication required for all endpoints
 - ✅ User can only see/update their own transactions
 - ✅ Admin has full access
@@ -476,6 +522,7 @@ GET    /api/admin/transactions     - All transactions + filters
 - ✅ Error handling with proper status codes
 
 ### Authorization Matrix:
+
 ```
 Action              | User | Admin
 --------------------|------|-------
@@ -492,6 +539,7 @@ Update to "completed"|  ✗   |  ✓
 ## 🧪 Testing
 
 ### Manual Testing Checklist:
+
 - [x] Create transaction without auth → 401
 - [x] Create transaction with auth → 201
 - [x] Get transactions → 200 with items
@@ -508,26 +556,34 @@ Update to "completed"|  ✗   |  ✓
 ## 🐛 Troubleshooting
 
 ### Problem: 401 Unauthorized
+
 **Solution:**
+
 - Check JWT token in cookie
 - Verify token not expired
 - Check getUserFromCookies() works
 
 ### Problem: Transaction not created
+
 **Solution:**
+
 - Check productId is valid ObjectId
 - Check amount > 0
 - Check MongoDB connection
 - Check console logs
 
 ### Problem: Can't update status
+
 **Solution:**
+
 - Check user owns transaction (if not admin)
 - Check status is valid (paid/shipped/completed)
 - Check user role for restricted statuses
 
 ### Problem: Admin reports empty
+
 **Solution:**
+
 - Check user has admin role
 - Check filters not too restrictive
 - Check transactions exist in DB
@@ -539,6 +595,7 @@ Update to "completed"|  ✗   |  ✓
 אם צריך לבטל:
 
 ### Option 1: Disable Endpoints
+
 ```javascript
 // Comment out in route files
 // export async function GET() { ... }
@@ -546,6 +603,7 @@ Update to "completed"|  ✗   |  ✓
 ```
 
 ### Option 2: Hide UI
+
 ```javascript
 // Remove from dashboards
 // <TransactionsCard />
@@ -553,6 +611,7 @@ Update to "completed"|  ✗   |  ✓
 ```
 
 ### Option 3: Drop Collection
+
 ```javascript
 // In MongoDB
 db.transactions.drop();
@@ -579,6 +638,7 @@ db.transactions.drop();
 ## 🎯 Next Steps
 
 ### Stage 14 (Future):
+
 - Pagination for large datasets
 - Export to CSV/Excel
 - Advanced filters (date range, amount range)
@@ -587,6 +647,7 @@ db.transactions.drop();
 - Webhooks for integrations
 
 ### Or:
+
 - Deploy to production
 - Monitor transaction metrics
 - A/B test checkout flow
@@ -597,6 +658,7 @@ db.transactions.drop();
 ## 📝 Notes
 
 ### Best Practices:
+
 - Always validate ObjectIds
 - Use proper HTTP status codes
 - Log important events
@@ -604,12 +666,14 @@ db.transactions.drop();
 - Check permissions before operations
 
 ### Performance:
+
 - Indexed fields for fast queries
 - Populate only needed fields
 - Sort on indexed fields
 - Consider pagination for >1000 items
 
 ### Business Logic:
+
 - Status flow: pending → paid → shipped → completed
 - Users can only mark as paid
 - Admin controls full lifecycle
@@ -622,6 +686,7 @@ db.transactions.drop();
 **Stage 13 הושלם בהצלחה!**
 
 נבנתה מערכת מעקב עסקאות מלאה עם:
+
 - ✅ מודל Transaction מלא
 - ✅ APIs מאובטחים
 - ✅ הרשאות מדויקות

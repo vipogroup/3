@@ -1,47 +1,47 @@
 // models/LevelRule.js
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const LevelRuleSchema = new mongoose.Schema(
   {
-    name: { 
-      type: String, 
+    name: {
+      type: String,
       required: true,
-      trim: true 
+      trim: true,
     },
-    minSalesAmount: { 
-      type: Number, 
+    minSalesAmount: {
+      type: Number,
       required: true,
-      min: 0 
+      min: 0,
     },
-    minDeals: { 
-      type: Number, 
+    minDeals: {
+      type: Number,
       required: true,
-      min: 0 
+      min: 0,
     },
-    commissionBoostPct: { 
-      type: Number, 
+    commissionBoostPct: {
+      type: Number,
       required: true,
-      min: 0 
+      min: 0,
     },
-    badgeColor: { 
-      type: String, 
+    badgeColor: {
+      type: String,
       required: true,
-      enum: ["bronze", "silver", "gold", "platinum"]
+      enum: ['bronze', 'silver', 'gold', 'platinum'],
     },
-    sortOrder: { 
-      type: Number, 
-      required: true 
+    sortOrder: {
+      type: Number,
+      required: true,
     },
-    isActive: { 
-      type: Boolean, 
-      default: true 
+    isActive: {
+      type: Boolean,
+      default: true,
     },
-    createdAt: { 
-      type: Date, 
-      default: Date.now 
-    }
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export default mongoose.models.LevelRule || mongoose.model("LevelRule", LevelRuleSchema);
+export default mongoose.models.LevelRule || mongoose.model('LevelRule', LevelRuleSchema);

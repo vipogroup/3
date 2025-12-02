@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { buildManagerWhatsAppUrl } from "@/lib/whatsapp";
+import { buildManagerWhatsAppUrl } from '@/lib/whatsapp';
 
 export default function ContactManagerButton({ agentName, agentId }) {
-  const message = `היי, כאן ${agentName || "סוכן"}${agentId ? ` (סוכן ${agentId})` : ""}. יש לי שאלה לגבי לקוח / עסקה במערכת VIPO.`;
+  const message = `היי, כאן ${agentName || 'סוכן'}${agentId ? ` (סוכן ${agentId})` : ''}. יש לי שאלה לגבי לקוח / עסקה במערכת VIPO.`;
   const url = buildManagerWhatsAppUrl(message);
 
   return (

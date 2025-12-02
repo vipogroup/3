@@ -1,6 +1,7 @@
 # 🎨 Stage 15.3 - Auth Screen UX Polish
 
 ## תאריך: 2025-11-01
+
 ## סטטוס: ✅ Complete
 
 ---
@@ -20,6 +21,7 @@
 #### שיפורים שבוצעו:
 
 **Before:**
+
 ```jsx
 <input placeholder="אימייל" />
 <button>כניסה</button>
@@ -27,9 +29,10 @@
 ```
 
 **After:**
+
 ```jsx
 <label htmlFor="email">כתובת אימייל</label>
-<input 
+<input
   id="email"
   aria-describedby="email-help"
   className="focus:ring-2 focus:ring-blue-500"
@@ -87,6 +90,7 @@
 #### שיפורים שבוצעו:
 
 **Before:**
+
 ```jsx
 <input placeholder="שם מלא" required />
 <select>
@@ -95,11 +99,12 @@
 ```
 
 **After:**
+
 ```jsx
 <label htmlFor="fullName">
   שם מלא <span className="text-red-500">*</span>
 </label>
-<input 
+<input
   id="fullName"
   aria-describedby="fullName-help"
   required
@@ -119,7 +124,7 @@
 #### תכונות חדשות:
 
 1. **Required Fields:**
-   - אסטריסק אדום (*) לשדות חובה
+   - אסטריסק אדום (\*) לשדות חובה
    - Visual indication
 
 2. **Role Descriptions:**
@@ -147,6 +152,7 @@
 ## 🎨 UI Components
 
 ### Card Layout:
+
 ```
 ┌─────────────────────────────────┐
 │         ברוכים השבים            │
@@ -171,6 +177,7 @@
 ```
 
 ### Color Scheme:
+
 - **Primary:** Blue-600 (#2563eb)
 - **Success:** Green-700 (#15803d)
 - **Error:** Red-700 (#b91c1c)
@@ -178,6 +185,7 @@
 - **Text:** Gray-900 / Gray-600
 
 ### Typography:
+
 - **Heading:** 3xl (30px), bold
 - **Label:** sm (14px), medium
 - **Helper:** xs (12px), gray-500
@@ -188,6 +196,7 @@
 ## ♿ Accessibility Features
 
 ### ARIA Attributes:
+
 ```jsx
 // Labels
 <label htmlFor="email">כתובת אימייל</label>
@@ -206,12 +215,14 @@
 ```
 
 ### Keyboard Navigation:
+
 - ✅ Tab order לוגי
 - ✅ Focus visible (ring-2)
 - ✅ Enter submits form
 - ✅ Escape clears errors (future)
 
 ### Screen Readers:
+
 - ✅ Labels מקושרים לinputs
 - ✅ Helper text מתואר
 - ✅ Error messages announced
@@ -222,12 +233,14 @@
 ## 📱 Responsive Design
 
 ### Mobile (< 768px):
+
 - Full width card
 - Padding: 4 (16px)
 - Font sizes adjusted
 - Touch-friendly buttons (py-3)
 
 ### Desktop (≥ 768px):
+
 - Max width: 28rem (448px)
 - Centered layout
 - Larger spacing
@@ -238,6 +251,7 @@
 ## 🎭 States
 
 ### Input States:
+
 1. **Default:** border-gray-300
 2. **Focus:** ring-2 ring-blue-500
 3. **Error:** border-red-500 (future)
@@ -245,6 +259,7 @@
 5. **Valid:** border-green-500 (future)
 
 ### Button States:
+
 1. **Default:** bg-blue-600
 2. **Hover:** bg-blue-700
 3. **Focus:** ring-2 ring-blue-500
@@ -256,6 +271,7 @@
 ## 🔄 User Flow
 
 ### Login Flow:
+
 ```
 1. User lands on /login
    ↓
@@ -272,6 +288,7 @@
 ```
 
 ### Register Flow:
+
 ```
 1. User lands on /register
    ↓
@@ -296,11 +313,13 @@
 ### Error Messages:
 
 **Before:**
+
 ```
 "שגיאה בהתחברות"
 ```
 
 **After:**
+
 ```
 ┌─────────────────────────────────┐
 │ ⚠️  שגיאה בהתחברות              │
@@ -313,11 +332,13 @@
 ### Success Messages:
 
 **Before:**
+
 ```
 "נרשמת בהצלחה!"
 ```
 
 **After:**
+
 ```
 ┌─────────────────────────────────┐
 │ ✓  הצלחה!                       │
@@ -330,16 +351,16 @@
 
 ## 📊 Comparison
 
-| Feature | Before | After |
-|---------|--------|-------|
-| Labels | ❌ None | ✅ Clear labels |
-| Helper Text | ❌ None | ✅ For all fields |
-| Error Messages | ⚠️ Basic | ✅ Detailed + Icon |
-| Loading State | ❌ None | ✅ Spinner + Text |
-| Focus Rings | ❌ Default | ✅ Custom blue ring |
-| Accessibility | ⚠️ Basic | ✅ ARIA + Screen reader |
-| Responsive | ⚠️ Basic | ✅ Mobile-first |
-| Visual Design | ⚠️ Plain | ✅ Modern gradient |
+| Feature        | Before     | After                   |
+| -------------- | ---------- | ----------------------- |
+| Labels         | ❌ None    | ✅ Clear labels         |
+| Helper Text    | ❌ None    | ✅ For all fields       |
+| Error Messages | ⚠️ Basic   | ✅ Detailed + Icon      |
+| Loading State  | ❌ None    | ✅ Spinner + Text       |
+| Focus Rings    | ❌ Default | ✅ Custom blue ring     |
+| Accessibility  | ⚠️ Basic   | ✅ ARIA + Screen reader |
+| Responsive     | ⚠️ Basic   | ✅ Mobile-first         |
+| Visual Design  | ⚠️ Plain   | ✅ Modern gradient      |
 
 ---
 
@@ -364,6 +385,7 @@
 2. ✅ `app/(public)/register/page.jsx` - Enhanced UX
 
 ### No Changes To:
+
 - ❌ API routes
 - ❌ Authentication logic
 - ❌ Database
@@ -374,6 +396,7 @@
 ## 🚀 Next Steps
 
 ### Test the changes:
+
 ```bash
 # Start dev server
 npm run dev
@@ -391,6 +414,7 @@ http://localhost:3001/register
 ```
 
 ### Create PR:
+
 ```bash
 git add app/(public)/login/page.jsx app/(public)/register/page.jsx STAGE_15_3_AUTH_UX.md
 git commit -m "15.3 – Auth Screen UX Polish"
@@ -402,6 +426,7 @@ git push origin stage-15.3
 ## 📸 Screenshots
 
 ### Before:
+
 ```
 Plain form with inline styles
 No labels, basic inputs
@@ -409,6 +434,7 @@ Simple error text
 ```
 
 ### After:
+
 ```
 Modern card with gradient background
 Clear labels + helper text

@@ -1,7 +1,7 @@
-import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb';
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "vipo";
+const dbName = process.env.MONGODB_DB || 'vipo';
 
 (async () => {
   try {
@@ -9,14 +9,14 @@ const dbName = process.env.MONGODB_DB || "vipo";
     await client.connect();
     const db = client.db(dbName);
     const collections = await db.listCollections().toArray();
-    console.log("OK", {
+    console.log('OK', {
       database: db.databaseName,
-      collections: collections.map(c => c.name),
+      collections: collections.map((c) => c.name),
     });
     await client.close();
     process.exit(0);
   } catch (err) {
-    console.error("ERR", err.message || err);
+    console.error('ERR', err.message || err);
     process.exit(1);
   }
 })();

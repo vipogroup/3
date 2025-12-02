@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 
 export default function AgentDetailPage() {
   const params = useParams();
@@ -14,17 +14,17 @@ export default function AgentDetailPage() {
   const [referrals, setReferrals] = useState([]);
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const fetchAgentData = useCallback(async () => {
     if (!agentId) return;
     try {
       setLoading(true);
-      setError("");
+      setError('');
 
       // Fetch agent details
       const agentRes = await fetch(`/api/agents/${agentId}`);
-      if (!agentRes.ok) throw new Error("Failed to fetch agent");
+      if (!agentRes.ok) throw new Error('Failed to fetch agent');
       const agentData = await agentRes.json();
       setAgent(agentData.agent);
 
@@ -66,9 +66,9 @@ export default function AgentDetailPage() {
       <div className="p-8">
         <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg">
           <h3 className="font-bold">שגיאה</h3>
-          <p>{error || "לא נמצא סוכן"}</p>
+          <p>{error || 'לא נמצא סוכן'}</p>
           <button
-            onClick={() => router.push("/admin/agents")}
+            onClick={() => router.push('/admin/agents')}
             className="mt-4 text-blue-600 hover:underline"
           >
             ← חזור לרשימת סוכנים
@@ -78,30 +78,30 @@ export default function AgentDetailPage() {
     );
   }
 
-  const conversionRate = stats?.totalVisits > 0 
-    ? ((stats?.totalSales / stats?.totalVisits) * 100).toFixed(1)
-    : 0;
+  const conversionRate =
+    stats?.totalVisits > 0 ? ((stats?.totalSales / stats?.totalVisits) * 100).toFixed(1) : 0;
 
-  const couponCode = agent?.couponCode?.toUpperCase() || "---";
+  const couponCode = agent?.couponCode?.toUpperCase() || '---';
   const discountPercent = agent?.discountPercent ?? 0;
   const commissionPercent = agent?.commissionPercent ?? 0;
-  const couponStatus = agent?.couponStatus === "inactive" ? "לא פעיל" : "פעיל";
-  const couponStatusClass = agent?.couponStatus === "inactive"
-    ? "bg-red-100 text-red-700"
-    : "bg-green-100 text-green-700";
+  const couponStatus = agent?.couponStatus === 'inactive' ? 'לא פעיל' : 'פעיל';
+  const couponStatusClass =
+    agent?.couponStatus === 'inactive' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700';
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-6">
         <button
-          onClick={() => router.push("/admin/agents")}
+          onClick={() => router.push('/admin/agents')}
           className="text-blue-600 hover:underline mb-2 flex items-center gap-2"
         >
           ← חזור לרשימת סוכנים
         </button>
         <h1 className="text-3xl font-bold">סטטיסטיקות סוכן: {agent.fullName}</h1>
-        <p className="text-gray-600">{agent.email} • {agent.phone}</p>
+        <p className="text-gray-600">
+          {agent.email} • {agent.phone}
+        </p>
       </div>
 
       {/* Coupon Details */}
@@ -114,7 +114,7 @@ export default function AgentDetailPage() {
             </code>
             <button
               onClick={() => navigator.clipboard.writeText(couponCode)}
-              disabled={couponCode === "---"}
+              disabled={couponCode === '---'}
               className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
             >
               📋 העתק קוד
@@ -127,7 +127,9 @@ export default function AgentDetailPage() {
             <span className="bg-white px-3 py-1 rounded-full border border-purple-100">
               עמלה לסוכן: <strong>{commissionPercent}%</strong>
             </span>
-            <span className={`px-3 py-1 rounded-full border border-purple-100 ${couponStatusClass}`}>
+            <span
+              className={`px-3 py-1 rounded-full border border-purple-100 ${couponStatusClass}`}
+            >
               סטטוס קופון: <strong>{couponStatus}</strong>
             </span>
           </div>
@@ -190,16 +192,14 @@ export default function AgentDetailPage() {
             <button className="py-4 px-2 text-gray-600 hover:text-gray-900">
               👥 משתמשים מופנים
             </button>
-            <button className="py-4 px-2 text-gray-600 hover:text-gray-900">
-              🛒 מכירות
-            </button>
+            <button className="py-4 px-2 text-gray-600 hover:text-gray-900">🛒 מכירות</button>
           </div>
         </div>
 
         {/* Product Visits Table */}
         <div className="p-6">
           <h3 className="text-xl font-bold mb-4">כניסות למוצרים דרך הלינק הייחודי</h3>
-          
+
           {visits.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <p className="text-4xl mb-2">📭</p>
@@ -212,23 +212,23 @@ export default function AgentDetailPage() {
                   <th className="px-4 py-3 text-right text-sm font-medium text-gray-600">תאריך</th>
                   <th className="px-4 py-3 text-right text-sm font-medium text-gray-600">מוצר</th>
                   <th className="px-4 py-3 text-right text-sm font-medium text-gray-600">IP</th>
-                  <th className="px-4 py-3 text-right text-sm font-medium text-gray-600">User Agent</th>
+                  <th className="px-4 py-3 text-right text-sm font-medium text-gray-600">
+                    User Agent
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {visits.map((visit, index) => (
                   <tr key={index} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm">
-                      {new Date(visit.ts).toLocaleString("he-IL")}
+                      {new Date(visit.ts).toLocaleString('he-IL')}
                     </td>
                     <td className="px-4 py-3 text-sm font-medium">
-                      {visit.productName || visit.productId || "N/A"}
+                      {visit.productName || visit.productId || 'N/A'}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {visit.ip || "-"}
-                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{visit.ip || '-'}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 truncate max-w-xs">
-                      {visit.ua ? visit.ua.substring(0, 50) + "..." : "-"}
+                      {visit.ua ? visit.ua.substring(0, 50) + '...' : '-'}
                     </td>
                   </tr>
                 ))}
@@ -246,12 +246,24 @@ export default function AgentDetailPage() {
                 <div key={index} className="bg-gray-50 rounded-lg p-4">
                   <h4 className="font-semibold mb-2">{product.productName}</h4>
                   <div className="space-y-1 text-sm">
-                    <p>👥 כניסות: <span className="font-bold">{product.visits}</span></p>
-                    <p>🛒 רכישות: <span className="font-bold">{product.purchases}</span></p>
-                    <p>{'💰 סה&quot;כ:'} <span className="font-bold">₪{product.totalRevenue}</span></p>
-                    <p>📈 המרה: <span className="font-bold">
-                      {product.visits > 0 ? ((product.purchases / product.visits) * 100).toFixed(1) : 0}%
-                    </span></p>
+                    <p>
+                      👥 כניסות: <span className="font-bold">{product.visits}</span>
+                    </p>
+                    <p>
+                      🛒 רכישות: <span className="font-bold">{product.purchases}</span>
+                    </p>
+                    <p>
+                      {'💰 סה&quot;כ:'} <span className="font-bold">₪{product.totalRevenue}</span>
+                    </p>
+                    <p>
+                      📈 המרה:{' '}
+                      <span className="font-bold">
+                        {product.visits > 0
+                          ? ((product.purchases / product.visits) * 100).toFixed(1)
+                          : 0}
+                        %
+                      </span>
+                    </p>
                   </div>
                 </div>
               ))}
@@ -266,13 +278,16 @@ export default function AgentDetailPage() {
           <h3 className="text-xl font-bold mb-4">👥 משתמשים שהופנו על ידי הסוכן</h3>
           <div className="space-y-2">
             {referrals.map((ref) => (
-              <div key={ref._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div
+                key={ref._id}
+                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+              >
                 <div>
                   <p className="font-medium">{ref.fullName}</p>
                   <p className="text-sm text-gray-600">{ref.email}</p>
                 </div>
                 <div className="text-sm text-gray-600">
-                  {new Date(ref.createdAt).toLocaleDateString("he-IL")}
+                  {new Date(ref.createdAt).toLocaleDateString('he-IL')}
                 </div>
               </div>
             ))}

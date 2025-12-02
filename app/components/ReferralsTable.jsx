@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export default function ReferralsTable() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/referrals/list", { credentials: "include" })
-      .then(r => r.json())
-      .then(data => {
+    fetch('/api/referrals/list', { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data) => {
         setData(data);
         setLoading(false);
       })
@@ -52,10 +52,18 @@ export default function ReferralsTable() {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">שם</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">אימייל/טלפון</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">תפקיד</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">תאריך הצטרפות</th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                  שם
+                </th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                  אימייל/טלפון
+                </th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                  תפקיד
+                </th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                  תאריך הצטרפות
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -63,19 +71,23 @@ export default function ReferralsTable() {
                 <tr key={ref._id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">{ref.fullName}</td>
                   <td className="px-4 py-3 text-sm text-gray-600">
-                    {ref.email || ref.phone || "-"}
+                    {ref.email || ref.phone || '-'}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      ref.role === 'agent' ? 'bg-green-100 text-green-800' :
-                      ref.role === 'admin' ? 'bg-red-100 text-red-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        ref.role === 'agent'
+                          ? 'bg-green-100 text-green-800'
+                          : ref.role === 'admin'
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-blue-100 text-blue-800'
+                      }`}
+                    >
                       {ref.role === 'agent' ? 'סוכן' : ref.role === 'admin' ? 'מנהל' : 'לקוח'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">
-                    {new Date(ref.createdAt).toLocaleDateString("he-IL")}
+                    {new Date(ref.createdAt).toLocaleDateString('he-IL')}
                   </td>
                 </tr>
               ))}

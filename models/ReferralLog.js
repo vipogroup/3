@@ -5,33 +5,33 @@ import mongoose from 'mongoose';
  */
 const ReferralLogSchema = new mongoose.Schema(
   {
-    agentId: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'User', 
+    agentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
-      index: true 
+      index: true,
     },
-    productId: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'Product', 
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
       default: null,
-      index: true 
+      index: true,
     },
     ip: { type: String, default: null },
     userAgent: { type: String, default: null },
     referer: { type: String, default: null },
     url: { type: String, required: true },
-    action: { 
-      type: String, 
-      enum: ['click', 'view', 'register', 'purchase'], 
-      default: 'click' 
+    action: {
+      type: String,
+      enum: ['click', 'view', 'register', 'purchase'],
+      default: 'click',
     },
     metadata: { type: mongoose.Schema.Types.Mixed, default: {} },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt
     versionKey: false,
-  }
+  },
 );
 
 // Indexes for performance

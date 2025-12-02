@@ -1,6 +1,7 @@
 # 🔄 מערכת סנכרון מוצרים
 
 ## תאריך: 2025-11-01 03:40
+
 ## סטטוס: ✅ הושלם
 
 ---
@@ -20,11 +21,12 @@
 ## 🏗️ ארכיטקטורה
 
 ### 1. **מקור מרכזי** (`app/lib/products.js`)
+
 ```javascript
 export const PRODUCTS = [
   {
-    _id: "1",
-    name: "מקלדת מכנית RGB",
+    _id: '1',
+    name: 'מקלדת מכנית RGB',
     price: 450,
     commission: 45, // 10% עמלה
     // ... כל הפרטים
@@ -34,12 +36,13 @@ export const PRODUCTS = [
 ```
 
 ### 2. **פונקציות עזר**
+
 ```javascript
-getProducts()                    // כל המוצרים הפעילים
-getProductById(id)               // מוצר לפי ID
-getProductsByCategory(category)  // מוצרים לפי קטגוריה
-calculateCommission(productId)   // חישוב עמלה
-generateAgentLink(agentId, productId) // לינק ייחודי
+getProducts(); // כל המוצרים הפעילים
+getProductById(id); // מוצר לפי ID
+getProductsByCategory(category); // מוצרים לפי קטגוריה
+calculateCommission(productId); // חישוב עמלה
+generateAgentLink(agentId, productId); // לינק ייחודי
 ```
 
 ---
@@ -47,31 +50,37 @@ generateAgentLink(agentId, productId) // לינק ייחודי
 ## 📦 6 המוצרים
 
 ### 1. מקלדת מכנית RGB
+
 - **מחיר:** ₪450 (₪599)
 - **עמלה:** ₪45 (10%)
 - **קטגוריה:** אביזרי מחשב
 
 ### 2. עכבר גיימינג אלחוטי
+
 - **מחיר:** ₪280 (₪399)
 - **עמלה:** ₪28 (10%)
 - **קטגוריה:** אביזרי מחשב
 
 ### 3. אוזניות גיימינג 7.1
+
 - **מחיר:** ₪320 (₪449)
 - **עמלה:** ₪32 (10%)
 - **קטגוריה:** אודיו
 
 ### 4. מסך גיימינג 27 אינץ'
+
 - **מחיר:** ₪1,299 (₪1,799)
 - **עמלה:** ₪129.9 (10%)
 - **קטגוריה:** מסכים
 
 ### 5. כיסא גיימינג ארגונומי
+
 - **מחיר:** ₪899 (₪1,299)
 - **עמלה:** ₪89.9 (10%)
 - **קטגוריה:** ריהוט
 
 ### 6. מצלמת רשת 4K
+
 - **מחיר:** ₪550 (₪799)
 - **עמלה:** ₪55 (10%)
 - **קטגוריה:** אביזרי מחשב
@@ -81,6 +90,7 @@ generateAgentLink(agentId, productId) // לינק ייחודי
 ## 🔄 איך זה עובד?
 
 ### Flow:
+
 ```
 1. מנהל מוסיף/עורך מוצר ב-/admin/products
    ↓
@@ -96,6 +106,7 @@ generateAgentLink(agentId, productId) // לינק ייחודי
 ## 🛍️ 1. חנות המוצרים (`/products`)
 
 ### תכונות:
+
 - ✅ הצגת כל המוצרים
 - ✅ כרטיסי מוצרים מעוצבים
 - ✅ מחיר + מחיר מקורי
@@ -104,15 +115,16 @@ generateAgentLink(agentId, productId) // לינק ייחודי
 - ✅ כפתור "צפה במוצר"
 
 ### קוד:
+
 ```javascript
-import { getProducts } from "@/app/lib/products";
+import { getProducts } from '@/app/lib/products';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState(getProducts());
-  
+
   return (
     <div>
-      {products.map(product => (
+      {products.map((product) => (
         <ProductCard key={product._id} product={product} />
       ))}
     </div>
@@ -125,6 +137,7 @@ export default function ProductsPage() {
 ## 👔 2. דשבורד סוכן (`/agent/products`)
 
 ### תכונות:
+
 - ✅ הצגת כל המוצרים
 - ✅ **לינק ייחודי** לכל מוצר
 - ✅ הצגת **עמלה** (10%)
@@ -133,6 +146,7 @@ export default function ProductsPage() {
 - ✅ הסבר "איך זה עובד"
 
 ### לינק ייחודי:
+
 ```
 http://localhost:3001/products/1?ref=agent123
 
@@ -142,28 +156,27 @@ http://localhost:3001/products/1?ref=agent123
 ```
 
 ### קוד:
+
 ```javascript
-import { getProducts, generateAgentLink } from "@/app/lib/products";
+import { getProducts, generateAgentLink } from '@/app/lib/products';
 
 export default function AgentProductsPage() {
   const products = getProducts();
   const agentLink = generateAgentLink(user.id, product._id);
-  
+
   const copyLink = (productId) => {
     const link = generateAgentLink(user.id, productId);
     navigator.clipboard.writeText(link);
   };
-  
+
   return (
     <div>
-      {products.map(product => (
+      {products.map((product) => (
         <div key={product._id}>
           <h3>{product.name}</h3>
           <p>עמלה: ₪{product.commission}</p>
           <input value={agentLink} readOnly />
-          <button onClick={() => copyLink(product._id)}>
-            העתק לינק
-          </button>
+          <button onClick={() => copyLink(product._id)}>העתק לינק</button>
         </div>
       ))}
     </div>
@@ -176,6 +189,7 @@ export default function AgentProductsPage() {
 ## 👨‍💼 3. ניהול מוצרים (`/admin/products`)
 
 ### תכונות:
+
 - ✅ הצגת כל המוצרים
 - ✅ כפתור **הוסף מוצר חדש**
 - ✅ כפתורי **ערוך/מחק** לכל מוצר
@@ -183,32 +197,27 @@ export default function AgentProductsPage() {
 - ✅ סטטוס במלאי
 
 ### קוד:
+
 ```javascript
-import { getProducts } from "@/app/lib/products";
+import { getProducts } from '@/app/lib/products';
 
 export default async function ProductsPage() {
   await requireAdmin();
   const products = getProducts();
-  
+
   return (
     <div>
-      <Link href="/admin/products/new">
-        הוסף מוצר חדש
-      </Link>
-      
+      <Link href="/admin/products/new">הוסף מוצר חדש</Link>
+
       <table>
-        {products.map(product => (
+        {products.map((product) => (
           <tr key={product._id}>
             <td>{product.name}</td>
             <td>₪{product.price}</td>
             <td>{product.category}</td>
             <td>
-              <Link href={`/admin/products/${product._id}/edit`}>
-                ערוך
-              </Link>
-              <button onClick={() => deleteProduct(product._id)}>
-                מחק
-              </button>
+              <Link href={`/admin/products/${product._id}/edit`}>ערוך</Link>
+              <button onClick={() => deleteProduct(product._id)}>מחק</button>
             </td>
           </tr>
         ))}
@@ -223,6 +232,7 @@ export default async function ProductsPage() {
 ## 💰 מערכת עמלות
 
 ### חישוב עמלה:
+
 ```javascript
 commission = price * 0.10  // 10%
 
@@ -233,6 +243,7 @@ commission = price * 0.10  // 10%
 ```
 
 ### מעקב עמלות:
+
 ```javascript
 // כאשר לקוח קונה דרך לינק של סוכן
 const sale = {
@@ -254,6 +265,7 @@ const sale = {
 ## 🔗 מערכת לינקים ייחודיים
 
 ### יצירת לינק:
+
 ```javascript
 function generateAgentLink(agentId, productId) {
   const baseUrl = window.location.origin;
@@ -261,11 +273,12 @@ function generateAgentLink(agentId, productId) {
 }
 
 // דוגמה:
-generateAgentLink("agent123", "1")
+generateAgentLink('agent123', '1');
 // → http://localhost:3001/products/1?ref=agent123
 ```
 
 ### מעקב אחר לינק:
+
 ```javascript
 // בדף המוצר - קרא את ref מה-URL
 const searchParams = useSearchParams();
@@ -278,6 +291,7 @@ if (refId) {
 ```
 
 ### רכישה דרך לינק:
+
 ```javascript
 // כאשר לקוח לוחץ "הוסף לסל"
 function addToCart(productId, refId) {
@@ -285,9 +299,9 @@ function addToCart(productId, refId) {
     productId,
     agentId: refId, // שמור מי הפנה
     price: product.price,
-    commission: product.commission
+    commission: product.commission,
   };
-  
+
   // כאשר הרכישה מושלמת
   creditAgent(refId, commission);
 }
@@ -298,6 +312,7 @@ function addToCart(productId, refId) {
 ## 📊 סטטיסטיקות סוכן
 
 ### בדף המוצרים:
+
 ```javascript
 // לכל מוצר:
 - 0 מכירות
@@ -308,6 +323,7 @@ function addToCart(productId, refId) {
 ```
 
 ### בדשבורד:
+
 ```javascript
 // סה"כ:
 - 45 הפניות
@@ -321,6 +337,7 @@ function addToCart(productId, refId) {
 ## 🚀 צעדים הבאים
 
 ### Phase 1: ✅ Complete
+
 - [x] מקור מוצרים מרכזי
 - [x] דף חנות מוצרים
 - [x] דף מוצרים לסוכן
@@ -329,6 +346,7 @@ function addToCart(productId, refId) {
 - [x] חישוב עמלות
 
 ### Phase 2: TODO
+
 - [ ] **API למוצרים** (`/api/products`)
 - [ ] **שמירה ב-MongoDB**
 - [ ] **CRUD מלא** (Create, Read, Update, Delete)
@@ -337,6 +355,7 @@ function addToCart(productId, refId) {
 - [ ] **חישוב עמלות אוטומטי**
 
 ### Phase 3: Advanced
+
 - [ ] **העלאת תמונות** (Cloudinary)
 - [ ] **קטגוריות דינמיות**
 - [ ] **מלאי אמיתי**
@@ -349,8 +368,9 @@ function addToCart(productId, refId) {
 ## 🔌 Integration עם API
 
 ### 1. **API Route** (`/api/products/route.js`)
+
 ```javascript
-import { PRODUCTS } from "@/app/lib/products";
+import { PRODUCTS } from '@/app/lib/products';
 
 export async function GET() {
   return Response.json({ products: PRODUCTS });
@@ -358,77 +378,82 @@ export async function GET() {
 
 export async function POST(request) {
   const newProduct = await request.json();
-  
+
   // TODO: Save to MongoDB
   // await db.collection("products").insertOne(newProduct);
-  
+
   return Response.json({ success: true });
 }
 ```
 
 ### 2. **Update Product** (`/api/products/[id]/route.js`)
+
 ```javascript
 export async function PUT(request, { params }) {
   const { id } = params;
   const updates = await request.json();
-  
+
   // TODO: Update in MongoDB
   // await db.collection("products").updateOne(
   //   { _id: id },
   //   { $set: updates }
   // );
-  
+
   return Response.json({ success: true });
 }
 
 export async function DELETE(request, { params }) {
   const { id } = params;
-  
+
   // TODO: Delete from MongoDB
   // await db.collection("products").deleteOne({ _id: id });
-  
+
   return Response.json({ success: true });
 }
 ```
 
 ### 3. **Track Referral** (`/api/referrals/route.js`)
+
 ```javascript
 export async function POST(request) {
   const { agentId, productId } = await request.json();
-  
+
   // Save referral click
-  await db.collection("referrals").insertOne({
+  await db.collection('referrals').insertOne({
     agentId,
     productId,
     clickedAt: new Date(),
-    converted: false
+    converted: false,
   });
-  
+
   return Response.json({ success: true });
 }
 ```
 
 ### 4. **Record Sale** (`/api/sales/route.js`)
+
 ```javascript
 export async function POST(request) {
   const { agentId, productId, price, commission } = await request.json();
-  
+
   // Save sale
-  await db.collection("sales").insertOne({
+  await db.collection('sales').insertOne({
     agentId,
     productId,
     price,
     commission,
-    status: "completed",
-    createdAt: new Date()
+    status: 'completed',
+    createdAt: new Date(),
   });
-  
+
   // Update agent earnings
-  await db.collection("users").updateOne(
-    { _id: agentId },
-    { $inc: { totalEarnings: commission, pendingEarnings: commission } }
-  );
-  
+  await db
+    .collection('users')
+    .updateOne(
+      { _id: agentId },
+      { $inc: { totalEarnings: commission, pendingEarnings: commission } },
+    );
+
   return Response.json({ success: true });
 }
 ```
@@ -438,6 +463,7 @@ export async function POST(request) {
 ## 💡 Use Cases
 
 ### 1. **סוכן משתף מוצר**
+
 ```
 1. סוכן נכנס ל-/agent/products
 2. בוחר מוצר (למשל מקלדת)
@@ -447,6 +473,7 @@ export async function POST(request) {
 ```
 
 ### 2. **לקוח קונה דרך לינק**
+
 ```
 1. לקוח לוחץ על הלינק
 2. נכנס לדף המוצר עם ?ref=agent123
@@ -457,6 +484,7 @@ export async function POST(request) {
 ```
 
 ### 3. **מנהל מוסיף מוצר**
+
 ```
 1. מנהל נכנס ל-/admin/products
 2. לוחץ "הוסף מוצר חדש"
@@ -473,6 +501,7 @@ export async function POST(request) {
 ## 📊 דוגמת תרחיש מלא
 
 ### סוכן: יוסי
+
 ```
 1. יוסי נרשם כסוכן
 2. נכנס ל-/agent/products
@@ -483,6 +512,7 @@ export async function POST(request) {
 ```
 
 ### לקוח: דני
+
 ```
 1. דני רואה את הלינק בWhatsApp
 2. לוחץ ונכנס לדף המוצר
@@ -492,6 +522,7 @@ export async function POST(request) {
 ```
 
 ### מערכת:
+
 ```
 1. מזהה שדני הגיע דרך ref=yossi
 2. שומרת מכירה:
@@ -505,6 +536,7 @@ export async function POST(request) {
 ```
 
 ### יוסי רואה בדשבורד:
+
 ```
 - סה"כ מכירות: 13 (היה 12)
 - סה"כ הכנסות: ₪15,465 (היה ₪15,420)
@@ -516,6 +548,7 @@ export async function POST(request) {
 ## 🎉 סיכום
 
 מערכת מוצרים מסונכרנת שכוללת:
+
 - ✅ מקור מרכזי אחד
 - ✅ 6 מוצרים מלאים
 - ✅ 3 דפים מחוברים

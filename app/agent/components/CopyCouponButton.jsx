@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 export default function CopyCouponButton({ code }) {
   const handleCopy = () => {
@@ -9,10 +9,7 @@ export default function CopyCouponButton({ code }) {
   };
 
   return (
-    <button
-      onClick={handleCopy}
-      className="text-xs text-blue-600 hover:text-blue-700 font-medium"
-    >
+    <button onClick={handleCopy} className="text-xs text-blue-600 hover:text-blue-700 font-medium">
       העתק
     </button>
   );

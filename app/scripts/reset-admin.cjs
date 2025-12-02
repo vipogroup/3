@@ -17,7 +17,7 @@ const ADMIN_PASSWORD = '12345678A';
   const client = new MongoClient(uri);
   try {
     await client.connect();
-    const db = client.db(); 
+    const db = client.db();
     const users = db.collection('users');
 
     const hash = await bcrypt.hash(ADMIN_PASSWORD, 10);
@@ -35,7 +35,7 @@ const ADMIN_PASSWORD = '12345678A';
         },
         $setOnInsert: { createdAt: new Date() },
       },
-      { upsert: true }
+      { upsert: true },
     );
 
     console.log('✅ admin upserted:', res.upsertedId || '(updated)');
@@ -46,4 +46,3 @@ const ADMIN_PASSWORD = '12345678A';
     await client.close();
   }
 })();
-

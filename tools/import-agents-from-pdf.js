@@ -6,7 +6,7 @@ const pdf = require('pdf-parse');
 function parsePdfTextToProducts(text) {
   const lines = text
     .split('\n')
-    .map(l => l.trim())
+    .map((l) => l.trim())
     .filter(Boolean);
 
   const items = [];
@@ -19,7 +19,7 @@ function parsePdfTextToProducts(text) {
       current = {
         name: line.replace(/^\d+[\.)]\s+/, ''),
         dimensions: '',
-        price: ''
+        price: '',
       };
       continue;
     }
@@ -54,7 +54,7 @@ const outputJsonPath = path.join(
   '..',
   'export_vipo_products_ui',
   'data',
-  'products.json'
+  'products.json',
 );
 
 async function main() {
@@ -73,7 +73,7 @@ async function main() {
 
   const allItems = Array.isArray(parsed.items) ? parsed.items : [];
 
-  const itemsWithDimensions = allItems.filter(p => {
+  const itemsWithDimensions = allItems.filter((p) => {
     if (!p.dimensions) return false;
     return String(p.dimensions).trim().length > 0;
   });
@@ -81,7 +81,7 @@ async function main() {
   const cleaned = {
     items: itemsWithDimensions,
     currency: parsed.currency || 'USD',
-    onlineSale: !!parsed.onlineSale
+    onlineSale: !!parsed.onlineSale,
   };
 
   console.log('-----------------------------------------');
@@ -95,7 +95,7 @@ async function main() {
   console.log('✅ products.json created successfully.');
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Import failed:', err);
   process.exit(1);
 });

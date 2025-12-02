@@ -35,7 +35,7 @@ const ADMIN_PASSWORD = '12345678A';
         },
         $setOnInsert: { createdAt: new Date() },
       },
-      { upsert: true }
+      { upsert: true },
     );
 
     console.log('✅ admin upserted:', res.upsertedId || '(updated)');

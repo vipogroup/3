@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import Product from '@/models/Product';
 import Catalog from '@/models/Catalog';
+import { requireAdminApi } from '@/lib/auth/server';
 
 const SEED_PRODUCTS = [
   {
@@ -293,21 +294,22 @@ async function ensureSeedProducts() {
             upsert: true,
             setDefaultsOnInsert: true,
             new: false,
-          }
+          },
         );
       } catch (error) {
         console.error(`Failed to upsert seed product ${legacyId}:`, error);
       }
-    })
+    }),
   );
 }
 
 function serializeProduct(doc) {
   if (!doc) return doc;
   const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
-  const catalogDoc = obj.catalogId && typeof obj.catalogId === 'object' && !Array.isArray(obj.catalogId)
-    ? obj.catalogId
-    : null;
+  const catalogDoc =
+    obj.catalogId && typeof obj.catalogId === 'object' && !Array.isArray(obj.catalogId)
+      ? obj.catalogId
+      : null;
 
   const serialized = {
     ...obj,
@@ -324,12 +326,14 @@ function serializeProduct(doc) {
       image: catalogDoc.image ?? '',
       active: catalogDoc.active ?? true,
     };
-    serialized.catalogId = catalogDoc._id?.toString?.() ?? catalogDoc._id ?? serialized.catalogId ?? null;
+    serialized.catalogId =
+      catalogDoc._id?.toString?.() ?? catalogDoc._id ?? serialized.catalogId ?? null;
     serialized.catalogSlug = catalogDoc.slug ?? serialized.catalogSlug ?? '';
   } else {
     serialized.catalog = null;
     if (serialized.catalogId && typeof serialized.catalogId === 'object') {
-      serialized.catalogId = serialized.catalogId._id?.toString?.() ?? serialized.catalogId._id ?? null;
+      serialized.catalogId =
+        serialized.catalogId._id?.toString?.() ?? serialized.catalogId._id ?? null;
     }
   }
 
@@ -361,6 +365,9 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
+    // Admin-only: create product
+    await requireAdminApi(request);
+
     await connectMongo();
     const payload = await request.json();
 
@@ -369,19 +376,26 @@ export async function POST(request) {
     }
 
     let catalogId = null;
-    let catalogSlug = typeof payload.catalogSlug === 'string' ? payload.catalogSlug.trim().toLowerCase() : '';
+    let catalogSlug =
+      typeof payload.catalogSlug === 'string' ? payload.catalogSlug.trim().toLowerCase() : '';
 
     if (payload.catalogId) {
       const catalog = await Catalog.findById(payload.catalogId).lean();
       if (!catalog) {
-        return NextResponse.json({ error: 'Catalog not found for provided catalogId' }, { status: 400 });
+        return NextResponse.json(
+          { error: 'Catalog not found for provided catalogId' },
+          { status: 400 },
+        );
       }
       catalogId = catalog._id;
       catalogSlug = catalog.slug;
     } else if (catalogSlug) {
       const catalog = await Catalog.findOne({ slug: catalogSlug }).lean();
       if (!catalog) {
-        return NextResponse.json({ error: 'Catalog not found for provided catalogSlug' }, { status: 400 });
+        return NextResponse.json(
+          { error: 'Catalog not found for provided catalogSlug' },
+          { status: 400 },
+        );
       }
       catalogId = catalog._id;
       catalogSlug = catalog.slug;
@@ -399,7 +413,10 @@ export async function POST(request) {
       catalogSlug,
       price: Number(payload.price) || 0,
       originalPrice: payload.originalPrice !== undefined ? Number(payload.originalPrice) : null,
-      commission: payload.commission !== undefined ? Number(payload.commission) : (Number(payload.price) || 0) * 0.1,
+      commission:
+        payload.commission !== undefined
+          ? Number(payload.commission)
+          : (Number(payload.price) || 0) * 0.1,
       type: payload.type || (payload.purchaseType === 'group' ? 'group' : 'online'),
       purchaseType: payload.purchaseType || 'regular',
       groupEndDate: payload.groupEndDate ? new Date(payload.groupEndDate) : null,
@@ -409,7 +426,12 @@ export async function POST(request) {
       groupPurchaseDetails: payload.groupPurchaseDetails ?? null,
       image: payload.image || '',
       imageUrl: payload.imageUrl || payload.image || '',
-      images: Array.isArray(payload.images) && payload.images.length ? payload.images : (payload.image ? [payload.image] : []),
+      images:
+        Array.isArray(payload.images) && payload.images.length
+          ? payload.images
+          : payload.image
+            ? [payload.image]
+            : [],
       videoUrl: payload.videoUrl || '',
       imagePath: payload.imagePath || '',
       inStock: payload.inStock !== undefined ? Boolean(payload.inStock) : true,
@@ -424,6 +446,10 @@ export async function POST(request) {
     const serialized = serializeProduct(product);
     return NextResponse.json({ product: serialized }, { status: 201 });
   } catch (err) {
+    // Handle auth errors
+    if (err.status === 401 || err.status === 403) {
+      return NextResponse.json({ error: err.message }, { status: err.status });
+    }
     console.error('POST /api/products error:', err);
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
   }

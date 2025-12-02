@@ -13,11 +13,11 @@ async function checkProducts() {
     const ProductModel = Product?.default || Product;
 
     const products = await ProductModel.find({}).select('name image images videoUrl');
-    
+
     console.log(`\n📦 Total products: ${products.length}\n`);
-    
+
     products.forEach((p, i) => {
-      console.log(`${i+1}. ${p.name}`);
+      console.log(`${i + 1}. ${p.name}`);
       console.log(`   📸 Image: ${p.image ? 'YES ✅' : 'NO ❌'}`);
       console.log(`   🖼️  Images array: ${p.images?.length || 0} images`);
       console.log(`   🎥 Video: ${p.videoUrl ? 'YES ✅' : 'NO ❌'}`);
@@ -26,7 +26,6 @@ async function checkProducts() {
       }
       console.log('');
     });
-
   } catch (error) {
     console.error('❌ Error:', error);
   } finally {

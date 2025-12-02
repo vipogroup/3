@@ -22,9 +22,9 @@ async function listUsers() {
     const users = db.collection('users');
 
     const allUsers = await users.find({}).toArray();
-    
+
     console.log(`Total users: ${allUsers.length}\n`);
-    
+
     allUsers.forEach((user, index) => {
       console.log(`${index + 1}. ${user.fullName || 'No name'}`);
       console.log(`   Email: ${user.email || 'N/A'}`);
@@ -33,7 +33,6 @@ async function listUsers() {
       console.log(`   ID: ${user._id}`);
       console.log('');
     });
-
   } catch (error) {
     console.error('❌ Error:', error);
   } finally {

@@ -1,27 +1,28 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useMemo } from "react";
-import { useTheme } from "@/app/context/ThemeContext";
+import Link from 'next/link';
+import { useMemo } from 'react';
+import { useTheme } from '@/app/context/ThemeContext';
 
 const gradientStyle = {
-  background: "linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%)",
+  background:
+    'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%)',
 };
 
 const infoTileClasses =
-  "bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-6 flex flex-col gap-3 text-gray-700";
+  'bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-6 flex flex-col gap-3 text-gray-700';
 
 export default function ContactPage() {
   const { settings } = useTheme();
 
   const contactDetails = useMemo(
     () => ({
-      email: settings?.email || "info@vipo.com",
-      phone: settings?.phone || "050-1234567",
-      address: settings?.address || "תל אביב, ישראל",
-      whatsapp: settings?.whatsapp || "972501234567",
+      email: settings?.email || 'info@vipo.com',
+      phone: settings?.phone || '050-1234567',
+      address: settings?.address || 'תל אביב, ישראל',
+      whatsapp: settings?.whatsapp || '972501234567',
     }),
-    [settings]
+    [settings],
   );
 
   return (
@@ -31,10 +32,12 @@ export default function ContactPage() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-12">
             <div>
               <p className="text-sm font-medium text-purple-600 mb-2">צרו קשר</p>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">אנחנו כאן לכל שאלה</h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                אנחנו כאן לכל שאלה
+              </h1>
               <p className="text-lg text-gray-600 max-w-2xl">
-                צוות VIPO זמין בשבילכם – שאלות לגבי מוצרים, בקשות תמיכה או שיתופי פעולה. מלאו את הפרטים ונחזור
-                אליכם בהקדם.
+                צוות VIPO זמין בשבילכם – שאלות לגבי מוצרים, בקשות תמיכה או שיתופי פעולה. מלאו את
+                הפרטים ונחזור אליכם בהקדם.
               </p>
             </div>
             <Link
@@ -48,7 +51,10 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
             <div className={infoTileClasses}>
               <span className="text-sm font-semibold text-purple-600">אימייל</span>
-              <a href={`mailto:${contactDetails.email}`} className="text-xl font-bold text-gray-900">
+              <a
+                href={`mailto:${contactDetails.email}`}
+                className="text-xl font-bold text-gray-900"
+              >
                 {contactDetails.email}
               </a>
               <p className="text-sm text-gray-500">נענה תוך 24 שעות בממוצע</p>
@@ -65,7 +71,7 @@ export default function ContactPage() {
             <div className={infoTileClasses}>
               <span className="text-sm font-semibold text-purple-600">וואטסאפ</span>
               <a
-                href={`https://wa.me/${contactDetails.whatsapp.replace(/[^\d]/g, "")}`}
+                href={`https://wa.me/${contactDetails.whatsapp.replace(/[^\d]/g, '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xl font-bold text-gray-900"

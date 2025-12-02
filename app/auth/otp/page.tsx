@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from 'react';
 
-type OtpStep = "phone" | "code";
+type OtpStep = 'phone' | 'code';
 
 type OtpState = {
   step: OtpStep;
@@ -14,25 +14,25 @@ type OtpState = {
 };
 
 const initialState: OtpState = {
-  step: "phone",
-  phone: "",
-  code: "",
+  step: 'phone',
+  phone: '',
+  code: '',
   loading: false,
-  error: "",
-  info: "",
+  error: '',
+  info: '',
 };
 
 export default function OtpPage() {
   const [state, setState] = useState<OtpState>(initialState);
-  const isPhoneStep = state.step === "phone";
+  const isPhoneStep = state.step === 'phone';
 
   const handlePhoneChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setState((prev) => ({
       ...prev,
       phone: value,
-      error: "",
-      info: "",
+      error: '',
+      info: '',
     }));
   };
 
@@ -42,8 +42,8 @@ export default function OtpPage() {
       setState((prev) => ({
         ...prev,
         code: value,
-        error: "",
-        info: "",
+        error: '',
+        info: '',
       }));
     }
   };
@@ -55,8 +55,8 @@ export default function OtpPage() {
     if (!trimmedPhone) {
       setState((prev) => ({
         ...prev,
-        error: "אנא הזן מספר טלפון תקין",
-        info: "",
+        error: 'אנא הזן מספר טלפון תקין',
+        info: '',
       }));
       return;
     }
@@ -64,17 +64,17 @@ export default function OtpPage() {
     setState((prev) => ({
       ...prev,
       loading: true,
-      error: "",
-      info: "",
+      error: '',
+      info: '',
     }));
 
     setTimeout(() => {
       setState((prev) => ({
         ...prev,
-        step: "code",
-        code: "",
+        step: 'code',
+        code: '',
         loading: false,
-        info: "קוד חד-פעמי נשלח אל המספר שהוזן",
+        info: 'קוד חד-פעמי נשלח אל המספר שהוזן',
       }));
     }, 600);
   };
@@ -86,8 +86,8 @@ export default function OtpPage() {
     if (!trimmedCode) {
       setState((prev) => ({
         ...prev,
-        error: "אנא הזן קוד אימות",
-        info: "",
+        error: 'אנא הזן קוד אימות',
+        info: '',
       }));
       return;
     }
@@ -95,8 +95,8 @@ export default function OtpPage() {
     if (!/^\d+$/.test(trimmedCode)) {
       setState((prev) => ({
         ...prev,
-        error: "הקוד חייב להכיל ספרות בלבד",
-        info: "",
+        error: 'הקוד חייב להכיל ספרות בלבד',
+        info: '',
       }));
       return;
     }
@@ -104,15 +104,15 @@ export default function OtpPage() {
     setState((prev) => ({
       ...prev,
       loading: true,
-      error: "",
-      info: "",
+      error: '',
+      info: '',
     }));
 
     setTimeout(() => {
       setState((prev) => ({
         ...prev,
         loading: false,
-        info: "הקוד אומת בהצלחה!",
+        info: 'הקוד אומת בהצלחה!',
       }));
     }, 600);
   };
@@ -127,9 +127,7 @@ export default function OtpPage() {
           <p className="text-sm font-semibold text-purple-600 uppercase tracking-widest">
             אימות דו-שלבי
           </p>
-          <h1 className="text-3xl font-bold text-slate-900">
-            התחברות באמצעות קוד חד-פעמי
-          </h1>
+          <h1 className="text-3xl font-bold text-slate-900">התחברות באמצעות קוד חד-פעמי</h1>
           <p className="text-sm text-slate-500">
             הזן את מספר הטלפון שלך כדי לקבל קוד אימות ולהשלים את תהליך ההתחברות.
           </p>
@@ -138,14 +136,14 @@ export default function OtpPage() {
         <div className="flex items-center gap-3 text-sm font-semibold text-slate-600">
           <div
             className={`flex-1 rounded-full border px-3 py-2 text-center transition-colors ${
-              isPhoneStep ? "border-purple-500 text-purple-600 bg-purple-50" : "border-slate-200"
+              isPhoneStep ? 'border-purple-500 text-purple-600 bg-purple-50' : 'border-slate-200'
             }`}
           >
             מספר טלפון
           </div>
           <div
             className={`flex-1 rounded-full border px-3 py-2 text-center transition-colors ${
-              !isPhoneStep ? "border-purple-500 text-purple-600 bg-purple-50" : "border-slate-200"
+              !isPhoneStep ? 'border-purple-500 text-purple-600 bg-purple-50' : 'border-slate-200'
             }`}
           >
             קוד אימות
@@ -187,7 +185,7 @@ export default function OtpPage() {
               className="w-full rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.01] hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60"
               disabled={state.loading}
             >
-              {state.loading ? "שולח..." : "שלח קוד"}
+              {state.loading ? 'שולח...' : 'שלח קוד'}
             </button>
           </form>
         ) : (
@@ -215,14 +213,14 @@ export default function OtpPage() {
               className="w-full rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.01] hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60"
               disabled={state.loading}
             >
-              {state.loading ? "מאמת..." : "אמת קוד"}
+              {state.loading ? 'מאמת...' : 'אמת קוד'}
             </button>
             <button
               type="button"
               onClick={() =>
                 setState((prev) => ({
                   ...initialState,
-                  info: "שלחנו קוד נוסף למספר שלך",
+                  info: 'שלחנו קוד נוסף למספר שלך',
                   phone: prev.phone,
                 }))
               }

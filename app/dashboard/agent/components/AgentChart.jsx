@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import Chart from "chart.js/auto";
-import { groupSalesByDay, getCurrentMonthRange } from "@/app/utils/date";
+import { useEffect, useRef, useState } from 'react';
+import Chart from 'chart.js/auto';
+import { groupSalesByDay, getCurrentMonthRange } from '@/app/utils/date';
 
 /**
  * Agent sales chart component
  * @param {Object} props - Component props
  * @param {Array} props.data - Array of agent's sale objects
  */
-export default function AgentChart({ data, className = "" }) {
+export default function AgentChart({ data, className = '' }) {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const [chartData, setChartData] = useState(null);
@@ -23,13 +23,13 @@ export default function AgentChart({ data, className = "" }) {
 
     // Get current month range
     const { fromISO, toISO } = getCurrentMonthRange();
-    
+
     // Filter sales for current month
-    const currentMonthSales = data.filter(sale => {
+    const currentMonthSales = data.filter((sale) => {
       const saleDate = new Date(sale.createdAt).toISOString().split('T')[0];
       return saleDate >= fromISO && saleDate <= toISO;
     });
-    
+
     // Group sales by day
     const { labels, values } = groupSalesByDay(currentMonthSales, fromISO, toISO);
     setChartData({ labels, values });
@@ -38,13 +38,13 @@ export default function AgentChart({ data, className = "" }) {
   // Create or update chart
   useEffect(() => {
     if (!chartData) return;
-    
+
     // Format labels for display (Hebrew date format)
-    const formattedLabels = chartData.labels.map(dateStr => {
+    const formattedLabels = chartData.labels.map((dateStr) => {
       const date = new Date(dateStr);
-      return new Intl.DateTimeFormat("he-IL", {
-        day: "2-digit",
-        month: "2-digit",
+      return new Intl.DateTimeFormat('he-IL', {
+        day: '2-digit',
+        month: '2-digit',
       }).format(date);
     });
 
@@ -54,17 +54,17 @@ export default function AgentChart({ data, className = "" }) {
     }
 
     // Create new chart
-    const ctx = chartRef.current.getContext("2d");
+    const ctx = chartRef.current.getContext('2d');
     chartInstance.current = new Chart(ctx, {
-      type: "line",
+      type: 'line',
       data: {
         labels: formattedLabels,
         datasets: [
           {
-            label: "מכירות יומיות",
+            label: 'מכירות יומיות',
             data: chartData.values,
-            borderColor: "rgb(59, 130, 246)",
-            backgroundColor: "rgba(59, 130, 246, 0.1)",
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
             borderWidth: 2,
             fill: true,
             tension: 0.3,
@@ -76,45 +76,45 @@ export default function AgentChart({ data, className = "" }) {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: "top",
-            align: "end",
+            position: 'top',
+            align: 'end',
             rtl: true,
             labels: {
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
           },
           tooltip: {
             callbacks: {
-              label: function(context) {
-                let label = context.dataset.label || "";
+              label: function (context) {
+                let label = context.dataset.label || '';
                 if (label) {
-                  label += ": ";
+                  label += ': ';
                 }
                 if (context.parsed.y !== null) {
-                  label += new Intl.NumberFormat("he-IL", {
-                    style: "currency",
-                    currency: "ILS",
+                  label += new Intl.NumberFormat('he-IL', {
+                    style: 'currency',
+                    currency: 'ILS',
                   }).format(context.parsed.y);
                 }
                 return label;
-              }
-            }
-          }
+              },
+            },
+          },
         },
         scales: {
           x: {
             title: {
               display: true,
-              text: "יום",
+              text: 'יום',
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
             ticks: {
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
           },
@@ -122,17 +122,17 @@ export default function AgentChart({ data, className = "" }) {
             beginAtZero: true,
             title: {
               display: true,
-              text: "מכירות",
+              text: 'מכירות',
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
             ticks: {
-              callback: function(value) {
-                return "₪" + value.toLocaleString("he-IL");
+              callback: function (value) {
+                return '₪' + value.toLocaleString('he-IL');
               },
               font: {
-                family: "system-ui, sans-serif",
+                family: 'system-ui, sans-serif',
               },
             },
           },
@@ -149,7 +149,7 @@ export default function AgentChart({ data, className = "" }) {
   }, [chartData]);
 
   // If no data, show empty state message
-  const containerClassName = className || "bg-white rounded-2xl shadow-md p-6 h-64";
+  const containerClassName = className || 'bg-white rounded-2xl shadow-md p-6 h-64';
 
   if (!data || data.length === 0) {
     return (

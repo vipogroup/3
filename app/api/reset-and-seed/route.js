@@ -1,69 +1,69 @@
-import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
-import bcrypt from "bcryptjs";
+import { NextResponse } from 'next/server';
+import { getDb } from '@/lib/db';
+import bcrypt from 'bcryptjs';
 
 export async function POST() {
   try {
-    console.log("🗑️ Clearing and reseeding users...");
-    
+    console.log('🗑️ Clearing and reseeding users...');
+
     const db = await getDb();
-    const users = db.collection("users");
-    
+    const users = db.collection('users');
+
     // Delete all users
     await users.deleteMany({});
-    console.log("✅ Deleted all existing users");
-    
+    console.log('✅ Deleted all existing users');
+
     // Demo users to seed
     const demoUsers = [
       {
-        fullName: "מנהל ראשי",
-        email: "admin@vipo.local",
-        phone: "0501234567",
-        password: "12345678A?",
-        role: "admin",
+        fullName: 'מנהל ראשי',
+        email: 'admin@vipo.local',
+        phone: '0501234567',
+        password: '12345678A?',
+        role: 'admin',
       },
       {
-        fullName: "סוכן בכיר",
-        email: "agent@vipo.local",
-        phone: "0521234567",
-        password: "12345678A?",
-        role: "agent",
+        fullName: 'סוכן בכיר',
+        email: 'agent@vipo.local',
+        phone: '0521234567',
+        password: '12345678A?',
+        role: 'agent',
       },
       {
-        fullName: "לקוח רגיל",
-        email: "user@vipo.local",
-        phone: "0541234567",
-        password: "12345678A?",
-        role: "customer",
+        fullName: 'לקוח רגיל',
+        email: 'user@vipo.local',
+        phone: '0541234567',
+        password: '12345678A?',
+        role: 'customer',
       },
       // Simple test users
       {
-        fullName: "Admin Test",
-        email: "admin@test.com",
-        phone: "0501111111",
-        password: "admin",
-        role: "admin",
+        fullName: 'Admin Test',
+        email: 'admin@test.com',
+        phone: '0501111111',
+        password: 'admin',
+        role: 'admin',
       },
       {
-        fullName: "Agent Test",
-        email: "agent@test.com",
-        phone: "0502222222",
-        password: "admin",
-        role: "agent",
+        fullName: 'Agent Test',
+        email: 'agent@test.com',
+        phone: '0502222222',
+        password: 'admin',
+        role: 'agent',
       },
       {
-        fullName: "User Test",
-        email: "user@test.com",
-        phone: "0503333333",
-        password: "admin",
-        role: "customer",
+        fullName: 'User Test',
+        email: 'user@test.com',
+        phone: '0503333333',
+        password: 'admin',
+        role: 'customer',
       },
     ];
-    
+
     // Hash passwords and insert users
     const insertPromises = demoUsers.map(async (user) => {
       const passwordHash = await bcrypt.hash(user.password, 10);
-      
+
       return users.insertOne({
         fullName: user.fullName,
         email: user.email.toLowerCase(),
@@ -79,30 +79,30 @@ export async function POST() {
         updatedAt: new Date(),
       });
     });
-    
+
     await Promise.all(insertPromises);
-    
+
     console.log(`✅ Seeded ${demoUsers.length} users to MongoDB`);
-    
+
     return NextResponse.json({
       success: true,
       message: `✅ Successfully reset and seeded ${demoUsers.length} demo users`,
-      users: demoUsers.map(u => ({
+      users: demoUsers.map((u) => ({
         email: u.email,
         password: u.password,
         role: u.role,
       })),
     });
   } catch (error) {
-    console.error("❌ Reset & Seed error:", error);
-    
+    console.error('❌ Reset & Seed error:', error);
+
     return NextResponse.json(
       {
         success: false,
-        message: "❌ Failed to reset and seed database",
+        message: '❌ Failed to reset and seed database',
         error: error.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -28,7 +28,7 @@ async function deleteUserByEmail(email) {
 
     // Find user first
     const user = await users.findOne({ email: email.toLowerCase() });
-    
+
     if (!user) {
       console.log(`⚠️  User with email "${email}" not found`);
       return;
@@ -43,13 +43,12 @@ async function deleteUserByEmail(email) {
 
     // Delete user
     const result = await users.deleteOne({ email: email.toLowerCase() });
-    
+
     if (result.deletedCount === 1) {
       console.log(`✅ User "${email}" deleted successfully`);
     } else {
       console.log(`⚠️  Failed to delete user`);
     }
-
   } catch (error) {
     console.error('❌ Error:', error);
   } finally {

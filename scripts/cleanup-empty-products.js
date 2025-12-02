@@ -1,14 +1,14 @@
-import mongoose from "mongoose";
-import { createRequire } from "module";
+import mongoose from 'mongoose';
+import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
-require("dotenv").config({ path: ".env.local" });
+require('dotenv').config({ path: '.env.local' });
 
-const ProductModule = require("../models/Product");
+const ProductModule = require('../models/Product');
 const Product = ProductModule?.default || ProductModule;
 
-const DEFAULT_IMAGE_URL = "https://via.placeholder.com/800x600?text=Product";
-const dryRun = process.argv.includes("--dry-run");
+const DEFAULT_IMAGE_URL = 'https://via.placeholder.com/800x600?text=Product';
+const dryRun = process.argv.includes('--dry-run');
 
 function buildFilter() {
   return {
@@ -16,8 +16,8 @@ function buildFilter() {
       { image: { $exists: false } },
       { imageUrl: { $exists: false } },
       { images: { $exists: false } },
-      { image: { $in: [null, "", DEFAULT_IMAGE_URL] } },
-      { imageUrl: { $in: [null, "", DEFAULT_IMAGE_URL] } },
+      { image: { $in: [null, '', DEFAULT_IMAGE_URL] } },
+      { imageUrl: { $in: [null, '', DEFAULT_IMAGE_URL] } },
       { images: { $size: 0 } },
     ],
   };
@@ -25,12 +25,12 @@ function buildFilter() {
 
 async function ensureConnection() {
   if (!process.env.MONGODB_URI) {
-    throw new Error("Missing MONGODB_URI environment variable");
+    throw new Error('Missing MONGODB_URI environment variable');
   }
 
   if (mongoose.connection.readyState === 0) {
     await mongoose.connect(process.env.MONGODB_URI, {
-      dbName: process.env.MONGODB_DB || "vipo",
+      dbName: process.env.MONGODB_DB || 'vipo',
       serverSelectionTimeoutMS: 30000,
     });
   }
@@ -40,9 +40,7 @@ async function main() {
   await ensureConnection();
 
   const filter = buildFilter();
-  const candidates = await Product.find(filter)
-    .select("_id name image imageUrl images")
-    .lean();
+  const candidates = await Product.find(filter).select('_id name image imageUrl images').lean();
 
   console.log(`🔍 Found ${candidates.length} products without valid images.`);
 
@@ -52,15 +50,13 @@ async function main() {
   }
 
   const sample = candidates.slice(0, 5);
-  console.log("🔎 Sample:");
+  console.log('🔎 Sample:');
   sample.forEach((product) => {
-    console.log(
-      ` - ${product.name || product._id}: image=${product.image || "<none>"}`
-    );
+    console.log(` - ${product.name || product._id}: image=${product.image || '<none>'}`);
   });
 
   if (dryRun) {
-    console.log("🧪 Dry run mode – no deletions performed.");
+    console.log('🧪 Dry run mode – no deletions performed.');
     await mongoose.connection.close();
     return;
   }
@@ -73,7 +69,7 @@ async function main() {
 }
 
 main().catch(async (error) => {
-  console.error("❌ Cleanup failed:", error);
+  console.error('❌ Cleanup failed:', error);
   await mongoose.connection.close().catch(() => {});
   process.exit(1);
 });
