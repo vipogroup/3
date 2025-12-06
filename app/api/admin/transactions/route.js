@@ -2,8 +2,9 @@ export const runtime = 'nodejs';
 
 import Transaction from '@/models/Transaction';
 import { getDb } from '@/lib/db';
-import { requireAdmin } from '@/lib/authz';
+import { requireAdminApi } from '@/lib/auth/server';
 import { NextResponse } from 'next/server';
+import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
 /**
  * GET /api/admin/transactions
@@ -18,7 +19,12 @@ export async function GET(req) {
     await getDb();
 
     // Verify admin access
-    const admin = await requireAdmin();
+    const admin = await requireAdminApi(req);
+    const identifier = buildRateLimitKey(req, admin.id);
+    const rateLimit = rateLimiters.admin(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
 
     const { searchParams } = new URL(req.url);
     const status = searchParams.get('status'); // optional
@@ -88,13 +94,9 @@ export async function GET(req) {
   } catch (err) {
     console.error('ADMIN_TRANSACTIONS_ERROR:', err);
 
-    if (err.status === 401) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    if (err.status === 403) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    const status = err?.status || 500;
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
+    return NextResponse.json({ error: message }, { status });
   }
 }

@@ -1,26 +1,47 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
-import { verify } from '@/lib/auth/createToken';
-import { getAuthToken } from '@/lib/auth/requireAuth';
+import { requireAdminApi } from '@/lib/auth/server';
+import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+
 export async function POST(req) {
   try {
-    // Verify admin role
-    const token = getAuthToken(req);
-    const user = verify(token);
-
-    if (!user || user.role !== 'admin') {
-      return NextResponse.json({ error: 'Unauthorized. Admin access required' }, { status: 403 });
+    const admin = await requireAdminApi(req);
+    const identifier = buildRateLimitKey(req, admin.id);
+    const rateLimit = rateLimiters.adminProductUploads(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: 'Too many uploads' }, { status: 429 });
     }
+
     const form = await req.formData();
     const file = form.get('file');
 
     if (!file || typeof file === 'string') {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+    }
+
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      return NextResponse.json(
+        { error: 'unsupported_file_type', allowed: ALLOWED_MIME_TYPES },
+        { status: 415 },
+      );
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      return NextResponse.json(
+        {
+          error: 'file_too_large',
+          maxBytes: MAX_FILE_SIZE_BYTES,
+          receivedBytes: file.size,
+        },
+        { status: 413 },
+      );
     }
 
     const bytes = Buffer.from(await file.arrayBuffer());

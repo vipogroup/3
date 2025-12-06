@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
-import { getUserFromCookies } from '@/lib/auth/server';
+import { requireAuthApi } from '@/lib/auth/server';
+import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
 /**
  * POST /api/withdrawals
@@ -9,10 +11,11 @@ import { getUserFromCookies } from '@/lib/auth/server';
 export async function POST(req) {
   try {
     // Get current user
-    const user = await getUserFromCookies();
-
-    if (!user || !user.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = await requireAuthApi(req);
+    const identifier = buildRateLimitKey(req, user.id);
+    const rateLimit = rateLimiters.withdrawals(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
 
     const body = await req.json();
@@ -26,20 +29,36 @@ export async function POST(req) {
     const db = await getDb();
     const users = db.collection('users');
     const withdrawals = db.collection('withdrawalRequests');
+    const userObjectId = new ObjectId(user.id);
+
+    // Prevent multiple pending/approved requests
+    const openRequest = await withdrawals.findOne({
+      userId: userObjectId,
+      status: { $in: ['pending', 'approved'] },
+    });
+    if (openRequest) {
+      return NextResponse.json(
+        {
+          error: 'קיימת בקשת משיכה פעילה. המתן לאישור מנהל לפני פתיחת בקשה נוספת.',
+          requestId: String(openRequest._id),
+          status: openRequest.status,
+        },
+        { status: 409 },
+      );
+    }
 
     // Get user's current balance
     const userData = await users.findOne(
-      { _id: user.id },
-      { projection: { commissionBalance: 1 } },
+      { _id: userObjectId },
+      { projection: { commissionBalance: 1, commissionOnHold: 1 } },
     );
 
     if (!userData) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const balance = userData.commissionBalance || 0;
+    const balance = Number(userData.commissionBalance || 0);
 
-    // Check if user has enough balance
     if (amount > balance) {
       return NextResponse.json(
         {
@@ -51,13 +70,39 @@ export async function POST(req) {
       );
     }
 
+    // Atomically lock funds: move from balance to onHold
+    const lockResult = await users.findOneAndUpdate(
+      { _id: userObjectId, commissionBalance: { $gte: amount } },
+      {
+        $inc: { commissionBalance: -amount, commissionOnHold: amount },
+      },
+      { returnDocument: 'after' },
+    );
+
+    if (!lockResult.value) {
+      return NextResponse.json(
+        {
+          error: 'Insufficient balance',
+          balance,
+          requested: amount,
+        },
+        { status: 400 },
+      );
+    }
+
+    const snapshotBalance = lockResult.value.commissionBalance ?? 0;
+    const snapshotOnHold = lockResult.value.commissionOnHold ?? 0;
+
     // Create withdrawal request
     const doc = {
-      userId: user.id,
+      userId: userObjectId,
       amount,
       notes: notes || '',
       status: 'pending',
       adminNotes: '',
+      snapshotBalance,
+      snapshotOnHold,
+      autoSettled: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -81,7 +126,10 @@ export async function POST(req) {
     );
   } catch (err) {
     console.error('WITHDRAWAL_REQUEST_ERROR:', err);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    const status = err?.status || 500;
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
@@ -89,18 +137,23 @@ export async function POST(req) {
  * GET /api/withdrawals
  * Get user's withdrawal requests
  */
-export async function GET() {
+export async function GET(req) {
   try {
-    const user = await getUserFromCookies();
-
-    if (!user || !user.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = await requireAuthApi(req);
+    const identifier = buildRateLimitKey(req, user.id);
+    const rateLimit = rateLimiters.withdrawals(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
 
     const db = await getDb();
     const withdrawals = db.collection('withdrawalRequests');
+    const userObjectId = new ObjectId(user.id);
 
-    const requests = await withdrawals.find({ userId: user.id }).sort({ createdAt: -1 }).toArray();
+    const requests = await withdrawals
+      .find({ userId: userObjectId })
+      .sort({ createdAt: -1 })
+      .toArray();
 
     return NextResponse.json({
       ok: true,
@@ -116,6 +169,9 @@ export async function GET() {
     });
   } catch (err) {
     console.error('WITHDRAWAL_LIST_ERROR:', err);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    const status = err?.status || 500;
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
+    return NextResponse.json({ error: message }, { status });
   }
 }

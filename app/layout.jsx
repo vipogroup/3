@@ -12,17 +12,21 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const enableServiceWorker = process.env.NODE_ENV === 'production';
+
   return (
     <html lang="he" dir="rtl">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <link rel="manifest" href="/manifest.webmanifest" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }",
-          }}
-        />
+        {enableServiceWorker ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html:
+                "if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }",
+            }}
+          />
+        ) : null}
       </head>
       <body className="bg-gray-50">
         <CartProvider>

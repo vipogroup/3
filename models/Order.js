@@ -7,7 +7,8 @@ const OrderSchema = new mongoose.Schema(
     // Referral tracking
     refSource: { type: String, default: null }, // הערך הגולמי מה-cookie
     refAgentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    commissionReferral: { type: Number, default: 0 }, // סכום העמלה (במטבע העסקה)
+    commissionAmount: { type: Number, default: 0 }, // סכום העמלה (במטבע העסקה)
+    commissionSettled: { type: Boolean, default: false },
 
     // Coupon tracking
     appliedCouponCode: { type: String, default: null },
@@ -15,18 +16,20 @@ const OrderSchema = new mongoose.Schema(
 
     // Core order fields
     items: { type: Array, default: [] },
-    total: { type: Number, default: 0 },
+    totalAmount: { type: Number, default: 0 },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
 
     // Minimal placeholders (extend as needed)
     customerName: { type: String, default: null },
     customerPhone: { type: String, default: null },
-    totalAmount: { type: Number, default: 0 },
   },
   {
     timestamps: true,
     versionKey: false,
   },
 );
+
+OrderSchema.index({ agentId: 1, status: 1, createdAt: -1 });
+OrderSchema.index({ refAgentId: 1, createdAt: -1 });
 
 export default mongoose.models.Order || mongoose.model('Order', OrderSchema);

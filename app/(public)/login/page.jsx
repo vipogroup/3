@@ -76,7 +76,7 @@ export default function LoginPage() {
 
         let targetPath = '/dashboard';
         if (data.role === 'customer') {
-          targetPath = '/customer';
+          targetPath = '/products';
         } else if (data.role === 'agent') {
           targetPath = '/agent';
         } else if (data.role === 'admin') {

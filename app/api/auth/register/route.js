@@ -26,32 +26,39 @@ export async function POST(req) {
 
     // Support both phone and email registration
     if (!password || !role) {
-      return NextResponse.json({ ok: false, error: 'missing fields' }, { status: 400 });
-    }
-
-    if (!phone && !email) {
-      return NextResponse.json({ ok: false, error: 'phone or email required' }, { status: 400 });
-    }
-
-    if (['admin'].includes(role)) {
       return NextResponse.json(
-        { ok: false, error: 'admin_registration_disabled' },
-        { status: 403 },
+        { ok: false, error: 'missing fields' },
+        { status: 400 },
       );
     }
 
-    if (!['agent', 'customer'].includes(role)) {
-      return NextResponse.json({ ok: false, error: 'invalid role' }, { status: 400 });
+    if (!phone && !email) {
+      return NextResponse.json(
+        { ok: false, error: 'phone or email required' },
+        { status: 400 },
+      );
+    }
+
+    if (!['agent', 'customer', 'admin'].includes(role)) {
+      return NextResponse.json(
+        { ok: false, error: 'invalid role' },
+        { status: 400 },
+      );
     }
 
     const db = await getDb();
     const users = db.collection('users');
 
     // Check if user exists
-    const query = email ? { email: email.toLowerCase().trim() } : { phone };
+    const query = email
+      ? { email: email.toLowerCase().trim() }
+      : { phone };
     const exists = await users.findOne(query);
     if (exists) {
-      return NextResponse.json({ ok: false, error: 'user exists' }, { status: 409 });
+      return NextResponse.json(
+        { ok: false, error: 'user exists' },
+        { status: 409 },
+      );
     }
 
     // Hash password
@@ -67,7 +74,7 @@ export async function POST(req) {
       fullName: fullName || '',
       phone: phone || null,
       email: email ? email.toLowerCase().trim() : null,
-      passwordHash: passwordHash, // Fixed: use passwordHash instead of password
+      passwordHash, // hashed password only
       role,
       isActive: true,
       createdAt: new Date(),
@@ -78,7 +85,10 @@ export async function POST(req) {
     if (finalReferrerId) {
       try {
         const refUserId = new ObjectId(finalReferrerId);
-        const refUser = await users.findOne({ _id: refUserId }, { projection: { _id: 1 } });
+        const refUser = await users.findOne(
+          { _id: refUserId },
+          { projection: { _id: 1 } },
+        );
         if (refUser) {
           doc.referredBy = refUser._id;
         }
@@ -92,7 +102,10 @@ export async function POST(req) {
 
     // Prevent self-referral (if somehow user referred themselves)
     if (doc.referredBy && String(doc.referredBy) === String(newUserId)) {
-      await users.updateOne({ _id: newUserId }, { $unset: { referredBy: '' } });
+      await users.updateOne(
+        { _id: newUserId },
+        { $unset: { referredBy: '' } },
+      );
       doc.referredBy = null;
     }
 
@@ -131,7 +144,9 @@ export async function POST(req) {
       await connectMongo();
       await Notification.create({
         type: 'new_user',
-        message: `נרשם משתמש חדש: ${doc.email || doc.phone || doc.fullName || 'Unknown'}`,
+        message: `נרשם משתמש חדש: ${
+          doc.email || doc.phone || doc.fullName || 'Unknown'
+        }`,
         payload: {
           userId: newUserId,
           email: doc.email,
@@ -143,12 +158,18 @@ export async function POST(req) {
     }
 
     // Clear refSource cookie after successful registration
-    const res = NextResponse.json({ ok: true, userId: String(newUserId) }, { status: 201 });
+    const res = NextResponse.json(
+      { ok: true, userId: String(newUserId), role },
+      { status: 201 },
+    );
     res.cookies.set('refSource', '', { path: '/', maxAge: 0 });
 
     return res;
   } catch (e) {
     console.error('REGISTER_ERROR:', e);
-    return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: 'server error' },
+      { status: 500 },
+    );
   }
 }

@@ -39,6 +39,23 @@ const WithdrawalRequestSchema = new mongoose.Schema(
     processedAt: {
       type: Date,
     },
+    payoutTransactionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Transaction',
+      index: true,
+    },
+    snapshotBalance: {
+      type: Number,
+      default: 0,
+    },
+    snapshotOnHold: {
+      type: Number,
+      default: 0,
+    },
+    autoSettled: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
@@ -49,6 +66,7 @@ const WithdrawalRequestSchema = new mongoose.Schema(
 // Index for queries
 WithdrawalRequestSchema.index({ userId: 1, status: 1 });
 WithdrawalRequestSchema.index({ createdAt: -1 });
+WithdrawalRequestSchema.index({ userId: 1, createdAt: -1 });
 
 export default mongoose.models.WithdrawalRequest ||
   mongoose.model('WithdrawalRequest', WithdrawalRequestSchema);

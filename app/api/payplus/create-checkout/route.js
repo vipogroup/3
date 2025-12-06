@@ -1,6 +1,8 @@
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { createPayPlusSession, validatePayPlusConfig } from '@/lib/payplus/client';
+import { requireAuthApi } from '@/lib/auth/server';
+import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
 export async function POST(req) {
   try {
@@ -23,6 +25,21 @@ export async function POST(req) {
     const body = await req.json();
     if (!body?.orderId) {
       return Response.json({ error: 'order_id_required' }, { status: 400 });
+    }
+
+    let requester = null;
+    try {
+      requester = await requireAuthApi(req);
+    } catch (authError) {
+      if (!authError?.status || authError.status !== 401) {
+        throw authError;
+      }
+    }
+
+    const rateLimitIdentifier = buildRateLimitKey(req, requester?.id || body.orderId);
+    const rateLimit = rateLimiters.payplusSession(req, rateLimitIdentifier);
+    if (!rateLimit.allowed) {
+      return Response.json({ error: 'Too many requests' }, { status: 429 });
     }
 
     const db = await getDb();
@@ -71,6 +88,9 @@ export async function POST(req) {
     });
   } catch (error) {
     console.error('PAYPLUS_CHECKOUT_ERROR', error);
-    return Response.json({ error: 'server_error' }, { status: 500 });
+    const status = error?.status || 500;
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'server_error';
+    return Response.json({ error: message }, { status });
   }
 }

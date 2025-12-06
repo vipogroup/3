@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 const ProductSchema = new mongoose.Schema(
   {
+    sku: { type: String, trim: true, index: true },
     legacyId: { type: String, index: true, unique: true, sparse: true },
     name: { type: String, required: true, trim: true },
     description: { type: String, required: true },
@@ -14,6 +15,7 @@ const ProductSchema = new mongoose.Schema(
     price: { type: Number, required: true, min: 0 },
     originalPrice: { type: Number, default: null },
     commission: { type: Number, default: 0 },
+    currency: { type: String, default: 'ILS', uppercase: true },
 
     // Purchase types
     type: {
@@ -51,17 +53,78 @@ const ProductSchema = new mongoose.Schema(
 
     // Stock management
     inStock: { type: Boolean, default: true },
-    stockCount: { type: Number, default: 0 },
 
     // UX metadata
-    rating: { type: Number, default: 0 },
-    reviews: { type: Number, default: 0 },
-    features: { type: [String], default: [] },
-    specs: { type: mongoose.Schema.Types.Mixed, default: {} },
+    rating: { 
+      type: Number, 
+      default: 0 
+    },
+    reviews: { 
+      type: Number, 
+      default: 0 
+    },
+    features: { 
+      type: [String], 
+      default: [] 
+    },
+    metadata: { 
+      type: mongoose.Schema.Types.Mixed, 
+      default: {} 
+    },
+    specs: { 
+      type: mongoose.Schema.Types.Mixed, 
+      default: {} 
+    },
 
-    active: { type: Boolean, default: true },
+    active: { 
+      type: Boolean, 
+      default: true 
+    },
+    archivedAt: { 
+      type: Date, 
+      default: null 
+    },
   },
   { timestamps: true },
 );
+
+ProductSchema.pre('validate', function productPreValidate(next) {
+  if (this.name) this.name = this.name.trim();
+  if (this.category) this.category = this.category.trim();
+  if (this.catalogSlug) this.catalogSlug = this.catalogSlug.trim().toLowerCase();
+
+  if (this.currency) {
+    this.currency = this.currency.toString().trim().toUpperCase() || 'ILS';
+  } else {
+    this.currency = 'ILS';
+  }
+
+  if (this.price !== undefined) {
+    const numericPrice = Number(this.price);
+    if (Number.isNaN(numericPrice) || numericPrice <= 0) {
+      this.invalidate('price', 'Product price must be a positive number');
+    } else {
+      this.price = numericPrice;
+    }
+  }
+
+  if (this.originalPrice !== undefined && this.originalPrice !== null) {
+    const numericOriginal = Number(this.originalPrice);
+    this.originalPrice = Number.isNaN(numericOriginal) ? null : numericOriginal;
+  }
+
+  if (this.stockCount !== undefined) {
+    const numericStock = Number(this.stockCount);
+    this.stockCount = Number.isNaN(numericStock) ? 0 : Math.max(0, numericStock);
+  }
+
+  next();
+});
+
+ProductSchema.index({ catalogId: 1, active: 1 });
+ProductSchema.index({ catalogSlug: 1, active: 1 });
+ProductSchema.index({ active: 1, sortOrder: 1 || 1 });
+ProductSchema.index({ price: 1 });
+ProductSchema.index({ active: 1 });
 
 export default mongoose.models.Product || mongoose.model('Product', ProductSchema);

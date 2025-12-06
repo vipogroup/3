@@ -12,10 +12,15 @@ if (!uri) {
   process.exit(1);
 }
 
-// allow overrides via env, with safe defaults for local dev
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@vipo.local';
-const ADMIN_PHONE = process.env.ADMIN_PHONE || '0501234567';
-const ADMIN_PASSWORD = process.env.ADMIN_PASS || '12345678A!';
+const dbName = process.env.MONGODB_DB || 'vipo';
+
+// hard-code admin credentials per latest request
+const ADMIN_EMAIL = 'm0587009938@gmail.com';
+const ADMIN_PHONE = '0587009938';
+const ADMIN_PASSWORD = '12345678';
+
+console.log('🔄 Resetting admin user...');
+console.log('📧 Email:', ADMIN_EMAIL);
 
 (async () => {
   const client = new MongoClient(uri);
@@ -23,7 +28,8 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASS || '12345678A!';
 
   try {
     await client.connect();
-    const db = client.db(); // default DB from your URI
+    console.log('🟢 Connected to MongoDB');
+    const db = client.db(dbName);
     const users = db.collection('users');
 
     const hash = await bcrypt.hash(ADMIN_PASSWORD, 10);
@@ -34,7 +40,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASS || '12345678A!';
         $set: {
           email: ADMIN_EMAIL,
           phone: ADMIN_PHONE,
-          password: hash,
+          passwordHash: hash,
           role: 'admin',
           isActive: true,
           updatedAt: new Date(),
@@ -50,6 +56,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASS || '12345678A!';
       '✅ Admin user reset successfully:',
       res.upsertedId ? `created (${res.upsertedId})` : 'updated',
     );
+    console.log('➡️  Login with email/password:', ADMIN_EMAIL, ADMIN_PASSWORD);
   } catch (e) {
     exitCode = 1;
     console.error('❌ Error resetting admin:', e);

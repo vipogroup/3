@@ -1,48 +1,30 @@
 import { NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
 
-const PROTECTED_PREFIXES = ['/app', '/admin', '/agent', '/api/private', '/dashboard', '/customer'];
-const PUBLIC_PATHS = ['/admin/login', '/login'];
+const PROTECTED_ROUTES = ['/dashboard', '/admin'];
 
-export async function middleware(req) {
-  const url = req.nextUrl;
-  const token = req.cookies.get('auth_token')?.value;
+export function middleware(request) {
+  const { pathname } = request.nextUrl;
+  const token = request.cookies.get('auth_token')?.value;
 
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[LOGIN_DEBUG] middleware', { path: url.pathname, hasToken: !!token });
-  }
+  console.log('[MW]', pathname, 'token?', !!token);
 
-  if (PUBLIC_PATHS.some((p) => url.pathname === p)) {
+  if (pathname === '/login') {
     if (token) {
-      return NextResponse.redirect(new URL('/dashboard', req.url));
+      return NextResponse.redirect(new URL('/dashboard', request.url));
     }
     return NextResponse.next();
   }
 
-  const needsAuth = PROTECTED_PREFIXES.some((p) => url.pathname.startsWith(p));
-  if (!needsAuth) return NextResponse.next();
-
-  if (!token) {
-    url.searchParams.set('next', url.pathname);
-    return NextResponse.redirect(new URL(`/login?${url.searchParams}`, req.url));
-  }
-
-  try {
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
-    await jwtVerify(token, secret);
+  if (PROTECTED_ROUTES.some((route) => pathname.startsWith(route))) {
+    if (!token) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
     return NextResponse.next();
-  } catch {
-    return NextResponse.redirect(new URL('/login', req.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    '/app/:path*',
-    '/admin/:path*',
-    '/agent/:path*',
-    '/api/private/:path*',
-    '/dashboard/:path*',
-    '/customer/:path*',
-  ],
+  matcher: ['/admin/:path*', '/dashboard/:path*', '/login'],
 };

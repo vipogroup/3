@@ -37,6 +37,7 @@ const UserSchema = new mongoose.Schema(
     // Stage 12 – Commission/Credit System
     referralCount: { type: Number, default: 0 }, // כמות הפניות (שם חלופי)
     commissionBalance: { type: Number, default: 0 }, // יתרת עמלות בש"ח
+    commissionOnHold: { type: Number, default: 0 }, // סכום נעול למשיכות בתהליך
     totalSales: { type: Number, default: 0 }, // סה"כ מכירות שהסוכן הביא
 
     // Coupon program for agents
@@ -100,6 +101,9 @@ UserSchema.index({ referralId: 1 }, { unique: true, sparse: true, name: 'uniq_re
 UserSchema.index({ phone: 1 }, { unique: true, name: 'uniq_phone' });
 UserSchema.index({ email: 1 }, { sparse: true, name: 'idx_email_sparse' });
 UserSchema.index({ referredBy: 1 }, { name: 'idx_referredBy' });
+UserSchema.index({ commissionOnHold: 1 }, { name: 'idx_commission_on_hold' });
+UserSchema.index({ role: 1, commissionBalance: -1 }, { name: 'idx_role_commissionBalance' });
+UserSchema.index({ role: 1, isActive: 1 }, { name: 'idx_role_isActive' });
 
 // ייצוא סטנדרטי של מודל Mongoose
 export default mongoose.models.User || mongoose.model('User', UserSchema);

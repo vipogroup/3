@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
+import { requireAdminApi } from '@/lib/auth/server';
+import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
 /**
  * GET /api/admin/dashboard
@@ -8,6 +10,13 @@ import { ObjectId } from 'mongodb';
  */
 export async function GET(req) {
   try {
+    const admin = await requireAdminApi(req);
+    const identifier = buildRateLimitKey(req, admin.id);
+    const rateLimit = rateLimiters.admin(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ ok: false, error: 'Too many requests' }, { status: 429 });
+    }
+
     const db = await getDb();
     const users = db.collection('users');
     const orders = db.collection('orders');
@@ -157,6 +166,9 @@ export async function GET(req) {
     });
   } catch (error) {
     console.error('ADMIN_DASHBOARD_ERROR:', error);
-    return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
+    const status = error?.status || 500;
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'server error';
+    return NextResponse.json({ ok: false, error: message }, { status });
   }
 }

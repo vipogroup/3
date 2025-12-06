@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
+import { requireAuthApi } from '@/lib/auth/server';
+import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
 /**
  * GET /api/agent/stats?agentId=xxx
@@ -8,11 +10,34 @@ import { ObjectId } from 'mongodb';
  */
 export async function GET(req) {
   try {
-    const { searchParams } = new URL(req.url);
-    const agentId = searchParams.get('agentId');
+    const user = await requireAuthApi(req);
+    if (user.role !== 'agent' && user.role !== 'admin') {
+      return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
+    }
 
-    if (!agentId) {
-      return NextResponse.json({ ok: false, error: 'agentId required' }, { status: 400 });
+    const identifier = buildRateLimitKey(req, user.id);
+    const rateLimit = rateLimiters.agentStats(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ ok: false, error: 'Too many requests' }, { status: 429 });
+    }
+
+    const { searchParams } = new URL(req.url);
+
+    let targetAgentId = null;
+    if (user.role === 'agent') {
+      targetAgentId = user.id;
+    } else if (user.role === 'admin') {
+      targetAgentId = (searchParams.get('agentId') || '').trim();
+      if (!targetAgentId) {
+        return NextResponse.json({ ok: false, error: 'agentId required' }, { status: 400 });
+      }
+    }
+
+    let agentObjectId;
+    try {
+      agentObjectId = new ObjectId(targetAgentId);
+    } catch (err) {
+      return NextResponse.json({ ok: false, error: 'invalid_agent_id' }, { status: 400 });
     }
 
     const db = await getDb();
@@ -22,7 +47,7 @@ export async function GET(req) {
 
     // Get agent
     const agent = await users.findOne(
-      { _id: new ObjectId(agentId), role: 'agent' },
+      { _id: agentObjectId, role: 'agent' },
       {
         projection: {
           referralsCount: 1,
@@ -40,13 +65,13 @@ export async function GET(req) {
 
     // Get total sales
     const totalSales = await orders.countDocuments({
-      refAgentId: new ObjectId(agentId),
+      refAgentId: agentObjectId,
     });
 
     // Get total commission earned
     const commissionResult = await orders
       .aggregate([
-        { $match: { refAgentId: new ObjectId(agentId) } },
+        { $match: { refAgentId: agentObjectId } },
         {
           $group: {
             _id: null,
@@ -63,7 +88,7 @@ export async function GET(req) {
     // Get clicks/views from referral logs
     const clicksResult = await referralLogs
       .aggregate([
-        { $match: { agentId: new ObjectId(agentId) } },
+        { $match: { agentId: agentObjectId } },
         {
           $group: {
             _id: '$action',

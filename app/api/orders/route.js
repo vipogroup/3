@@ -3,9 +3,9 @@ import { ObjectId } from 'mongodb';
 import { cookies } from 'next/headers';
 
 import { getDb } from '@/lib/db';
-import { verifyJwt } from '@/src/lib/auth/createToken.js';
 import { calcTotals } from '@/lib/orders/calc.js';
-import { getAuthToken, requireAuth } from '@/lib/auth/requireAuth';
+import { requireAuthApi } from '@/lib/auth/server';
+import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
 async function ordersCollection() {
   const db = await getDb();
@@ -17,9 +17,12 @@ async function ordersCollection() {
 
 export async function GET(req) {
   try {
-    const token = getAuthToken(req) || '';
-    const decoded = verifyJwt(token);
-    if (!decoded?.userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = await requireAuthApi(req);
+    const identifier = buildRateLimitKey(req, user.id);
+    const rateLimit = rateLimiters.ordersList(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
 
     const { searchParams } = new URL(req.url);
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
@@ -29,7 +32,7 @@ export async function GET(req) {
     const q = (searchParams.get('q') || '').trim();
 
     const filter = {};
-    if (decoded.role !== 'admin') filter.agentId = decoded.userId;
+    if (user.role !== 'admin') filter.agentId = user.id;
     if (status) filter.status = status;
     if (q) {
       filter.$or = [
@@ -45,15 +48,22 @@ export async function GET(req) {
     return NextResponse.json({ items, total, page, limit });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    const status = e?.status || 500;
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
 export async function POST(req) {
   try {
     // 1) Auth
-    const me = await requireAuth(req);
-    if (!me) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const me = await requireAuthApi(req);
+    const identifier = buildRateLimitKey(req, me.id);
+    const rateLimit = rateLimiters.ordersCreate(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
 
     const db = await getDb();
     const usersCol = db.collection('users');
@@ -61,13 +71,8 @@ export async function POST(req) {
 
     // 2) Parse body
     const body = await req.json();
-    const {
-      items: rawItems = [],
-      total: providedTotal,
-      totals: totalsPayload = {},
-      coupon: couponPayload = null,
-      ...rest
-    } = body || {};
+    const { items: rawItems = [], totals: totalsPayload = {}, coupon: couponPayload = null, ...rest } =
+      body || {};
 
     if (!Array.isArray(rawItems)) {
       return NextResponse.json({ error: 'Invalid order payload' }, { status: 400 });
@@ -148,11 +153,11 @@ export async function POST(req) {
     const subtotalDiscount =
       discountAmount || Number(((subtotal * discountPercent) / 100).toFixed(2));
     discountAmount = Math.min(subtotal, subtotalDiscount);
-    const orderTotal = Math.max(0, subtotal - discountAmount);
+    const totalAmount = Math.max(0, subtotal - discountAmount);
 
     // 5) Legacy referral fallback (only when no coupon was provided)
     let refAgentId = null;
-    let commissionReferral = commissionAmount;
+    let finalCommissionAmount = commissionAmount;
 
     if (!couponAgent) {
       let refAgent = null;
@@ -169,14 +174,14 @@ export async function POST(req) {
 
       if (refAgent && String(refAgent._id) !== String(me._id)) {
         refAgentId = refAgent._id;
-        commissionReferral = 2;
+        finalCommissionAmount = 2;
       } else {
         refSource = null;
-        commissionReferral = 0;
+        finalCommissionAmount = 0;
       }
     } else {
       refAgentId = couponAgent._id;
-      commissionReferral = commissionAmount;
+      finalCommissionAmount = commissionAmount;
     }
 
     // 6) Create order (Native Driver)
@@ -186,19 +191,20 @@ export async function POST(req) {
         subtotal,
         discountPercent,
         discountAmount,
-        total: orderTotal,
+        totalAmount,
       },
-      total: orderTotal,
+      totalAmount,
       discountAmount,
       createdBy: me._id,
       status: 'pending',
+      commissionSettled: false,
       refSource,
       refAgentId,
-      commissionReferral,
+      commissionAmount: finalCommissionAmount,
       appliedCouponCode: couponCode,
       agentId: couponAgent?._id ?? refAgentId,
       couponCommissionPercent: commissionPercent,
-      couponCommissionAmount: commissionAmount,
+      commissionPercent,
       createdAt: new Date(),
       updatedAt: new Date(),
       ...rest,
@@ -217,13 +223,15 @@ export async function POST(req) {
         couponCode,
         refSource,
         refAgentId,
-        commission: commissionReferral,
-        commissionReferral,
+        commissionAmount: finalCommissionAmount,
       },
       { status: 201 },
     );
   } catch (err) {
     console.error('Create order error:', err);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    const status = err?.status || 500;
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
+    return NextResponse.json({ error: message }, { status });
   }
 }

@@ -12,6 +12,7 @@
     "test:ui": "playwright test",
     "verify": "node scripts/smoke-verify.mjs",
     "report": "node scripts/report/collect.js",
+    "db:check": "node scripts/db-check.mjs",
     "ci:all": "cross-env NODE_ENV=test npm run test:api && npm run test:ui && npm run verify && npm run report",
     "reset-admin": "cross-env NODE_ENV=development node -r dotenv/config scripts/reset-admin.js",
     "seed-users": "cross-env NODE_ENV=development node -r dotenv/config scripts/seed-users.js",
@@ -63,6 +64,6 @@
     "prettier": "^3.7.3",
     "supertest": "^7.1.4",
     "tailwindcss": "3.4.13",
-    "vitest": "^4.0.5"
+    "vitest": "^1.6.0"
   }
 }
