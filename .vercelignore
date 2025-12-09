@@ -18,8 +18,13 @@ tests
 reports
 coverage
 
-# Scripts
-scripts
+# Scripts (keep postinstall.js)
+scripts/*.mjs
+scripts/dev-*.ps1
+scripts/auto-restart.ps1
+scripts/debug-*.mjs
+scripts/ensure-*.mjs
+scripts/register-*.js
 
 # IDE
 .vscode
