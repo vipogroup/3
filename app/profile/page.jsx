@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import MainLayout from '@/app/components/layout/MainLayout';
+import { copyToClipboard } from '@/app/utils/copyToClipboard';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -20,19 +21,44 @@ export default function ProfilePage() {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch('/api/auth/me');
-        if (!res.ok) {
+        const authRes = await fetch('/api/auth/me');
+        if (!authRes.ok) {
           router.push('/login');
           return;
         }
-        const data = await res.json();
-        setUser(data.user);
+
+        const authData = await authRes.json();
+        let mergedUser = authData.user || null;
+
+        try {
+          const profileRes = await fetch('/api/users/me');
+          if (profileRes.status === 401) {
+            router.push('/login');
+            return;
+          }
+          if (profileRes.ok) {
+            const profileData = await profileRes.json();
+            if (profileData?.user) {
+              mergedUser = mergedUser ? { ...mergedUser, ...profileData.user } : profileData.user;
+            }
+          }
+        } catch (profileError) {
+          console.error('Failed to fetch extended profile', profileError);
+        }
+
+        if (!mergedUser) {
+          setError('שגיאה בטעינת הפרופיל');
+          return;
+        }
+
+        setUser(mergedUser);
         setFormData({
-          fullName: data.user.fullName || data.user.name || '',
-          phone: data.user.phone || '',
-          email: data.user.email || '',
+          fullName: mergedUser.fullName || mergedUser.name || '',
+          phone: mergedUser.phone || '',
+          email: mergedUser.email || '',
         });
       } catch (err) {
+        console.error('Failed to fetch profile', err);
         setError('שגיאה בטעינת הפרופיל');
       } finally {
         setLoading(false);
@@ -75,9 +101,9 @@ export default function ProfilePage() {
   const handleCancel = () => {
     setIsEditing(false);
     setFormData({
-      fullName: user.fullName || user.name || '',
-      phone: user.phone || '',
-      email: user.email || '',
+      fullName: user?.fullName || user?.name || '',
+      phone: user?.phone || '',
+      email: user?.email || '',
     });
     setFormError('');
   };
@@ -93,10 +119,16 @@ export default function ProfilePage() {
     setFormSuccess('');
 
     try {
-      const res = await fetch('/api/profile', {
-        method: 'PUT',
+      const trimmedData = {
+        fullName: formData.fullName.trim(),
+        phone: formData.phone.trim(),
+        email: formData.email.trim(),
+      };
+
+      const res = await fetch('/api/users/me', {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(trimmedData),
       });
 
       if (!res.ok) {
@@ -105,7 +137,14 @@ export default function ProfilePage() {
       }
 
       const data = await res.json();
-      setUser(data.user);
+      if (data?.user) {
+        setUser((prev) => ({ ...(prev || {}), ...data.user }));
+        setFormData({
+          fullName: data.user.fullName || data.user.name || '',
+          phone: data.user.phone || '',
+          email: data.user.email || '',
+        });
+      }
       setIsEditing(false);
       setFormSuccess('הפרטים עודכנו בהצלחה!');
       setTimeout(() => setFormSuccess(''), 3000);
@@ -360,9 +399,13 @@ export default function ProfilePage() {
               </div>
 
               <button
-                onClick={() => {
-                  navigator.clipboard.writeText(couponCode);
-                  alert('קוד הועתק!');
+                onClick={async () => {
+                  const ok = await copyToClipboard(couponCode);
+                  if (ok) {
+                    alert('קוד הועתק!');
+                  } else {
+                    alert('אירעה שגיאה בעת העתקת הקוד');
+                  }
                 }}
                 className="w-full mt-4 text-white font-medium py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
                 style={{

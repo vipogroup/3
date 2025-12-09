@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "postinstall": "node scripts/postinstall.js",
-    "test:api": "vitest run",
+    "test:api": "cross-env NODE_ENV=test DISABLE_RATE_LIMIT=true vitest run",
     "test:ui": "playwright test",
     "verify": "node scripts/smoke-verify.mjs",
     "report": "node scripts/report/collect.js",

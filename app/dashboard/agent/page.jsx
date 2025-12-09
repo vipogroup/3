@@ -15,6 +15,7 @@ export default function AgentDashboardPage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sales, setSales] = useState([]);
+  const [agentStats, setAgentStats] = useState(null);
   const [error, setError] = useState('');
   const [monthlyStats, setMonthlyStats] = useState({
     totalSales: 0,
@@ -23,6 +24,7 @@ export default function AgentDashboardPage() {
   });
   const [coupon, setCoupon] = useState(null);
   const [copyStatus, setCopyStatus] = useState('');
+  const [refLinkCopyStatus, setRefLinkCopyStatus] = useState('');
 
   // Check if user is agent and redirect if not
   useEffect(() => {
@@ -50,34 +52,69 @@ export default function AgentDashboardPage() {
     checkAuth();
   }, [router]);
 
-  // Fetch agent's sales data and coupon details
+  const normalizeOrderToSale = (order) => {
+    if (!order) return null;
+    const primaryItem = Array.isArray(order.items) && order.items.length > 0 ? order.items[0] : null;
+
+    return {
+      _id: order._id,
+      createdAt: order.createdAt || order.updatedAt,
+      salePrice: order.totalAmount ?? order?.totals?.totalAmount ?? 0,
+      commission: order.commissionAmount ?? 0,
+      status: order.status || 'pending',
+      customerName: order.customerName || order.customer?.name || 'לקוח',
+      customerPhone: order.customerPhone || order.customer?.phone || '',
+      customerEmail: order.customerEmail || order.customer?.email || '',
+      productId: primaryItem
+        ? {
+            name: primaryItem.name || primaryItem.sku || 'מוצר',
+            price: primaryItem.unitPrice || primaryItem.totalPrice || null,
+          }
+        : null,
+    };
+  };
+
+  // Fetch agent stats, order data, and coupon details
   useEffect(() => {
     if (!user) return;
 
-    async function fetchAgentSales() {
+    async function fetchDashboardData() {
       setLoading(true);
       try {
-        // Fetch agent's sales
-        const res = await fetch('/api/sales?self=true', {
-          cache: 'no-store',
-        });
+        const [statsRes, ordersRes, couponRes] = await Promise.all([
+          fetch('/api/agent/stats', { cache: 'no-store' }),
+          fetch('/api/orders?limit=200', { cache: 'no-store' }),
+          fetch('/api/agent/coupon', { cache: 'no-store' }),
+        ]);
 
-        if (!res.ok) {
-          throw new Error('Failed to fetch sales data');
+        if (!statsRes.ok) {
+          throw new Error('Failed to fetch agent stats');
         }
 
-        const data = await res.json();
-        if (!Array.isArray(data)) {
-          throw new Error('Invalid response format');
+        const statsPayload = await statsRes.json();
+        if (!statsPayload?.ok || !statsPayload?.stats) {
+          throw new Error('Invalid stats response');
+        }
+        setAgentStats(statsPayload);
+
+        if (!ordersRes.ok) {
+          throw new Error('Failed to fetch orders data');
         }
 
-        setSales(data);
+        const ordersPayload = await ordersRes.json();
+        const ordersItems = Array.isArray(ordersPayload?.items) ? ordersPayload.items : [];
+        const normalizedSales = ordersItems
+          .map(normalizeOrderToSale)
+          .filter(Boolean)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        setSales(normalizedSales);
 
         // Calculate monthly stats
         const { fromISO, toISO } = getCurrentMonthRange();
 
         // Filter sales for current month
-        const currentMonthSales = data.filter((sale) => {
+        const currentMonthSales = normalizedSales.filter((sale) => {
           const saleDate = new Date(sale.createdAt).toISOString().split('T')[0];
           return saleDate >= fromISO && saleDate <= toISO;
         });
@@ -93,7 +130,6 @@ export default function AgentDashboardPage() {
           count,
         });
 
-        const couponRes = await fetch('/api/agent/coupon');
         if (couponRes.ok) {
           const couponData = await couponRes.json();
           setCoupon(couponData?.coupon || null);
@@ -108,7 +144,7 @@ export default function AgentDashboardPage() {
       }
     }
 
-    fetchAgentSales();
+    fetchDashboardData();
   }, [user]);
 
   function copyCouponCode() {
@@ -116,6 +152,14 @@ export default function AgentDashboardPage() {
     navigator.clipboard.writeText(coupon.code.toUpperCase());
     setCopyStatus('copied');
     setTimeout(() => setCopyStatus(''), 2000);
+  }
+
+  function copyReferralLink() {
+    const link = agentStats?.referral?.link;
+    if (!link) return;
+    navigator.clipboard.writeText(link);
+    setRefLinkCopyStatus('copied');
+    setTimeout(() => setRefLinkCopyStatus(''), 2000);
   }
 
   return (
@@ -134,6 +178,25 @@ export default function AgentDashboardPage() {
         </div>
       ) : (
         <>
+          {/* Aggregated agent stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <KpiCard
+              title="יתרת עמלות זמינה"
+              value={formatCurrencyILS(agentStats?.stats?.commissionBalance || 0)}
+              subtitle="מעודכן מכל הזמנה עם קוד הקופון שלך"
+            />
+            <KpiCard
+              title="שווי הזמנות מצטבר"
+              value={formatCurrencyILS(agentStats?.stats?.totalOrderValue || 0)}
+              subtitle="סכום כל ההזמנות שיוחסו אליך"
+            />
+            <KpiCard
+              title={'סה"כ הזמנות'}
+              value={agentStats?.stats?.totalSales || 0}
+              subtitle="כולל כל ההזמנות שהושלמו עם הקוד שלך"
+            />
+          </div>
+
           {/* Coupon */}
           <div className="bg-white rounded-lg shadow mb-6 p-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -169,6 +232,29 @@ export default function AgentDashboardPage() {
               <div className="p-3 bg-gray-50 rounded-lg border">
                 <p className="font-semibold text-purple-600">סטטוס</p>
                 <p>{coupon?.status === 'active' ? 'פעיל' : 'לא פעיל'}</p>
+              </div>
+            </div>
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">לינק לשיתוף</h3>
+              <p className="text-sm text-gray-600 mb-3">
+                שתף את הלינק כדי שמבקרים יזוהו כסוכנים שלך (נרשם בלוג הקליקים).
+              </p>
+              <div className="flex flex-col lg:flex-row lg:items-center gap-3">
+                <div className="flex-1">
+                  <div className="bg-gray-50 border rounded-lg px-4 py-2 text-sm break-all">
+                    {agentStats?.referral?.link || '-'}
+                  </div>
+                </div>
+                <button
+                  onClick={copyReferralLink}
+                  disabled={!agentStats?.referral?.link}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition"
+                >
+                  {refLinkCopyStatus === 'copied' ? '✓ הועתק' : 'העתק לינק'}
+                </button>
+              </div>
+              <div className="text-xs text-gray-500 mt-2">
+                מזהה הסוכן: {agentStats?.referral?.code?.toUpperCase() || '---'}
               </div>
             </div>
           </div>

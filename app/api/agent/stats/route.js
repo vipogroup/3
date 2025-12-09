@@ -4,6 +4,50 @@ import { ObjectId } from 'mongodb';
 import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
+function resolveBaseUrl(req) {
+  const sanitize = (raw) => raw.replace(/\/$/, '');
+
+  const headers = req.headers;
+  if (headers) {
+    const proto =
+      headers.get('x-forwarded-proto') ||
+      headers.get('x-forwarded-protocol') ||
+      headers.get('x-url-scheme') ||
+      'http';
+    const host = headers.get('x-forwarded-host') || headers.get('host');
+
+    if (host && !host.startsWith('0.0.0.0') && host !== '::1') {
+      return sanitize(`${proto}://${host}`);
+    }
+  }
+
+  // Fallback to the URL the route was invoked with (might be 0.0.0.0 in dev)
+  try {
+    const requestUrl = new URL(req.url);
+    if (requestUrl.origin && !requestUrl.hostname.startsWith('0.0.0.0')) {
+      return sanitize(requestUrl.origin);
+    }
+  } catch {}
+
+  const envBase =
+    process.env.PUBLIC_URL ||
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    process.env.NEXT_PUBLIC_HOME_URL ||
+    process.env.NEXTAUTH_URL;
+
+  if (envBase) {
+    try {
+      const parsed = new URL(envBase);
+      parsed.pathname = parsed.pathname.replace(/\/$/, '');
+      return sanitize(parsed.toString());
+    } catch {
+      return sanitize(envBase);
+    }
+  }
+
+  return 'http://localhost:3001';
+}
+
 /**
  * GET /api/agent/stats?agentId=xxx
  * Get agent statistics - referrals, sales, commissions, clicks, etc.
@@ -63,15 +107,16 @@ export async function GET(req) {
       return NextResponse.json({ ok: false, error: 'agent not found' }, { status: 404 });
     }
 
+    // Query for orders linked to this agent via refAgentId OR agentId (coupon)
+    const agentOrdersFilter = { $or: [{ refAgentId: agentObjectId }, { agentId: agentObjectId }] };
+
     // Get total sales
-    const totalSales = await orders.countDocuments({
-      refAgentId: agentObjectId,
-    });
+    const totalSales = await orders.countDocuments(agentOrdersFilter);
 
     // Get total commission earned
     const commissionResult = await orders
       .aggregate([
-        { $match: { refAgentId: agentObjectId } },
+        { $match: agentOrdersFilter },
         {
           $group: {
             _id: null,
@@ -104,11 +149,19 @@ export async function GET(req) {
     // Calculate conversion rate
     const conversionRate = clicks > 0 ? ((totalSales / clicks) * 100).toFixed(1) : 0;
 
+    const referralCode = agent.couponCode || agent.referralId || targetAgentId;
+    const baseUrl = resolveBaseUrl(req);
+    const referralLink = `${baseUrl}/api/join?ref=${encodeURIComponent(referralCode)}`;
+
     return NextResponse.json({
       ok: true,
       agentId: String(agent._id),
       agentName: agent.fullName,
       agentEmail: agent.email,
+      referral: {
+        code: referralCode,
+        link: referralLink,
+      },
       stats: {
         totalReferrals: agent.referralsCount || 0,
         totalSales: totalSales || agent.totalSales || 0,

@@ -4,7 +4,7 @@
     {
       "name": "api.products.list",
       "passed": false,
-      "evidence": "status=500; length=n/a",
+      "evidence": "status=200; length=n/a",
       "hint": "Implement GET /api/products to return an array"
     },
     {

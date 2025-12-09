@@ -2,6 +2,7 @@ import { getUserFromCookies } from '@/lib/auth/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import Link from 'next/link';
 import CopyCouponButton from './components/CopyCouponButton';
 import KPICard from './components/KPICard';
@@ -223,7 +224,7 @@ function calcLevel(xp) {
   return { level, nextLevelXp };
 }
 
-async function getAgentStats(agentId) {
+async function getAgentStats(agentId, originBaseUrl = null) {
   const agentObjectId = normalizeObjectId(agentId);
   if (!agentObjectId) {
     return {
@@ -274,12 +275,15 @@ async function getAgentStats(agentId) {
     agentDoc?.referralCount ??
     (await users.countDocuments({ referredBy: agentObjectId }));
 
+  // Query for orders linked to this agent via refAgentId OR agentId (coupon)
+  const agentOrdersFilter = { $or: [{ refAgentId: agentObjectId }, { agentId: agentObjectId }] };
+
   const [totalSales, activeSales, totalsAgg, pendingAgg, clicksAgg] = await Promise.all([
-    orders.countDocuments({ refAgentId: agentObjectId }),
-    orders.countDocuments({ refAgentId: agentObjectId, status: { $in: ACTIVE_SALE_STATUSES } }),
+    orders.countDocuments(agentOrdersFilter),
+    orders.countDocuments({ ...agentOrdersFilter, status: { $in: ACTIVE_SALE_STATUSES } }),
     orders
       .aggregate([
-        { $match: { refAgentId: agentObjectId } },
+        { $match: agentOrdersFilter },
         {
           $group: {
             _id: null,
@@ -291,7 +295,7 @@ async function getAgentStats(agentId) {
       .toArray(),
     orders
       .aggregate([
-        { $match: { refAgentId: agentObjectId, status: { $in: ['pending', 'processing'] } } },
+        { $match: { ...agentOrdersFilter, status: { $in: ['pending', 'processing'] } } },
         { $group: { _id: null, pendingCommission: { $sum: '$commissionAmount' } } },
       ])
       .toArray(),
@@ -316,6 +320,21 @@ async function getAgentStats(agentId) {
     ts: { $gte: monthlyWindow },
   });
 
+  // Fetch recent orders for this agent (orders made with their coupon)
+  const recentOrders = await orders
+    .find(agentOrdersFilter)
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .toArray();
+
+  // Fetch agent's own orders (orders they made as a customer)
+  // createdBy can be stored as ObjectId or String, so we check both
+  const myOrders = await orders
+    .find({ $or: [{ createdBy: agentObjectId }, { createdBy: agentObjectId.toString() }] })
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .toArray();
+
   const conversionRate = clicks > 0 ? Number(((totalSales / clicks) * 100).toFixed(1)) : 0;
   const avgCommission = totalSales > 0 ? Number((totalCommission / totalSales).toFixed(2)) : 0;
 
@@ -323,13 +342,13 @@ async function getAgentStats(agentId) {
   const { level, nextLevelXp } = calcLevel(xp);
 
   const referralCode = agentDoc?.referralId || agentDoc?.couponCode || agentObjectId.toString();
-  const baseUrl =
+  const fallbackBase =
     process.env.PUBLIC_URL ||
     process.env.NEXT_PUBLIC_HOME_URL ||
     process.env.NEXTAUTH_URL ||
     'http://localhost:3001';
-  const sanitizedBase = baseUrl.replace(/\/$/, '');
-  const referralLink = `${sanitizedBase}/join?ref=${encodeURIComponent(referralCode)}`;
+  const baseUrl = (originBaseUrl || fallbackBase).replace(/\/$/, '');
+  const referralLink = `${baseUrl}/api/join?ref=${encodeURIComponent(referralCode)}`;
 
   return {
     totalReferrals: totalReferralsBase,
@@ -352,6 +371,21 @@ async function getAgentStats(agentId) {
       revenue: { target: 20000, current: totalRevenue },
       referrals: { target: 50, current: totalReferralsBase },
     },
+    recentOrders: recentOrders.map((o) => ({
+      _id: String(o._id),
+      createdAt: o.createdAt,
+      customerName: o.customer?.fullName || 'לקוח',
+      totalAmount: o.totalAmount || 0,
+      commissionAmount: o.commissionAmount || 0,
+      status: o.status || 'pending',
+    })),
+    myOrders: myOrders.map((o) => ({
+      _id: String(o._id),
+      createdAt: o.createdAt,
+      totalAmount: o.totalAmount || 0,
+      itemsCount: o.items?.length || 0,
+      status: o.status || 'pending',
+    })),
   };
 }
 
@@ -359,7 +393,12 @@ export default async function AgentPage() {
   const user = await getUserFromCookies();
   if (!user) redirect('/login');
 
-  const stats = await getAgentStats(user._id);
+  const requestHeaders = headers();
+  const proto = requestHeaders.get('x-forwarded-proto') || requestHeaders.get('x-forwarded-protocol') || 'http';
+  const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host');
+  const originBaseUrl = host ? `${proto}://${host}` : null;
+
+  const stats = await getAgentStats(user._id, originBaseUrl);
   const xpProgress = stats.nextLevelXp > 0 ? ((stats.xp / stats.nextLevelXp) * 100).toFixed(0) : 0;
 
   const goalDefinitions = [
@@ -465,41 +504,55 @@ export default async function AgentPage() {
                 border: '2px solid rgba(8, 145, 178, 0.2)',
               }}
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>
-                  קוד הקופון שלך:
-                </span>
-                <CopyCouponButton code={stats.referralCode} />
-              </div>
-              {stats.referralCode ? (
-                <code
-                  className="block px-4 py-4 rounded-lg font-mono text-2xl font-bold text-center shadow-sm"
-                  style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                    color: 'white',
-                  }}
-                >
-                  {stats.referralCode}
-                </code>
-              ) : (
-                <div
-                  className="block px-4 py-3 rounded-lg text-sm text-center"
-                  style={{
-                    background: 'rgba(107, 114, 128, 0.1)',
-                    color: '#6b7280',
-                    border: '2px dashed rgba(107, 114, 128, 0.3)',
-                  }}
-                >
-                  לא הוגדר
+              <div className="border rounded-2xl p-4" style={{ backgroundColor: '#f8fafc' }}>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>
+                    קוד הקופון שלך:
+                  </span>
+                  <CopyCouponButton code={stats.referralCode} />
                 </div>
-              )}
-              <p className="text-xs text-gray-600 mt-3 text-center font-medium">
-                שתף קוד זה עם לקוחות לקבלת עמלה
-              </p>
+                {stats.referralCode ? (
+                  <div
+                    className="text-2xl font-bold text-center py-3 rounded-xl"
+                    style={{ backgroundColor: '#1e3a8a', color: '#fff', letterSpacing: '0.2em' }}
+                  >
+                    {stats.referralCode.toUpperCase()}
+                  </div>
+                ) : (
+                  <div
+                    className="text-center py-3 rounded-xl"
+                    style={{
+                      backgroundColor: '#f1f5f9',
+                      color: '#6b7280',
+                      border: '2px dashed rgba(107, 114, 128, 0.3)',
+                    }}
+                  >
+                    לא הוגדר
+                  </div>
+                )}
+                <p className="text-xs text-gray-600 mt-3 text-center font-medium">
+                  שתף קוד זה עם לקוחות לקבלת עמלה
+                </p>
+                <div className="mt-4">
+                  <p className="text-xs font-semibold text-gray-600 mb-2">לינק לשיתוף</p>
+                  <div className="bg-white border rounded-lg px-3 py-2 text-xs break-all">
+                    {stats.referralLink || '-'}
+                  </div>
+                  <div className="text-right mt-2">
+                    <CopyCouponButton
+                      code={stats.referralLink}
+                      label="העתק לינק"
+                      successMessage="לינק הועתק!"
+                    />
+                  </div>
+                  <p className="text-[11px] text-gray-500 mt-1">
+                    כל קליק דרך הלינק הזה ירשם בדשבורד שלך.
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
-
-          {/* Stats Section */}
+          {/* Statistics Section */}
           <section
             className="rounded-xl p-5"
             style={{
@@ -570,6 +623,166 @@ export default async function AgentPage() {
             </div>
           </section>
         </div>
+
+        {/* Recent Orders Section */}
+        <section
+          className="mt-6 rounded-xl p-5"
+          style={{
+            border: '2px solid transparent',
+            backgroundImage:
+              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+            boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
+          }}
+        >
+          <h2 className="text-lg font-bold mb-4" style={{ color: '#1e3a8a' }}>
+            הזמנות אחרונות
+          </h2>
+          {stats.recentOrders && stats.recentOrders.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
+                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>תאריך</th>
+                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>לקוח</th>
+                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>סכום</th>
+                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>עמלה</th>
+                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>סטטוס</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.recentOrders.map((order) => (
+                    <tr key={order._id} className="border-b" style={{ borderColor: 'rgba(8, 145, 178, 0.1)' }}>
+                      <td className="py-3 px-2 text-gray-700">
+                        {new Date(order.createdAt).toLocaleDateString('he-IL')}
+                      </td>
+                      <td className="py-3 px-2 text-gray-900 font-medium">{order.customerName}</td>
+                      <td className="py-3 px-2 text-gray-700">{formatCurrency(order.totalAmount)}</td>
+                      <td className="py-3 px-2 font-semibold" style={{ color: '#0891b2' }}>
+                        {formatCurrency(order.commissionAmount)}
+                      </td>
+                      <td className="py-3 px-2">
+                        <span
+                          className="px-2 py-1 text-xs font-medium rounded-full"
+                          style={{
+                            background:
+                              order.status === 'paid'
+                                ? 'rgba(16, 185, 129, 0.1)'
+                                : order.status === 'pending'
+                                ? 'rgba(245, 158, 11, 0.1)'
+                                : 'rgba(107, 114, 128, 0.1)',
+                            color:
+                              order.status === 'paid'
+                                ? '#059669'
+                                : order.status === 'pending'
+                                ? '#d97706'
+                                : '#6b7280',
+                            border: `1px solid ${
+                              order.status === 'paid'
+                                ? 'rgba(16, 185, 129, 0.3)'
+                                : order.status === 'pending'
+                                ? 'rgba(245, 158, 11, 0.3)'
+                                : 'rgba(107, 114, 128, 0.3)'
+                            }`,
+                          }}
+                        >
+                          {order.status === 'paid' ? 'שולם' : order.status === 'pending' ? 'ממתין' : order.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              <p>אין הזמנות עדיין</p>
+              <p className="text-sm mt-1">שתף את קוד הקופון שלך כדי להתחיל להרוויח!</p>
+            </div>
+          )}
+        </section>
+
+        {/* My Orders Section (Agent's own purchases) */}
+        <section
+          className="mt-6 rounded-xl p-5"
+          style={{
+            border: '2px solid transparent',
+            backgroundImage:
+              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+            boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
+          }}
+        >
+          <h2 className="text-lg font-bold mb-4" style={{ color: '#1e3a8a' }}>
+            ההזמנות שלי
+          </h2>
+          {stats.myOrders && stats.myOrders.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
+                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>תאריך</th>
+                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>מוצרים</th>
+                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>סכום</th>
+                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>סטטוס</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.myOrders.map((order) => (
+                    <tr key={order._id} className="border-b" style={{ borderColor: 'rgba(8, 145, 178, 0.1)' }}>
+                      <td className="py-3 px-2 text-gray-700">
+                        {new Date(order.createdAt).toLocaleDateString('he-IL')}
+                      </td>
+                      <td className="py-3 px-2 text-gray-900 font-medium">{order.itemsCount} פריטים</td>
+                      <td className="py-3 px-2 text-gray-700">{formatCurrency(order.totalAmount)}</td>
+                      <td className="py-3 px-2">
+                        <span
+                          className="px-2 py-1 text-xs font-medium rounded-full"
+                          style={{
+                            background:
+                              order.status === 'paid'
+                                ? 'rgba(16, 185, 129, 0.1)'
+                                : order.status === 'pending'
+                                ? 'rgba(245, 158, 11, 0.1)'
+                                : 'rgba(107, 114, 128, 0.1)',
+                            color:
+                              order.status === 'paid'
+                                ? '#059669'
+                                : order.status === 'pending'
+                                ? '#d97706'
+                                : '#6b7280',
+                            border: `1px solid ${
+                              order.status === 'paid'
+                                ? 'rgba(16, 185, 129, 0.3)'
+                                : order.status === 'pending'
+                                ? 'rgba(245, 158, 11, 0.3)'
+                                : 'rgba(107, 114, 128, 0.3)'
+                            }`,
+                          }}
+                        >
+                          {order.status === 'paid' ? 'שולם' : order.status === 'pending' ? 'ממתין' : order.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              <p>עדיין לא ביצעת הזמנות</p>
+              <Link
+                href="/products"
+                className="inline-block mt-3 px-4 py-2 rounded-lg text-white font-medium text-sm"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                לצפייה במוצרים
+              </Link>
+            </div>
+          )}
+        </section>
       </div>
     </main>
   );

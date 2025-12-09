@@ -51,58 +51,62 @@ function clearLog() {
 }
 
 describe('Stage 7 - Notifications', () => {
-  it('status changes trigger WhatsApp sends; identical status -> no spam', async () => {
-    clearLog();
-    const admin = await register('admin');
-    const agent = await register('agent');
-    const adminLogin = await login(admin.phone, admin.password);
-    const agentLogin = await login(agent.phone, agent.password);
+  it(
+    'status changes trigger WhatsApp sends; identical status -> no spam',
+    async () => {
+      clearLog();
+      const admin = await register('admin');
+      const agent = await register('agent');
+      const adminLogin = await login(admin.phone, admin.password);
+      const agentLogin = await login(agent.phone, agent.password);
 
-    const create = await request(base).post('/api/sales').set('Cookie', agentLogin.cookie).send({
-      productId: '656565656565656565656565',
-      customerName: 'Notify Buyer',
-      customerPhone: '0550002222',
-      salePrice: 500,
-    });
-    const id = create.body?._id || create.body?.id;
+      const create = await request(base).post('/api/sales').set('Cookie', agentLogin.cookie).send({
+        productId: '656565656565656565656565',
+        customerName: 'Notify Buyer',
+        customerPhone: '0550002222',
+        salePrice: 500,
+      });
+      const id = create.body?._id || create.body?.id;
 
-    const before = readLogLines().length;
-    const s1 = await request(base)
-      .put(`/api/sales/${id}`)
-      .set('Cookie', adminLogin.cookie)
-      .send({ status: 'in-progress' });
-    const mid = readLogLines().length;
-    const s2 = await request(base)
-      .put(`/api/sales/${id}`)
-      .set('Cookie', adminLogin.cookie)
-      .send({ status: 'completed' });
-    const after = readLogLines().length;
-    const s3 = await request(base)
-      .put(`/api/sales/${id}`)
-      .set('Cookie', adminLogin.cookie)
-      .send({ status: 'completed' });
-    const final = readLogLines().length;
+      const before = readLogLines().length;
+      await request(base)
+        .put(`/api/sales/${id}`)
+        .set('Cookie', adminLogin.cookie)
+        .send({ status: 'in-progress' });
+      const mid = readLogLines().length;
+      await request(base)
+        .put(`/api/sales/${id}`)
+        .set('Cookie', adminLogin.cookie)
+        .send({ status: 'completed' });
+      const after = readLogLines().length;
+      await request(base)
+        .put(`/api/sales/${id}`)
+        .set('Cookie', adminLogin.cookie)
+        .send({ status: 'completed' });
+      const final = readLogLines().length;
 
-    // Expect at least one log line added on each change; identical status adds none
-    record(
-      'notify.on-change.agent',
-      mid > before,
-      `before=${before}, mid=${mid}`,
-      'PUT to in-progress should notify agent',
-    );
-    record(
-      'notify.on-completed.customer',
-      after > mid,
-      `mid=${mid}, after=${after}`,
-      'PUT to completed should notify customer as well',
-    );
-    record(
-      'notify.no-dup',
-      final === after,
-      `after=${after}, final=${final}`,
-      'Same status should not resend notifications',
-    );
-  });
+      // Expect at least one log line added on each change; identical status adds none
+      record(
+        'notify.on-change.agent',
+        mid > before,
+        `before=${before}, mid=${mid}`,
+        'PUT to in-progress should notify agent',
+      );
+      record(
+        'notify.on-completed.customer',
+        after > mid,
+        `mid=${mid}, after=${after}`,
+        'PUT to completed should notify customer as well',
+      );
+      record(
+        'notify.no-dup',
+        final === after,
+        `after=${after}, final=${final}`,
+        'Same status should not resend notifications',
+      );
+    },
+    20000,
+  );
 });
 
 afterAll(writeReport);

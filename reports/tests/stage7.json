@@ -1,4 +1,23 @@
 {
   "stage": 7,
-  "checks": []
+  "checks": [
+    {
+      "name": "notify.on-change.agent",
+      "passed": false,
+      "evidence": "before=0, mid=0",
+      "hint": "PUT to in-progress should notify agent"
+    },
+    {
+      "name": "notify.on-completed.customer",
+      "passed": false,
+      "evidence": "mid=0, after=0",
+      "hint": "PUT to completed should notify customer as well"
+    },
+    {
+      "name": "notify.no-dup",
+      "passed": true,
+      "evidence": "after=0, final=0",
+      "hint": "Same status should not resend notifications"
+    }
+  ]
 }

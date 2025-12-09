@@ -32,13 +32,39 @@ export async function GET(req) {
     const q = (searchParams.get('q') || '').trim();
 
     const filter = {};
-    if (user.role !== 'admin') filter.agentId = user.id;
-    if (status) filter.status = status;
+    const criteria = [];
+
+    if (user.role === 'admin') {
+      // no additional filter
+    } else if (user.role === 'agent') {
+      if (!ObjectId.isValid(user.id)) {
+        return NextResponse.json({ error: 'invalid_agent_id' }, { status: 400 });
+      }
+      const agentObjectId = new ObjectId(user.id);
+      criteria.push({ $or: [{ agentId: agentObjectId }, { refAgentId: agentObjectId }] });
+    } else {
+      const customerCriteria = [];
+      if (ObjectId.isValid(user.id)) {
+        const objectId = new ObjectId(user.id);
+        customerCriteria.push({ createdBy: objectId });
+      }
+      customerCriteria.push({ createdBy: user.id });
+      if (user.email) {
+        customerCriteria.push({ 'customer.email': user.email });
+      }
+      criteria.push({ $or: customerCriteria });
+    }
+    if (status) criteria.push({ status });
     if (q) {
-      filter.$or = [
+      criteria.push({
+        $or: [
         { 'customer.phone': { $regex: q, $options: 'i' } },
         { 'items.sku': { $regex: q, $options: 'i' } },
-      ];
+        ],
+      });
+    }
+    if (criteria.length > 0) {
+      filter.$and = criteria;
     }
 
     const col = await ordersCollection();
@@ -68,6 +94,7 @@ export async function POST(req) {
     const db = await getDb();
     const usersCol = db.collection('users');
     const ordersCol = db.collection('orders');
+    const productsCol = db.collection('products');
 
     // 2) Parse body
     const body = await req.json();
@@ -78,20 +105,113 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Invalid order payload' }, { status: 400 });
     }
 
-    const items = rawItems.map((item = {}) => ({
-      productId: item.productId,
-      name: item.name ?? '',
-      quantity: Number(item.quantity) || 0,
-      unitPrice: Number(item.unitPrice) || 0,
-      totalPrice:
-        Number(item.totalPrice) || Number(item.unitPrice || 0) * Number(item.quantity || 0),
-      image: item.image || null,
-      sku: item.sku || null,
-    }));
+    if (rawItems.length === 0) {
+      return NextResponse.json({ error: 'cart_empty' }, { status: 400 });
+    }
 
-    const { subtotal } = calcTotals(
-      items.map((item) => ({ qty: item.quantity, price: item.unitPrice })),
-    );
+    const parsedItems = [];
+    const objectIdKeys = [];
+    const slugKeys = new Set();
+    for (const item of rawItems) {
+      const productIdInput = item?.productId || item?._id;
+      const quantity = Number(item?.quantity) || 0;
+      if (!productIdInput) {
+        return NextResponse.json({ error: 'invalid_product_id' }, { status: 400 });
+      }
+      if (quantity <= 0) {
+        return NextResponse.json({ error: 'invalid_quantity' }, { status: 400 });
+      }
+
+      if (ObjectId.isValid(productIdInput)) {
+        const objectId = new ObjectId(productIdInput);
+        parsedItems.push({ lookup: { type: 'objectId', value: objectId }, quantity });
+        objectIdKeys.push(objectId);
+      } else {
+        const slug = String(productIdInput).trim();
+        if (!slug) {
+          return NextResponse.json({ error: 'invalid_product_id' }, { status: 400 });
+        }
+        parsedItems.push({ lookup: { type: 'slug', value: slug }, quantity });
+        slugKeys.add(slug);
+      }
+    }
+
+    const projection = {
+      name: 1,
+      price: 1,
+      images: 1,
+      sku: 1,
+      slug: 1,
+      legacyId: 1,
+    };
+
+    const [docsById, docsBySlug] = await Promise.all([
+      objectIdKeys.length
+        ? productsCol.find({ _id: { $in: objectIdKeys } }).project(projection).toArray()
+        : [],
+      slugKeys.size
+        ? productsCol
+            .find({
+              $or: [
+                { slug: { $in: Array.from(slugKeys) } },
+                { legacyId: { $in: Array.from(slugKeys) } },
+              ],
+            })
+            .project(projection)
+            .toArray()
+        : [],
+    ]);
+
+    const productMapById = new Map();
+    docsById.forEach((doc) => productMapById.set(doc._id.toHexString(), doc));
+
+    const buildStringKey = (value) => String(value).trim().toLowerCase();
+    const productMapBySlug = new Map();
+    docsBySlug.forEach((doc) => {
+      if (doc.slug) {
+        productMapBySlug.set(buildStringKey(doc.slug), doc);
+      }
+      if (doc.legacyId) {
+        productMapBySlug.set(buildStringKey(doc.legacyId), doc);
+      }
+    });
+
+    const missingProducts = [];
+    const items = parsedItems.map(({ lookup, quantity }) => {
+      let product;
+      if (lookup.type === 'objectId') {
+        product = productMapById.get(lookup.value.toHexString());
+      } else {
+        const normalizedKey = buildStringKey(lookup.value);
+        product =
+          productMapBySlug.get(normalizedKey) ||
+          productMapBySlug.get(lookup.value) ||
+          null;
+      }
+
+      if (!product) {
+        missingProducts.push(lookup.value);
+        return null;
+      }
+
+      const unitPrice = Number(product?.price) || 0;
+      return {
+        productId: product._id,
+        name: product?.name || 'Product',
+        quantity,
+        unitPrice,
+        totalPrice: Number((unitPrice * quantity).toFixed(2)),
+        image: product?.images?.[0] || null,
+        sku: product?.sku || null,
+        slug: product?.slug || null,
+      };
+    });
+
+    if (missingProducts.length > 0) {
+      return NextResponse.json({ error: 'product_not_found', products: missingProducts }, { status: 400 });
+    }
+
+    const { subtotal } = calcTotals(items.map((item) => ({ qty: item.quantity, price: item.unitPrice })));
 
     let discountPercent = Number(totalsPayload.discountPercent) || 0;
     let discountAmount = Number(totalsPayload.discountAmount) || 0;
@@ -118,9 +238,11 @@ export async function POST(req) {
       }
 
       const couponQuery = {
-        couponCode: couponCodeInput,
         role: 'agent',
         couponStatus: 'active',
+        $expr: {
+          $eq: [{ $toLower: '$couponCode' }, couponCodeInput],
+        },
       };
 
       if (couponPayload.agentId && ObjectId.isValid(couponPayload.agentId)) {
@@ -129,6 +251,7 @@ export async function POST(req) {
 
       couponAgent = await usersCol.findOne(couponQuery, {
         projection: {
+          _id: 1,
           couponCode: 1,
           discountPercent: 1,
           commissionPercent: 1,
@@ -212,6 +335,27 @@ export async function POST(req) {
 
     const result = await ordersCol.insertOne(orderDoc);
     const orderId = result.insertedId;
+
+    if (refAgentId && finalCommissionAmount) {
+      try {
+        await usersCol.updateOne(
+          { _id: refAgentId },
+          {
+            $inc: {
+              commissionBalance: finalCommissionAmount,
+              totalSales: 1,
+            },
+            $set: { updatedAt: new Date() },
+          },
+        );
+      } catch (commissionErr) {
+        console.error('ORDER_COMMISSION_UPDATE_FAILED', {
+          orderId: String(orderId),
+          agentId: String(refAgentId),
+          error: commissionErr?.message,
+        });
+      }
+    }
 
     // Return both keys for compatibility with various tests
     return NextResponse.json(

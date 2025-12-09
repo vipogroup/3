@@ -7,6 +7,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useCartContext } from '@/app/context/CartContext';
 
+const FORCE_PAYMENT_DEMO = process.env.NEXT_PUBLIC_PAYPLUS_FORCE_DEMO === 'true';
+const SKIP_REQUIRED_FIELDS = process.env.NEXT_PUBLIC_SKIP_CHECKOUT_VALIDATION === 'true';
+
 function CheckoutFallback() {
   return (
     <div className="flex min-h-[50vh] items-center justify-center">
@@ -27,6 +30,7 @@ function CheckoutClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { items, totals, isEmpty, hydrated, clearCart } = useCartContext();
+  const isCartReady = !isEmpty && items.length > 0;
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,6 +43,61 @@ function CheckoutClient() {
   const [currentStep, setCurrentStep] = useState(1);
   const [openSections, setOpenSections] = useState({ 1: true, 2: false, 3: false });
   const [expandAll, setExpandAll] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    zipCode: '',
+    paymentMethod: 'credit_card',
+    agreeToTerms: false,
+  });
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [touchedFields, setTouchedFields] = useState({});
+  const [paymentDemoMode, setPaymentDemoMode] = useState(false);
+  const [orderCompleted, setOrderCompleted] = useState(false);
+  const markFieldTouched = useCallback((fieldName) => {
+    setTouchedFields((prev) => (prev[fieldName] ? prev : { ...prev, [fieldName]: true }));
+  }, []);
+  const isFieldValid = useCallback(
+    (fieldName) => {
+      if (!touchedFields[fieldName]) return false;
+      if (fieldName === 'paymentMethod') {
+        return !!formData.paymentMethod && !fieldErrors.paymentMethod;
+      }
+      if (fieldName === 'agreeToTerms') {
+        return formData.agreeToTerms && !fieldErrors.agreeToTerms;
+      }
+      const value = formData[fieldName];
+      if (typeof value === 'string') {
+        return Boolean(value.trim()) && !fieldErrors[fieldName];
+      }
+      return Boolean(value) && !fieldErrors[fieldName];
+    },
+    [fieldErrors, formData, touchedFields],
+  );
+  const getInputBorderClass = useCallback(
+    (fieldName) => {
+      if (fieldErrors[fieldName]) return 'border-red-400 focus:border-red-500';
+      if (isFieldValid(fieldName)) return 'border-green-500 focus:border-green-600';
+      return 'border-gray-300 focus:border-purple-600';
+    },
+    [fieldErrors, isFieldValid],
+  );
+  const renderSuccessIcon = (fieldName) =>
+    isFieldValid(fieldName) ? (
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-green-600">
+        <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path
+            fillRule="evenodd"
+            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <span className="sr-only">שדה מולא בהצלחה</span>
+      </span>
+    ) : null;
 
   const toggleSection = (section) => {
     if (expandAll) return; // Don't toggle if expand all is active
@@ -57,17 +116,6 @@ function CheckoutClient() {
       setOpenSections({ 1: true, 2: false, 3: false });
     }
   };
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    zipCode: '',
-    paymentMethod: 'credit_card',
-    agreeToTerms: false,
-  });
-
   const gradientStyle = useMemo(
     () => ({
       background:
@@ -83,6 +131,69 @@ function CheckoutClient() {
     { number: 4, title: 'סיכום ואישור', icon: 'check' },
   ];
 
+  const validators = useMemo(
+    () => ({
+      fullName: (value) =>
+        !value?.trim()
+          ? 'נא למלא שם מלא'
+          : value.trim().split(/\s+/).length < 2
+            ? 'יש להזין שם פרטי ומשפחה'
+            : '',
+      email: (value) =>
+        !value?.trim()
+          ? 'נא להזין כתובת אימייל'
+          : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
+            ? 'כתובת האימייל אינה תקינה'
+            : '',
+      phone: (value) => {
+        if (!value?.trim()) return 'נא להזין מספר טלפון';
+        const normalized = value.replace(/[\s-]/g, '');
+        const phoneRegex = /^(0\d{9}|\+972\d{9})$/;
+        return phoneRegex.test(normalized) ? '' : 'מספר הטלפון חייב להיות בפורמט ישראלי תקין';
+      },
+      address: (value) => (!value?.trim() ? 'נא להזין כתובת מלאה' : ''),
+      city: (value) => (!value?.trim() ? 'נא להזין עיר' : ''),
+      zipCode: (value) =>
+        !value?.trim()
+          ? 'נא להזין מיקוד'
+          : !/^\d{5,7}$/.test(value.trim())
+            ? 'המיקוד חייב להכיל 5-7 ספרות'
+            : '',
+      paymentMethod: (value) => (!value ? 'נא לבחור אמצעי תשלום' : ''),
+    }),
+    [],
+  );
+
+  const stepFields = useMemo(
+    () => ({
+      1: ['fullName', 'email', 'phone'],
+      2: ['address', 'city', 'zipCode'],
+      3: ['paymentMethod'],
+      4: [],
+    }),
+    [],
+  );
+
+  const validateField = useCallback(
+    (fieldName, value) => {
+      markFieldTouched(fieldName);
+      const validator = validators[fieldName];
+      if (!validator) return '';
+      const message = validator(value);
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        if (message) {
+          next[fieldName] = message;
+        } else {
+          delete next[fieldName];
+        }
+        return next;
+      });
+      return message;
+    },
+    [markFieldTouched, validators],
+  );
+
   const nextStep = () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
@@ -97,36 +208,51 @@ function CheckoutClient() {
     }
   };
 
-  const validateStep = () => {
-    switch (currentStep) {
-      case 1:
-        if (!formData.fullName || !formData.email || !formData.phone) {
-          setError('נא למלא את כל השדות');
-          return false;
-        }
-        break;
-      case 2:
-        if (!formData.address || !formData.city || !formData.zipCode) {
-          setError('נא למלא את כל שדות הכתובת');
-          return false;
-        }
-        break;
-      case 3:
-        if (!formData.paymentMethod) {
-          setError('נא לבחור אמצעי תשלום');
-          return false;
-        }
-        break;
-      case 4:
+  const validateStep = useCallback(
+    (stepToValidate = currentStep) => {
+      const fields = stepFields[stepToValidate] || [];
+      let hasErrors = false;
+
+      fields.forEach((field) => {
+        const message = validateField(field, formData[field]);
+        if (message) hasErrors = true;
+      });
+
+      if (stepToValidate === 4) {
         if (!formData.agreeToTerms) {
-          setError('יש לאשר את התנאים לפני התשלום');
-          return false;
+          setFieldErrors((prev) => ({ ...prev, agreeToTerms: 'יש לאשר את התנאים לפני התשלום' }));
+          hasErrors = true;
+        } else {
+          setFieldErrors((prev) => {
+            const next = { ...prev };
+            delete next.agreeToTerms;
+            return next;
+          });
         }
-        break;
+      }
+
+      if (hasErrors) {
+        setError('נא להשלים את כל השדות המסומנים לפני המעבר לשלב הבא');
+      } else {
+        setError('');
+      }
+
+      return !hasErrors;
+    },
+    [currentStep, formData, stepFields, validateField],
+  );
+
+  const validateAllSteps = useCallback(() => {
+    let valid = true;
+    [1, 2, 3, 4].forEach((step) => {
+      if (!validateStep(step)) valid = false;
+    });
+    if (!isCartReady) {
+      setError('העגלה ריקה או שאינה נטענה כראוי');
+      valid = false;
     }
-    setError('');
-    return true;
-  };
+    return valid;
+  }, [isCartReady, validateStep]);
 
   const handleNext = () => {
     if (validateStep()) {
@@ -134,9 +260,21 @@ function CheckoutClient() {
     }
   };
 
+  const handleFieldChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    const fieldValue = type === 'checkbox' ? checked : value;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: fieldValue,
+    }));
+    if (fieldErrors[name] || touchedFields[name]) {
+      validateField(name, fieldValue);
+    }
+  };
+
   useEffect(() => {
     if (!hydrated) return;
-    if (isEmpty) {
+    if (isEmpty && !orderCompleted) {
       router.replace('/cart');
       return;
     }
@@ -165,7 +303,7 @@ function CheckoutClient() {
     }
 
     loadUser();
-  }, [hydrated, isEmpty, router]);
+  }, [hydrated, isEmpty, router, orderCompleted]);
 
   const handleApplyCoupon = useCallback(
     async (codeOverride) => {
@@ -228,18 +366,18 @@ function CheckoutClient() {
   }, [totals?.subtotal, discountAmount]);
 
   const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    handleFieldChange(event);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!formData.agreeToTerms) {
-      setError('יש לאשר את התנאים לפני התשלום');
-      return;
+    if (processing) return;
+
+    if (!SKIP_REQUIRED_FIELDS) {
+      const canSubmit = validateAllSteps();
+      if (!canSubmit) {
+        return;
+      }
     }
 
     setProcessing(true);
@@ -249,21 +387,9 @@ function CheckoutClient() {
       const payload = {
         items: items.map((item) => ({
           productId: item.productId,
-          name: item.name,
           quantity: item.quantity,
-          unitPrice: item.price,
-          totalPrice: item.price * item.quantity,
         })),
-        totals: {
-          subtotal: totals.subtotal,
-          discountPercent,
-          discountAmount,
-          total: grandTotal,
-        },
-        total: grandTotal,
-        discountAmount,
-        paymentMethod: formData.paymentMethod,
-        customerInfo: {
+        customer: {
           fullName: formData.fullName,
           email: formData.email,
           phone: formData.phone,
@@ -271,13 +397,11 @@ function CheckoutClient() {
           city: formData.city,
           zipCode: formData.zipCode,
         },
+        paymentMethod: formData.paymentMethod,
         coupon: appliedCoupon
           ? {
               code: appliedCoupon.code,
-              discountPercent: appliedCoupon.discountPercent,
-              commissionPercent: appliedCoupon.commissionPercent,
               agentId: appliedCoupon.agentId,
-              discountAmount,
             }
           : null,
       };
@@ -294,9 +418,55 @@ function CheckoutClient() {
       }
 
       const data = await res.json();
+      if (!data?.orderId) {
+        throw new Error('שגיאה בקבלת מספר הזמנה');
+      }
+
+      let paymentUrl = null;
+      let fallbackDemo = FORCE_PAYMENT_DEMO;
+      try {
+        if (!FORCE_PAYMENT_DEMO) {
+          const payplusRes = await fetch('/api/payplus/create-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: data.orderId }),
+          });
+
+          if (payplusRes.status === 503) {
+            fallbackDemo = true;
+          } else if (!payplusRes.ok) {
+            const details = await payplusRes.json().catch(() => ({}));
+            throw new Error(details.error || 'שגיאה בהפעלת תשלום');
+          } else {
+            const session = await payplusRes.json();
+            fallbackDemo = session?.fallback || false;
+            paymentUrl = session?.paymentUrl || null;
+          }
+        }
+      } catch (paymentErr) {
+        throw paymentErr;
+      }
+
+      if (fallbackDemo || !paymentUrl) {
+        try {
+          await fetch('/api/orders/demo-complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: data.orderId }),
+          });
+        } catch (demoErr) {
+          console.warn('Failed to mark demo payment complete', demoErr);
+        }
+
+        setPaymentDemoMode(true);
+        setOrderCompleted(true);
+        clearCart();
+        router.push(`/checkout/success?orderId=${data.orderId}&demo=1`);
+        return;
+      }
+
       clearCart();
-      alert(`✅ ההזמנה בוצעה בהצלחה!\nמספר הזמנה: ${data.orderId}`);
-      router.push('/customer');
+      window.location.assign(paymentUrl);
     } catch (err) {
       console.error('Checkout error', err);
       setError(err.message || 'שגיאה בביצוע ההזמנה');
@@ -569,7 +739,7 @@ function CheckoutClient() {
 
               {(openSections[1] || expandAll) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2 relative">
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
                       שם מלא *
                     </label>
@@ -578,12 +748,17 @@ function CheckoutClient() {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                      onBlur={(e) => validateField(e.target.name, e.target.value)}
+                      required={!SKIP_REQUIRED_FIELDS}
+                      className={`w-full px-4 pr-12 py-3 border-2 rounded-xl focus:outline-none ${getInputBorderClass('fullName')}`}
                       placeholder="דני ישראלי"
                     />
+                    {renderSuccessIcon('fullName')}
+                    {fieldErrors.fullName && (
+                      <p className="text-xs text-red-600 mt-1">{fieldErrors.fullName}</p>
+                    )}
                   </div>
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
                       אימייל *
                     </label>
@@ -592,12 +767,17 @@ function CheckoutClient() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
+                      onBlur={(e) => validateField(e.target.name, e.target.value)}
                       required
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                      className={`w-full px-4 pr-12 py-3 border-2 rounded-xl focus:outline-none ${getInputBorderClass('email')}`}
                       placeholder="you@example.com"
                     />
+                    {renderSuccessIcon('email')}
+                    {fieldErrors.email && (
+                      <p className="text-xs text-red-600 mt-1">{fieldErrors.email}</p>
+                    )}
                   </div>
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
                       טלפון *
                     </label>
@@ -606,10 +786,15 @@ function CheckoutClient() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
+                      onBlur={(e) => validateField(e.target.name, e.target.value)}
                       required
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                      className={`w-full px-4 pr-12 py-3 border-2 rounded-xl focus:outline-none ${getInputBorderClass('phone')}`}
                       placeholder="050-1234567"
                     />
+                    {renderSuccessIcon('phone')}
+                    {fieldErrors.phone && (
+                      <p className="text-xs text-red-600 mt-1">{fieldErrors.phone}</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -682,7 +867,7 @@ function CheckoutClient() {
 
               {(openSections[2] || expandAll) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2 relative">
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
                       כתובת מלאה *
                     </label>
@@ -691,24 +876,34 @@ function CheckoutClient() {
                       name="address"
                       value={formData.address}
                       onChange={handleChange}
+                      onBlur={(e) => validateField(e.target.name, e.target.value)}
                       required
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                      className={`w-full px-4 pr-12 py-3 border-2 rounded-xl focus:outline-none ${getInputBorderClass('address')}`}
                       placeholder="רחוב הרצל 123"
                     />
+                    {renderSuccessIcon('address')}
+                    {fieldErrors.address && (
+                      <p className="text-xs text-red-600 mt-1">{fieldErrors.address}</p>
+                    )}
                   </div>
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-semibold text-gray-900 mb-2">עיר *</label>
                     <input
                       type="text"
                       name="city"
                       value={formData.city}
                       onChange={handleChange}
+                      onBlur={(e) => validateField(e.target.name, e.target.value)}
                       required
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                      className={`w-full px-4 pr-12 py-3 border-2 rounded-xl focus:outline-none ${getInputBorderClass('city')}`}
                       placeholder="תל אביב"
                     />
+                    {renderSuccessIcon('city')}
+                    {fieldErrors.city && (
+                      <p className="text-xs text-red-600 mt-1">{fieldErrors.city}</p>
+                    )}
                   </div>
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
                       מיקוד *
                     </label>
@@ -717,10 +912,15 @@ function CheckoutClient() {
                       name="zipCode"
                       value={formData.zipCode}
                       onChange={handleChange}
+                      onBlur={(e) => validateField(e.target.name, e.target.value)}
                       required
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                      className={`w-full px-4 pr-12 py-3 border-2 rounded-xl focus:outline-none ${getInputBorderClass('zipCode')}`}
                       placeholder="1234567"
                     />
+                    {renderSuccessIcon('zipCode')}
+                    {fieldErrors.zipCode && (
+                      <p className="text-xs text-red-600 mt-1">{fieldErrors.zipCode}</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -815,6 +1015,7 @@ function CheckoutClient() {
                       value="credit_card"
                       checked={formData.paymentMethod === 'credit_card'}
                       onChange={handleChange}
+                      onBlur={(e) => validateField(e.target.name, e.target.value)}
                       className="w-5 h-5"
                       style={{ accentColor: '#0891b2' }}
                     />
@@ -850,6 +1051,7 @@ function CheckoutClient() {
                       value="paypal"
                       checked={formData.paymentMethod === 'paypal'}
                       onChange={handleChange}
+                      onBlur={(e) => validateField(e.target.name, e.target.value)}
                       className="w-5 h-5"
                       style={{ accentColor: '#0891b2' }}
                     />
@@ -885,6 +1087,7 @@ function CheckoutClient() {
                       value="bank_transfer"
                       checked={formData.paymentMethod === 'bank_transfer'}
                       onChange={handleChange}
+                      onBlur={(e) => validateField(e.target.name, e.target.value)}
                       className="w-5 h-5"
                       style={{ accentColor: '#0891b2' }}
                     />
@@ -922,6 +1125,9 @@ function CheckoutClient() {
                   </Link>
                 </span>
               </label>
+              {fieldErrors.agreeToTerms && (
+                <p className="text-xs text-red-600 mt-1">{fieldErrors.agreeToTerms}</p>
+              )}
             </section>
 
             {error && (
@@ -1029,6 +1235,58 @@ function CheckoutClient() {
                 </div>
               ))}
             </div>
+            {/* Coupon Input Section */}
+            <div className="border-t pt-4 mb-4">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                קוד קופון
+              </label>
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%)', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="font-semibold text-green-700">{appliedCoupon.code}</span>
+                    <span className="text-sm text-green-600">({appliedCoupon.discountPercent}% הנחה)</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setAppliedCoupon(null)}
+                    className="text-gray-500 hover:text-red-500 transition"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value)}
+                    placeholder="הזן קוד קופון"
+                    className="flex-1 px-4 py-2 border-2 rounded-xl focus:outline-none focus:border-cyan-500 border-gray-300"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleApplyCoupon()}
+                    disabled={applyingCoupon || !couponInput.trim()}
+                    className="px-4 py-2 rounded-xl font-semibold text-white transition"
+                    style={{
+                      background: applyingCoupon || !couponInput.trim() ? '#d1d5db' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                      cursor: applyingCoupon || !couponInput.trim() ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {applyingCoupon ? '...' : 'החל'}
+                  </button>
+                </div>
+              )}
+              {couponError && (
+                <p className="text-xs text-red-600 mt-1">{couponError}</p>
+              )}
+            </div>
+
             <div className="border-t pt-4 space-y-2 text-gray-700">
               <div className="flex justify-between">
                 <span>סכום ביניים</span>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { verifyJwt } from '@/src/lib/auth/createToken.js';
+import { generateAgentCoupon } from '@/lib/agents';
 
 export async function POST(req) {
   try {
@@ -51,6 +52,16 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Failed to upgrade user' }, { status: 500 });
     }
 
+    let couponInfo = null;
+    if (!user.couponCode) {
+      const fullNameForCoupon = user.fullName?.trim() || user.email || 'agent';
+      try {
+        couponInfo = await generateAgentCoupon({ fullName: fullNameForCoupon, agentId: user._id });
+      } catch (couponError) {
+        console.error('USER_UPGRADE_COUPON_ERROR', couponError);
+      }
+    }
+
     // Log the upgrade
     console.log(`USER_UPGRADED_TO_AGENT: ${userId} (${user.email})`);
 
@@ -58,6 +69,7 @@ export async function POST(req) {
       success: true,
       message: 'Successfully upgraded to agent',
       role: 'agent',
+      coupon: couponInfo?.couponCode || user.couponCode || null,
     });
   } catch (error) {
     console.error('Upgrade to agent error:', error);

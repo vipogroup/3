@@ -22,7 +22,7 @@ export default function OrdersPage() {
         throw new Error('Failed to fetch orders');
       }
       const data = await res.json();
-      setOrders(data.orders || []);
+      setOrders(Array.isArray(data.items) ? data.items : []);
     } catch (err) {
       console.error('Error fetching orders:', err);
       setError('שגיאה בטעינת ההזמנות');
@@ -205,7 +205,10 @@ export default function OrdersPage() {
                       <div className="text-left">
                         <p className="text-sm text-gray-600">סה&quot;כ</p>
                         <p className="text-2xl font-bold" style={{ color: '#1e3a8a' }}>
-                          ₪{order.total?.toFixed(2) || '0.00'}
+                          ₪
+                          {order?.totals?.totalAmount?.toFixed?.(2) ??
+                            order?.totalAmount?.toFixed?.(2) ??
+                            '0.00'}
                         </p>
                       </div>
                       <Link

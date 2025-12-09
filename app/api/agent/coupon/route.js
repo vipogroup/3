@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb';
 
 import { getDb } from '@/lib/db';
 import { requireAuth } from '@/lib/auth/requireAuth';
+import { generateAgentCoupon, DEFAULT_AGENT_COMMISSION_PERCENT, DEFAULT_AGENT_DISCOUNT_PERCENT } from '@/lib/agents';
 
 export async function GET(req) {
   try {
@@ -38,9 +39,28 @@ export async function GET(req) {
       updatedAt: 1,
     };
 
-    const agent = await users.findOne(query, { projection });
+    let agent = await users.findOne(query, { projection });
     if (!agent) {
       return NextResponse.json({ ok: false, error: 'agent_not_found' }, { status: 404 });
+    }
+
+    if (!agent.couponCode) {
+      try {
+        const couponInfo = await generateAgentCoupon({
+          fullName: agent.fullName || me.fullName || me.email || me.phone || 'agent',
+          agentId: agent._id,
+        });
+        agent = {
+          ...agent,
+          couponCode: couponInfo?.couponCode || agent.couponCode || null,
+          couponSlug: couponInfo?.couponSlug || agent.couponSlug || null,
+          couponStatus: agent.couponStatus || 'active',
+          discountPercent: agent.discountPercent ?? DEFAULT_AGENT_DISCOUNT_PERCENT,
+          commissionPercent: agent.commissionPercent ?? DEFAULT_AGENT_COMMISSION_PERCENT,
+        };
+      } catch (couponErr) {
+        console.error('AGENT_COUPON_GENERATE_FALLBACK_ERROR', couponErr);
+      }
     }
 
     return NextResponse.json({

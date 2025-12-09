@@ -2,12 +2,37 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
 import { getDb } from '@/lib/db';
+import { generateAgentCoupon, DEFAULT_AGENT_COMMISSION_PERCENT, DEFAULT_AGENT_DISCOUNT_PERCENT } from '@/lib/agents';
 import { verifyJwt } from '@/src/lib/auth/createToken.js';
 
 function extractToken(req) {
   const authCookie = req.cookies.get('auth_token')?.value;
   const legacyCookie = req.cookies.get('token')?.value;
   return authCookie || legacyCookie || '';
+}
+
+async function ensureAgentCoupon(user) {
+  if (!user || user.role !== 'agent' || user.couponCode) {
+    return user;
+  }
+
+  const agentId = user._id instanceof ObjectId ? user._id.toString() : user._id;
+  const nameForCoupon = (user.fullName?.trim() || user.email || user.phone || 'agent').trim();
+
+  try {
+    const couponInfo = await generateAgentCoupon({ fullName: nameForCoupon || 'agent', agentId });
+    return {
+      ...user,
+      couponCode: couponInfo?.couponCode || user.couponCode || null,
+      couponSlug: couponInfo?.couponSlug || user.couponSlug || null,
+      couponStatus: user.couponStatus || 'active',
+      discountPercent: user.discountPercent ?? DEFAULT_AGENT_DISCOUNT_PERCENT,
+      commissionPercent: user.commissionPercent ?? DEFAULT_AGENT_COMMISSION_PERCENT,
+    };
+  } catch (error) {
+    console.error('ENSURE_AGENT_COUPON_ERROR', error);
+    return user;
+  }
 }
 
 function resolveUserId(req) {
@@ -47,13 +72,15 @@ export async function GET(req) {
 
     const db = await getDb();
     const users = db.collection('users');
-    const user = await users.findOne(filter, {
+    let user = await users.findOne(filter, {
       projection: { passwordHash: 0, password: 0 },
     });
 
     if (!user) {
       return NextResponse.json({ authenticated: false }, { status: 404 });
     }
+
+    user = await ensureAgentCoupon(user);
 
     return NextResponse.json({ authenticated: true, user });
   } catch (error) {
@@ -84,9 +111,11 @@ export async function PATCH(req) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const user = await users.findOne(filter, {
+    let user = await users.findOne(filter, {
       projection: { passwordHash: 0, password: 0 },
     });
+
+    user = await ensureAgentCoupon(user);
 
     return NextResponse.json({ success: true, user });
   } catch (error) {

@@ -15,7 +15,7 @@ export async function POST(request) {
 
     const code = rawCode.toLowerCase();
     const agent = await User.findOne({
-      couponCode: code,
+      couponCode: { $regex: new RegExp(`^${code}$`, 'i') },
       role: 'agent',
     })
       .lean()

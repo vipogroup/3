@@ -509,7 +509,7 @@ export default function CartPage() {
             </div>
             <button
               type="button"
-              onClick={() => router.push('/checkout')}
+              onClick={() => router.push(appliedCoupon?.code ? `/checkout?coupon=${encodeURIComponent(appliedCoupon.code)}` : '/checkout')}
               className="w-full text-white font-bold py-3 rounded-lg transition-all duration-300"
               style={{
                 background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',

@@ -1,4 +1,17 @@
 {
   "stage": 2,
-  "checks": []
+  "checks": [
+    {
+      "name": "auth.register",
+      "passed": false,
+      "evidence": "admin=201; agent=429",
+      "hint": "POST /api/auth/register should accept fullName, phone, role, password"
+    },
+    {
+      "name": "auth.login.cookie",
+      "passed": false,
+      "evidence": "ok=400; bad=400; cookie=",
+      "hint": "Login must set httpOnly cookie 'token' and reject wrong password"
+    }
+  ]
 }

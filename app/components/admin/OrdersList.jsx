@@ -19,7 +19,7 @@ export default function OrdersList() {
       const res = await fetch('/api/orders');
       if (!res.ok) throw new Error('Failed to fetch orders');
       const data = await res.json();
-      setOrders(data.orders || []);
+      setOrders(Array.isArray(data.items) ? data.items : []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -229,7 +229,10 @@ export default function OrdersList() {
                     className="px-6 py-4 whitespace-nowrap font-bold"
                     style={{ color: '#1e3a8a' }}
                   >
-                    ₪{order.totalAmount?.toLocaleString() || '0'}
+                    ₪
+                    {order?.totals?.totalAmount?.toFixed?.(2) ??
+                      order?.totalAmount?.toFixed?.(2) ??
+                      '0.00'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs rounded-full ${statusOption?.color}`}>
@@ -303,7 +306,10 @@ export default function OrdersList() {
                   <div>
                     <p className="text-xs text-gray-500">סכום</p>
                     <p className="text-lg font-bold" style={{ color: '#1e3a8a' }}>
-                      ₪{order.totalAmount?.toLocaleString() || '0'}
+                      ₪
+                      {order?.totals?.totalAmount?.toFixed?.(2) ??
+                        order?.totalAmount?.toFixed?.(2) ??
+                        '0.00'}
                     </p>
                   </div>
                   <div className="text-left">
