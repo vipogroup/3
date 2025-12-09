@@ -4,6 +4,9 @@ import { ObjectId } from 'mongodb';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
+// Force dynamic rendering - this route uses cookies/auth
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/admin/dashboard
  * Get admin dashboard statistics
