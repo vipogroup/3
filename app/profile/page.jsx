@@ -166,7 +166,8 @@ export default function ProfilePage() {
 
       if (res.ok) {
         alert('🎉 ברכות! הפכת לסוכן בהצלחה!');
-        router.push('/agent');
+        // Full page reload to get new token from cookies
+        window.location.href = '/agent';
       } else {
         const data = await res.json();
         alert('שגיאה: ' + (data.error || 'לא ניתן לשדרג לסוכן'));

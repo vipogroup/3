@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
-import { verifyJwt } from '@/src/lib/auth/createToken.js';
+import { verifyJwt, signJwt } from '@/src/lib/auth/createToken.js';
 import { generateAgentCoupon } from '@/lib/agents';
 
 export async function POST(req) {
@@ -67,12 +67,40 @@ export async function POST(req) {
     // Log the upgrade
     console.log(`USER_UPGRADED_TO_AGENT: ${userId} (${user.email})`);
 
-    return NextResponse.json({
+    // Create new JWT token with updated role
+    const newToken = signJwt({
+      userId: user._id.toString(),
+      email: user.email,
+      role: 'agent',
+      fullName: user.fullName || '',
+    });
+
+    // Create response with new token
+    const response = NextResponse.json({
       success: true,
       message: 'Successfully upgraded to agent',
       role: 'agent',
       coupon: couponInfo?.couponCode || user.couponCode || null,
     });
+
+    // Set the new token in cookies
+    response.cookies.set('auth_token', newToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: '/',
+    });
+
+    response.cookies.set('token', newToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: '/',
+    });
+
+    return response;
   } catch (error) {
     console.error('Upgrade to agent error:', error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
