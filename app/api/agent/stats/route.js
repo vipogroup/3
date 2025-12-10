@@ -4,6 +4,8 @@ import { ObjectId } from 'mongodb';
 import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
+export const dynamic = 'force-dynamic';
+
 function resolveBaseUrl(req) {
   const sanitize = (raw) => raw.replace(/\/$/, '');
 

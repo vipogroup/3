@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { NextResponse } from 'next/server';
 import { getAuthToken } from '@/lib/auth/requireAuth';
 import { verify as verifyJwt } from '@/lib/auth/createToken';

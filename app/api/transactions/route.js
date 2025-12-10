@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Transaction from '@/models/Transaction';
 import { getDb } from '@/lib/db';
 import { getUserFromSession } from '@/lib/authz';

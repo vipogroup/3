@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { verifyPayPlusSignature } from '@/lib/payplus/client';

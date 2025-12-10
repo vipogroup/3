@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { connectMongo } from '@/lib/mongoose';
 import Product from '@/models/Product';
 

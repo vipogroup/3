@@ -1,5 +1,7 @@
 import { getDb } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const db = await getDb();
   const theme = (await db.collection('themes').findOne({ active: true })) || { vars: {} };
