@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-
 import { requireAdminApi } from '@/lib/auth/server';
 import { connectMongo } from '@/lib/mongoose';
 import Notification from '@/models/Notification';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req) {
   try {
@@ -25,3 +26,4 @@ export async function GET(req) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+

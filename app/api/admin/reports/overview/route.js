@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-
 import { requireAdminApi } from '@/lib/auth/server';
 import { getAdminOverview } from '@/lib/reports';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req) {
   try {
@@ -25,3 +26,4 @@ export async function GET(req) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+

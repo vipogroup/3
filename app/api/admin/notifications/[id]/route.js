@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 import { requireAdminApi } from '@/lib/auth/server';
 import { connectMongo } from '@/lib/mongoose';
 import Notification from '@/models/Notification';
