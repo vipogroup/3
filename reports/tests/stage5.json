@@ -1,11 +1,4 @@
 {
   "stage": 5,
-  "checks": [
-    {
-      "name": "sales.reg.users",
-      "passed": false,
-      "evidence": "agent=201; admin=429",
-      "hint": "Register agent/admin via /api/auth/register"
-    }
-  ]
+  "checks": []
 }

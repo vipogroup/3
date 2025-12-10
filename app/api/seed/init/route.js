@@ -18,9 +18,11 @@ export async function POST() {
       const passwordHash = await hashPassword(adminPass);
       await User.create({
         email: adminEmail,
-        name: 'VIPO Admin',
+        fullName: 'VIPO Admin',
+        phone: '0587009938',
         role: 'admin',
         passwordHash,
+        isActive: true,
       });
     } else {
       const hasCorrectRole = exists.role === 'admin';
