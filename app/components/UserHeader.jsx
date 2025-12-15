@@ -1,10 +1,11 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCartContext } from '@/app/context/CartContext';
 
 export default function UserHeader() {
+  const router = useRouter();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
@@ -43,8 +44,10 @@ export default function UserHeader() {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      // Always redirect to login, even if API call fails
-      window.location.href = '/login';
+      // Clear user state and redirect
+      setUser(null);
+      router.push('/login');
+      router.refresh();
     }
   };
 
