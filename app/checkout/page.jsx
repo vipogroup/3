@@ -286,11 +286,36 @@ function CheckoutClient() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
+          
+          // Load last order to pre-fill shipping address
+          let lastOrderAddress = null;
+          try {
+            const ordersRes = await fetch('/api/orders?limit=1', { cache: 'no-store' });
+            if (ordersRes.ok) {
+              const ordersData = await ordersRes.json();
+              if (ordersData.orders && ordersData.orders.length > 0) {
+                const lastOrder = ordersData.orders[0];
+                if (lastOrder.customer) {
+                  lastOrderAddress = {
+                    address: lastOrder.customer.address || '',
+                    city: lastOrder.customer.city || '',
+                    zipCode: lastOrder.customer.zipCode || '',
+                  };
+                }
+              }
+            }
+          } catch (err) {
+            console.warn('Failed to load last order', err);
+          }
+
           setFormData((prev) => ({
             ...prev,
             fullName: data.user.fullName || '',
             email: data.user.email || '',
             phone: data.user.phone || '',
+            address: lastOrderAddress?.address || '',
+            city: lastOrderAddress?.city || '',
+            zipCode: lastOrderAddress?.zipCode || '',
           }));
         } else if (res.status === 401) {
           router.replace('/login');
@@ -1260,19 +1285,19 @@ function CheckoutClient() {
                   </button>
                 </div>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value)}
                     placeholder="הזן קוד קופון"
-                    className="flex-1 px-4 py-2 border-2 rounded-xl focus:outline-none focus:border-cyan-500 border-gray-300"
+                    className="flex-1 px-4 py-2 border-2 rounded-xl focus:outline-none focus:border-cyan-500 border-gray-300 w-full"
                   />
                   <button
                     type="button"
                     onClick={() => handleApplyCoupon()}
                     disabled={applyingCoupon || !couponInput.trim()}
-                    className="px-4 py-2 rounded-xl font-semibold text-white transition"
+                    className="px-4 py-2 rounded-xl font-semibold text-white transition w-full sm:w-auto text-center"
                     style={{
                       background: applyingCoupon || !couponInput.trim() ? '#d1d5db' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
                       cursor: applyingCoupon || !couponInput.trim() ? 'not-allowed' : 'pointer',
@@ -1303,7 +1328,7 @@ function CheckoutClient() {
                 <span className="font-semibold text-green-600">חינם</span>
               </div>
               <div className="flex justify-between text-lg font-bold text-gray-900 border-t pt-3">
-                <span>{'סה&quot;כ לתשלום'}</span>
+                <span>סה&quot;כ לתשלום</span>
                 <span>₪{grandTotal.toLocaleString('he-IL')}</span>
               </div>
             </div>
