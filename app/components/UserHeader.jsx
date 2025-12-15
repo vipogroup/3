@@ -44,10 +44,14 @@ export default function UserHeader() {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      // Clear user state and redirect
+      // Clear user state and force full reload to /login
       setUser(null);
-      router.push('/login');
-      router.refresh();
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      } else {
+        router.push('/login');
+        router.refresh();
+      }
     }
   };
 
@@ -571,6 +575,7 @@ export default function UserHeader() {
                       <button
                         onClick={handleLogout}
                         className="flex items-center gap-2 w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                        aria-label="התנתקות"
                       >
                         <svg
                           className="w-4 h-4"

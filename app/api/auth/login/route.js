@@ -13,6 +13,18 @@ function failureResponse(message, status = 400, extraBody = {}) {
   return NextResponse.json({ success: false, message, ...extraBody }, { status });
 }
 
+export async function GET(req) {
+  return NextResponse.json(
+    {
+      success: false,
+      error: 'METHOD_NOT_ALLOWED',
+      message: 'שיטת GET אינה נתמכת. השתמש ב-POST לנתיב /api/auth/login',
+      hint: 'Use POST method with { identifier, password } in request body',
+    },
+    { status: 405, headers: { Allow: 'POST' } }
+  );
+}
+
 export async function POST(req) {
   const rateLimit = rateLimiters.login(req);
   if (!rateLimit.allowed) {
@@ -73,7 +85,7 @@ export async function POST(req) {
 
     const maxAge = rememberMe ? 60 * 60 * 24 * 7 : 60 * 60 * 24;
     setAuthCookie(response, jwt, {
-      sameSite: 'strict',
+      sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       maxAge,
     });
