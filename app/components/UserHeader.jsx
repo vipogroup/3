@@ -36,15 +36,14 @@ export default function UserHeader() {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch('/api/auth/logout', {
+      await fetch('/api/auth/logout', {
         method: 'POST',
         credentials: 'include',
       });
-      if (res.ok || res.redirected) {
-        window.location.href = '/login';
-      }
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error('Logout error:', error);
+    } finally {
+      // Always redirect to login, even if API call fails
       window.location.href = '/login';
     }
   };
