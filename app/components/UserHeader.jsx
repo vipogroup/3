@@ -34,6 +34,21 @@ export default function UserHeader() {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const menuRef = useRef(null);
 
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (res.ok || res.redirected) {
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+      window.location.href = '/login';
+    }
+  };
+
   // Close menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -551,27 +566,25 @@ export default function UserHeader() {
                     </div>
 
                     <div className="border-t border-gray-200 pt-1">
-                      <form action="/api/auth/logout" method="post">
-                        <button
-                          type="submit"
-                          className="flex items-center gap-2 w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                            />
-                          </svg>
-                          התנתקות
-                        </button>
-                      </form>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          />
+                        </svg>
+                        התנתקות
+                      </button>
                     </div>
                   </div>
                 )}
