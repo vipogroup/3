@@ -345,7 +345,6 @@ function serializeProduct(doc) {
 export async function GET(request) {
   try {
     await connectMongo();
-    await ensureSeedProducts();
     const { searchParams } = new URL(request.url);
     const catalogSlug = searchParams.get('catalog');
     const query = {};
