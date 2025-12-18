@@ -1,14 +1,27 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs/promises';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { getCloudinary } from '@/lib/cloudinary';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+
+function uploadBufferToCloudinary(buffer, options = {}) {
+  const cloudinary = getCloudinary();
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'vipo-products', resource_type: 'image', ...options },
+      (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      },
+    );
+    stream.end(buffer);
+  });
+}
 
 export async function POST(req) {
   try {
@@ -44,18 +57,22 @@ export async function POST(req) {
       );
     }
 
-    const bytes = Buffer.from(await file.arrayBuffer());
-    const safeName = (file.name || 'upload.bin').replace(/[^a-zA-Z0-9._-]/g, '_');
-    const filename = `${Date.now()}_${safeName}`;
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'products');
-    await fs.mkdir(uploadsDir, { recursive: true });
+    const result = await uploadBufferToCloudinary(buffer, {
+      overwrite: true,
+      quality: 'auto:good',
+      fetch_format: 'auto',
+    });
 
-    const filepath = path.join(uploadsDir, filename);
-    await fs.writeFile(filepath, bytes);
-
-    const url = `/uploads/products/${filename}`;
-    return NextResponse.json({ ok: true, url });
+    return NextResponse.json({
+      ok: true,
+      url: result.secure_url,
+      public_id: result.public_id,
+      width: result.width,
+      height: result.height,
+    });
   } catch (e) {
     console.error('upload error:', e);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
