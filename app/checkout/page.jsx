@@ -1116,12 +1116,13 @@ function CheckoutClient() {
                 />
                 <span className="text-sm text-gray-700">
                   אני מאשר/ת את{' '}
-                  <Link href="/terms" className="text-purple-600 hover:underline font-semibold">
-                    התנאים וההגבלות
-                  </Link>{' '}
-                  ואת{' '}
-                  <Link href="/privacy" className="text-purple-600 hover:underline font-semibold">
-                    מדיניות הפרטיות
+                  <Link href="/terms" className="underline hover:text-gray-700">
+                    תנאי השימוש
+                  </Link>
+                  {' '}
+                  ו
+                  <Link href="/privacy" className="underline hover:text-gray-700">
+                    מדיניות הנוגעת לפרטיות
                   </Link>
                 </span>
               </label>

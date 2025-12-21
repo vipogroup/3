@@ -6,6 +6,7 @@ export default function OrdersList() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deletingId, setDeletingId] = useState('');
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -24,6 +25,33 @@ export default function OrdersList() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleDelete(orderId) {
+    const order = orders.find((o) => o._id === orderId);
+    const label = order ? order._id.slice(-8) : '';
+    const confirmed = window.confirm(`האם למחוק את ההזמנה ${label}? לא ניתן לשחזר.`);
+    if (!confirmed) return;
+
+    try {
+      setError('');
+      setDeletingId(orderId);
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'מחיקה נכשלה');
+      }
+
+      setOrders((prev) => prev.filter((o) => o._id !== orderId));
+    } catch (err) {
+      setError(err.message);
+      fetchOrders();
+    } finally {
+      setDeletingId('');
     }
   }
 
@@ -255,6 +283,19 @@ export default function OrdersList() {
                         </option>
                       ))}
                     </select>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(order._id)}
+                      disabled={deletingId === order._id}
+                      className="mt-2 w-full text-sm font-medium rounded-lg px-3 py-2 transition-all"
+                      style={{
+                        background: deletingId === order._id ? '#f87171' : '#dc2626',
+                        color: 'white',
+                        opacity: deletingId === order._id ? 0.8 : 1,
+                      }}
+                    >
+                      {deletingId === order._id ? 'מוחק...' : 'מחיקה'}
+                    </button>
                   </td>
                 </tr>
               );
@@ -336,6 +377,15 @@ export default function OrdersList() {
                   ))}
                 </select>
               </div>
+              <button
+                type="button"
+                onClick={() => handleDelete(order._id)}
+                disabled={deletingId === order._id}
+                className="mt-3 w-full text-sm font-medium rounded-lg px-3 py-2 transition-all"
+                style={{ background: deletingId === order._id ? '#f87171' : '#dc2626', color: 'white' }}
+              >
+                {deletingId === order._id ? 'מוחק...' : 'מחיקה'}
+              </button>
             </div>
           );
         })}

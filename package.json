@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "backup:db": "node scripts/db/export-local.js",
+    "restore:db": "node scripts/db/restore-from-dir.js",
+    "tag:stable": "node scripts/tools/tag-latest-stable.js",
     "test:api": "cross-env NODE_ENV=test DISABLE_RATE_LIMIT=true vitest run",
     "test:ui": "playwright test",
     "verify": "node scripts/smoke-verify.mjs",
@@ -47,6 +50,7 @@
     "sharp": "0.33.5",
     "twilio": "^4.21.0",
     "uuid": "9.0.1",
+    "web-push": "^3.6.4",
     "zod": "3.23.8"
   },
   "devDependencies": {

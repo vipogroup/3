@@ -1,37 +1,110 @@
 import { NextResponse } from 'next/server';
 
+import { requireAdminApi } from '@/lib/auth/server';
+import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import {
+  getNotificationTemplate,
+  upsertNotificationTemplate,
+  removeNotificationTemplate,
+  ensureDefaultTemplates,
+} from '@/lib/notifications/templates';
+
 export const dynamic = 'force-dynamic';
 
-import { requireAdminApi } from '@/lib/auth/server';
-import { connectMongo } from '@/lib/mongoose';
-import Notification from '@/models/Notification';
-import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+function normalizeType(rawType) {
+  if (!rawType) return null;
+  return String(rawType).trim();
+}
 
-export async function PATCH(req, { params }) {
+export async function GET(req, { params }) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
     const rateLimit = rateLimiters.admin(req, identifier);
     if (!rateLimit.allowed) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+      return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 });
     }
 
-    await connectMongo();
-    const { id } = params || {};
-    if (!id) {
-      return NextResponse.json({ error: 'Missing notification id' }, { status: 400 });
+    const type = normalizeType(params?.id);
+    if (!type) {
+      return NextResponse.json({ ok: false, error: 'invalid_type' }, { status: 400 });
     }
 
-    const doc = await Notification.findByIdAndUpdate(id, { read: true }, { new: true }).lean();
-    if (!doc) {
-      return NextResponse.json({ error: 'Notification not found' }, { status: 404 });
+    await ensureDefaultTemplates();
+    const template = await getNotificationTemplate(type);
+    if (!template) {
+      return NextResponse.json({ ok: false, error: 'not_found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, item: doc });
+    return NextResponse.json({ ok: true, template });
   } catch (error) {
     const status = error?.status || 500;
-    const message =
-      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
-    return NextResponse.json({ error: message }, { status });
+    const message = status === 401 ? 'unauthorized' : status === 403 ? 'forbidden' : 'server_error';
+    return NextResponse.json({ ok: false, error: message }, { status });
+  }
+}
+
+export async function PUT(req, { params }) {
+  try {
+    const admin = await requireAdminApi(req);
+    const identifier = buildRateLimitKey(req, admin.id);
+    const rateLimit = rateLimiters.admin(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 });
+    }
+
+    const type = normalizeType(params?.id);
+    if (!type) {
+      return NextResponse.json({ ok: false, error: 'invalid_type' }, { status: 400 });
+    }
+
+    let payload;
+    try {
+      payload = await req.json();
+    } catch (err) {
+      return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
+    }
+
+    if (!payload || typeof payload !== 'object') {
+      return NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 });
+    }
+
+    const updated = await upsertNotificationTemplate(type, {
+      title: payload.title,
+      body: payload.body,
+      description: payload.description,
+      audience: payload.audience,
+      variables: payload.variables,
+      enabled: payload.enabled,
+    });
+
+    return NextResponse.json({ ok: true, template: updated });
+  } catch (error) {
+    const status = error?.status || 500;
+    const message = status === 401 ? 'unauthorized' : status === 403 ? 'forbidden' : error?.message || 'server_error';
+    return NextResponse.json({ ok: false, error: message }, { status });
+  }
+}
+
+export async function DELETE(req, { params }) {
+  try {
+    const admin = await requireAdminApi(req);
+    const identifier = buildRateLimitKey(req, admin.id);
+    const rateLimit = rateLimiters.admin(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 });
+    }
+
+    const type = normalizeType(params?.id);
+    if (!type) {
+      return NextResponse.json({ ok: false, error: 'invalid_type' }, { status: 400 });
+    }
+
+    const result = await removeNotificationTemplate(type);
+    return NextResponse.json({ ok: true, deletedCount: result.deletedCount || 0 });
+  } catch (error) {
+    const status = error?.status || 500;
+    const message = status === 401 ? 'unauthorized' : status === 403 ? 'forbidden' : 'server_error';
+    return NextResponse.json({ ok: false, error: message }, { status });
   }
 }

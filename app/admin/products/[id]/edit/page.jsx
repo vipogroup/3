@@ -1,10 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { refreshProductsFromApi } from '@/app/lib/products';
+import {
+  loadProductCategories,
+  saveProductCategories,
+  DEFAULT_PRODUCT_CATEGORIES,
+} from '@/app/lib/productCategories';
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -42,6 +47,59 @@ export default function EditProductPage() {
       'מפרט 6': '',
     },
   });
+  const [categories, setCategories] = useState(DEFAULT_PRODUCT_CATEGORIES);
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState('');
+
+  useEffect(() => {
+    const initial = loadProductCategories();
+    setCategories(initial);
+
+    const handler = (event) => {
+      const incoming = event?.detail?.categories;
+      if (Array.isArray(incoming) && incoming.length > 0) {
+        setCategories(incoming);
+      }
+    };
+
+    window.addEventListener('productCategoriesUpdated', handler);
+    return () => {
+      window.removeEventListener('productCategoriesUpdated', handler);
+    };
+  }, []);
+
+  const categoryOptions = useMemo(
+    () => [...categories].sort((a, b) => a.localeCompare(b, 'he')),
+    [categories],
+  );
+
+  useEffect(() => {
+    if (!productLoading && formData.category && !categories.includes(formData.category)) {
+      setCategories((prev) => {
+        if (prev.includes(formData.category)) return prev;
+        const updated = [...prev, formData.category];
+        saveProductCategories(updated);
+        return updated;
+      });
+    }
+  }, [productLoading, formData.category, categories]);
+
+  useEffect(() => {
+    if (formData.purchaseType === 'group' && !formData.category) {
+      setFormData((prev) => ({
+        ...prev,
+        category: categories.includes('רכישה קבוצתית') ? 'רכישה קבוצתית' : prev.category,
+      }));
+    }
+  }, [formData.purchaseType, formData.category, categories]);
+
+  const persistCategories = useCallback(
+    (nextCategories) => {
+      const saved = saveProductCategories(nextCategories);
+      setCategories(saved);
+      return saved;
+    },
+    []);
 
   useEffect(() => {
     let cancelled = false;
@@ -136,6 +194,51 @@ export default function EditProductPage() {
     }));
   };
 
+  const addCategory = () => {
+    const trimmed = newCategory.trim();
+    if (!trimmed) {
+      alert('נא להזין שם קטגוריה');
+      return;
+    }
+
+    setCategories((prev) => {
+      if (prev.some((cat) => cat.toLowerCase() === trimmed.toLowerCase())) {
+        setFormData((prevForm) => ({ ...prevForm, category: trimmed }));
+        persistCategories(prev);
+        return prev;
+      }
+      const updated = [...prev, trimmed];
+      persistCategories(updated);
+      setFormData((prevForm) => ({ ...prevForm, category: trimmed }));
+      return updated;
+    });
+    setNewCategory('');
+    setShowAddCategory(false);
+  };
+
+  const removeCategory = (name) => {
+    if (!name) {
+      return;
+    }
+    if (categories.length <= 1) {
+      alert('לא ניתן למחוק את הקטגוריה האחרונה.');
+      return;
+    }
+    if (!window.confirm(`האם למחוק את הקטגוריה "${name}"?`)) {
+      return;
+    }
+
+    setCategories((prev) => {
+      const updated = prev.filter((cat) => cat !== name);
+      const persisted = persistCategories(updated);
+      setFormData((prevForm) => ({
+        ...prevForm,
+        category: prevForm.category === name ? '' : prevForm.category,
+      }));
+      return persisted;
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -148,7 +251,8 @@ export default function EditProductPage() {
         fullDescription: formData.fullDescription.trim(),
         price: parseFloat(formData.price) || 0,
         originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
-        category: formData.category,
+        category:
+          formData.category?.trim() || (formData.purchaseType === 'group' ? 'רכישה קבוצתית' : ''),
         image: formData.image,
         imageUrl: formData.image,
         images: formData.image ? [formData.image] : [],
@@ -160,21 +264,33 @@ export default function EditProductPage() {
         purchaseType: formData.purchaseType,
         groupPurchaseDetails:
           formData.purchaseType === 'group'
-            ? {
-                closingDays: parseInt(formData.groupPurchaseDetails.closingDays) || 0,
-                shippingDays: parseInt(formData.groupPurchaseDetails.shippingDays) || 0,
-                minQuantity: parseInt(formData.groupPurchaseDetails.minQuantity) || 1,
-                currentQuantity: parseInt(formData.groupPurchaseDetails.currentQuantity) || 0,
-                totalDays:
-                  (parseInt(formData.groupPurchaseDetails.closingDays) || 0) +
-                  (parseInt(formData.groupPurchaseDetails.shippingDays) || 0),
-              }
+            ? (() => {
+                const closingDays = parseInt(formData.groupPurchaseDetails.closingDays) || 0;
+                const shippingDays = parseInt(formData.groupPurchaseDetails.shippingDays) || 0;
+                const minQuantity = parseInt(formData.groupPurchaseDetails.minQuantity) || 1;
+                const currentQuantity =
+                  parseInt(formData.groupPurchaseDetails.currentQuantity) || 0;
+                return {
+                  closingDays,
+                  shippingDays,
+                  minQuantity,
+                  currentQuantity,
+                  totalDays: closingDays + shippingDays,
+                };
+              })()
             : null,
         features: formData.features.filter((f) => f.trim() !== ''),
         specs: Object.fromEntries(
           Object.entries(formData.specs).filter(([_, v]) => (v ?? '').toString().trim() !== ''),
         ),
       };
+
+      if (payload.purchaseType === 'group' && payload.groupPurchaseDetails?.closingDays) {
+        const closingDays = payload.groupPurchaseDetails.closingDays;
+        payload.groupEndDate = new Date(Date.now() + closingDays * 24 * 60 * 60 * 1000).toISOString();
+      } else {
+        payload.groupEndDate = null;
+      }
 
       const response = await fetch(`/api/products/${params.id}`, {
         method: 'PUT',
@@ -335,19 +451,110 @@ export default function EditProductPage() {
 
                 <div>
                   <label className="block text-sm font-bold text-gray-900 mb-2">קטגוריה *</label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
-                  >
-                    <option value="">בחר קטגוריה</option>
-                    <option value="אביזרי מחשב">אביזרי מחשב</option>
-                    <option value="אודיו">אודיו</option>
-                    <option value="מסכים">מסכים</option>
-                    <option value="ריהוט">ריהוט</option>
-                  </select>
+                  <div className="flex gap-2">
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      required
+                      className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
+                    >
+                      <option value="">בחר קטגוריה</option>
+                      {categoryOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddCategory((prev) => !prev)}
+                      className="px-4 py-3 text-white rounded-xl transition-all"
+                      style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.background =
+                          'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)')
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.background =
+                          'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)')
+                      }
+                    >
+                      {showAddCategory ? 'בטל' : 'קטגוריה חדשה'}
+                    </button>
+                  </div>
+                  {showAddCategory && (
+                    <div className="mt-3 rounded-xl p-4 space-y-3 bg-blue-50 border-2 border-blue-200">
+                      <label className="block text-sm font-semibold" style={{ color: '#1e3a8a' }}>
+                        הזן שם קטגוריה חדש
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newCategory}
+                          onChange={(e) => setNewCategory(e.target.value)}
+                          className="flex-1 px-4 py-2 border-2 rounded-lg focus:outline-none transition-all"
+                          style={{ borderColor: '#cbd5e1' }}
+                          onFocus={(e) => (e.currentTarget.style.borderColor = '#0891b2')}
+                          onBlur={(e) => (e.currentTarget.style.borderColor = '#cbd5e1')}
+                          placeholder="לדוגמה: מוצרי חשמל"
+                        />
+                        <button
+                          type="button"
+                          onClick={addCategory}
+                          className="px-4 py-2 text-white rounded-lg transition-all"
+                          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.background =
+                              'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)')
+                          }
+                          onMouseLeave={(e) =>
+                            (e.currentTarget.style.background =
+                              'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)')
+                          }
+                        >
+                          הוסף
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {categoryOptions.length > 0 && (
+                    <div className="space-y-2 mt-3">
+                      <p className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>
+                        קטגוריות קיימות
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {categoryOptions.map((option) => {
+                          const isLast = categories.length <= 1;
+                          return (
+                            <div
+                              key={option}
+                              className="flex items-center gap-2 px-3 py-2 rounded-lg border-2"
+                              style={{ borderColor: 'rgba(8, 145, 178, 0.2)', background: 'white' }}
+                            >
+                              <span className="text-sm font-medium" style={{ color: '#0f172a' }}>
+                                {option}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => removeCategory(option)}
+                                disabled={isLast}
+                                className="text-xs font-semibold px-2 py-1 rounded-lg transition-all"
+                                style={{
+                                  background: '#dc2626',
+                                  color: 'white',
+                                  opacity: isLast ? 0.6 : 1,
+                                  cursor: isLast ? 'not-allowed' : 'pointer',
+                                }}
+                              >
+                                מחיקה
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div>

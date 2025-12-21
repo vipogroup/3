@@ -15,6 +15,21 @@ import { generateAgentCoupon } from '@/lib/agents';
 
 const automationKey = process.env.AUTOMATION_KEY || 'test-automation-key';
 
+function normalizePhone(value) {
+  if (!value) return null;
+  const str = String(value).trim();
+  if (!str) return null;
+
+  const digitsOnly = str.replace(/\D/g, '');
+  if (!digitsOnly) return null;
+
+  if (str.startsWith('+')) {
+    return `+${digitsOnly}`;
+  }
+
+  return digitsOnly;
+}
+
 export async function POST(req) {
   const incomingAutomationKey = req.headers.get('x-automation-key');
   const bypassRateLimit =
@@ -34,23 +49,26 @@ export async function POST(req) {
   try {
     const body = await req.json();
     const { fullName, phone, email, password, role, referrerId } = body;
+    const normalizedPhone = normalizePhone(phone);
 
     // Support both phone and email registration
-    if (!password || !role) {
+    if (!password) {
       return NextResponse.json(
         { ok: false, error: 'missing fields' },
         { status: 400 },
       );
     }
 
-    if (!phone && !email) {
+    if (!normalizedPhone && !email) {
       return NextResponse.json(
         { ok: false, error: 'phone or email required' },
         { status: 400 },
       );
     }
 
-    if (!['agent', 'customer', 'admin'].includes(role)) {
+    const allowedRoles = ['customer', 'agent'];
+    const normalizedRole = allowedRoles.includes(role) ? role : 'customer';
+    if (role && !allowedRoles.includes(role)) {
       return NextResponse.json(
         { ok: false, error: 'invalid role' },
         { status: 400 },
@@ -63,7 +81,7 @@ export async function POST(req) {
     // Check if user exists
     const query = email
       ? { email: email.toLowerCase().trim() }
-      : { phone };
+      : { phone: normalizedPhone };
     const exists = await users.findOne(query);
     if (exists) {
       return NextResponse.json(
@@ -83,10 +101,10 @@ export async function POST(req) {
     // Create user document
     const doc = {
       fullName: fullName || '',
-      phone: phone || null,
+      phone: normalizedPhone || null,
       email: email ? email.toLowerCase().trim() : null,
       passwordHash, // hashed password only
-      role,
+      role: normalizedRole,
       isActive: true,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -113,7 +131,7 @@ export async function POST(req) {
 
     // Auto-generate coupon for newly registered agents
     let generatedCouponCode = null;
-    if (role === 'agent') {
+    if (normalizedRole === 'agent') {
       try {
         const couponInfo = await generateAgentCoupon({ fullName: doc.fullName || doc.email || 'agent', agentId: newUserId });
         generatedCouponCode = couponInfo?.couponCode || null;
@@ -181,7 +199,7 @@ export async function POST(req) {
 
     // Clear refSource cookie after successful registration
     const res = NextResponse.json(
-      { ok: true, userId: String(newUserId), role, couponCode: generatedCouponCode },
+      { ok: true, userId: String(newUserId), role: normalizedRole, couponCode: generatedCouponCode },
       { status: 201 },
     );
     res.cookies.set('refSource', '', { path: '/', maxAge: 0 });

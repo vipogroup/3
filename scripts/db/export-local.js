@@ -18,7 +18,7 @@ for (const envFile of envFiles) {
 
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || 'vipo';
-const backupRoot = path.join(process.cwd(), 'backups');
+const backupRoot = path.join(process.cwd(), 'backups', 'database');
 
 if (!uri) {
   console.error('❌ MONGODB_URI missing. Aborting export.');
@@ -54,6 +54,39 @@ async function exportDb() {
         `   ↳ Saved ${docs.length} documents to ${path.relative(process.cwd(), filePath)}`,
       );
     }
+
+    const repoRoot = process.cwd();
+    const restorePs1 = [
+      'param(',
+      '    [string]$MongoUri = ""',
+      ')',
+      '',
+      `$repoRoot = "${repoRoot}"`,
+      `$backupDir = "${exportDir}"`,
+      '',
+      'if ($MongoUri) { $env:MONGODB_URI = $MongoUri }',
+      '',
+      'Set-Location $repoRoot',
+      'Write-Host "Restoring backup from $backupDir"',
+      'node scripts/db/restore-from-dir.js "$backupDir"',
+    ].join('\r\n');
+
+    const restoreCmd = [
+      '@echo off',
+      'setlocal',
+      `set "REPO_ROOT=${repoRoot}"`,
+      `set "BACKUP_DIR=${exportDir}"`,
+      'cd /d "%REPO_ROOT%"',
+      'if not "%~1"=="" set "MONGODB_URI=%~1"',
+      'echo Restoring backup from "%BACKUP_DIR%"',
+      'node scripts\\db\\restore-from-dir.js "%BACKUP_DIR%"',
+      'endlocal',
+      'pause',
+    ].join('\r\n');
+
+    await fs.writeFile(path.join(exportDir, 'restore.ps1'), restorePs1, 'utf8');
+    await fs.writeFile(path.join(exportDir, 'restore.cmd'), restoreCmd, 'utf8');
+    console.log('   ↳ Helper scripts created: restore.ps1 / restore.cmd');
 
     console.log(`✅ Export complete. Files saved to ${path.relative(process.cwd(), exportDir)}`);
   } catch (err) {

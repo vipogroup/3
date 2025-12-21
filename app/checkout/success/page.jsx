@@ -150,7 +150,7 @@ function CheckoutSuccessContent() {
               המשך קניות
             </Link>
             <Link
-              href="/customer/orders"
+              href="/orders"
               className="px-6 py-3 rounded-2xl font-semibold border-2"
               style={{ borderColor: 'var(--primary)', color: 'var(--primary)' }}
             >

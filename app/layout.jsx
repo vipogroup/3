@@ -4,6 +4,7 @@ import { CartProvider } from '@/app/context/CartContext';
 import UserHeader from '@/app/components/UserHeader';
 import ReferralTracker from '@/app/components/ReferralTracker';
 import CartToast from '@/app/components/CartToast';
+import PwaInstaller from '@/app/components/PwaInstaller';
 
 export const metadata = {
   title: 'VIPO - חנות מוצרי גיימינג ואלקטרוניקה',
@@ -19,18 +20,11 @@ export default function RootLayout({ children }) {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <link rel="manifest" href="/manifest.webmanifest" />
-        {enableServiceWorker ? (
-          <script
-            dangerouslySetInnerHTML={{
-              __html:
-                "if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }",
-            }}
-          />
-        ) : null}
       </head>
       <body className="bg-gray-50">
         <CartProvider>
           <ThemeProvider>
+            <PwaInstaller enabled={enableServiceWorker} />
             <ReferralTracker />
             <UserHeader />
             {children}

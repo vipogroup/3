@@ -7,6 +7,11 @@ import Image from 'next/image';
 import { getProductById, fetchProductById } from '@/app/lib/products';
 import { useCartContext } from '@/app/context/CartContext';
 import { useTheme } from '@/app/context/ThemeContext';
+import {
+  isGroupPurchase,
+  getGroupTimeRemaining,
+  formatGroupCountdown,
+} from '@/app/lib/groupPurchase';
 
 export default function ProductPage() {
   const params = useParams();
@@ -18,6 +23,7 @@ export default function ProductPage() {
   const [user, setUser] = useState(null);
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [productError, setProductError] = useState(false);
+  const [groupTimeLeft, setGroupTimeLeft] = useState(null);
   const { addItem } = useCartContext();
   const { settings: themeSettings } = useTheme();
 
@@ -129,6 +135,18 @@ export default function ProductPage() {
   }, [params.id, loadProduct]);
 
   useEffect(() => setSelectedMediaIndex(0), [product?._id]);
+
+  useEffect(() => {
+    if (!product || !isGroupPurchase(product)) {
+      setGroupTimeLeft(null);
+      return;
+    }
+
+    const tick = () => setGroupTimeLeft(getGroupTimeRemaining(product));
+    tick();
+    const interval = setInterval(tick, 60_000);
+    return () => clearInterval(interval);
+  }, [product]);
 
   if (loadingProduct) {
     return (
@@ -290,16 +308,45 @@ export default function ProductPage() {
             {/* Right: Product Details */}
             <div className="flex flex-col gap-2">
               {/* Category */}
-              {product.category && (
-                <Link
-                  href="/products"
-                  className="text-xs font-medium inline-block transition-colors duration-300"
-                  style={{ color: '#0891b2' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#1e3a8a')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = '#0891b2')}
-                >
-                  {product.category}
-                </Link>
+              {(product.category || isGroupPurchase(product)) && (
+                <div className="flex flex-wrap items-center gap-2">
+                  {product.category && (
+                    <Link
+                      href="/products"
+                      className="text-xs font-medium inline-block transition-colors duration-300"
+                      style={{ color: '#0891b2' }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#1e3a8a')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#0891b2')}
+                    >
+                      {product.category}
+                    </Link>
+                  )}
+                  {isGroupPurchase(product) && (
+                    <span
+                      className="text-xs font-semibold px-2 py-1 rounded-md"
+                      style={{
+                        background:
+                          'linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(8, 145, 178, 0.95) 100%)',
+                        color: '#fff',
+                        border: '1px solid rgba(255,255,255,0.3)',
+                      }}
+                    >
+                      רכישה קבוצתית
+                    </span>
+                  )}
+                  {isGroupPurchase(product) && groupTimeLeft && !groupTimeLeft.expired && (
+                    <span
+                      className="text-xs font-medium px-2 py-0.5 rounded-md"
+                      style={{
+                        background: 'rgba(8, 145, 178, 0.1)',
+                        color: '#0f172a',
+                        border: '1px solid rgba(8, 145, 178, 0.2)',
+                      }}
+                    >
+                      {formatGroupCountdown(groupTimeLeft)}
+                    </span>
+                  )}
+                </div>
               )}
 
               <h1
@@ -339,6 +386,19 @@ export default function ProductPage() {
                 </div>
               )}
 
+              {/* Stock Status */}
+              {product.stockCount !== undefined && (
+                <div className="mt-2">
+                  {product.stockCount > 0 ? (
+                    <span className="text-sm text-green-600 font-medium">
+                      ✓ במלאי ({product.stockCount} יחידות)
+                    </span>
+                  ) : (
+                    <span className="text-sm text-red-600 font-medium">אזל מהמלאי</span>
+                  )}
+                </div>
+              )}
+
               {/* Price Box */}
               <div className="border-t border-gray-200 pt-3 mt-2">
                 <div className="flex items-baseline gap-3">
@@ -351,40 +411,27 @@ export default function ProductPage() {
                     </span>
                   )}
                 </div>
+              </div>
 
-                {/* Stock Status */}
-                {product.stockCount !== undefined && (
-                  <div className="mt-2">
-                    {product.stockCount > 0 ? (
-                      <span className="text-sm text-green-600 font-medium">
-                        ✓ במלאי ({product.stockCount} יחידות)
-                      </span>
-                    ) : (
-                      <span className="text-sm text-red-600 font-medium">אזל מהמלאי</span>
-                    )}
-                  </div>
-                )}
-
-                {/* Group Purchase Details */}
-                {product.purchaseType === 'group' && product.groupPurchaseDetails && (
-                  <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <div className="text-sm font-semibold text-blue-900 mb-2">🏭 רכישה קבוצתית</div>
-                    <div className="text-sm text-blue-700 space-y-1">
-                      <div>
-                        הזמנות: {product.groupPurchaseDetails.currentQuantity || 0}/
-                        {product.groupPurchaseDetails.minQuantity}
-                      </div>
-                      <div>
-                        זמן אספקה: ~
-                        {product.groupPurchaseDetails.totalDays ||
-                          product.groupPurchaseDetails.closingDays +
-                            product.groupPurchaseDetails.shippingDays}{' '}
-                        ימים
-                      </div>
+              {/* Group Purchase Details */}
+              {product.purchaseType === 'group' && product.groupPurchaseDetails && (
+                <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="text-sm font-semibold text-blue-900 mb-2">🏭 רכישה קבוצתית</div>
+                  <div className="text-sm text-blue-700 space-y-1">
+                    <div>
+                      הזמנות: {product.groupPurchaseDetails.currentQuantity || 0}/
+                      {product.groupPurchaseDetails.minQuantity}
+                    </div>
+                    <div>
+                      זמן אספקה: ~
+                      {product.groupPurchaseDetails.totalDays ||
+                        product.groupPurchaseDetails.closingDays +
+                          product.groupPurchaseDetails.shippingDays}{' '}
+                      ימים
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Quantity Selector */}
               <div className="flex gap-2 items-center">

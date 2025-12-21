@@ -36,6 +36,30 @@ export async function GET(req, { params }) {
   }
 }
 
+export async function DELETE(req, { params }) {
+  try {
+    const token = req.cookies.get('token')?.value || '';
+    const decoded = verifyJwt(token);
+    if (decoded?.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = params || {};
+    if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+
+    const col = await ordersCollection();
+    const result = await col.findOneAndDelete({ _id: new ObjectId(id) });
+    if (!result?.value) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  }
+}
+
 export async function PATCH(req, { params }) {
   try {
     const token = req.cookies.get('token')?.value || '';

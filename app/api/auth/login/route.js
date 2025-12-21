@@ -13,6 +13,21 @@ function failureResponse(message, status = 400, extraBody = {}) {
   return NextResponse.json({ success: false, message, ...extraBody }, { status });
 }
 
+function normalizePhone(value) {
+  if (!value) return null;
+  const str = String(value).trim();
+  if (!str) return null;
+
+  const digitsOnly = str.replace(/\D/g, '');
+  if (!digitsOnly) return null;
+
+  if (str.startsWith('+')) {
+    return `+${digitsOnly}`;
+  }
+
+  return digitsOnly;
+}
+
 export async function POST(req) {
   const rateLimit = rateLimiters.login(req);
   if (!rateLimit.allowed) {
@@ -22,27 +37,32 @@ export async function POST(req) {
   try {
     const body = await req.json();
     console.log('[LOGIN BODY]', body);
-    const email = body.email || body.identifier;
+    const identifier = body.email || body.identifier;
     const password = body.password;
     const rememberMe = Boolean(body.rememberMe);
 
-    if (!email || !password) {
-      return failureResponse('Missing email or password', 400);
+    if (!identifier || !password) {
+      return failureResponse('Missing identifier or password', 400);
     }
 
-    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+    const normalizedEmail = typeof identifier === 'string' ? identifier.trim().toLowerCase() : '';
+    const normalizedPhone = normalizePhone(identifier);
     const normalizedPassword = typeof password === 'string' ? password : '';
 
-    if (!normalizedEmail || !normalizedPassword) {
-      return failureResponse('Missing email or password', 400);
+    if ((!normalizedEmail && !normalizedPhone) || !normalizedPassword) {
+      return failureResponse('Missing identifier or password', 400);
     }
 
-    console.log('LOGIN BODY:', { email: normalizedEmail });
+    console.log('LOGIN BODY:', { email: normalizedEmail, phone: normalizedPhone });
 
     const db = await getDb();
     const users = db.collection('users');
 
-    const user = await users.findOne({ email: normalizedEmail }, {
+    const query = [];
+    if (normalizedEmail) query.push({ email: normalizedEmail });
+    if (normalizedPhone) query.push({ phone: normalizedPhone });
+
+    const user = await users.findOne({ $or: query.length ? query : [{ email: normalizedEmail }] }, {
       projection: {
         _id: 1,
         passwordHash: 1,
@@ -68,8 +88,9 @@ export async function POST(req) {
       return failureResponse('Invalid email or password', 401);
     }
 
-    const jwt = signJwt({ userId: String(user._id), role: user.role }, { expiresIn: rememberMe ? '7d' : '1d' });
-    const response = NextResponse.json({ success: true, role: user.role });
+    const userRole = user.role || 'customer';
+    const jwt = signJwt({ userId: String(user._id), role: userRole }, { expiresIn: rememberMe ? '7d' : '1d' });
+    const response = NextResponse.json({ success: true, role: userRole });
 
     const maxAge = rememberMe ? 60 * 60 * 24 * 7 : 60 * 60 * 24;
     setAuthCookie(response, jwt, {

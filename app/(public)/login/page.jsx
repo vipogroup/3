@@ -85,8 +85,22 @@ export default function LoginPage() {
 
         console.log('[LOGIN] Redirecting to:', targetPath);
 
-        // Use window.location for more reliable redirect
-        window.location.href = targetPath;
+        const continueNavigation = () => {
+          // Use window.location for more reliable redirect
+          window.location.href = targetPath;
+        };
+
+        try {
+          const maybePrompt = window.requestPwaInstallPrompt;
+          if (typeof maybePrompt === 'function') {
+            Promise.resolve(maybePrompt()).finally(continueNavigation);
+            return;
+          }
+        } catch (promptErr) {
+          console.warn('Failed to trigger PWA prompt after login', promptErr);
+        }
+
+        continueNavigation();
       }, 500);
     } catch (e) {
       console.error('[LOGIN] Exception:', e);

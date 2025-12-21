@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
+
 import { requireAdminApi } from '@/lib/auth/server';
-import { connectMongo } from '@/lib/mongoose';
-import Notification from '@/models/Notification';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { listNotificationTemplates } from '@/lib/notifications/templates';
+import { listScheduledNotifications } from '@/lib/notifications/scheduler';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,18 +13,17 @@ export async function GET(req) {
     const identifier = buildRateLimitKey(req, admin.id);
     const rateLimit = rateLimiters.admin(req, identifier);
     if (!rateLimit.allowed) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+      return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 });
     }
 
-    await connectMongo();
-    const items = await Notification.find({}).sort({ createdAt: -1 }).limit(50).lean();
+    const templates = await listNotificationTemplates();
+    const scheduled = await listScheduledNotifications({ status: ['pending', 'paused'] });
 
-    return NextResponse.json({ success: true, items });
+    return NextResponse.json({ ok: true, templates, scheduled });
   } catch (error) {
     const status = error?.status || 500;
-    const message =
-      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
-    return NextResponse.json({ error: message }, { status });
+    const message = status === 401 ? 'unauthorized' : status === 403 ? 'forbidden' : 'server_error';
+    return NextResponse.json({ ok: false, error: message }, { status });
   }
 }
 

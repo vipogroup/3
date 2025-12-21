@@ -1,10 +1,14 @@
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
+
 import { connectMongo } from '@/lib/mongoose';
 import Product from '@/models/Product';
 import Catalog from '@/models/Catalog';
+import Message from '@/models/Message';
 import { requireAdminApi } from '@/lib/auth/server';
+import { pushToTags } from '@/lib/pushSender';
 
 const SEED_PRODUCTS = [
   {
@@ -305,6 +309,44 @@ async function ensureSeedProducts() {
   );
 }
 
+async function notifyProductCreation(adminUser, productDoc) {
+  const senderId = ObjectId.isValid(adminUser?.id) ? new ObjectId(adminUser.id) : null;
+  if (!senderId) return;
+
+  const baseMessage = `מוצר חדש נוסף למערכת: ${productDoc.name}`;
+  const roles = ['agent', 'customer'];
+
+  await Promise.all(
+    roles.map(async (role) => {
+      const messageDoc = await Message.create({
+        senderId,
+        senderRole: 'admin',
+        targetRole: role,
+        targetUserId: null,
+        message: baseMessage,
+        readBy: [
+          {
+            userId: senderId,
+            readAt: new Date(),
+          },
+        ],
+      });
+
+      await pushToTags([role], {
+        title: 'מוצר חדש ב-VIPO',
+        body: baseMessage,
+        data: {
+          type: 'product_created',
+          productId: String(productDoc._id),
+          messageId: String(messageDoc._id),
+          targetRole: role,
+        },
+        url: '/products',
+      });
+    }),
+  );
+}
+
 function serializeProduct(doc) {
   if (!doc) return doc;
   const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
@@ -367,12 +409,12 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     // Admin-only: create product
-    await requireAdminApi(request);
+    const adminUser = await requireAdminApi(request);
 
     await connectMongo();
     const payload = await request.json();
 
-    if (!payload?.name || !payload?.description || !payload?.category) {
+    if (!payload?.name || !payload?.description) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -404,12 +446,21 @@ export async function POST(request) {
 
     const legacyId = payload._id || payload.legacyId || payload.id || null;
 
+    const isGroup = payload.purchaseType === 'group' || payload.type === 'group';
+    const closingDays = Number(payload.groupPurchaseDetails?.closingDays) || 0;
+    const normalizedCategory =
+      typeof payload.category === 'string' && payload.category.trim()
+        ? payload.category.trim()
+        : isGroup
+          ? 'רכישה קבוצתית'
+          : '';
+
     const product = await Product.create({
       legacyId: legacyId ?? undefined,
       name: payload.name.trim(),
       description: payload.description,
       fullDescription: payload.fullDescription ?? payload.description ?? '',
-      category: payload.category.trim(),
+      category: normalizedCategory,
       catalogId,
       catalogSlug,
       price: Number(payload.price) || 0,
@@ -418,9 +469,14 @@ export async function POST(request) {
         payload.commission !== undefined
           ? Number(payload.commission)
           : (Number(payload.price) || 0) * 0.1,
-      type: payload.type || (payload.purchaseType === 'group' ? 'group' : 'online'),
-      purchaseType: payload.purchaseType || 'regular',
-      groupEndDate: payload.groupEndDate ? new Date(payload.groupEndDate) : null,
+      type: payload.type || (isGroup ? 'group' : 'online'),
+      purchaseType: payload.purchaseType || (isGroup ? 'group' : 'regular'),
+      groupEndDate:
+        payload.groupEndDate
+          ? new Date(payload.groupEndDate)
+          : isGroup && closingDays > 0
+            ? new Date(Date.now() + closingDays * 24 * 60 * 60 * 1000)
+            : null,
       expectedDeliveryDays: payload.expectedDeliveryDays ?? null,
       groupMinQuantity: payload.groupMinQuantity ?? 1,
       groupCurrentQuantity: payload.groupCurrentQuantity ?? 0,
@@ -445,6 +501,11 @@ export async function POST(request) {
     });
 
     const serialized = serializeProduct(product);
+
+    notifyProductCreation(adminUser, product).catch((err) => {
+      console.warn('PRODUCT_NOTIFY_FAILED', err?.message || err);
+    });
+
     return NextResponse.json({ product: serialized }, { status: 201 });
   } catch (err) {
     // Handle auth errors

@@ -1,9 +1,14 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { refreshProductsFromApi } from '@/app/lib/products';
+import {
+  loadProductCategories,
+  saveProductCategories,
+  DEFAULT_PRODUCT_CATEGORIES,
+} from '@/app/lib/productCategories';
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -41,14 +46,40 @@ export default function NewProductPage() {
     },
   });
 
-  const [categories, setCategories] = useState(['אביזרי מחשב', 'אודיו', 'מסכים', 'ריהוט']);
+  const [categories, setCategories] = useState(DEFAULT_PRODUCT_CATEGORIES);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategory, setNewCategory] = useState('');
 
+  useEffect(() => {
+    const initial = loadProductCategories();
+    setCategories(initial);
+
+    const handler = (event) => {
+      const incoming = event?.detail?.categories;
+      if (Array.isArray(incoming) && incoming.length > 0) {
+        setCategories(incoming);
+      }
+    };
+
+    window.addEventListener('productCategoriesUpdated', handler);
+    return () => {
+      window.removeEventListener('productCategoriesUpdated', handler);
+    };
+  }, []);
+
   const categoryOptions = useMemo(
-    () => categories.sort((a, b) => a.localeCompare(b, 'he')),
+    () => [...categories].sort((a, b) => a.localeCompare(b, 'he')),
     [categories],
   );
+
+  useEffect(() => {
+    if (formData.purchaseType === 'group' && !formData.category) {
+      setFormData((prev) => ({
+        ...prev,
+        category: categories.includes('רכישה קבוצתית') ? 'רכישה קבוצתית' : prev.category,
+      }));
+    }
+  }, [formData.purchaseType, formData.category, categories]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -57,6 +88,14 @@ export default function NewProductPage() {
       [name]: type === 'checkbox' ? checked : value,
     }));
   };
+
+  const persistCategories = useCallback(
+    (nextCategories) => {
+      const saved = saveProductCategories(nextCategories);
+      setCategories(saved);
+      return saved;
+    },
+    []);
 
   const addCategory = () => {
     const trimmed = newCategory.trim();
@@ -67,16 +106,41 @@ export default function NewProductPage() {
 
     setCategories((prev) => {
       if (prev.some((cat) => cat.toLowerCase() === trimmed.toLowerCase())) {
+        setFormData((prevForm) => ({ ...prevForm, category: trimmed }));
+        persistCategories(prev);
         return prev;
       }
-      return [...prev, trimmed];
+      const updated = [...prev, trimmed];
+      persistCategories(updated);
+      setFormData((prevForm) => ({ ...prevForm, category: trimmed }));
+      return updated;
     });
-    setFormData((prev) => ({
-      ...prev,
-      category: trimmed,
-    }));
     setNewCategory('');
     setShowAddCategory(false);
+  };
+
+  const removeCategory = (name) => {
+    if (!name) {
+      return;
+    }
+    if (categories.length <= 1) {
+      alert('לא ניתן למחוק את הקטגוריה האחרונה.');
+      return;
+    }
+    const confirmed = window.confirm(`האם למחוק את הקטגוריה "${name}"?`);
+    if (!confirmed) {
+      return;
+    }
+
+    setCategories((prev) => {
+      const updated = prev.filter((cat) => cat !== name);
+      const persisted = persistCategories(updated);
+      setFormData((prevForm) => ({
+        ...prevForm,
+        category: prevForm.category === name ? '' : prevForm.category,
+      }));
+      return persisted;
+    });
   };
 
   const handleFeatureChange = (index, value) => {
@@ -104,18 +168,26 @@ export default function NewProductPage() {
       const ratingValue = parseFloat(formData.rating) || 0;
       const reviewsValue = parseInt(formData.reviews) || 0;
       const isGroupPurchase = formData.purchaseType === 'group';
+      const closingDaysValue = parseInt(formData.groupPurchaseDetails.closingDays) || 0;
 
       const groupPurchaseDetails = isGroupPurchase
         ? {
-            closingDays: parseInt(formData.groupPurchaseDetails.closingDays) || 0,
+            closingDays: closingDaysValue,
             shippingDays: parseInt(formData.groupPurchaseDetails.shippingDays) || 0,
             minQuantity: parseInt(formData.groupPurchaseDetails.minQuantity) || 1,
             currentQuantity: parseInt(formData.groupPurchaseDetails.currentQuantity) || 0,
             totalDays:
-              (parseInt(formData.groupPurchaseDetails.closingDays) || 0) +
+              closingDaysValue +
               (parseInt(formData.groupPurchaseDetails.shippingDays) || 0),
           }
         : null;
+
+      const categoryValue = formData.category?.trim();
+      const normalizedCategory = categoryValue || (isGroupPurchase ? 'רכישה קבוצתית' : '');
+      const groupEndDate =
+        isGroupPurchase && closingDaysValue > 0
+          ? new Date(Date.now() + closingDaysValue * 24 * 60 * 60 * 1000).toISOString()
+          : null;
 
       const productData = {
         name: formData.name.trim(),
@@ -123,7 +195,7 @@ export default function NewProductPage() {
         fullDescription: formData.fullDescription.trim(),
         price: priceValue,
         originalPrice: originalPriceValue,
-        category: formData.category,
+        category: normalizedCategory,
         image: formData.image,
         imageUrl: formData.image,
         images: formData.image ? [formData.image] : [],
@@ -138,6 +210,7 @@ export default function NewProductPage() {
         groupMinQuantity: groupPurchaseDetails?.minQuantity ?? null,
         groupCurrentQuantity: groupPurchaseDetails?.currentQuantity ?? null,
         expectedDeliveryDays: groupPurchaseDetails?.shippingDays ?? null,
+        groupEndDate,
         commission: priceValue * 0.1,
         features: formData.features.filter((f) => f.trim() !== ''),
         specs: Object.fromEntries(
@@ -366,6 +439,43 @@ export default function NewProductPage() {
                         >
                           הוסף
                         </button>
+                      </div>
+                    </div>
+                  )}
+                  {categoryOptions.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>
+                        קטגוריות קיימות
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {categoryOptions.map((option) => {
+                          const isLast = categories.length <= 1;
+                          return (
+                            <div
+                              key={option}
+                              className="flex items-center gap-2 px-3 py-2 rounded-lg border-2"
+                              style={{ borderColor: 'rgba(8, 145, 178, 0.2)', background: 'white' }}
+                            >
+                              <span className="text-sm font-medium" style={{ color: '#0f172a' }}>
+                                {option}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => removeCategory(option)}
+                                disabled={isLast}
+                                className="text-xs font-semibold px-2 py-1 rounded-lg transition-all"
+                                style={{
+                                  background: '#dc2626',
+                                  color: 'white',
+                                  opacity: isLast ? 0.6 : 1,
+                                  cursor: isLast ? 'not-allowed' : 'pointer',
+                                }}
+                              >
+                                מחיקה
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )}

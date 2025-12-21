@@ -23,7 +23,7 @@ const navItems = [
     ),
   },
   {
-    href: '/customer/orders',
+    href: '/orders',
     label: 'הזמנות',
     icon: (
       <svg className={iconWrapperClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">

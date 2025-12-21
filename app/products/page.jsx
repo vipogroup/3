@@ -8,6 +8,11 @@ import Image from 'next/image';
 
 import { getProducts } from '@/app/lib/products';
 import { useCartContext } from '@/app/context/CartContext';
+import {
+  isGroupPurchase,
+  getGroupTimeRemaining,
+  formatGroupCountdown,
+} from '@/app/lib/groupPurchase';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -630,21 +635,7 @@ function CategorySections({
       {groups.map((group) => (
         <section key={group.key}>
           {group.key !== 'all' && (
-            <header className="mb-6 text-center">
-              <h2
-                className="text-xl font-bold mb-2 inline-block relative"
-                style={{ color: '#1e3a8a' }}
-              >
-                {group.label}
-                <div
-                  className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 rounded-full"
-                  style={{
-                    width: '80px',
-                    background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 50%, #1e3a8a 100%)',
-                  }}
-                />
-              </h2>
-            </header>
+            <CategoryHeader group={group} />
           )}
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
@@ -670,6 +661,80 @@ function CategorySections({
   );
 }
 
+function CategoryHeader({ group }) {
+  const computeTimeLeft = useCallback(() => {
+    const products = group.products?.filter((p) => isGroupPurchase(p)) ?? [];
+    if (!products.length) {
+      return null;
+    }
+
+    const now = Date.now();
+    let best = null;
+
+    products.forEach((product) => {
+      const info = getGroupTimeRemaining(product, now);
+      if (info && !info.expired) {
+        if (!best || info.totalMs < best.totalMs) {
+          best = info;
+        }
+      }
+    });
+
+    return best;
+  }, [group.products]);
+
+  const [timeLeft, setTimeLeft] = useState(() => computeTimeLeft());
+
+  useEffect(() => {
+    const tick = () => setTimeLeft(computeTimeLeft());
+    tick();
+    const interval = setInterval(tick, 60_000);
+    return () => clearInterval(interval);
+  }, [computeTimeLeft]);
+
+  const countdownLabel = timeLeft ? formatGroupCountdown(timeLeft) : '';
+  const hasGroupProducts = Boolean(timeLeft);
+
+  return (
+    <header className="mb-6 text-center space-y-2">
+      <h2
+        className="text-xl font-bold inline-block relative"
+        style={{ color: '#1e3a8a' }}
+      >
+        {group.label}
+        <div
+          className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 rounded-full"
+          style={{
+            width: '80px',
+            background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 50%, #1e3a8a 100%)',
+          }}
+        />
+      </h2>
+
+      {hasGroupProducts && countdownLabel && (
+        <p className="text-sm font-semibold" style={{ color: '#0891b2' }}>
+          {countdownLabel}
+        </p>
+      )}
+    </header>
+  );
+}
+
+function GroupBadge() {
+  return (
+    <span
+      className="absolute right-2 bottom-2 text-xs font-semibold px-2 py-1 rounded-md shadow"
+      style={{
+        background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(8, 145, 178, 0.95) 100%)',
+        color: 'white',
+        border: '1px solid rgba(255,255,255,0.35)',
+      }}
+    >
+      רכישה קבוצתית
+    </span>
+  );
+}
+
 function ProductCard({
   product,
   addItem,
@@ -685,6 +750,28 @@ function ProductCard({
   const discountPercent = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
+
+  const [groupCountdown, setGroupCountdown] = useState(() => {
+    if (!isGroupPurchase(product)) return '';
+    const info = getGroupTimeRemaining(product);
+    return info ? formatGroupCountdown(info) : '';
+  });
+
+  useEffect(() => {
+    if (!isGroupPurchase(product)) {
+      setGroupCountdown('');
+      return;
+    }
+
+    const update = () => {
+      const info = getGroupTimeRemaining(product);
+      setGroupCountdown(info ? formatGroupCountdown(info) : '');
+    };
+
+    update();
+    const interval = setInterval(update, 60_000);
+    return () => clearInterval(interval);
+  }, [product]);
 
   return (
     <div
@@ -719,7 +806,7 @@ function ProductCard({
             unoptimized
           />
 
-          {/* Discount Badge */}
+          {/* Badges */}
           {discountPercent > 0 && (
             <div
               className="absolute top-2 right-2 text-white px-2 py-0.5 rounded-md text-xs font-bold shadow-md"
@@ -731,6 +818,8 @@ function ProductCard({
               -{discountPercent}%
             </div>
           )}
+
+          {isGroupPurchase(product) && <GroupBadge />}
         </div>
       </Link>
 
@@ -776,6 +865,12 @@ function ProductCard({
             )}
           </div>
         </div>
+
+        {isGroupPurchase(product) && groupCountdown && (
+          <div className="mb-2 text-xs font-semibold" style={{ color: '#0891b2' }}>
+            {groupCountdown}
+          </div>
+        )}
 
         {/* Add to Cart Button */}
         {!addedToCart?.[product._id] ? (

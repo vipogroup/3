@@ -1,0 +1,532 @@
+[
+  {
+    "_id": {
+      "$oid": "694089653103ac70989c8149"
+    },
+    "legacyId": "seed-wireless-headphones",
+    "__v": 0,
+    "active": true,
+    "archivedAt": null,
+    "catalogId": null,
+    "catalogSlug": "",
+    "category": "אודיו",
+    "commission": 119,
+    "createdAt": {
+      "$date": "2025-12-15T22:19:16.396Z"
+    },
+    "currency": "ILS",
+    "description": "אוזניות Over-Ear עם ביטול רעשים אקטיבי, חיי סוללה ל-30 שעות וטעינה מהירה.",
+    "expectedDeliveryDays": 3,
+    "features": [
+      "ביטול רעשים היברידי",
+      "חיי סוללה 30 שעות",
+      "מצב שקיפות"
+    ],
+    "fullDescription": "אוזניות אלחוטיות יוקרתיות עם ביטול רעשים אקטיבי, מצב שקיפות, חיישני מגע וחיי סוללה של 30 שעות. כוללות תמיכה ב-Bluetooth 5.3 וטעינה מהירה USB-C.",
+    "groupCurrentQuantity": 0,
+    "groupEndDate": null,
+    "groupMinQuantity": 1,
+    "groupPurchaseDetails": {
+      "closingDays": null,
+      "currentQuantity": null,
+      "minQuantity": null,
+      "shippingDays": null,
+      "totalDays": null
+    },
+    "image": "https://images.unsplash.com/photo-1512314889357-e157c22f938d?auto=format&fit=crop&w=1200&q=80",
+    "imagePath": "",
+    "imageUrl": "https://images.unsplash.com/photo-1512314889357-e157c22f938d?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1512314889357-e157c22f938d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "inStock": true,
+    "metadata": {},
+    "name": "אוזניות אלחוטיות עם ביטול רעשים מתקדם",
+    "originalPrice": 1390,
+    "price": 1190,
+    "purchaseType": "regular",
+    "rating": 4.9,
+    "reviews": 105,
+    "specs": {
+      "מותג": "VIPO Audio",
+      "Bluetooth": "5.3",
+      "אודיו": "Hi-Res Wireless",
+      "טעינה": "USB-C + טעינה מהירה"
+    },
+    "type": "online",
+    "updatedAt": {
+      "$date": "2025-12-18T20:31:16.290Z"
+    },
+    "videoUrl": ""
+  },
+  {
+    "_id": {
+      "$oid": "69408a563103ac70989c814c"
+    },
+    "legacyId": "seed-smart-speaker",
+    "__v": 0,
+    "active": true,
+    "archivedAt": null,
+    "catalogId": null,
+    "catalogSlug": "",
+    "category": "אודיו",
+    "commission": 69,
+    "createdAt": {
+      "$date": "2025-12-15T22:23:18.731Z"
+    },
+    "currency": "ILS",
+    "description": "רמקול חכם עם סאונד 360°, עוזר קולי מובנה ושליטה על בית חכם.",
+    "expectedDeliveryDays": 2,
+    "features": [
+      "סאונד 360°",
+      "עוזר קולי בעברית",
+      "שליטה על בית חכם"
+    ],
+    "fullDescription": "רמקול חכם חזק עם עיצוב פרימיום, סאונד 360°, תמיכה בעברית ובעוזר קולי משולב. מאפשר שליטה על תאורה, מזגן ומכשירי בית חכם בלחיצת כפתור.",
+    "groupCurrentQuantity": 0,
+    "groupEndDate": null,
+    "groupMinQuantity": 1,
+    "groupPurchaseDetails": {
+      "closingDays": null,
+      "currentQuantity": null,
+      "minQuantity": null,
+      "shippingDays": null,
+      "totalDays": null
+    },
+    "image": "https://images.unsplash.com/photo-1585386959984-a4155220a1ad?auto=format&fit=crop&w=1200&q=80",
+    "imagePath": "",
+    "imageUrl": "https://images.unsplash.com/photo-1585386959984-a4155220a1ad?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1585386959984-a4155220a1ad?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528291151373-774f0d4c52ae?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "inStock": true,
+    "metadata": {},
+    "name": "רמקול חכם עם עוזר קולי משולב",
+    "originalPrice": 790,
+    "price": 690,
+    "purchaseType": "regular",
+    "rating": 4.4,
+    "reviews": 58,
+    "specs": {
+      "מותג": "VIPO Audio",
+      "חיבורים": "Wi-Fi / Bluetooth / AUX",
+      "מיקרופונים": "4 מיקרופונים כיווניים",
+      "תאורה": "Ambient LED"
+    },
+    "type": "online",
+    "updatedAt": {
+      "$date": "2025-12-18T20:31:16.290Z"
+    },
+    "videoUrl": ""
+  },
+  {
+    "_id": {
+      "$oid": "69408b873103ac70989c8152"
+    },
+    "legacyId": "seed-gaming-mouse",
+    "__v": 0,
+    "active": true,
+    "archivedAt": null,
+    "catalogId": null,
+    "catalogSlug": "",
+    "category": "אביזרי מחשב",
+    "commission": 38.9,
+    "createdAt": {
+      "$date": "2025-12-15T22:28:23.326Z"
+    },
+    "currency": "ILS",
+    "description": "עכבר גיימינג קל משקל עם חיישן 26,000 DPI ותאורת RGB מתכווננת.",
+    "expectedDeliveryDays": 4,
+    "features": [
+      "חיישן 26,000 DPI",
+      "חיבור אלחוטי דו-מצבי",
+      "משקל 65 גרם"
+    ],
+    "fullDescription": "עכבר גיימינג אלחוטי המציע דיוק מקסימלי עם חיישן 26,000 DPI, משקל 65 גרם, ותאורת RGB מלאה. כולל 6 כפתורים ניתנים לתכנות וסוללה ל-90 שעות שימוש.",
+    "groupCurrentQuantity": 0,
+    "groupEndDate": null,
+    "groupMinQuantity": 1,
+    "groupPurchaseDetails": {
+      "closingDays": null,
+      "currentQuantity": null,
+      "minQuantity": null,
+      "shippingDays": null,
+      "totalDays": null
+    },
+    "image": "https://images.unsplash.com/photo-1584270354949-1ff37cfd84f0?auto=format&fit=crop&w=1200&q=80",
+    "imagePath": "",
+    "imageUrl": "https://images.unsplash.com/photo-1584270354949-1ff37cfd84f0?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1584270354949-1ff37cfd84f0?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "inStock": true,
+    "metadata": {},
+    "name": "עכבר גיימינג אלחוטי עם DPI משתנה",
+    "originalPrice": 459,
+    "price": 389,
+    "purchaseType": "regular",
+    "rating": 4.5,
+    "reviews": 42,
+    "specs": {
+      "מותג": "VIPO Gear",
+      "DPI": "26,000",
+      "חיבורים": "USB-C / 2.4GHz / Bluetooth",
+      "משקל": "65 גרם"
+    },
+    "type": "online",
+    "updatedAt": {
+      "$date": "2025-12-18T20:31:16.289Z"
+    },
+    "videoUrl": ""
+  },
+  {
+    "_id": {
+      "$oid": "69408b9a3103ac70989c8153"
+    },
+    "legacyId": "seed-ergonomic-chair",
+    "__v": 0,
+    "active": true,
+    "archivedAt": null,
+    "catalogId": null,
+    "catalogSlug": "",
+    "category": "ריהוט",
+    "commission": 138,
+    "createdAt": {
+      "$date": "2025-12-15T22:28:42.577Z"
+    },
+    "currency": "ILS",
+    "description": "כיסא ארגונומי עם תמיכה מותנית, משענות מתכווננות ובד נושם.",
+    "expectedDeliveryDays": 3,
+    "features": [
+      "תמיכה מותנית דינמית",
+      "משענות 4D",
+      "בד רשת נושם"
+    ],
+    "fullDescription": "כיסא עבודה ארגונומי שפותח עבור ישיבה ממושכת. כולל מנגנון תמיכה מותני דינמי, משענות מתכווננות 4D ובד רשת נושם המפחית הצטברות חום.",
+    "groupCurrentQuantity": 0,
+    "groupEndDate": null,
+    "groupMinQuantity": 1,
+    "groupPurchaseDetails": {
+      "closingDays": null,
+      "currentQuantity": null,
+      "minQuantity": null,
+      "shippingDays": null,
+      "totalDays": null
+    },
+    "image": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+    "imagePath": "",
+    "imageUrl": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "inStock": true,
+    "metadata": {},
+    "name": "כיסא ארגונומי חכם עם תמיכת גב מלאה",
+    "originalPrice": 1590,
+    "price": 1380,
+    "purchaseType": "regular",
+    "rating": 4.6,
+    "reviews": 27,
+    "specs": {
+      "מותג": "VIPO Comfort",
+      "חומר": "רשת מיקרופייבר",
+      "צבע": "שחור גרפיט",
+      "אחריות": "5 שנים"
+    },
+    "type": "online",
+    "updatedAt": {
+      "$date": "2025-12-18T20:31:16.289Z"
+    },
+    "videoUrl": ""
+  },
+  {
+    "_id": {
+      "$oid": "69408bda5625102457d4333e"
+    },
+    "name": "ניסוי",
+    "description": "ניסוי חדש",
+    "fullDescription": "חדש חדש",
+    "category": "נירוסטה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 5555,
+    "originalPrice": 6666,
+    "commission": 555.5,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-15T22:29:46.749Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-15T22:29:46.749Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6943f900fa004cb60559df6f"
+    },
+    "legacyId": "seed-ultrawide-monitor",
+    "__v": 0,
+    "active": true,
+    "archivedAt": null,
+    "catalogId": null,
+    "catalogSlug": "",
+    "category": "מסכים",
+    "commission": 269,
+    "createdAt": {
+      "$date": "2025-12-18T12:52:16.293Z"
+    },
+    "currency": "ILS",
+    "description": "מסך קעור בגודל 34 אינץ׳ עם יחס 21:9, רזולוציית QHD וקצב רענון מהיר.",
+    "expectedDeliveryDays": 6,
+    "features": [
+      "קצב רענון 165Hz",
+      "מסך קעור 1500R",
+      "HDR400 ו-FreeSync"
+    ],
+    "fullDescription": "מסך UltraWide קעור בגודל 34 אינץ׳, רזולוציית 3440x1440, קצב רענון 165Hz, תמיכה ב-FreeSync Premium ו-HDR400. מיועד לגיימרים וליוצרי תוכן.",
+    "groupCurrentQuantity": 0,
+    "groupEndDate": null,
+    "groupMinQuantity": 1,
+    "groupPurchaseDetails": {
+      "closingDays": null,
+      "currentQuantity": null,
+      "minQuantity": null,
+      "shippingDays": null,
+      "totalDays": null
+    },
+    "image": "https://images.unsplash.com/photo-1618005198919-d3d4b5a92eee?auto=format&fit=crop&w=1200&q=80",
+    "imagePath": "",
+    "imageUrl": "https://images.unsplash.com/photo-1618005198919-d3d4b5a92eee?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1618005198919-d3d4b5a92eee?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1616464918770-5ce8f03b488f?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "inStock": true,
+    "metadata": {},
+    "name": "מסך אולטרה-ווייד 34\" עם קצב רענון 165Hz",
+    "originalPrice": 2990,
+    "price": 2690,
+    "purchaseType": "regular",
+    "rating": 4.7,
+    "reviews": 21,
+    "specs": {
+      "מותג": "VIPO Vision",
+      "רזולוציה": "3440x1440",
+      "קצב_רענון": "165Hz",
+      "פורטים": "HDMI 2.0 / DisplayPort 1.4 / USB-Hub"
+    },
+    "type": "online",
+    "updatedAt": {
+      "$date": "2025-12-18T20:31:16.289Z"
+    },
+    "videoUrl": ""
+  },
+  {
+    "_id": {
+      "$oid": "6943f907fa004cb60559df70"
+    },
+    "legacyId": "seed-4k-monitor",
+    "__v": 0,
+    "active": true,
+    "archivedAt": null,
+    "catalogId": null,
+    "catalogSlug": "",
+    "category": "מסכים",
+    "commission": 219,
+    "createdAt": {
+      "$date": "2025-12-18T12:52:23.730Z"
+    },
+    "currency": "ILS",
+    "description": "מסך 27 אינץ׳ ברזולוציית 4K עם תמיכה ב-HDR ודקויות צבע מרהיבות.",
+    "expectedDeliveryDays": 7,
+    "features": [
+      "תמיכה ב-HDR400",
+      "דיוק צבעים 99% sRGB",
+      "קצב רענון 144Hz"
+    ],
+    "fullDescription": "מסך 27 אינץ׳ ברזולוציית 4K UHD עם תמיכה ב-HDR400 ודיוק צבעים של 99% sRGB. אידיאלי לעריכת וידאו, עיצוב גרפי וגיימינג.",
+    "groupCurrentQuantity": 0,
+    "groupEndDate": null,
+    "groupMinQuantity": 1,
+    "groupPurchaseDetails": {
+      "closingDays": null,
+      "currentQuantity": null,
+      "minQuantity": null,
+      "shippingDays": null,
+      "totalDays": null
+    },
+    "image": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "imagePath": "",
+    "imageUrl": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1589254065878-42c9da6694c2?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "inStock": true,
+    "metadata": {},
+    "name": "מסך 27\" 4K HDR מקצועי",
+    "originalPrice": 2490,
+    "price": 2190,
+    "purchaseType": "regular",
+    "rating": 4.8,
+    "reviews": 34,
+    "specs": {
+      "מותג": "VIPO Vision",
+      "רזולוציה": "3840x2160",
+      "HDR": "HDR400",
+      "חיבורים": "HDMI 2.1 / DisplayPort 1.4 / USB-C"
+    },
+    "type": "online",
+    "updatedAt": {
+      "$date": "2025-12-18T20:31:16.289Z"
+    },
+    "videoUrl": ""
+  },
+  {
+    "_id": {
+      "$oid": "6943f90efa004cb60559df71"
+    },
+    "legacyId": "seed-mechanical-keyboard",
+    "__v": 0,
+    "active": true,
+    "archivedAt": null,
+    "catalogId": null,
+    "catalogSlug": "",
+    "category": "אביזרי מחשב",
+    "commission": 49.9,
+    "createdAt": {
+      "$date": "2025-12-18T12:52:30.110Z"
+    },
+    "currency": "ILS",
+    "description": "מקלדת מכנית איכותית עם תאורת RGB מלאה ומקשים כחולים להגבה חזקה.",
+    "expectedDeliveryDays": 5,
+    "features": [
+      "תאורת RGB מלאה",
+      "מקשים ניתנים להחלפה",
+      "מבנה אלומיניום קשיח"
+    ],
+    "fullDescription": "מקלדת מכנית מקצועית המתאימה לגיימרים וליוצרי תוכן. שלדת אלומיניום, תאורת RGB דינמית, ומתגים כחולים המספקים תחושה טקטילית מדויקת.",
+    "groupCurrentQuantity": 0,
+    "groupEndDate": null,
+    "groupMinQuantity": 1,
+    "groupPurchaseDetails": {
+      "closingDays": null,
+      "currentQuantity": null,
+      "minQuantity": null,
+      "shippingDays": null,
+      "totalDays": null
+    },
+    "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80",
+    "imagePath": "",
+    "imageUrl": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "inStock": true,
+    "metadata": {},
+    "name": "מקלדת מכנית RGB מקצועית",
+    "originalPrice": 699,
+    "price": 499,
+    "purchaseType": "regular",
+    "rating": 4.7,
+    "reviews": 18,
+    "specs": {
+      "מותג": "VIPO Gear",
+      "סוג_מתגים": "כחולים",
+      "תאורה": "RGB מלאה",
+      "חיבור": "USB-C"
+    },
+    "type": "online",
+    "updatedAt": {
+      "$date": "2025-12-18T20:31:16.289Z"
+    },
+    "videoUrl": ""
+  },
+  {
+    "_id": {
+      "$oid": "6943f917fa004cb60559df72"
+    },
+    "legacyId": "seed-standing-desk",
+    "__v": 0,
+    "active": true,
+    "archivedAt": null,
+    "catalogId": null,
+    "catalogSlug": "",
+    "category": "ריהוט",
+    "commission": 189,
+    "createdAt": {
+      "$date": "2025-12-18T12:52:39.809Z"
+    },
+    "currency": "ILS",
+    "description": "שולחן עבודה מתכוונן חשמלית עם שני מנועים וטווח גובה רחב.",
+    "expectedDeliveryDays": 5,
+    "features": [
+      "שני מנועים שקטים",
+      "טווח גובה 62-127 ס\"מ",
+      "פאנל זיכרון עם 4 מצבים"
+    ],
+    "fullDescription": "שולחן עבודה חשמלי עם שני מנועים שקטים, טווח גובה 62-127 ס״מ, משטח עץ בגודל 140x70 ס״מ ופאנל שליטה עם 4 מצבי זיכרון.",
+    "groupCurrentQuantity": 0,
+    "groupEndDate": null,
+    "groupMinQuantity": 1,
+    "groupPurchaseDetails": {
+      "closingDays": null,
+      "currentQuantity": null,
+      "minQuantity": null,
+      "shippingDays": null,
+      "totalDays": null
+    },
+    "image": "https://images.unsplash.com/photo-1616628188505-4047d9b51958?auto=format&fit=crop&w=1200&q=80",
+    "imagePath": "",
+    "imageUrl": "https://images.unsplash.com/photo-1616628188505-4047d9b51958?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1616628188505-4047d9b51958?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "inStock": true,
+    "metadata": {},
+    "name": "שולחן עבודה חשמלי מתכוונן לגובה",
+    "originalPrice": 2190,
+    "price": 1890,
+    "purchaseType": "regular",
+    "rating": 4.6,
+    "reviews": 31,
+    "specs": {
+      "מותג": "VIPO Comfort",
+      "חומר": "משטח עץ מלא",
+      "עומס_מקסימלי": "120 ק\"ג",
+      "אחריות": "3 שנים"
+    },
+    "type": "online",
+    "updatedAt": {
+      "$date": "2025-12-18T20:31:16.289Z"
+    },
+    "videoUrl": ""
+  }
+]
