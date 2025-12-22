@@ -17,12 +17,16 @@ function safeJsonParse(body) {
 
 export async function POST(req) {
   try {
+    console.log('PUSH_SUBSCRIBE: POST request received');
     const config = getWebPushConfig();
     if (!config.configured) {
+      console.log('PUSH_SUBSCRIBE: web push not configured');
       return NextResponse.json({ ok: false, error: 'web_push_not_configured' }, { status: 503 });
     }
 
+    console.log('PUSH_SUBSCRIBE: checking auth...');
     const user = await requireAuthApi(req);
+    console.log('PUSH_SUBSCRIBE: user authenticated', { userId: user?.id, role: user?.role });
 
     const raw = await req.text();
     const payload = typeof raw === 'string' && raw ? safeJsonParse(raw) : null;

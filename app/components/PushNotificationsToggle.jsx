@@ -107,9 +107,11 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
 
   const performSubscribe = useCallback(
     async ({ source, consentAt = new Date().toISOString(), recordConsent = true }) => {
+      console.log('PUSH_DEBUG: performSubscribe called', { source, consentAt, recordConsent });
       setState((prev) => ({ ...prev, loading: true, message: '' }));
       try {
         const permissionResult = await ensureNotificationPermission();
+        console.log('PUSH_DEBUG: permission result', permissionResult);
         if (!permissionResult.granted) {
           declineConsent(permissionResult.reason || 'permission_denied');
           setState((prev) => ({
@@ -121,12 +123,14 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
           return;
         }
 
+        console.log('PUSH_DEBUG: calling subscribeToPush with tags', allTags);
         await subscribeToPush({
           tags: allTags,
           consentAt,
           consentVersion,
           consentMeta: { source, role },
         });
+        console.log('PUSH_DEBUG: subscribeToPush success!');
         if (recordConsent) {
           acceptConsent({ source, consentAt });
         }
@@ -138,7 +142,7 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
           message: MESSAGES.granted,
         }));
       } catch (error) {
-        console.warn('Failed to enable push', error);
+        console.error('PUSH_DEBUG: subscribeToPush FAILED', error);
         setState((prev) => ({
           ...prev,
           loading: false,
@@ -226,14 +230,13 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
   };
 
   const buttonLabel = () => {
-    if (loading) return 'טוען...';
     if (!actionable) return 'התראות לא זמינות';
     if (subscribed) return 'בטל התראות דחיפה';
     if (permission === 'denied') return 'אפשר התראות בדפדפן';
     return 'אפשר התראות דחיפה';
   };
 
-  const buttonDisabled = !actionable || loading || permission === 'denied';
+  const buttonDisabled = !actionable || permission === 'denied';
 
   return (
     <div className={`space-y-1 ${className}`}>
@@ -242,15 +245,28 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
         type="button"
         onClick={subscribed ? handleDisable : handleEnable}
         disabled={buttonDisabled}
-        className="w-full text-xs font-semibold py-2 px-3 rounded-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full text-xs font-semibold py-2 px-3 rounded-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed relative"
         style={{
           color: '#ffffff',
           background: subscribed
             ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
             : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+          opacity: loading ? 0.8 : 1,
         }}
       >
-        {buttonLabel()}
+        {loading && (
+          <span className="absolute inset-y-0 right-3 flex items-center" aria-hidden="true">
+            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V2C6.477 2 2 6.477 2 12h2zm2 5.291A7.962 7.962 0 014 12H2c0 3.314 1.343 6.313 3.515 8.485L6 17.291z"
+              />
+            </svg>
+          </span>
+        )}
+        <span className={loading ? 'opacity-70' : ''}>{buttonLabel()}</span>
       </button>
       {renderStatus()}
       <PushConsentModal

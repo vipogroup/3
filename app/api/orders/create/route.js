@@ -5,6 +5,8 @@ import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { cookies } from 'next/headers';
 
+import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
+
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -88,6 +90,29 @@ export async function POST(req) {
     // Insert order
     const result = await orders.insertOne(orderDoc);
     const orderId = result.insertedId;
+
+    // Notify admins about the new order
+    try {
+      await sendTemplateNotification({
+        templateType: 'order_new',
+        variables: {
+          order_id: String(orderId),
+          customer_name: customerName || 'לקוח',
+          total_amount: totalAmount.toLocaleString('he-IL'),
+        },
+        audienceRoles: ['admin'],
+        payloadOverrides: {
+          url: `/admin/orders/${orderId}`,
+          data: {
+            orderId: String(orderId),
+            totalAmount,
+            customerName,
+          },
+        },
+      });
+    } catch (notifyErr) {
+      console.warn('ORDER_PUSH_NOTIFY_FAILED', notifyErr?.message || notifyErr);
+    }
 
     // Update product stock for online products
     if (product.type === 'online') {

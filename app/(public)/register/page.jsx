@@ -3,6 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '../../../lib/http';
+import {
+  markConsentAccepted,
+  markConsentDeclined,
+  PUSH_CONSENT_VERSION,
+} from '@/app/lib/pushConsent';
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
@@ -10,6 +15,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('customer');
+  const [wantsPush, setWantsPush] = useState(true);
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,7 +39,15 @@ export default function RegisterPage() {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fullName, phone, email, password, role, referrerId }),
+      body: JSON.stringify({
+        fullName,
+        phone,
+        email,
+        password,
+        role,
+        referrerId,
+        wantsPushNotifications: wantsPush,
+      }),
     });
 
     const j = await res.json().catch(() => ({}));
@@ -52,6 +66,25 @@ export default function RegisterPage() {
       setErr(errorMsg);
       setLoading(false);
       return;
+    }
+
+    const consentAt = new Date().toISOString();
+    try {
+      if (wantsPush) {
+        markConsentAccepted({
+          role,
+          version: PUSH_CONSENT_VERSION,
+          meta: { source: 'register', consentAt },
+        });
+      } else {
+        markConsentDeclined({
+          role,
+          version: PUSH_CONSENT_VERSION,
+          reason: 'register_opt_out',
+        });
+      }
+    } catch (consentError) {
+      console.warn('register_push_consent_error', consentError);
     }
 
     // Auto-login for customers
@@ -153,26 +186,23 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {/* Phone */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                מספר טלפון
-              </label>
+            {/* Push Notifications Consent */}
+            <div className="flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50/60 px-4 py-3">
               <input
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder="050-1234567"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                id="wantsPush"
+                name="wantsPush"
+                type="checkbox"
+                checked={wantsPush}
+                onChange={(e) => setWantsPush(e.target.checked)}
                 disabled={loading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
-                aria-describedby="phone-help"
               />
-              <p id="phone-help" className="text-xs text-gray-500 mt-1">
-                אופציונלי - לצורך יצירת קשר
-              </p>
+              <label htmlFor="wantsPush" className="text-sm text-gray-700 leading-6">
+                אני רוצה לקבל התראות ועדכונים חשובים מ-VIPO ברגע שמתרחש משהו חדש.
+              </label>
             </div>
+            <p className="text-xs text-gray-500 -mt-2 mb-1">
+              ניתן לבטל את ההתראות בכל רגע דרך ההגדרות האישיות שלך במערכת.
+            </p>
 
             {/* Password */}
             <div>
@@ -217,6 +247,27 @@ export default function RegisterPage() {
               <p id="role-help" className="text-xs text-gray-500 mt-1">
                 {role === 'customer' && 'לקוח - גישה לרכישת מוצרים'}
                 {role === 'agent' && 'סוכן - גישה לדשבורד סוכנים ועמלות'}
+              </p>
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                מספר טלפון
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="050-1234567"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                disabled={loading}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                aria-describedby="phone-help"
+              />
+              <p id="phone-help" className="text-xs text-gray-500 mt-1">
+                אופציונלי - לצורך יצירת קשר
               </p>
             </div>
 

@@ -8,6 +8,7 @@ import { getDb } from '@/lib/db';
 import { calcTotals } from '@/lib/orders/calc.js';
 import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
 
 async function ordersCollection() {
   const db = await getDb();
@@ -337,6 +338,28 @@ export async function POST(req) {
 
     const result = await ordersCol.insertOne(orderDoc);
     const orderId = result.insertedId;
+
+    try {
+      await sendTemplateNotification({
+        templateType: 'order_new',
+        variables: {
+          order_id: String(orderId),
+          customer_name: String(rest?.customer?.name || rest?.customerName || me?.fullName || 'לקוח'),
+          total_amount: totalAmount.toLocaleString('he-IL'),
+        },
+        audienceRoles: ['admin'],
+        payloadOverrides: {
+          url: `/admin/orders/${orderId}`,
+          data: {
+            orderId: String(orderId),
+            totalAmount,
+            items: items.length,
+          },
+        },
+      });
+    } catch (notifyErr) {
+      console.warn('ORDER_PUSH_NOTIFY_FAILED', notifyErr?.message || notifyErr);
+    }
 
     if (refAgentId && finalCommissionAmount) {
       try {

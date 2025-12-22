@@ -43,6 +43,7 @@ const DEFAULT_COPY = {
 };
 
 export default function PushConsentModal({ open, role = 'customer', onAccept, onDecline }) {
+  // Prevent body scroll when modal is open
   useEffect(() => {
     if (!open) return undefined;
     const originalOverflow = document.body.style.overflow;
@@ -52,13 +53,32 @@ export default function PushConsentModal({ open, role = 'customer', onAccept, on
     };
   }, [open]);
 
+  // Prevent closing on ESC key
+  useEffect(() => {
+    if (!open) return undefined;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open]);
+
   if (!open) return null;
 
   const copy = ROLE_COPY[role] || DEFAULT_COPY;
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-      <div className="relative w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+    <div 
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+      onClick={(e) => e.stopPropagation()} // Prevent closing on backdrop click
+    >
+      <div 
+        className="relative w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in"
+        onClick={(e) => e.stopPropagation()} // Prevent event bubbling
+      >
         <div
           className="absolute inset-0 opacity-90"
           style={{

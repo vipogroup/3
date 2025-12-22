@@ -94,7 +94,7 @@ export async function POST(req) {
 
     const maxAge = rememberMe ? 60 * 60 * 24 * 7 : 60 * 60 * 24;
     setAuthCookie(response, jwt, {
-      sameSite: 'strict',
+      sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       maxAge,
     });

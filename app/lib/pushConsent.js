@@ -20,8 +20,10 @@ export function getConsentRecord() {
   const win = getWindow();
   if (!win) return null;
   const raw = win.localStorage.getItem(CONSENT_STORAGE_KEY);
+  console.log('CONSENT_DEBUG: getConsentRecord raw =', raw);
   const record = safeParse(raw);
   if (!record || typeof record !== 'object') return null;
+  console.log('CONSENT_DEBUG: getConsentRecord parsed =', record);
   return record;
 }
 
@@ -34,11 +36,26 @@ export function hasValidConsent(requiredVersion = PUSH_CONSENT_VERSION) {
   return true;
 }
 
+export function hasRespondedToConsent(requiredVersion = PUSH_CONSENT_VERSION) {
+  const record = getConsentRecord();
+  if (!record) return false;
+  if (!record.version) return false;
+  if (record.version !== requiredVersion) return false;
+  return true;
+}
+
 export function saveConsentRecord(record) {
   const win = getWindow();
-  if (!win) return null;
+  if (!win) {
+    console.error('CONSENT_DEBUG: saveConsentRecord - no window!');
+    return null;
+  }
   const value = JSON.stringify(record);
+  console.log('CONSENT_DEBUG: saveConsentRecord saving =', value);
   win.localStorage.setItem(CONSENT_STORAGE_KEY, value);
+  // Verify save
+  const verify = win.localStorage.getItem(CONSENT_STORAGE_KEY);
+  console.log('CONSENT_DEBUG: saveConsentRecord verify =', verify);
   return record;
 }
 

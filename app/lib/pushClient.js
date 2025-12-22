@@ -46,6 +46,77 @@ function base64ToUint8Array(base64String) {
   return outputArray;
 }
 
+async function waitForServiceWorkerActivation(registration) {
+  if (registration?.active?.state === 'activated') {
+    return registration;
+  }
+
+  const worker = registration?.installing || registration?.waiting || registration?.active;
+  if (!worker) {
+    throw new Error('service_worker_no_instance');
+  }
+
+  await new Promise((resolve, reject) => {
+    let settled = false;
+
+    const cleanup = () => {
+      if (settled) return;
+      settled = true;
+      worker.removeEventListener('statechange', handleStateChange);
+      clearTimeout(timeoutId);
+    };
+
+    const handleStateChange = () => {
+      if (registration.active && registration.active.state === 'activated') {
+        cleanup();
+        resolve();
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      cleanup();
+      reject(new Error('service_worker_timeout'));
+    }, 10000);
+
+    worker.addEventListener('statechange', handleStateChange);
+    handleStateChange();
+  });
+
+  return registration;
+}
+
+async function getReadyServiceWorkerRegistration() {
+  if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
+    throw new Error('service_worker_not_supported');
+  }
+
+  let registration = await navigator.serviceWorker.getRegistration('/');
+
+  if (!registration) {
+    console.log('PUSH_CLIENT: no registration found, registering sw.js...');
+    try {
+      registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      console.log('PUSH_CLIENT: service worker registered');
+    } catch (error) {
+      console.error('PUSH_CLIENT: failed to register service worker', error);
+      throw new Error('service_worker_registration_failed');
+    }
+  }
+
+  if (!registration) {
+    throw new Error('service_worker_not_available');
+  }
+
+  try {
+    await waitForServiceWorkerActivation(registration);
+  } catch (activationError) {
+    console.error('PUSH_CLIENT: service worker failed to activate', activationError);
+    throw activationError;
+  }
+
+  return registration;
+}
+
 async function getPushConfig() {
   const res = await fetch(CONFIG_ENDPOINT, { cache: 'no-store' });
   if (!res.ok) return { ok: false };
@@ -53,18 +124,24 @@ async function getPushConfig() {
 }
 
 async function postSubscription(body, method = 'POST') {
+  console.log('PUSH_CLIENT: postSubscription called', { method, bodyKeys: Object.keys(body) });
   const res = await fetch(SUBSCRIBE_ENDPOINT, {
     method,
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
+    credentials: 'include',
   });
+  console.log('PUSH_CLIENT: postSubscription response', { ok: res.ok, status: res.status });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
+    console.error('PUSH_CLIENT: postSubscription FAILED', data);
     throw new Error(data.error || 'subscription_failed');
   }
-  return res.json();
+  const result = await res.json();
+  console.log('PUSH_CLIENT: postSubscription SUCCESS', result);
+  return result;
 }
 
 export async function ensureNotificationPermission() {
@@ -90,33 +167,43 @@ export async function subscribeToPush({
   consentVersion = null,
   consentMeta = null,
 } = {}) {
+  console.log('PUSH_CLIENT: subscribeToPush started');
   if (typeof window === 'undefined') {
     throw new Error('client_only');
   }
   if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    console.error('PUSH_CLIENT: unsupported browser');
     throw new Error('unsupported');
   }
 
   const permission = await ensureNotificationPermission();
+  console.log('PUSH_CLIENT: permission', permission);
   if (!permission.granted) {
     throw new Error(permission.reason || 'permission_denied');
   }
 
   const config = await getPushConfig();
+  console.log('PUSH_CLIENT: config', config);
   if (!config?.configured || !config.publicKey) {
     throw new Error('web_push_not_configured');
   }
 
-  const registration = await navigator.serviceWorker.ready;
+  console.log('PUSH_CLIENT: waiting for service worker...');
+  const registration = await getReadyServiceWorkerRegistration();
+  console.log('PUSH_CLIENT: service worker ready', registration?.active?.state);
   let subscription = await registration.pushManager.getSubscription();
+  console.log('PUSH_CLIENT: existing subscription', subscription ? 'YES' : 'NO');
 
   if (!subscription) {
+    console.log('PUSH_CLIENT: creating new subscription...');
     subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: base64ToUint8Array(config.publicKey),
     });
+    console.log('PUSH_CLIENT: subscription created');
   }
 
+  console.log('PUSH_CLIENT: posting subscription to server...');
   await postSubscription({
     subscription,
     tags,
@@ -124,6 +211,7 @@ export async function subscribeToPush({
     consentVersion,
     consentMeta,
   });
+  console.log('PUSH_CLIENT: subscription saved to server!');
 
   return { ok: true, subscription };
 }
@@ -136,7 +224,13 @@ export async function unsubscribeFromPush() {
     return { ok: false, error: 'unsupported' };
   }
 
-  const registration = await navigator.serviceWorker.ready;
+  let registration;
+  try {
+    registration = await getReadyServiceWorkerRegistration();
+  } catch (error) {
+    console.error('PUSH_CLIENT: failed to obtain service worker for unsubscribe', error);
+    return { ok: false, error: error.message || 'service_worker_not_available' };
+  }
   const subscription = await registration.pushManager.getSubscription();
   if (!subscription) {
     return { ok: true, unsubscribed: false };
@@ -158,7 +252,12 @@ export async function hasActiveSubscription() {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
     return false;
   }
-  const registration = await navigator.serviceWorker.ready;
-  const subscription = await registration.pushManager.getSubscription();
-  return Boolean(subscription);
+  try {
+    const registration = await getReadyServiceWorkerRegistration();
+    const subscription = await registration.pushManager.getSubscription();
+    return Boolean(subscription);
+  } catch (error) {
+    console.warn('PUSH_CLIENT: hasActiveSubscription failed', error);
+    return false;
+  }
 }

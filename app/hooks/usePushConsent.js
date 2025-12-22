@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   getConsentRecord,
   hasValidConsent,
+  hasRespondedToConsent,
   markConsentAccepted,
   markConsentDeclined,
   PUSH_CONSENT_VERSION,
@@ -14,23 +15,31 @@ function safeHasValidConsent(version) {
   try {
     return hasValidConsent(version);
   } catch (error) {
-    console.warn('pushConsent_hasValid_error', error);
     return false;
   }
 }
 
+function safeHasRespondedToConsent(version) {
+  if (typeof window === 'undefined') return true; // SSR - don't show modal
+  try {
+    return hasRespondedToConsent(version);
+  } catch (error) {
+    return true; // On error, don't show modal
+  }
+}
+
 function safeGetConsentRecord() {
+  if (typeof window === 'undefined') return null;
   try {
     return getConsentRecord();
   } catch (error) {
-    console.warn('pushConsent_getRecord_error', error);
     return null;
   }
 }
 
 export function usePushConsent({ role = null, version = PUSH_CONSENT_VERSION } = {}) {
   const [consentRecord, setConsentRecord] = useState(() => safeGetConsentRecord());
-  const [isOpen, setIsOpen] = useState(() => !safeHasValidConsent(version));
+  const [isOpen, setIsOpen] = useState(() => !safeHasRespondedToConsent(version));
 
   const hasConsent = useMemo(() => {
     if (consentRecord?.accepted && consentRecord?.version === version) {

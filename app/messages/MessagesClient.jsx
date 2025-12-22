@@ -38,6 +38,7 @@ export default function MessagesClient({ currentUser }) {
   const [targetUserId, setTargetUserId] = useState('');
   const [limit, setLimit] = useState(50);
   const [replyContext, setReplyContext] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   const isAdmin = currentUser?.role === 'admin';
   const { targets: knownTargets, activeTarget } = useAdminMessageTargets(
@@ -82,6 +83,18 @@ export default function MessagesClient({ currentUser }) {
   useEffect(() => {
     fetchMessages();
   }, [fetchMessages]);
+
+  // Mark all messages as read when entering the messages page
+  useEffect(() => {
+    const markAllAsRead = async () => {
+      try {
+        await fetch('/api/messages/read-all', { method: 'POST' });
+      } catch (_) {
+        // ignore errors
+      }
+    };
+    markAllAsRead();
+  }, []);
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
@@ -170,7 +183,33 @@ export default function MessagesClient({ currentUser }) {
     setReplyContext(null);
     setTargetUserId('');
     setTargetRole('all');
-  }, [targetUserId]);
+  }, []);
+
+  const handleDelete = useCallback(
+    async (messageId) => {
+      if (!messageId) return;
+      const confirmDelete = window.confirm('האם למחוק את ההודעה הזו? הפעולה אינה ניתנת לשחזור.');
+      if (!confirmDelete) return;
+
+      setDeletingId(messageId);
+      setError('');
+      try {
+        const res = await fetch(`/api/messages/${messageId}`, {
+          method: 'DELETE',
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'מחיקת ההודעה נכשלה');
+        }
+        setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
+      } catch (err) {
+        setError(err.message || 'מחיקת ההודעה נכשלה');
+      } finally {
+        setDeletingId(null);
+      }
+    },
+    [],
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -368,46 +407,60 @@ export default function MessagesClient({ currentUser }) {
             {loading ? (
               <div className="py-16 text-center text-sm text-gray-500">טוען הודעות...</div>
             ) : messages.length === 0 ? (
-              <div className="py-16 text-center text-sm text-gray-400">
-                אין הודעות להצגה.
-              </div>
+              <div className="py-16 text-center text-sm text-gray-400">אין הודעות להצגה.</div>
             ) : (
-              messages.map((item) => (
-                <article key={item.id} className="px-6 py-4 space-y-2">
-                  <header className="flex items-center justify-between text-xs text-gray-500">
-                    <span className="flex items-center gap-2">
-                      <span
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px]"
-                        style={{
-                          background: 'rgba(8, 145, 178, 0.08)',
-                          color: '#1e3a8a',
-                        }}
-                      >
-                        <strong>{ROLE_LABELS[item.senderRole] || item.senderRole}</strong>
-                        <span>→ {ROLE_LABELS[item.targetRole] || item.targetRole}</span>
-                      </span>
-                      {item.targetUserId && (
-                        <span className="text-gray-400">(משתמש: {item.targetUserId})</span>
-                      )}
-                    </span>
-                    <span className="flex items-center gap-3">
-                      <time>{formatDate(item.createdAt)}</time>
-                      {isAdmin && (item.senderRole !== 'admin' || item.targetUserId) && (
-                        <button
-                          type="button"
-                          onClick={() => handleReply(item)}
-                          className="text-[11px] font-semibold px-2 py-1 rounded-full bg-sky-100 text-sky-800 hover:bg-sky-200"
+              messages.map((item) => {
+                const isSender = currentUser?.id && item.senderId
+                  ? String(item.senderId) === String(currentUser.id)
+                  : false;
+                const canDelete = isAdmin || isSender;
+                const isDeleting = deletingId === item.id;
+
+                return (
+                  <article key={item.id} className="px-6 py-4 space-y-2">
+                    <header className="flex items-center justify-between text-xs text-gray-500">
+                      <span className="flex items-center gap-2">
+                        <span
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px]"
+                          style={{
+                            background: 'rgba(8, 145, 178, 0.08)',
+                            color: '#1e3a8a',
+                          }}
                         >
-                          השב
-                        </button>
-                      )}
-                    </span>
-                  </header>
-                  <p className="text-sm leading-relaxed text-gray-800 whitespace-pre-wrap">
-                    {item.message}
-                  </p>
-                </article>
-              ))
+                          <strong>{ROLE_LABELS[item.senderRole] || item.senderRole}</strong>
+                          <span>→ {ROLE_LABELS[item.targetRole] || item.targetRole}</span>
+                        </span>
+                        {item.targetUserId && (
+                          <span className="text-gray-400">(משתמש: {item.targetUserId})</span>
+                        )}
+                      </span>
+                      <span className="flex items-center gap-3">
+                        <time>{formatDate(item.createdAt)}</time>
+                        {isAdmin && (item.senderRole !== 'admin' || item.targetUserId) && (
+                          <button
+                            type="button"
+                            onClick={() => handleReply(item)}
+                            className="text-[11px] font-semibold px-2 py-1 rounded-full bg-sky-100 text-sky-800 hover:bg-sky-200"
+                          >
+                            השב
+                          </button>
+                        )}
+                        {canDelete && (
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(item.id)}
+                            disabled={isDeleting}
+                            className="text-[11px] font-semibold px-2 py-1 rounded-full text-red-600 hover:bg-red-50 disabled:opacity-60"
+                          >
+                            {isDeleting ? 'מוחק…' : 'מחק'}
+                          </button>
+                        )}
+                      </span>
+                    </header>
+                    <p className="text-sm leading-relaxed text-gray-800 whitespace-pre-wrap">{item.message}</p>
+                  </article>
+                );
+              })
             )}
           </div>
         </section>

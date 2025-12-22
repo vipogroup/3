@@ -1,0 +1,144 @@
+[
+  {
+    "_id": {
+      "$oid": "690f366dc3841a52e00e5d63"
+    },
+    "fullName": "מנהל ראשי",
+    "email": "admin@vipo.local",
+    "phone": "0501234567",
+    "passwordHash": "$2a$10$aGMpU3gZdp9Neeyg0FOsQOKS5fZtZyREGhgCXjzWe7RebwLvwWJqi",
+    "role": "admin",
+    "isActive": true,
+    "isAgent": false,
+    "agentId": null,
+    "referralsCount": 0,
+    "referralCount": 0,
+    "commissionBalance": 0,
+    "totalSales": 0,
+    "createdAt": {
+      "$date": "2025-11-08T12:24:13.376Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-01T01:43:58.763Z"
+    },
+    "password": "$2a$10$N6bTS91A6uK8V7h2xZe8Luub2SQKVLG5yMLCR3nocGTxjcVRpENSG"
+  },
+  {
+    "_id": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "email": "m0587009938@gmail.com",
+    "phone": "0587009938",
+    "fullName": "System Admin",
+    "passwordHash": "$2a$10$6wc1L54jbVkaTiD5PMg84uqSvuONB/y7mh5XRlmWWHQWw0K3rprlO",
+    "role": "admin",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-15T14:51:21.929Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-15T14:51:21.929Z"
+    },
+    "referralsCount": 0,
+    "commissionBalance": 0,
+    "totalSales": 0,
+    "commissionOnHold": 0
+  },
+  {
+    "_id": {
+      "$oid": "694998a0dbe98f1e80fedd20"
+    },
+    "fullName": "מרים חדש",
+    "phone": "0533858881",
+    "email": "m0533858881@gmail.com",
+    "passwordHash": "$2a$10$c.1viqjiN6i1ZkfeV3O4pO6v5KSI3il5RzecBxmMsyzUXx3WNKWh2",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-22T19:14:40.367Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-22T20:50:37.010Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "mrym-chdsh-001",
+    "couponSequence": 1,
+    "couponSlug": "mrym-chdsh",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "6949a1cfdbe98f1e80fedd70"
+    },
+    "fullName": "ניסיון לקוח ",
+    "phone": "0523004374",
+    "email": "m0523004374@gmail.com",
+    "passwordHash": "$2a$10$Aqw4eEq3x7BLG0XOcRwre.t1.0wFjb5i0LQ.ZMJ34vrynUHrpkpqi",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-22T19:53:51.817Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-22T20:50:57.370Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "nysyvn-lkvch-001",
+    "couponSequence": 1,
+    "couponSlug": "nysyvn-lkvch",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "6949a4b90df249f2db691423"
+    },
+    "fullName": "שירן",
+    "phone": null,
+    "email": "miriamshabo06@gmail.com",
+    "passwordHash": "$2a$10$BlHr60FJ8Qxum/aN/2eAFuToWHoDU.7r2ugGZ/riWQXIdNBcb91C2",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-22T20:06:17.122Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-22T20:06:17.122Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6949a85539935e2f4a4c4df6"
+    },
+    "fullName": "שירן",
+    "phone": "85",
+    "email": "miriamshabo1@gmail.com",
+    "passwordHash": "$2a$10$VQmi19hcJXFTF3a9cP.D0.3ck9jv540d9b/TtH2UJe6MaD4mo/7dy",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-22T20:21:41.765Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-22T20:21:41.765Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6949a86a39935e2f4a4c4df9"
+    },
+    "fullName": "מרים",
+    "phone": "05838461",
+    "email": "miriamshabo22@gmail.com",
+    "passwordHash": "$2a$10$BdSzuNxnVEyHtyA.hTHvculloh3Q3QYDmrCu3/BkuKvLUymoIBDgi",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-22T20:22:02.718Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-22T20:22:02.718Z"
+    }
+  }
+]
