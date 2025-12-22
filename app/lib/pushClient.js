@@ -2,6 +2,7 @@
 
 const CONFIG_ENDPOINT = '/api/push/config';
 const SUBSCRIBE_ENDPOINT = '/api/push/subscribe';
+const VAPID_PUBLIC_KEY_STORAGE = 'vipogroup_vapid_public_key';
 
 function sanitizeBase64Input(value) {
   if (!value) return '';
@@ -44,6 +45,24 @@ function base64ToUint8Array(base64String) {
   }
 
   return outputArray;
+}
+
+function safeGetStoredVapidKey() {
+  try {
+    if (typeof window === 'undefined') return null;
+    return window.localStorage.getItem(VAPID_PUBLIC_KEY_STORAGE);
+  } catch {
+    return null;
+  }
+}
+
+function safeSetStoredVapidKey(value) {
+  try {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem(VAPID_PUBLIC_KEY_STORAGE, String(value || ''));
+  } catch {
+    // ignore
+  }
 }
 
 async function waitForServiceWorkerActivation(registration) {
@@ -227,17 +246,33 @@ export async function subscribeToPush({
     throw new Error('web_push_not_configured');
   }
 
+  const currentPublicKey = sanitizeBase64Input(config.publicKey);
+  const storedPublicKey = safeGetStoredVapidKey();
+  const shouldRecreateSubscription = Boolean(forcePrompt || (storedPublicKey && storedPublicKey !== currentPublicKey));
+
   console.log('PUSH_CLIENT: waiting for service worker...');
   const registration = await getReadyServiceWorkerRegistration();
   console.log('PUSH_CLIENT: service worker ready', registration?.active?.state);
   let subscription = await registration.pushManager.getSubscription();
   console.log('PUSH_CLIENT: existing subscription', subscription ? 'YES' : 'NO');
 
+  if (subscription && shouldRecreateSubscription) {
+    console.log('PUSH_CLIENT: VAPID key changed (or forced). Recreating subscription...');
+    try {
+      const endpoint = subscription.endpoint;
+      await subscription.unsubscribe().catch(() => {});
+      await postSubscription({ endpoint }, 'DELETE').catch(() => {});
+    } catch (err) {
+      console.warn('PUSH_CLIENT: failed to cleanup old subscription', err);
+    }
+    subscription = null;
+  }
+
   if (!subscription) {
     console.log('PUSH_CLIENT: creating new subscription...');
     subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: base64ToUint8Array(config.publicKey),
+      applicationServerKey: base64ToUint8Array(currentPublicKey),
     });
     console.log('PUSH_CLIENT: subscription created');
   }
@@ -251,6 +286,8 @@ export async function subscribeToPush({
     consentMeta,
   });
   console.log('PUSH_CLIENT: subscription saved to server!');
+
+  safeSetStoredVapidKey(currentPublicKey);
 
   return { ok: true, subscription };
 }

@@ -37,6 +37,8 @@ export async function POST(req) {
 
     const subscription = payload.subscription;
     const tags = Array.isArray(payload.tags) ? payload.tags : [];
+    const fallbackTag = user?.role === 'agent' ? 'agent' : user?.role === 'admin' ? 'admin' : 'customer';
+    const effectiveTags = tags.length ? tags : [fallbackTag];
     const consentAt = payload.consentAt || null;
     const consentVersion = payload.consentVersion || null;
     const consentMeta = payload.consentMeta && typeof payload.consentMeta === 'object' ? payload.consentMeta : null;
@@ -52,7 +54,7 @@ export async function POST(req) {
       keys: subscription.keys,
       userId: user.id,
       role: user.role,
-      tags,
+      tags: effectiveTags,
       userAgent,
       ip,
       consentAt,

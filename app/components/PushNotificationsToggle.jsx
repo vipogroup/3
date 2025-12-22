@@ -85,11 +85,35 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
       }
 
       const subscribed = await hasActiveSubscription();
+
+      let shouldRepair = false;
+      try {
+        const currentKey = String(data?.publicKey || '').trim().replace(/^['"]+|['"]+$/g, '').replace(/\s+/g, '');
+        const storedKey = window.localStorage.getItem('vipogroup_vapid_public_key');
+        shouldRepair = subscribed && Notification.permission === 'granted' && (!storedKey || storedKey !== currentKey);
+      } catch (_) {
+        shouldRepair = false;
+      }
+
+      if (shouldRepair) {
+        try {
+          await subscribeToPush({
+            tags: allTags,
+            consentAt: new Date().toISOString(),
+            consentVersion,
+            consentMeta: { source: 'auto_repair', role },
+            forcePrompt: true,
+          });
+        } catch (repairError) {
+          console.warn('PUSH_DEBUG: auto repair failed', repairError);
+        }
+      }
+
       setState((prev) => ({
         ...prev,
         supported: true,
         configured: true,
-        subscribed,
+        subscribed: subscribed && !shouldRepair,
         loading: false,
         permission: Notification.permission,
         message: subscribed ? MESSAGES.granted : '',
@@ -121,7 +145,7 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
             ...prev,
             loading: false,
             permission: permissionResult.reason,
-            message: MESSAGES.denied,
+            message: MESSAGES[permissionResult.reason] || MESSAGES.denied,
           }));
           return;
         }
@@ -132,6 +156,7 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
           consentAt,
           consentVersion,
           consentMeta: { source, role },
+          forcePrompt,
         });
         console.log('PUSH_DEBUG: subscribeToPush success!');
         if (recordConsent) {

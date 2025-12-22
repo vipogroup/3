@@ -66,12 +66,13 @@ self.addEventListener('pushsubscriptionchange', (event) => {
         const registration = await self.registration;
         const newSubscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey,
+          applicationServerKey: base64ToUint8Array(applicationServerKey),
         });
 
         await fetch('/api/push/subscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ subscription: newSubscription, tags: [] }),
         });
       } catch (error) {
@@ -124,6 +125,18 @@ self.addEventListener('fetch', (event) => {
 setInterval(() => {
   self.registration.update();
 }, 30000);
+
+function base64ToUint8Array(base64String) {
+  const trimmed = String(base64String || '').trim().replace(/^['"]+|['"]+$/g, '').replace(/\s+/g, '');
+  const padding = '='.repeat((4 - (trimmed.length % 4)) % 4);
+  const base64 = (trimmed + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; i += 1) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
 
 function normalizePayload(event) {
   let payload = {};
