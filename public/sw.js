@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vipo-static-v1';
+const CACHE_NAME = 'vipo-static-v2';
 const PRECACHE_URLS = [
   '/',
   '/products',
@@ -83,18 +83,14 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-
-      return fetch(request)
-        .then((response) => {
-          const clone = response.clone();
+      const fetchPromise = fetch(request)
+        .then((networkResponse) => {
+          const clone = networkResponse.clone();
           caches
             .open(CACHE_NAME)
             .then((cache) => cache.put(request, clone))
             .catch((err) => console.warn('SW cache put failed', err));
-          return response;
+          return networkResponse;
         })
         .catch((error) => {
           console.error('SW fetch failed', error);
@@ -103,6 +99,9 @@ self.addEventListener('fetch', (event) => {
           }
           throw error;
         });
+
+      // תמיד תנסה להביא גרסה חדשה מהשרת
+      return fetchPromise.catch(() => cachedResponse);
     }),
   );
 });
