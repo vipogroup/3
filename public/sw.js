@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vipo-static-v2';
+const CACHE_NAME = 'vipo-static-v3';
 const PRECACHE_URLS = [
   '/',
   '/products',
@@ -86,35 +86,44 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   const requestUrl = new URL(request.url);
 
-  // אל תיירט בקשות שמקורן בדומיין אחר כדי להימנע משגיאות CSP בדפדפנים ניידים
+  // אל תיירט בקשות שמקורן בדומיין אחר
   if (requestUrl.origin !== self.location.origin) {
     return;
   }
 
-  event.respondWith(
-    caches.match(request).then((cachedResponse) => {
-      const fetchPromise = fetch(request)
-        .then((networkResponse) => {
-          const clone = networkResponse.clone();
-          caches
-            .open(CACHE_NAME)
-            .then((cache) => cache.put(request, clone))
-            .catch((err) => console.warn('SW cache put failed', err));
-          return networkResponse;
-        })
-        .catch((error) => {
-          console.error('SW fetch failed', error);
-          if (request.mode === 'navigate') {
-            return caches.match('/');
-          }
-          throw error;
-        });
+  // בדיקה אם זה קובץ חיוני
+  const isEssential = PRECACHE_URLS.includes(requestUrl.pathname);
 
-      // תמיד תנסה להביא גרסה חדשה מהשרת
-      return fetchPromise.catch(() => cachedResponse);
-    }),
+  event.respondWith(
+    (async () => {
+      try {
+        // נסה קודם להביא מהרשת
+        const networkResponse = await fetch(request);
+        
+        // אם הצליח, שמור במטמון
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(request, networkResponse.clone());
+        return networkResponse;
+      } catch (error) {
+        // אם נכשל, נסה להביא מהמטמון
+        const cachedResponse = await caches.match(request);
+        if (cachedResponse) return cachedResponse;
+
+        // אם זה ניווט, חזור לדף הבית
+        if (request.mode === 'navigate') {
+          return caches.match('/');
+        }
+
+        throw error;
+      }
+    })()
   );
 });
+
+// בדיקת עדכונים כל 30 שניות
+setInterval(() => {
+  self.registration.update();
+}, 30000);
 
 function normalizePayload(event) {
   let payload = {};
