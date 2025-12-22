@@ -86,8 +86,8 @@ export default function LoginPage() {
         console.log('[LOGIN] Redirecting to:', targetPath);
 
         const continueNavigation = () => {
-          // Use window.location for more reliable redirect
-          window.location.href = targetPath;
+          // Force a full page reload to update all components
+          window.location.replace(targetPath);
         };
 
         try {
