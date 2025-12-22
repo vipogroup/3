@@ -9,6 +9,7 @@ export default function UserHeader() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
   const pathname = usePathname();
   const { totals, isEmpty } = useCartContext();
 
@@ -16,7 +17,7 @@ export default function UserHeader() {
     let ignore = false;
     (async () => {
       try {
-        const res = await fetch('/api/auth/me', { cache: 'no-store' });
+        const res = await fetch('/api/auth/me', { cache: 'no-store', credentials: 'include' });
         if (!ignore && res.ok) {
           const data = await res.json();
           setUser(data?.user || null);
@@ -31,6 +32,30 @@ export default function UserHeader() {
       ignore = true;
     };
   }, []);
+
+  // Fetch unread messages count
+  useEffect(() => {
+    if (!user) return;
+    let ignore = false;
+    const fetchUnread = async () => {
+      try {
+        const res = await fetch('/api/messages/unread-count', { cache: 'no-store', credentials: 'include' });
+        if (!ignore && res.ok) {
+          const data = await res.json();
+          setUnreadCount(data?.count || 0);
+        }
+      } catch (_) {
+        // ignore
+      }
+    };
+    fetchUnread();
+    // Poll every 30 seconds
+    const interval = setInterval(fetchUnread, 30000);
+    return () => {
+      ignore = true;
+      clearInterval(interval);
+    };
+  }, [user]);
 
   const role = user?.role;
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -94,8 +119,8 @@ export default function UserHeader() {
         backgroundClip: 'padding-box, border-box',
       }}
     >
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 py-3">
-        <div className="flex items-center gap-3 sm:gap-4">
+      <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-3">
           <Link
             href="/"
             className="flex items-center gap-2 transition-all duration-300"
@@ -223,6 +248,40 @@ export default function UserHeader() {
               </span>
             )}
           </Link>
+
+          {user && (
+            <Link
+              href="/messages"
+              className="relative p-2 rounded-full transition-all duration-300"
+              style={{ color: pathname === '/messages' ? '#1e3a8a' : '#4b5563' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#0891b2';
+                e.currentTarget.style.background = 'rgba(8, 145, 178, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = pathname === '/messages' ? '#1e3a8a' : '#4b5563';
+                e.currentTarget.style.background = 'transparent';
+              }}
+              title="הודעות"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
+              </svg>
+              {unreadCount > 0 && (
+                <span
+                  className="absolute -top-1 -right-1 inline-flex items-center justify-center rounded-full text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1"
+                  style={{ background: 'linear-gradient(135deg, #ef4444 0%, #f87171 100%)' }}
+                >
+                  {Math.min(99, unreadCount)}
+                </span>
+              )}
+            </Link>
+          )}
 
           {user ? (
             <div className="relative" ref={menuRef}>
