@@ -10,26 +10,36 @@ const PRECACHE_URLS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_URLS))
-      .catch((err) => console.error('SW install cache error', err)),
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      // קודם נוסיף את הקבצים החיוניים
+      await cache.addAll(PRECACHE_URLS).catch(err => console.error('SW install cache error', err));
+      // מיד נפעיל את ה-Service Worker החדש
+      await self.skipWaiting();
+    })()
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) =>
-        Promise.all(
-          keys
-            .filter((key) => key.startsWith('vipo-static-') && key !== CACHE_NAME)
-            .map((key) => caches.delete(key)),
-        ),
-      )
-      .then(() => self.clients.claim()),
+    (async () => {
+      // מחיקת גרסאות ישנות מהמטמון
+      const keys = await caches.keys();
+      await Promise.all(
+        keys
+          .filter((key) => key.startsWith('vipo-static-') && key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      );
+
+      // תפיסת שליטה על כל הלקוחות הפתוחים
+      await self.clients.claim();
+
+      // שליחת הודעה ללקוחות שיש עדכון
+      const clients = await self.clients.matchAll();
+      for (const client of clients) {
+        client.postMessage({ type: 'NEW_VERSION_ACTIVATED' });
+      }
+    })()
   );
 });
 

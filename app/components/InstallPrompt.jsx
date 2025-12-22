@@ -20,6 +20,23 @@ export default function InstallPrompt() {
     // 1. זה iOS (כי אין prompt אוטומטי)
     // 2. או שזה מכשיר אחר והאפליקציה לא מותקנת
     setShowPrompt(isIOSDevice || !isInstalled);
+
+    // האזנה לאירוע התקנה
+    const handleInstalled = () => {
+      setHasInstalledPWA(true);
+      setShowPrompt(false);
+    };
+
+    window.addEventListener('appinstalled', handleInstalled);
+    return () => window.removeEventListener('appinstalled', handleInstalled);
+  }, []);
+
+  // האזנה לשינויים בסטטוס ההתקנה
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(display-mode: standalone)');
+    const handleChange = (e) => setHasInstalledPWA(e.matches);
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
   }, []);
 
   if (!showPrompt || hasInstalledPWA) return null;
@@ -67,13 +84,11 @@ export default function InstallPrompt() {
               </button>
               <button
                 onClick={() => {
-                  if (window.deferredPrompt) {
-                    window.deferredPrompt.prompt();
-                    window.deferredPrompt.userChoice.then((choiceResult) => {
-                      if (choiceResult.outcome === 'accepted') {
-                        setShowPrompt(false);
-                      }
-                    });
+                  if (window.deferredPwaPrompt) {
+                    window.requestPwaInstallPrompt?.();
+                  } else {
+                    // אם אין אפשרות להתקנה, נסתיר את הבאנר
+                    setShowPrompt(false);
                   }
                 }}
                 className="px-4 py-2 text-sm font-medium rounded-lg"
