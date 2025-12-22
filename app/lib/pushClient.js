@@ -145,10 +145,29 @@ async function postSubscription(body, method = 'POST') {
 }
 
 export async function ensureNotificationPermission() {
-  if (typeof window === 'undefined' || !('Notification' in window)) {
+  if (typeof window === 'undefined') {
     return { granted: false, reason: 'unsupported' };
   }
 
+  // בדיקת תמיכה בהתראות במובייל
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid = /Android/.test(navigator.userAgent);
+
+  // אם זה iOS, נבדוק אם האפליקציה מותקנת
+  if (isIOS) {
+    const isStandalone = window.navigator.standalone === true;
+    if (!isStandalone) {
+      // אם האפליקציה לא מותקנת, נבקש מהמשתמש להתקין
+      return { granted: false, reason: 'ios_install_required' };
+    }
+  }
+
+  // בדיקה אם הדפדפן תומך בהתראות
+  if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+    return { granted: false, reason: 'unsupported' };
+  }
+
+  // בדיקת הרשאות קיימות
   const permission = Notification.permission;
   if (permission === 'granted') {
     return { granted: true };
@@ -157,8 +176,27 @@ export async function ensureNotificationPermission() {
     return { granted: false, reason: 'denied' };
   }
 
-  const result = await Notification.requestPermission();
-  return { granted: result === 'granted', reason: result };
+  try {
+    // בקשת הרשאות
+    const result = await Notification.requestPermission();
+    
+    // אם אושר, נוודא שה-Service Worker נרשם
+    if (result === 'granted') {
+      const registration = await navigator.serviceWorker.ready;
+      if (!registration) {
+        return { granted: false, reason: 'service_worker_failed' };
+      }
+    }
+
+    return { 
+      granted: result === 'granted', 
+      reason: result,
+      platform: isIOS ? 'ios' : isAndroid ? 'android' : 'desktop'
+    };
+  } catch (error) {
+    console.error('Permission request failed:', error);
+    return { granted: false, reason: 'permission_error' };
+  }
 }
 
 export async function subscribeToPush({
@@ -166,6 +204,7 @@ export async function subscribeToPush({
   consentAt = null,
   consentVersion = null,
   consentMeta = null,
+  forcePrompt = false
 } = {}) {
   console.log('PUSH_CLIENT: subscribeToPush started');
   if (typeof window === 'undefined') {

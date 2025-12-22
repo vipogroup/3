@@ -6,13 +6,21 @@
   "lang": "he",
   "dir": "rtl",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
   "start_url": "/products?source=pwa",
+  "id": "/",
   "scope": "/",
   "background_color": "#0f172a",
   "theme_color": "#1e3a8a",
-  "orientation": "any",
+  "orientation": "portrait-primary",
   "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  },
+  "handle_links": "preferred",
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
   "icons": [
     {
       "src": "/icons/192.png",

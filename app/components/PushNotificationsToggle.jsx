@@ -18,6 +18,9 @@ const MESSAGES = {
   granted: 'התראות הופעלו בהצלחה.',
   disabled: 'התראות בוטלו.',
   generalError: 'שמירת ההתראה נכשלה. נסה שוב.',
+  ios_install_required: 'להתראות ב-iOS: התקן את האפליקציה דרך "הוסף למסך הבית".',
+  service_worker_failed: 'התקנת ההתראות נכשלה. נסה לרענן את הדף.',
+  permission_error: 'אירעה שגיאה בבקשת ההרשאות. נסה שוב.',
 };
 
 function buildTags(role, extraTags = []) {
@@ -106,7 +109,7 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
   }, [evaluateStatus]);
 
   const performSubscribe = useCallback(
-    async ({ source, consentAt = new Date().toISOString(), recordConsent = true }) => {
+    async ({ source, consentAt = new Date().toISOString(), recordConsent = true, forcePrompt = false }) => {
       console.log('PUSH_DEBUG: performSubscribe called', { source, consentAt, recordConsent });
       setState((prev) => ({ ...prev, loading: true, message: '' }));
       try {
