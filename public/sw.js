@@ -147,12 +147,22 @@ self.addEventListener('push', (event) => {
     badge: payload.badge || '/icons/badge.png',
     image: payload.image,
     tag: payload.tag,
-    renotify: payload.renotify === true,
-    requireInteraction: payload.requireInteraction === true,
+    renotify: true,  // תמיד להציג התראה חדשה
+    requireInteraction: true,  // להשאיר את ההתראה עד שהמשתמש ילחץ עליה
+    silent: false,  // לאפשר צליל התראה
+    vibrate: [200, 100, 200],  // להוסיף רטט במובייל
+    actions: [
+      {
+        action: 'open',
+        title: 'פתח',
+        icon: '/icons/open.png'
+      }
+    ],
     data: {
       url: payload.url || payload.data?.url || defaultUrl,
       templateType: payload.data?.templateType,
       variables: payload.data?.variables,
+      timestamp: new Date().getTime(),
       ...payload.data,
     },
   };
@@ -166,23 +176,67 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const targetUrl = event.notification.data?.url || '/dashboard';
+  
+  // טיפול בלחיצה על כפתורים בהתראה
+  if (event.action === 'open') {
+    const targetUrl = event.notification.data?.url || '/dashboard';
+    event.waitUntil(
+      (async () => {
+        // ניסיון למצוא חלון פתוח של האפליקציה
+        const windowClients = await clients.matchAll({
+          type: 'window',
+          includeUncontrolled: true
+        });
 
-  event.waitUntil(
-    clients
-      .matchAll({ type: 'window', includeUncontrolled: true })
-      .then((clientList) => {
-        for (const client of clientList) {
-          if (client.url.includes(targetUrl) && 'focus' in client) {
-            return client.focus();
+        // אם יש חלון פתוח, ננסה להשתמש בו
+        for (const client of windowClients) {
+          if (client.url.includes(targetUrl)) {
+            await client.focus();
+            if (client.navigate) {
+              await client.navigate(targetUrl);
+            }
+            return;
           }
         }
+
+        // אם אין חלון פתוח, נפתח חדש
         if (clients.openWindow) {
-          return clients.openWindow(targetUrl);
+          await clients.openWindow(targetUrl);
         }
-        return undefined;
-      })
-      .catch((err) => console.error('SW notificationclick error', err)),
+      })()
+    );
+    return;
+  }
+
+  // טיפול בלחיצה על ההתראה עצמה
+  const targetUrl = event.notification.data?.url || '/dashboard';
+  event.waitUntil(
+    (async () => {
+      try {
+        const windowClients = await clients.matchAll({
+          type: 'window',
+          includeUncontrolled: true
+        });
+
+        // אם יש חלון פתוח, נשתמש בו
+        for (const client of windowClients) {
+          if (client.url.includes(targetUrl)) {
+            await client.focus();
+            if (client.navigate) {
+              await client.navigate(targetUrl);
+            }
+            return;
+          }
+        }
+
+        // אם אין חלון פתוח, נפתח חדש
+        if (clients.openWindow) {
+          await clients.openWindow(targetUrl);
+        }
+      } catch (err) {
+        console.error('SW notificationclick error', err);
+      }
+    })()
   );
 });
 
