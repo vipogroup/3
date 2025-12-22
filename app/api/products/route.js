@@ -311,13 +311,19 @@ async function ensureSeedProducts() {
 
 async function notifyProductCreation(adminUser, productDoc) {
   const senderId = ObjectId.isValid(adminUser?.id) ? new ObjectId(adminUser.id) : null;
-  if (!senderId) return;
+  if (!senderId) {
+    console.warn('NOTIFY_PRODUCT: No valid senderId, skipping notification');
+    return;
+  }
 
   const baseMessage = `מוצר חדש נוסף למערכת: ${productDoc.name}`;
   const roles = ['agent', 'customer'];
 
-  await Promise.all(
-    roles.map(async (role) => {
+  console.log('NOTIFY_PRODUCT: Starting notification for product:', productDoc.name);
+
+  for (const role of roles) {
+    try {
+      // יצירת הודעה במערכת
       const messageDoc = await Message.create({
         senderId,
         senderRole: 'admin',
@@ -332,19 +338,34 @@ async function notifyProductCreation(adminUser, productDoc) {
         ],
       });
 
-      await pushToTags([role], {
-        title: 'מוצר חדש ב-VIPO',
+      console.log(`NOTIFY_PRODUCT: Message created for role ${role}, messageId:`, messageDoc._id);
+
+      // שליחת Push notification
+      const pushPayload = {
+        title: '🆕 מוצר חדש ב-VIPO!',
         body: baseMessage,
+        icon: '/icons/192.png',
+        badge: '/icons/badge.png',
+        tag: `product-${productDoc._id}`,
         data: {
           type: 'product_created',
           productId: String(productDoc._id),
           messageId: String(messageDoc._id),
           targetRole: role,
         },
-        url: '/products',
-      });
-    }),
-  );
+        url: `/products/${productDoc._id}`,
+      };
+
+      console.log(`NOTIFY_PRODUCT: Sending push to tag [${role}]`);
+      const pushResults = await pushToTags([role], pushPayload);
+      console.log(`NOTIFY_PRODUCT: Push results for ${role}:`, pushResults?.length || 0, 'notifications sent');
+
+    } catch (error) {
+      console.error(`NOTIFY_PRODUCT: Error for role ${role}:`, error?.message || error);
+    }
+  }
+
+  console.log('NOTIFY_PRODUCT: Completed notification process');
 }
 
 function serializeProduct(doc) {
