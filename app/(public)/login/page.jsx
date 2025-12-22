@@ -70,7 +70,7 @@ export default function LoginPage() {
       setMsg('התחברת בהצלחה! מעביר לדשבורד...');
       setLoading(false);
 
-      // Add a small delay to ensure cookie is set
+      // Add a longer delay to ensure cookie is properly set and synced
       setTimeout(() => {
         console.log('[LOGIN] About to redirect for role:', data.role);
 
@@ -85,23 +85,20 @@ export default function LoginPage() {
 
         console.log('[LOGIN] Redirecting to:', targetPath);
 
-        const continueNavigation = () => {
-          // Force a full page reload to update all components
-          window.location.replace(targetPath);
-        };
+        // First update the cookie status
+        fetch('/api/auth/me', { credentials: 'include' })
+          .then(() => {
+            // Then do the navigation after cookie is confirmed
+            setTimeout(() => {
+              window.location.href = targetPath;
+            }, 100);
+          })
+          .catch(() => {
+            // If cookie check fails, try direct navigation
+            window.location.href = targetPath;
+          });
 
-        try {
-          const maybePrompt = window.requestPwaInstallPrompt;
-          if (typeof maybePrompt === 'function') {
-            Promise.resolve(maybePrompt()).finally(continueNavigation);
-            return;
-          }
-        } catch (promptErr) {
-          console.warn('Failed to trigger PWA prompt after login', promptErr);
-        }
-
-        continueNavigation();
-      }, 500);
+      }, 1000);
     } catch (e) {
       console.error('[LOGIN] Exception:', e);
       setErr('שגיאה בחיבור לשרת. אנא נסה שוב.');
