@@ -1,43 +1,51 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 
 export default function InstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [hasInstalledPWA, setHasInstalledPWA] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
 
+  // האזנה לאירוע beforeinstallprompt
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowPrompt(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  // בדיקת פלטפורמה ומצב התקנה
   useEffect(() => {
     // בדיקה אם המשתמש במכשיר iOS
     const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent);
     setIsIOS(isIOSDevice);
 
     // בדיקה אם האפליקציה כבר מותקנת
-    const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
-    setHasInstalledPWA(isInstalled);
-
-    // הצג את ההודעה רק אם:
-    // 1. זה iOS (כי אין prompt אוטומטי)
-    // 2. או שזה מכשיר אחר והאפליקציה לא מותקנת
-    setShowPrompt(isIOSDevice || !isInstalled);
-
-    // האזנה לאירוע התקנה
-    const handleInstalled = () => {
-      setHasInstalledPWA(true);
-      setShowPrompt(false);
+    const checkInstallation = () => {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone ||
+        document.referrer.includes('android-app://');
+      setHasInstalledPWA(isStandalone);
+      if (isStandalone) setShowPrompt(false);
     };
 
-    window.addEventListener('appinstalled', handleInstalled);
-    return () => window.removeEventListener('appinstalled', handleInstalled);
+    checkInstallation();
+    window.addEventListener('appinstalled', checkInstallation);
+    return () => window.removeEventListener('appinstalled', checkInstallation);
   }, []);
 
-  // האזנה לשינויים בסטטוס ההתקנה
+  // הצגת הבאנר ל-iOS
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(display-mode: standalone)');
-    const handleChange = (e) => setHasInstalledPWA(e.matches);
-    mediaQuery.addListener(handleChange);
-    return () => mediaQuery.removeListener(handleChange);
-  }, []);
+    if (isIOS && !hasInstalledPWA) {
+      setShowPrompt(true);
+    }
+  }, [isIOS, hasInstalledPWA]);
 
   if (!showPrompt || hasInstalledPWA) return null;
 
@@ -83,11 +91,20 @@ export default function InstallPrompt() {
                 לא עכשיו
               </button>
               <button
-                onClick={() => {
-                  if (window.deferredPwaPrompt) {
-                    window.requestPwaInstallPrompt?.();
+                onClick={async () => {
+                  if (deferredPrompt) {
+                    try {
+                      await deferredPrompt.prompt();
+                      const { outcome } = await deferredPrompt.userChoice;
+                      if (outcome === 'accepted') {
+                        setShowPrompt(false);
+                      }
+                    } catch (err) {
+                      console.error('Installation failed:', err);
+                    } finally {
+                      setDeferredPrompt(null);
+                    }
                   } else {
-                    // אם אין אפשרות להתקנה, נסתיר את הבאנר
                     setShowPrompt(false);
                   }
                 }}
