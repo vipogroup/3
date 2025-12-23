@@ -305,19 +305,19 @@ export default function MarketingAssetsClient() {
             boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
           }}
         >
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-            <div className="flex flex-1 gap-2">
+          <div className="flex flex-col gap-3 mb-4">
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="חיפוש לפי שם או טקסט..."
-                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="flex-1 min-w-0 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="w-36 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="w-full sm:w-32 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
               >
                 <option value="all">כל הסוגים</option>
                 <option value="video">וידאו</option>
@@ -329,15 +329,14 @@ export default function MarketingAssetsClient() {
             </div>
           </div>
 
-          {/* Desktop Table - Hidden on Mobile */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="overflow-x-auto">
             <table className="w-full text-right border border-gray-200 rounded-lg overflow-hidden">
               <thead
                 style={{
                   background: 'linear-gradient(135deg, rgba(30,58,138,0.1) 0%, rgba(8,145,178,0.1) 100%)',
                 }}
               >
-                <tr className="text-sm text-gray-600">
+                <tr className="text-xs sm:text-sm text-gray-600">
                   <th className="px-3 py-2 border-b border-gray-200">שם</th>
                   <th className="px-3 py-2 border-b border-gray-200">סוג</th>
                   <th className="px-3 py-2 border-b border-gray-200">סטטוס</th>
@@ -359,7 +358,7 @@ export default function MarketingAssetsClient() {
                       ? new Date(asset.updatedAt).toLocaleDateString('he-IL')
                       : '';
                     return (
-                      <tr key={asset.id} className="text-sm border-t border-gray-100">
+                      <tr key={asset.id} className="text-xs sm:text-sm border-t border-gray-100">
                         <td className="px-3 py-3 font-semibold text-gray-900">{asset.title}</td>
                         <td className="px-3 py-3 text-gray-600">{asset.type === 'video' ? 'וידאו' : 'תמונה'}</td>
                         <td className="px-3 py-3">
@@ -414,77 +413,6 @@ export default function MarketingAssetsClient() {
                 )}
               </tbody>
             </table>
-          </div>
-
-          {/* Mobile Cards - Hidden on Desktop */}
-          <div className="md:hidden space-y-3">
-            {loading ? (
-              <div className="text-center text-gray-500 py-6">טוען נתונים...</div>
-            ) : filteredAssets.length ? (
-              filteredAssets.map((asset) => {
-                const updatedLabel = asset.updatedAt
-                  ? new Date(asset.updatedAt).toLocaleDateString('he-IL')
-                  : '';
-                return (
-                  <div
-                    key={asset.id}
-                    className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm"
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="font-semibold text-gray-900 text-base">{asset.title}</h3>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {asset.type === 'video' ? 'וידאו' : 'תמונה'} • {updatedLabel}
-                        </p>
-                      </div>
-                      <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          asset.isActive ? 'text-white' : 'text-gray-600'
-                        }`}
-                        style={{
-                          background: asset.isActive
-                            ? 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)'
-                            : 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)',
-                        }}
-                      >
-                        {asset.isActive ? 'פעיל' : 'מושבת'}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <a
-                        href={asset.mediaUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm font-medium"
-                        style={{ color: '#0891b2' }}
-                      >
-                        צפייה במדיה
-                      </a>
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => startEdit(asset)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white"
-                          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-                        >
-                          עריכה
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(asset)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white"
-                          style={{ background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)' }}
-                        >
-                          מחיקה
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="text-center text-gray-500 py-6">לא נמצאו נכסים תואמים.</div>
-            )}
           </div>
         </section>
       </div>
