@@ -7,6 +7,7 @@ import CartToast from '@/app/components/CartToast';
 import PwaInstaller from '@/app/components/PwaInstaller';
 import InstallPrompt from '@/app/components/InstallPrompt';
 import UpdateNotifier from '@/app/components/UpdateNotifier';
+import PushNotificationBanner from '@/app/components/PushNotificationBanner';
 
 export const metadata = {
   title: 'VIPO - רוכשים ביחד',
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
             <CartToast />
             <InstallPrompt />
             <UpdateNotifier />
+            <PushNotificationBanner />
           </ThemeProvider>
         </CartProvider>
       </body>
