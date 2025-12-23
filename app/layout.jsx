@@ -8,8 +8,8 @@ import PwaInstaller from '@/app/components/PwaInstaller';
 import InstallPrompt from '@/app/components/InstallPrompt';
 
 export const metadata = {
-  title: 'VIPO - חנות מוצרי גיימינג ואלקטרוניקה',
-  description: 'מוצרי גיימינג איכותיים במחירים משתלמים - משלוח מהיר לכל הארץ',
+  title: 'VIPO - רוכשים ביחד',
+  description: 'מוצרים איכותיים במחירים משתלמים - משלוח מהיר לכל הארץ',
   manifest: '/manifest.webmanifest',
 };
 
