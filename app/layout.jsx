@@ -6,6 +6,7 @@ import ReferralTracker from '@/app/components/ReferralTracker';
 import CartToast from '@/app/components/CartToast';
 import PwaInstaller from '@/app/components/PwaInstaller';
 import InstallPrompt from '@/app/components/InstallPrompt';
+import UpdateNotifier from '@/app/components/UpdateNotifier';
 
 export const metadata = {
   title: 'VIPO - רוכשים ביחד',
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
             {children}
             <CartToast />
             <InstallPrompt />
+            <UpdateNotifier />
           </ThemeProvider>
         </CartProvider>
       </body>
