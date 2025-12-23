@@ -7,6 +7,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { connectMongo } from '@/lib/mongoose';
 import Message from '@/models/Message';
 import { pushToUsers, pushToTags, pushBroadcast } from '@/lib/pushSender';
+import { getDb } from '@/lib/db';
 
 const ADMIN_ALLOWED_TARGETS = ['agent', 'customer', 'admin', 'all', 'direct'];
 
@@ -73,11 +74,27 @@ export async function GET(req) {
       if (!userObjectId) {
         return NextResponse.json({ error: 'user_id_invalid' }, { status: 400 });
       }
+      
+      // Get user creation date to filter messages
+      const db = await getDb();
+      const usersCol = db.collection('users');
+      const userData = await usersCol.findOne(
+        { _id: userObjectId },
+        { projection: { createdAt: 1 } }
+      );
+      const userCreatedAt = userData?.createdAt || new Date(0);
+      
       query = {
-        $or: [
-          { senderId: userObjectId },
-          { targetUserId: userObjectId },
-          { targetRole: { $in: ['all', user.role] } },
+        $and: [
+          {
+            $or: [
+              { senderId: userObjectId },
+              { targetUserId: userObjectId },
+              { targetRole: { $in: ['all', user.role] } },
+            ],
+          },
+          // Only show messages created after user registration
+          { createdAt: { $gte: userCreatedAt } },
         ],
       };
     }
