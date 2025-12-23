@@ -35,10 +35,10 @@ export default function MediaUpload({
       return;
     }
 
-    // Validate file size (4MB max due to Vercel limit)
-    const maxSize = 4 * 1024 * 1024; // 4MB
+    // Validate file size (100MB max for video, 10MB for image)
+    const maxSize = type === 'video' ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
     if (file.size > maxSize) {
-      setError('הקובץ גדול מדי. מקסימום 4MB (מגבלת Vercel)');
+      setError(`הקובץ גדול מדי. מקסימום ${type === 'video' ? '100MB' : '10MB'}`);
       return;
     }
 
@@ -46,22 +46,28 @@ export default function MediaUpload({
     setUploading(true);
 
     try {
-      // Use our API for all uploads (images and videos)
+      // Upload directly to Cloudinary (bypasses Vercel limit)
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('upload_preset', 'vipo_unsigned');
+      formData.append('folder', 'vipo-products');
 
-      const res = await fetch('/api/upload', {
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dckhhnqqh';
+      const resourceType = type === 'video' ? 'video' : 'image';
+      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
+
+      const res = await fetch(cloudinaryUrl, {
         method: 'POST',
         body: formData,
       });
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'העלאה נכשלה');
+        throw new Error(data.error?.message || 'העלאה נכשלה - ודא שה-Upload Preset מוגדר');
       }
 
       const data = await res.json();
-      onChange(data.url);
+      onChange(data.secure_url);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -105,7 +111,7 @@ export default function MediaUpload({
                 <span className="font-semibold">לחץ להעלאה</span> או גרור קובץ
               </p>
               <p className="text-xs text-gray-500">
-                {type === 'video' ? 'MP4, MOV, AVI (עד 4MB)' : 'PNG, JPG, WebP (עד 4MB)'}
+                {type === 'video' ? 'MP4, MOV, AVI (עד 100MB)' : 'PNG, JPG, WebP (עד 10MB)'}
               </p>
             </div>
             <input
