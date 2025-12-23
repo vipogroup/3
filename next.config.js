@@ -76,7 +76,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline'", // Tailwind requires unsafe-inline
               "img-src 'self' data: https://res.cloudinary.com https://images.unsplash.com https://m.media-amazon.com https://placehold.co",
               "font-src 'self' data:",
-              "connect-src 'self'",
+              "connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com",
               "frame-src 'self' https://vipogroup.github.io https://vipogroup.github.io/",
               "frame-ancestors 'none'",
             ].join('; '),
