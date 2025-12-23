@@ -9,10 +9,29 @@ export default function PushNotificationBanner({ role = 'customer' }) {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [userRole, setUserRole] = useState(role);
 
   useEffect(() => {
     async function checkStatus() {
-      // Don't show if already dismissed today
+      // Check if user is logged in first
+      try {
+        const res = await fetch('/api/auth/me', { cache: 'no-store', credentials: 'include' });
+        if (!res.ok) {
+          // User not logged in - don't show banner
+          return;
+        }
+        const data = await res.json();
+        if (!data?.user) {
+          return;
+        }
+        // Update role from user data
+        setUserRole(data.user.role || 'customer');
+      } catch (_) {
+        // Not logged in
+        return;
+      }
+
+      // Don't show if already dismissed recently
       try {
         const dismissed = localStorage.getItem(DISMISSED_KEY);
         if (dismissed) {
@@ -69,10 +88,10 @@ export default function PushNotificationBanner({ role = 'customer' }) {
       }
 
       await subscribeToPush({
-        tags: [role],
+        tags: [userRole],
         consentAt: new Date().toISOString(),
         consentVersion: '1.0',
-        consentMeta: { source: 'banner', role },
+        consentMeta: { source: 'banner', role: userRole },
       });
 
       setShow(false);
@@ -82,7 +101,7 @@ export default function PushNotificationBanner({ role = 'customer' }) {
     } finally {
       setLoading(false);
     }
-  }, [role]);
+  }, [userRole]);
 
   const handleDismiss = useCallback(() => {
     try {
