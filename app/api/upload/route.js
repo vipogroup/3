@@ -2,6 +2,9 @@ export const dynamic = 'force-dynamic';
 
 export const runtime = 'nodejs';
 
+// Allow larger body size for video uploads (Vercel limit: 4.5MB free, 50MB Pro)
+export const maxDuration = 60; // 60 seconds timeout
+
 import { NextResponse } from 'next/server';
 import { getCloudinary } from '@/lib/cloudinary';
 

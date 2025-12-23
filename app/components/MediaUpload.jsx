@@ -46,21 +46,47 @@ export default function MediaUpload({
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      // For videos: Upload directly to Cloudinary (bypasses Vercel 4.5MB limit)
+      // For images: Use our API (more secure)
+      if (type === 'video') {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'vipo_unsigned'); // Unsigned preset
+        formData.append('folder', 'vipo-products');
 
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+        const cloudName = 'dckhhnqqh'; // Your Cloudinary cloud name
+        const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`;
 
-      if (!res.ok) {
+        const res = await fetch(cloudinaryUrl, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error?.message || 'העלאה נכשלה');
+        }
+
         const data = await res.json();
-        throw new Error(data.error || 'העלאה נכשלה');
-      }
+        onChange(data.secure_url);
+      } else {
+        // Images: Use our API
+        const formData = new FormData();
+        formData.append('file', file);
 
-      const data = await res.json();
-      onChange(data.url);
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'העלאה נכשלה');
+        }
+
+        const data = await res.json();
+        onChange(data.url);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
