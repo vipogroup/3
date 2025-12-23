@@ -277,7 +277,7 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
         style={{
           color: '#ffffff',
           background: subscribed
-            ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+            ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)'
             : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
           opacity: loading ? 0.8 : 1,
         }}
