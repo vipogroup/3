@@ -57,6 +57,7 @@ function CheckoutClient() {
   const [touchedFields, setTouchedFields] = useState({});
   const [paymentDemoMode, setPaymentDemoMode] = useState(false);
   const [orderCompleted, setOrderCompleted] = useState(false);
+  const [autoCouponChecked, setAutoCouponChecked] = useState(false);
   const markFieldTouched = useCallback((fieldName) => {
     setTouchedFields((prev) => (prev[fieldName] ? prev : { ...prev, [fieldName]: true }));
   }, []);
@@ -313,6 +314,10 @@ function CheckoutClient() {
         return;
       }
 
+      if (codeOverride) {
+        setCouponInput(code);
+      }
+
       setApplyingCoupon(true);
       setCouponError('');
 
@@ -344,6 +349,37 @@ function CheckoutClient() {
     },
     [couponInput],
   );
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (autoCouponChecked || appliedCoupon) return;
+
+    let cancelled = false;
+
+    async function applyAutoCoupon() {
+      try {
+        const res = await fetch('/api/referral/auto-coupon', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json().catch(() => ({}));
+        const autoCode = data?.coupon;
+        if (autoCode && !cancelled) {
+          await handleApplyCoupon(autoCode);
+        }
+      } catch (error) {
+        console.error('Auto coupon fetch failed:', error);
+      } finally {
+        if (!cancelled) {
+          setAutoCouponChecked(true);
+        }
+      }
+    }
+
+    applyAutoCoupon();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hydrated, appliedCoupon, autoCouponChecked, handleApplyCoupon]);
 
   useEffect(() => {
     if (!hydrated) return;

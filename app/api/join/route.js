@@ -20,26 +20,44 @@ function resolveRedirectBase(req, requestUrl) {
   }
 }
 
+function sanitizeNextPath(rawNext) {
+  if (!rawNext || typeof rawNext !== 'string') {
+    return '/products';
+  }
+
+  const trimmed = rawNext.trim();
+  if (!trimmed.startsWith('/')) {
+    return '/products';
+  }
+
+  // הרחקת תווים מסוכנים בסיסית (אין תמיכה ב- // או javascript: וכו')
+  return trimmed.replace(/\s/g, '') || '/products';
+}
+
 export async function GET(req) {
   const url = new URL(req.url);
   const ref = url.searchParams.get('ref');
+  const nextParam = sanitizeNextPath(url.searchParams.get('next'));
 
-  const redirectUrl = new URL('/products', resolveRedirectBase(req, url));
+  const redirectUrl = new URL(nextParam, resolveRedirectBase(req, url));
+
+  const response = NextResponse.redirect(redirectUrl);
 
   if (ref) {
-    // מפנים ומצמידים קוקי הפניה ל-30 יום
-    const res = NextResponse.redirect(redirectUrl);
-    res.cookies.set('refSource', ref, {
+    const cookieOptions = {
       path: '/',
       maxAge: 30 * 24 * 60 * 60, // 30 days
       httpOnly: true,
       sameSite: 'lax',
-      // secure מומלץ בפרודקשן
       secure: redirectUrl.protocol === 'https:',
-    });
-    return res;
+    };
+
+    // קוקי הפניה (קיים)
+    response.cookies.set('refSource', ref, cookieOptions);
+
+    // קוקי קופון אוטומטי
+    response.cookies.set('autoCoupon', ref, cookieOptions);
   }
 
-  // ללא ref – פשוט מפנים לדף הבית
-  return NextResponse.redirect(redirectUrl);
+  return response;
 }

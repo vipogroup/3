@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import { useCartContext } from '@/app/context/CartContext';
 import { validateCouponClient, calculateDiscount, calculateTotal } from '@/lib/couponsClient';
@@ -25,6 +25,7 @@ export default function CartPage() {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState('');
   const [isApplying, setIsApplying] = useState(false);
+  const [autoCouponChecked, setAutoCouponChecked] = useState(false);
   const [user, setUser] = useState(null);
   const [showMarquee, setShowMarquee] = useState(true);
   const [showAgentModal, setShowAgentModal] = useState(false);
@@ -62,10 +63,15 @@ export default function CartPage() {
     [totals.subtotal, discount],
   );
 
-  const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) {
+  const handleApplyCoupon = useCallback( async (codeOverride) => {
+    const codeToValidate = (codeOverride ?? couponCode).trim();
+    if (!codeToValidate) {
       setCouponError('אנא הזן קוד קופון');
       return;
+    }
+
+    if (codeOverride) {
+      setCouponCode(codeToValidate);
     }
 
     setIsApplying(true);
@@ -73,7 +79,7 @@ export default function CartPage() {
 
     try {
       // Use real API validation (same as Checkout)
-      const result = await validateCouponClient(couponCode);
+      const result = await validateCouponClient(codeToValidate);
 
       if (result.ok && result.coupon) {
         setAppliedCoupon(result.coupon);
@@ -88,13 +94,43 @@ export default function CartPage() {
     } finally {
       setIsApplying(false);
     }
-  };
+  }, [couponCode]);
 
   const handleRemoveCoupon = () => {
     setAppliedCoupon(null);
     setCouponCode('');
     setCouponError('');
   };
+
+  useEffect(() => {
+    if (autoCouponChecked || appliedCoupon) return;
+
+    let cancelled = false;
+
+    async function applyAutoCoupon() {
+      try {
+        const res = await fetch('/api/referral/auto-coupon', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json().catch(() => ({}));
+        const autoCode = data?.coupon;
+        if (autoCode && !cancelled) {
+          await handleApplyCoupon(autoCode);
+        }
+      } catch (error) {
+        console.error('Auto coupon fetch failed:', error);
+      } finally {
+        if (!cancelled) {
+          setAutoCouponChecked(true);
+        }
+      }
+    }
+
+    applyAutoCoupon();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [appliedCoupon, autoCouponChecked, handleApplyCoupon]);
 
   async function handleUpgradeToAgent() {
     try {

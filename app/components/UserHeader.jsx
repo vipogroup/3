@@ -454,6 +454,31 @@ export default function UserHeader() {
                           </svg>
                           המכירות שלי
                         </Link>
+                        <Link
+                          href="/agent/marketing"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 7l9 6 9-6-9-4-9 4z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 7v10l9 4 9-4V7"
+                            />
+                          </svg>
+                          תוכן שיווקי
+                        </Link>
                       </>
                     )}
 
@@ -615,6 +640,25 @@ export default function UserHeader() {
                             />
                           </svg>
                           עסקאות
+                        </Link>
+                        <Link
+                          href="/admin/marketing-assets"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
+                            />
+                          </svg>
+                          ספריית שיווק
                         </Link>
                         <Link
                           href="/admin/settings"
