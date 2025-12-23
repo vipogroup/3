@@ -16,13 +16,12 @@ async function setupPreset() {
   console.log('Cloud Name:', process.env.CLOUDINARY_CLOUD_NAME);
 
   try {
-    // Check if preset already exists
-    const existingPresets = await cloudinary.api.upload_presets({ max_results: 100 });
-    const presetExists = existingPresets.presets?.some(p => p.name === 'vipo_unsigned');
-
-    if (presetExists) {
-      console.log('✅ Upload preset "vipo_unsigned" already exists!');
-      return;
+    // Delete existing preset first (to update settings)
+    try {
+      await cloudinary.api.delete_upload_preset('vipo_unsigned');
+      console.log('🗑️ Deleted old preset');
+    } catch (e) {
+      console.log('ℹ️ No existing preset to delete');
     }
 
     // Create unsigned upload preset
@@ -30,7 +29,7 @@ async function setupPreset() {
       name: 'vipo_unsigned',
       unsigned: true,
       folder: 'vipo-products',
-      allowed_formats: 'jpg,jpeg,png,webp,gif,mp4,mov,avi,webm',
+      allowed_formats: 'jpg,jpeg,png,webp,gif,mp4,mov,avi,webm,mkv',
       resource_type: 'auto',
       use_filename: true,
       unique_filename: true,

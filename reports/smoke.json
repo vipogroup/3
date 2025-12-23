@@ -1,6 +1,6 @@
 {
   "base": "http://localhost:3001",
-  "ts": "2025-12-01T02:48:37.405Z",
+  "ts": "2025-12-23T03:42:57.940Z",
   "checks": [
     {
       "key": "api.products",
@@ -15,7 +15,7 @@
     {
       "key": "auth.register",
       "result": "failed",
-      "evidence": "status=403"
+      "evidence": "status=400"
     },
     {
       "key": "auth.login",
