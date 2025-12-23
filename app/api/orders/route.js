@@ -288,19 +288,29 @@ export async function POST(req) {
     if (!couponAgent) {
       let refAgent = null;
       if (refSource) {
-        refAgent = await usersCol.findOne({ referralId: refSource, role: 'agent' });
+        refAgent = await usersCol.findOne(
+          { referralId: refSource, role: 'agent' },
+          { projection: { _id: 1, commissionPercent: 1 } }
+        );
         if (!refAgent) {
-          refAgent = await usersCol.findOne({ referralCode: refSource, role: 'agent' });
+          refAgent = await usersCol.findOne(
+            { referralCode: refSource, role: 'agent' },
+            { projection: { _id: 1, commissionPercent: 1 } }
+          );
         }
         if (!refAgent && ObjectId.isValid(refSource)) {
-          const byId = await usersCol.findOne({ _id: new ObjectId(refSource) });
+          const byId = await usersCol.findOne(
+            { _id: new ObjectId(refSource) },
+            { projection: { _id: 1, role: 1, commissionPercent: 1 } }
+          );
           if (byId?.role === 'agent') refAgent = byId;
         }
       }
 
       if (refAgent && String(refAgent._id) !== String(me._id)) {
         refAgentId = refAgent._id;
-        finalCommissionAmount = 2;
+        const agentCommissionPercent = Number(refAgent.commissionPercent) || 12;
+        finalCommissionAmount = Number(((totalAmount * agentCommissionPercent) / 100).toFixed(2));
       } else {
         refSource = null;
         finalCommissionAmount = 0;

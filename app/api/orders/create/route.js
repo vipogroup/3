@@ -6,9 +6,22 @@ import { ObjectId } from 'mongodb';
 import { cookies } from 'next/headers';
 
 import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
+import { requireAuthApi } from '@/lib/auth/server';
+import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
+/**
+ * @deprecated Use POST /api/orders instead - this endpoint will be removed in future versions
+ */
 export async function POST(req) {
   try {
+    // Auth + Rate Limit
+    const me = await requireAuthApi(req);
+    const identifier = buildRateLimitKey(req, me.id);
+    const rateLimit = rateLimiters.ordersCreate(req, identifier);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const body = await req.json();
     const {
       productId,

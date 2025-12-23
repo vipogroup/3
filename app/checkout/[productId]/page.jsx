@@ -91,17 +91,19 @@ export default function CheckoutPage() {
     setProcessing(true);
 
     try {
-      // Create order
+      // Create order - send items array as expected by API
       const orderRes = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          productId: product._id,
-          productName: product.name,
-          price: product.price,
-          quantity: 1,
-          customerInfo: {
-            fullName: formData.fullName,
+          items: [
+            {
+              productId: product._id,
+              quantity: 1,
+            },
+          ],
+          customer: {
+            name: formData.fullName,
             email: formData.email,
             phone: formData.phone,
             address: formData.address,
