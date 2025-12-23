@@ -35,10 +35,10 @@ export default function MediaUpload({
       return;
     }
 
-    // Validate file size (50MB max for video, 5MB for image)
-    const maxSize = type === 'video' ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    // Validate file size (4MB max due to Vercel limit)
+    const maxSize = 4 * 1024 * 1024; // 4MB
     if (file.size > maxSize) {
-      setError(`הקובץ גדול מדי. מקסימום ${type === 'video' ? '50MB' : '5MB'}`);
+      setError('הקובץ גדול מדי. מקסימום 4MB (מגבלת Vercel)');
       return;
     }
 
@@ -46,47 +46,22 @@ export default function MediaUpload({
     setUploading(true);
 
     try {
-      // For videos: Upload directly to Cloudinary (bypasses Vercel 4.5MB limit)
-      // For images: Use our API (more secure)
-      if (type === 'video') {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'vipo_unsigned'); // Unsigned preset
-        formData.append('folder', 'vipo-products');
+      // Use our API for all uploads (images and videos)
+      const formData = new FormData();
+      formData.append('file', file);
 
-        const cloudName = 'dckhhnqqh'; // Your Cloudinary cloud name
-        const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`;
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-        const res = await fetch(cloudinaryUrl, {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.error?.message || 'העלאה נכשלה');
-        }
-
-        const data = await res.json();
-        onChange(data.secure_url);
-      } else {
-        // Images: Use our API
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const res = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || 'העלאה נכשלה');
-        }
-
-        const data = await res.json();
-        onChange(data.url);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'העלאה נכשלה');
       }
+
+      const data = await res.json();
+      onChange(data.url);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -130,7 +105,7 @@ export default function MediaUpload({
                 <span className="font-semibold">לחץ להעלאה</span> או גרור קובץ
               </p>
               <p className="text-xs text-gray-500">
-                {type === 'video' ? 'MP4, MOV, AVI (עד 50MB)' : 'PNG, JPG, WebP (עד 5MB)'}
+                {type === 'video' ? 'MP4, MOV, AVI (עד 4MB)' : 'PNG, JPG, WebP (עד 4MB)'}
               </p>
             </div>
             <input

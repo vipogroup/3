@@ -45,11 +45,11 @@ export async function POST(req) {
       );
     }
 
-    // Validate file size (50MB max for video, 5MB for image)
-    const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    // Validate file size (4MB max due to Vercel limit)
+    const maxSize = 4 * 1024 * 1024; // 4MB (Vercel limit is 4.5MB, we use 4MB to be safe)
     if (typeof file.size === 'number' && file.size > maxSize) {
       return NextResponse.json(
-        { error: `File too large. Maximum size is ${isVideo ? '50MB' : '5MB'}` },
+        { error: `הקובץ גדול מדי. מקסימום 4MB (מגבלת Vercel)` },
         { status: 413 },
       );
     }
