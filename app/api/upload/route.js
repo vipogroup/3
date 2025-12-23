@@ -9,7 +9,7 @@ function uploadBufferToCloudinary(buffer, options = {}) {
   const cloudinary = getCloudinary();
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder: 'vipo-products', resource_type: 'image', ...options },
+      { folder: 'vipo-products', ...options },
       (err, result) => {
         if (err) return reject(err);
         resolve(result);
@@ -30,28 +30,42 @@ export async function POST(req) {
     }
 
     // Validate file type
-    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
+    const allowedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+    const allowedVideoTypes = ['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/avi'];
+    const isImage = allowedImageTypes.includes(file.type);
+    const isVideo = allowedVideoTypes.includes(file.type);
+    
+    if (!isImage && !isVideo) {
       return NextResponse.json(
-        { error: 'Unsupported media type. Use PNG, JPEG, or WebP' },
+        { error: 'Unsupported media type. Use PNG, JPEG, WebP for images or MP4, MOV, AVI for videos' },
         { status: 415 },
       );
     }
 
-    // Validate file size (5MB max)
-    if (typeof file.size === 'number' && file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File too large. Maximum size is 5MB' }, { status: 413 });
+    // Validate file size (50MB max for video, 5MB for image)
+    const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    if (typeof file.size === 'number' && file.size > maxSize) {
+      return NextResponse.json(
+        { error: `File too large. Maximum size is ${isVideo ? '50MB' : '5MB'}` },
+        { status: 413 },
+      );
     }
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const result = await uploadBufferToCloudinary(buffer, {
+    const uploadOptions = {
       overwrite: true,
-      // Add quality optimization
-      quality: 'auto:good',
-      fetch_format: 'auto',
-    });
+      resource_type: isVideo ? 'video' : 'image',
+    };
+
+    // Add quality optimization for images
+    if (isImage) {
+      uploadOptions.quality = 'auto:good';
+      uploadOptions.fetch_format = 'auto';
+    }
+
+    const result = await uploadBufferToCloudinary(buffer, uploadOptions);
 
     return NextResponse.json({
       url: result.secure_url,
