@@ -12,7 +12,9 @@ export default function PwaInstaller({ enabled = true }) {
 
     const registerServiceWorker = async () => {
       try {
+        console.log('PWA: Registering service worker...');
         const registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+        console.log('PWA: Service worker registered successfully', registration?.active?.state);
 
         if (!registration) return;
 
@@ -33,7 +35,7 @@ export default function PwaInstaller({ enabled = true }) {
           });
         });
       } catch (error) {
-        console.error('PWA service worker registration failed', error);
+        console.error('PWA: Service worker registration FAILED', error);
       }
     };
 

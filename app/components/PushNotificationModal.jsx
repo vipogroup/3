@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { hasActiveSubscription, subscribeToPush, ensureNotificationPermission } from '@/app/lib/pushClient';
 
 const MODAL_SHOWN_KEY = 'vipo_push_modal_shown';
+const MODAL_DECLINED_KEY = 'vipo_push_modal_declined';
 
 export default function PushNotificationModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,42 +15,77 @@ export default function PushNotificationModal() {
 
   useEffect(() => {
     async function checkAndShow() {
+      console.log('PUSH_MODAL: Starting check...');
+      
+      // Wait for service worker to be ready
+      if ('serviceWorker' in navigator) {
+        try {
+          await navigator.serviceWorker.ready;
+          console.log('PUSH_MODAL: Service worker is ready');
+        } catch (swErr) {
+          console.log('PUSH_MODAL: Service worker not ready', swErr);
+        }
+      }
+      
       // Check if user is logged in
       try {
         const res = await fetch('/api/auth/me', { cache: 'no-store', credentials: 'include' });
-        if (!res.ok) return;
+        if (!res.ok) {
+          console.log('PUSH_MODAL: User not logged in');
+          return;
+        }
         
         const data = await res.json();
         if (!data?.user) return;
         
         // Don't show for admin
-        if (data.user.role === 'admin') return;
+        if (data.user.role === 'admin') {
+          console.log('PUSH_MODAL: User is admin, skipping');
+          return;
+        }
         
         setUserRole(data.user.role || 'customer');
 
-        // Check if already shown in this session
-        const sessionShown = sessionStorage.getItem(MODAL_SHOWN_KEY);
-        if (sessionShown) return;
+        // Check if user already made a choice (accepted or declined)
+        const declined = localStorage.getItem(MODAL_DECLINED_KEY);
+        if (declined) {
+          console.log('PUSH_MODAL: User already declined');
+          return;
+        }
 
         // Check if notifications are supported
-        if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+        if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+          console.log('PUSH_MODAL: Notifications not supported');
+          return;
+        }
 
         // Check if already subscribed
         const subscribed = await hasActiveSubscription();
+        console.log('PUSH_MODAL: Already subscribed?', subscribed);
         if (subscribed) return;
 
         // Check if permission was denied before
-        if (Notification.permission === 'denied') return;
+        if (Notification.permission === 'denied') {
+          console.log('PUSH_MODAL: Permission denied');
+          return;
+        }
 
-        // Mark as shown for this session
-        sessionStorage.setItem(MODAL_SHOWN_KEY, 'true');
+        // Don't mark as shown - modal stays until user makes a choice
 
         // Show modal after short delay
-        setTimeout(() => setIsOpen(true), 1500);
-      } catch (_) {}
+        console.log('PUSH_MODAL: Will show modal in 1.5s');
+        setTimeout(() => {
+          console.log('PUSH_MODAL: Showing modal now');
+          setIsOpen(true);
+        }, 1500);
+      } catch (err) {
+        console.error('PUSH_MODAL: Error in checkAndShow', err);
+      }
     }
 
-    checkAndShow();
+    // Delay check to allow service worker to register
+    const timer = setTimeout(checkAndShow, 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleEnable = useCallback(async () => {
@@ -81,8 +117,8 @@ export default function PushNotificationModal() {
 
       setStep('success');
       
-      // Auto close after success
-      setTimeout(() => setIsOpen(false), 2000);
+      // Auto close after success - short delay to show success message
+      setTimeout(() => setIsOpen(false), 1500);
     } catch (err) {
       console.error('Push subscription failed:', err);
       setError('שגיאה בהפעלת התראות');
@@ -93,6 +129,10 @@ export default function PushNotificationModal() {
   }, [userRole]);
 
   const handleClose = useCallback(() => {
+    // Mark as declined so it won't show again
+    try {
+      localStorage.setItem(MODAL_DECLINED_KEY, new Date().toISOString());
+    } catch (_) {}
     setIsOpen(false);
   }, []);
 

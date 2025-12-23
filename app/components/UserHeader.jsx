@@ -1,15 +1,18 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCartContext } from '@/app/context/CartContext';
 import PushNotificationsToggle from '@/app/components/PushNotificationsToggle';
+import { hasActiveSubscription, subscribeToPush, unsubscribeFromPush, ensureNotificationPermission } from '@/app/lib/pushClient';
 
 export default function UserHeader() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
   const pathname = usePathname();
   const { totals, isEmpty } = useCartContext();
 
@@ -56,6 +59,61 @@ export default function UserHeader() {
       clearInterval(interval);
     };
   }, [user]);
+
+  // Check push notification status
+  useEffect(() => {
+    if (!user) return;
+    let ignore = false;
+    const checkPush = async () => {
+      try {
+        const isSubscribed = await hasActiveSubscription();
+        if (!ignore) setPushEnabled(isSubscribed);
+      } catch (_) {}
+    };
+    checkPush();
+    return () => { ignore = true; };
+  }, [user]);
+
+  // Toggle push notifications
+  const handleTogglePush = useCallback(async () => {
+    if (pushLoading) return;
+    setPushLoading(true);
+    try {
+      if (pushEnabled) {
+        // Disable notifications
+        await unsubscribeFromPush();
+        setPushEnabled(false);
+      } else {
+        // Enable notifications
+        const permission = await ensureNotificationPermission();
+        if (!permission.granted) {
+          if (permission.reason === 'ios_install_required') {
+            alert('ב-iPhone יש להוסיף את האתר למסך הבית תחילה');
+          } else if (permission.reason === 'denied') {
+            alert('ההרשאה נדחתה. ניתן לשנות בהגדרות הדפדפן');
+          } else {
+            alert('לא ניתן להפעיל התראות במכשיר זה');
+          }
+          return;
+        }
+        const userRole = user?.role || 'customer';
+        await subscribeToPush({
+          tags: [userRole],
+          consentAt: new Date().toISOString(),
+          consentVersion: '1.0',
+          consentMeta: { source: 'header_menu', role: userRole },
+        });
+        setPushEnabled(true);
+        // Clear the declined flag so modal won't show
+        try { localStorage.removeItem('vipo_push_modal_declined'); } catch (_) {}
+      }
+    } catch (err) {
+      console.error('Push toggle failed:', err);
+      alert('שגיאה בשינוי הגדרות התראות');
+    } finally {
+      setPushLoading(false);
+    }
+  }, [pushEnabled, pushLoading, user]);
 
   const role = user?.role;
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -326,13 +384,13 @@ export default function UserHeader() {
               <button
                 onClick={() => setShowAccountMenu(!showAccountMenu)}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300"
-                style={{ color: '#4b5563' }}
+                style={{ color: pushEnabled ? '#16a34a' : '#ef4444' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#0891b2';
-                  e.currentTarget.style.background = 'rgba(8, 145, 178, 0.05)';
+                  e.currentTarget.style.opacity = '0.8';
+                  e.currentTarget.style.background = pushEnabled ? 'rgba(22, 163, 74, 0.1)' : 'rgba(239, 68, 68, 0.1)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#4b5563';
+                  e.currentTarget.style.opacity = '1';
                   e.currentTarget.style.background = 'transparent';
                 }}
               >
@@ -375,7 +433,62 @@ export default function UserHeader() {
                         {user?.fullName || user?.name || 'משתמש'}
                       </p>
                     </div>
-                    <PushNotificationsToggle role={role} className="pt-1" />
+                  </div>
+
+                  {/* Push Notifications Toggle Button */}
+                  <div className="border-b border-gray-200">
+                    <button
+                      onClick={handleTogglePush}
+                      disabled={pushLoading}
+                      className="flex items-center gap-2 w-full text-right px-4 py-3 text-sm font-medium transition-colors"
+                      style={{
+                        color: pushEnabled ? '#16a34a' : '#ef4444',
+                        background: pushEnabled ? 'rgba(22, 163, 74, 0.05)' : 'rgba(239, 68, 68, 0.05)',
+                      }}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        />
+                      </svg>
+                      <span className="flex-1">
+                        {pushLoading ? 'מעדכן...' : pushEnabled ? 'התראות מופעלות' : 'אפשר התראות דחיפה'}
+                      </span>
+                      <span
+                        className="w-3 h-3 rounded-full"
+                        style={{ background: pushEnabled ? '#16a34a' : '#ef4444' }}
+                      />
+                    </button>
+                    {/* Test Push Button - only show when enabled */}
+                    {pushEnabled && (
+                      <button
+                        onClick={async () => {
+                          try {
+                            const res = await fetch('/api/push/send-test', {
+                              method: 'POST',
+                              credentials: 'include',
+                            });
+                            const data = await res.json();
+                            if (data.ok) {
+                              alert('✅ ' + (data.message || 'התראה נשלחה בהצלחה!'));
+                            } else {
+                              alert('❌ ' + (data.error || 'שגיאה בשליחת התראה'));
+                            }
+                          } catch (err) {
+                            alert('❌ שגיאה: ' + err.message);
+                          }
+                        }}
+                        className="flex items-center gap-2 w-full text-right px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                        שלח התראת בדיקה
+                      </button>
+                    )}
                   </div>
 
                   {/* Menu Items */}

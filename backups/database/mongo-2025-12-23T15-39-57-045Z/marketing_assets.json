@@ -1,0 +1,23 @@
+[
+  {
+    "_id": {
+      "$oid": "694a8e432673bf4efa54061e"
+    },
+    "title": "סרטון הסבר",
+    "type": "video",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766493745/vipo-products/51056b44-d353-45b8-92e5-1ac174923740_ev4lu8.mov",
+    "thumbnailUrl": null,
+    "messageTemplate": "",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:42:43.125Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T12:42:43.125Z"
+    },
+    "tags": []
+  }
+]

@@ -16,7 +16,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const enableServiceWorker = process.env.NODE_ENV === 'production';
+  // Enable service worker in all environments for push notifications
+  const enableServiceWorker = true;
 
   return (
     <html lang="he" dir="rtl">
