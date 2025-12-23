@@ -9,6 +9,7 @@ import {
   saveProductCategories,
   DEFAULT_PRODUCT_CATEGORIES,
 } from '@/app/lib/productCategories';
+import ImageUpload from '@/app/components/ImageUpload';
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -496,19 +497,11 @@ export default function NewProductPage() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
-                    קישור לתמונה *
-                  </label>
-                  <input
-                    type="url"
-                    name="image"
+                  <ImageUpload
                     value={formData.image}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-cyan-500 transition-all"
-                    placeholder="https://images.unsplash.com/..."
+                    onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
+                    label="תמונת מוצר *"
                   />
-                  <p className="text-sm text-gray-600 mt-1">השתמש ב-Unsplash או העלה תמונה לשרת</p>
                 </div>
 
                 <div className="md:col-span-2">
