@@ -63,13 +63,19 @@ export default function MediaUpload({
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error?.message || 'העלאה נכשלה - ודא שה-Upload Preset מוגדר');
+        console.error('Cloudinary upload error:', data);
+        throw new Error(data.error?.message || `העלאה נכשלה (${res.status})`);
       }
 
       const data = await res.json();
       onChange(data.secure_url);
     } catch (err) {
-      setError(err.message);
+      console.error('Upload error:', err);
+      if (err.message === 'Failed to fetch') {
+        setError('שגיאת רשת - בדוק את החיבור לאינטרנט');
+      } else {
+        setError(err.message);
+      }
     } finally {
       setUploading(false);
     }
