@@ -25,8 +25,9 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <link rel="manifest" href="/manifest.webmanifest" />
         {/* Apple/iOS specific icons and settings */}
-        <link rel="apple-touch-icon" href="/icons/vipo-icon.svg" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/vipo-icon.svg" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icons/192.png" />
         <link rel="icon" type="image/svg+xml" href="/icons/vipo-icon.svg" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
