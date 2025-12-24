@@ -134,6 +134,9 @@ export default function NotificationsManagerClient() {
   const [savingTemplate, setSavingTemplate] = useState(false);
   const [savingSchedule, setSavingSchedule] = useState(false);
   const [tab, setTab] = useState('templates');
+  const [quickScheduleDate, setQuickScheduleDate] = useState('');
+  const [quickScheduleTime, setQuickScheduleTime] = useState('');
+  const [schedulingQuick, setSchedulingQuick] = useState(false);
 
   const templateMap = useMemo(() => {
     const map = new Map();
@@ -308,6 +311,45 @@ export default function NotificationsManagerClient() {
     }
   }, [scheduleForm, loadData, resetScheduleForm, closeScheduleForm]);
 
+  const handleQuickSchedule = useCallback(async () => {
+    if (!selectedTemplate || !quickScheduleDate || !quickScheduleTime) {
+      setError('יש לבחור תאריך ושעה');
+      return;
+    }
+    setSchedulingQuick(true);
+    setError('');
+    try {
+      const scheduleAt = new Date(`${quickScheduleDate}T${quickScheduleTime}`);
+      if (Number.isNaN(scheduleAt.getTime())) {
+        throw new Error('תאריך או שעה לא תקינים');
+      }
+      const payload = {
+        templateType: selectedTemplate,
+        scheduleAt: scheduleAt.toISOString(),
+        timezone: 'Asia/Jerusalem',
+        audience: selectedTemplateData?.audience || [],
+      };
+      const res = await fetch('/api/admin/notifications/schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'failed_to_schedule');
+      }
+      setQuickScheduleDate('');
+      setQuickScheduleTime('');
+      await loadData();
+      setTab('scheduled');
+    } catch (err) {
+      console.error('quick_schedule_error', err);
+      setError(err.message || 'schedule_failed');
+    } finally {
+      setSchedulingQuick(false);
+    }
+  }, [selectedTemplate, selectedTemplateData, quickScheduleDate, quickScheduleTime, loadData]);
+
   const availableTemplates = templates;
 
   return (
@@ -475,23 +517,42 @@ export default function NotificationsManagerClient() {
                               ))}
                             </div>
                           </div>
-                          <label className="inline-flex items-center gap-2 text-xs text-white/70">
-                            <span>משתנים דינמיים</span>
-                            <input
-                              type="text"
-                              className="w-48 rounded-lg border border-white/20 bg-transparent px-2 py-1 text-xs text-white focus:border-white focus:outline-none"
-                              placeholder="לדוגמה: order_id, total"
-                              value={(selectedTemplateData.variables || []).join(',')}
-                              onChange={(e) =>
-                                handleTemplateVariablesChange(
-                                  e.target.value
-                                    .split(',')
-                                    .map((item) => item.trim())
-                                    .filter(Boolean),
-                                )
-                              }
-                            />
-                          </label>
+                          <div className="flex items-center gap-2 text-xs text-white/70">
+                            <span>משתנים דינמיים:</span>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {[
+                                { value: 'order_id', label: 'מזהה הזמנה' },
+                                { value: 'customer_name', label: 'שם לקוח' },
+                                { value: 'total_amount', label: 'סכום' },
+                                { value: 'product_name', label: 'שם מוצר' },
+                                { value: 'product_url', label: 'קישור מוצר' },
+                                { value: 'agent_name', label: 'שם סוכן' },
+                                { value: 'commission_percent', label: 'אחוז עמלה' },
+                                { value: 'datetime', label: 'תאריך ושעה' },
+                                { value: 'user_type', label: 'סוג משתמש' },
+                              ].map((option) => (
+                                <label
+                                  key={option.value}
+                                  className="inline-flex items-center gap-1 cursor-pointer bg-white/5 rounded px-2 py-1 hover:bg-white/10"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={(selectedTemplateData.variables || []).includes(option.value)}
+                                    onChange={(e) => {
+                                      const current = selectedTemplateData.variables || [];
+                                      if (e.target.checked) {
+                                        handleTemplateVariablesChange([...current, option.value]);
+                                      } else {
+                                        handleTemplateVariablesChange(current.filter((v) => v !== option.value));
+                                      }
+                                    }}
+                                    className="w-3 h-3 rounded border-white/30 bg-white/10 text-blue-500 focus:ring-blue-500 focus:ring-offset-0"
+                                  />
+                                  <span className="text-white/70 text-[10px]">{option.label}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                         <div className="flex items-center gap-3">
                           <button
@@ -500,6 +561,46 @@ export default function NotificationsManagerClient() {
                             className="round июalformed"
                           />
                         </div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+                      <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">⏰</span>
+                          <span className="text-sm font-semibold text-white">תזמון שליחה:</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <label className="text-xs text-white/70">תאריך:</label>
+                          <input
+                            type="date"
+                            value={quickScheduleDate}
+                            onChange={(e) => setQuickScheduleDate(e.target.value)}
+                            className="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white focus:border-emerald-400 focus:outline-none"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <label className="text-xs text-white/70">שעה:</label>
+                          <input
+                            type="time"
+                            value={quickScheduleTime}
+                            onChange={(e) => setQuickScheduleTime(e.target.value)}
+                            className="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white focus:border-emerald-400 focus:outline-none"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleQuickSchedule}
+                          disabled={schedulingQuick || !quickScheduleDate || !quickScheduleTime}
+                          className={classNames(
+                            'rounded-xl px-4 py-2 text-sm font-semibold transition-all',
+                            schedulingQuick || !quickScheduleDate || !quickScheduleTime
+                              ? 'bg-white/20 text-white/40 cursor-not-allowed'
+                              : 'bg-gradient-to-r from-emerald-400 to-emerald-500 text-emerald-950 shadow-lg shadow-emerald-500/30 hover:scale-[1.02]',
+                          )}
+                        >
+                          {schedulingQuick ? 'מתזמן...' : '📅 תזמן שליחה'}
+                        </button>
                       </div>
                     </div>
 
