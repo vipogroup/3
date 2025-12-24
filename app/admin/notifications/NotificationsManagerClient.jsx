@@ -353,7 +353,7 @@ export default function NotificationsManagerClient() {
   const availableTemplates = templates;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-6xl px-6 py-10">
         <header className="flex flex-col gap-4 pb-8">
           <div className="flex items-center gap-3">
@@ -361,8 +361,8 @@ export default function NotificationsManagerClient() {
               <span className="text-2xl">🔔</span>
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight">ניהול התראות מערכת</h1>
-              <p className="text-sm text-slate-400">
+              <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">ניהול התראות מערכת</h1>
+              <p className="text-sm text-gray-600">
                 עריכת תבניות הודעה, תזמון שליחות והתראות על מצב מערכת VIPO
               </p>
             </div>
@@ -374,8 +374,8 @@ export default function NotificationsManagerClient() {
               className={classNames(
                 'rounded-full px-4 py-2 text-sm font-semibold transition-all',
                 tab === 'templates'
-                  ? 'bg-white text-slate-900 shadow-lg shadow-blue-500/30'
-                  : 'bg-white/10 text-slate-200 hover:bg-white/20',
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300',
               )}
             >
               תבניות התראה
@@ -386,8 +386,8 @@ export default function NotificationsManagerClient() {
               className={classNames(
                 'rounded-full px-4 py-2 text-sm font-semibold transition-all',
                 tab === 'scheduled'
-                  ? 'bg-white text-slate-900 shadow-lg shadow-emerald-400/30'
-                  : 'bg-white/10 text-slate-200 hover:bg-white/20',
+                  ? 'bg-emerald-600 text-white shadow-lg'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300',
               )}
             >
               שליחות מתוזמנות
@@ -396,23 +396,23 @@ export default function NotificationsManagerClient() {
         </header>
 
         {error && (
-          <div className="mb-6 rounded-xl border border-rose-500/60 bg-rose-500/10 p-4 text-sm text-rose-100">
+          <div className="mb-6 rounded-xl border border-rose-300 bg-rose-50 p-4 text-sm text-rose-700">
             שגיאה: {error}
           </div>
         )}
 
         {loading ? (
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-12 text-center shadow-lg">
-            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-white/10 border-t-white" />
-            <p className="text-sm text-white/80">טוען נתוני תבניות ותזמונים...</p>
+          <div className="rounded-3xl border border-gray-200 bg-white p-12 text-center shadow-lg">
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+            <p className="text-sm text-gray-600">טוען נתוני תבניות ותזמונים...</p>
           </div>
         ) : (
           <div className="space-y-10">
             {tab === 'templates' && selectedTemplateData && (
-              <section className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-6 shadow-xl">
+              <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
                 <div className="grid gap-6 lg:grid-cols-[280px,1fr]">
-                  <aside className="space-y-3 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <h2 className="text-sm font-semibold text-white/70">תבניות קיימות</h2>
+                  <aside className="space-y-3 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                    <h2 className="text-sm font-semibold text-gray-700">תבניות קיימות</h2>
                     <div className="max-h-[420px] space-y-2 overflow-y-auto pr-2">
                       {availableTemplates.map((tpl) => (
                         <button
@@ -422,8 +422,8 @@ export default function NotificationsManagerClient() {
                           className={classNames(
                             'w-full rounded-xl px-3 py-3 text-left transition-all border border-transparent',
                             tpl.type === selectedTemplate
-                              ? 'bg-white text-slate-900 shadow-lg'
-                              : 'bg-white/5 text-slate-200 hover:bg-white/10',
+                              ? 'bg-blue-600 text-white shadow-lg'
+                              : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200',
                           )}
                         >
                           <div className="flex items-center justify-between">
@@ -431,7 +431,7 @@ export default function NotificationsManagerClient() {
                             <TemplateBadge template={tpl} />
                           </div>
                           {tpl.description && (
-                            <p className="mt-1 line-clamp-2 text-xs text-slate-500">{tpl.description}</p>
+                            <p className="mt-1 line-clamp-2 text-xs text-gray-500">{tpl.description}</p>
                           )}
                         </button>
                       ))}
@@ -439,32 +439,32 @@ export default function NotificationsManagerClient() {
                   </aside>
 
                   <div className="space-y-6">
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-inner">
+                    <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6 shadow-inner">
                       <div className="flex flex-wrap items-start gap-4">
                         <div className="flex-1 space-y-3">
                           <div>
-                            <label className="block text-xs uppercase tracking-wide text-white/60">כותרת</label>
+                            <label className="block text-xs uppercase tracking-wide text-gray-600">כותרת</label>
                             <input
                               type="text"
                               value={selectedTemplateData.title || ''}
                               onChange={(e) => handleTemplateFieldChange('title', e.target.value)}
-                              className="mt-1 w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-white focus:outline-none"
+                              className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs uppercase tracking-wide text-white/60">תוכן ההודעה</label>
+                            <label className="block text-xs uppercase tracking-wide text-gray-600">תוכן ההודעה</label>
                             <textarea
                               value={selectedTemplateData.body || ''}
                               onChange={(e) => handleTemplateFieldChange('body', e.target.value)}
                               rows={4}
-                              className="mt-1 w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-white focus:outline-none"
+                              className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                           </div>
                         </div>
-                        <div className="w-full max-w-[220px] space-y-4 rounded-2xl bg-white/10 p-4 text-xs text-white/80">
-                          <p className="font-semibold text-white/90">פרטי תבנית</p>
+                        <div className="w-full max-w-[220px] space-y-4 rounded-2xl bg-blue-50 border border-blue-200 p-4 text-xs text-gray-700">
+                          <p className="font-semibold text-gray-900">פרטי תבנית</p>
                           <div>
-                            <p className="text-white/60">מצב תבנית</p>
+                            <p className="text-gray-600">מצב תבנית</p>
                             <label className="mt-1 flex items-center gap-2 text-sm">
                               <input
                                 type="checkbox"
@@ -475,19 +475,19 @@ export default function NotificationsManagerClient() {
                             </label>
                           </div>
                           <div className="space-y-1">
-                            <p className="text-white/60">קהל יעד</p>
+                            <p className="text-gray-600">קהל יעד</p>
                             <AudienceChips audience={selectedTemplateData.audience} />
                           </div>
                           <div className="space-y-1">
-                            <p className="text-white/60">Placeholders</p>
+                            <p className="text-gray-600">Placeholders</p>
                             <VariablesList variables={selectedTemplateData.variables} />
                           </div>
                         </div>
                       </div>
 
-                      <div className="mt-5 flex flex-wrap justify-between gap-3 border-t border-white/10 pt-4">
+                      <div className="mt-5 flex flex-wrap justify-between gap-3 border-t border-gray-200 pt-4">
                         <div className="flex flex-wrap items-center gap-4">
-                          <div className="flex items-center gap-2 text-xs text-white/70">
+                          <div className="flex items-center gap-2 text-xs text-gray-600">
                             <span>קהל יעד מותאם:</span>
                             <div className="flex items-center gap-3">
                               {[
@@ -510,14 +510,14 @@ export default function NotificationsManagerClient() {
                                         handleTemplateAudienceChange(current.filter((v) => v !== option.value));
                                       }
                                     }}
-                                    className="w-4 h-4 rounded border-white/30 bg-white/10 text-blue-500 focus:ring-blue-500 focus:ring-offset-0"
+                                    className="w-4 h-4 rounded border-gray-300 bg-white text-blue-600 focus:ring-blue-500 focus:ring-offset-0"
                                   />
-                                  <span className="text-white/80">{option.label}</span>
+                                  <span className="text-gray-700">{option.label}</span>
                                 </label>
                               ))}
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-white/70">
+                          <div className="flex items-center gap-2 text-xs text-gray-600">
                             <span>משתנים דינמיים:</span>
                             <div className="flex flex-wrap items-center gap-2">
                               {[
@@ -533,7 +533,7 @@ export default function NotificationsManagerClient() {
                               ].map((option) => (
                                 <label
                                   key={option.value}
-                                  className="inline-flex items-center gap-1 cursor-pointer bg-white/5 rounded px-2 py-1 hover:bg-white/10"
+                                  className="inline-flex items-center gap-1 cursor-pointer bg-gray-100 rounded px-2 py-1 hover:bg-gray-200 border border-gray-200"
                                 >
                                   <input
                                     type="checkbox"
@@ -546,9 +546,9 @@ export default function NotificationsManagerClient() {
                                         handleTemplateVariablesChange(current.filter((v) => v !== option.value));
                                       }
                                     }}
-                                    className="w-3 h-3 rounded border-white/30 bg-white/10 text-blue-500 focus:ring-blue-500 focus:ring-offset-0"
+                                    className="w-3 h-3 rounded border-gray-300 bg-white text-blue-600 focus:ring-blue-500 focus:ring-offset-0"
                                   />
-                                  <span className="text-white/70 text-[10px]">{option.label}</span>
+                                  <span className="text-gray-600 text-[10px]">{option.label}</span>
                                 </label>
                               ))}
                             </div>
@@ -564,28 +564,28 @@ export default function NotificationsManagerClient() {
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+                    <div className="rounded-2xl border border-emerald-300 bg-emerald-50 p-4">
                       <div className="flex flex-wrap items-center gap-4">
                         <div className="flex items-center gap-2">
                           <span className="text-lg">⏰</span>
-                          <span className="text-sm font-semibold text-white">תזמון שליחה:</span>
+                          <span className="text-sm font-semibold text-gray-900">תזמון שליחה:</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <label className="text-xs text-white/70">תאריך:</label>
+                          <label className="text-xs text-gray-600">תאריך:</label>
                           <input
                             type="date"
                             value={quickScheduleDate}
                             onChange={(e) => setQuickScheduleDate(e.target.value)}
-                            className="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white focus:border-emerald-400 focus:outline-none"
+                            className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                           />
                         </div>
                         <div className="flex items-center gap-2">
-                          <label className="text-xs text-white/70">שעה:</label>
+                          <label className="text-xs text-gray-600">שעה:</label>
                           <input
                             type="time"
                             value={quickScheduleTime}
                             onChange={(e) => setQuickScheduleTime(e.target.value)}
-                            className="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white focus:border-emerald-400 focus:outline-none"
+                            className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                           />
                         </div>
                         <button
@@ -595,8 +595,8 @@ export default function NotificationsManagerClient() {
                           className={classNames(
                             'rounded-xl px-4 py-2 text-sm font-semibold transition-all',
                             schedulingQuick || !quickScheduleDate || !quickScheduleTime
-                              ? 'bg-white/20 text-white/40 cursor-not-allowed'
-                              : 'bg-gradient-to-r from-emerald-400 to-emerald-500 text-emerald-950 shadow-lg shadow-emerald-500/30 hover:scale-[1.02]',
+                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                              : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg hover:scale-[1.02]',
                           )}
                         >
                           {schedulingQuick ? 'מתזמן...' : '📅 תזמן שליחה'}
@@ -612,8 +612,8 @@ export default function NotificationsManagerClient() {
                         className={classNames(
                           'rounded-xl px-4 py-2 text-sm font-semibold transition-all',
                           savingTemplate
-                            ? 'bg-white/20 text-white/60 cursor-wait'
-                            : 'bg-white text-slate-900 shadow-lg shadow-blue-500/30 hover:scale-[1.01]',
+                            ? 'bg-gray-300 text-gray-500 cursor-wait'
+                            : 'bg-blue-600 text-white shadow-lg hover:scale-[1.01]',
                         )}
                       >
                         {savingTemplate ? 'שומר...' : 'שמור תבנית'}
