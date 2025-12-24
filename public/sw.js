@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vipo-static-v5';
+const CACHE_NAME = 'vipo-static-v6';
 const PRECACHE_URLS = [
   '/',
   '/products',
@@ -154,23 +154,32 @@ self.addEventListener('push', (event) => {
 
   const title = payload.title || 'VIPO';
   const defaultUrl = '/dashboard';
+  
+  // בדיקה אם זה iOS - חלק מהאפשרויות לא נתמכות
+  const isIOS = /iPad|iPhone|iPod/.test(self.navigator?.userAgent || '');
+  
   const options = {
     body: payload.body || 'יש לך עדכון חדש ב-VIPO',
     icon: payload.icon || '/icons/192.png',
     badge: payload.badge || '/icons/badge.png',
     image: payload.image,
-    tag: payload.tag,
-    renotify: true,  // תמיד להציג התראה חדשה
-    requireInteraction: true,  // להשאיר את ההתראה עד שהמשתמש ילחץ עליה
-    silent: false,  // לאפשר צליל התראה
-    vibrate: [200, 100, 200],  // להוסיף רטט במובייל
-    actions: [
-      {
-        action: 'open',
-        title: 'פתח',
-        icon: '/icons/open.png'
-      }
-    ],
+    tag: payload.tag || 'vipo-notification',
+    renotify: true,
+    // iOS לא תומך באפשרויות האלה
+    requireInteraction: !isIOS,
+    silent: false,
+    // רטט רק באנדרואיד
+    ...(isIOS ? {} : { vibrate: [200, 100, 200] }),
+    // כפתורי פעולה רק באנדרואיד
+    ...(isIOS ? {} : {
+      actions: [
+        {
+          action: 'open',
+          title: 'פתח',
+          icon: '/icons/open.png'
+        }
+      ]
+    }),
     data: {
       url: payload.url || payload.data?.url || defaultUrl,
       templateType: payload.data?.templateType,
