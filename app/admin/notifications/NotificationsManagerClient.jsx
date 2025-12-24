@@ -16,6 +16,21 @@ const RECURRENCE_LABELS = {
   interval: 'חוזר',
 };
 
+const TEMPLATE_HEBREW_NAMES = {
+  welcome_user: 'ברוכים הבאים',
+  admin_new_registration: 'הרשמה חדשה למנהל',
+  order_confirmation: 'אישור הזמנה',
+  agent_commission_awarded: 'עמלה לסוכן',
+  admin_agent_sale: 'מכירה דרך סוכן',
+  admin_payment_completed: 'תשלום הושלם',
+  order_new: 'הזמנה חדשה',
+  agent_daily_digest: 'דוח יומי לסוכן',
+  product_new_release: 'מוצר חדש',
+  group_buy_weekly_reminder: 'תזכורת קנייה קבוצתית',
+  group_buy_last_call: 'קריאה אחרונה',
+  group_buy_closed: 'קנייה קבוצתית נסגרה',
+};
+
 function formatDateTime(value) {
   if (!value) return '-';
   const date = value instanceof Date ? value : new Date(value);
@@ -137,6 +152,7 @@ export default function NotificationsManagerClient() {
   const [savingTemplate, setSavingTemplate] = useState(false);
   const [savingSchedule, setSavingSchedule] = useState(false);
   const [tab, setTab] = useState('templates');
+  const [subTab, setSubTab] = useState('edit');
   const [quickScheduleDate, setQuickScheduleDate] = useState('');
   const [quickScheduleTime, setQuickScheduleTime] = useState('');
   const [schedulingQuick, setSchedulingQuick] = useState(false);
@@ -357,27 +373,27 @@ export default function NotificationsManagerClient() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <header className="flex flex-col gap-4 pb-8">
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="mx-auto max-w-6xl px-3 sm:px-6 py-6 sm:py-10">
+        <header className="flex flex-col gap-3 sm:gap-4 pb-6 sm:pb-8">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg flex-shrink-0">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">ניהול התראות מערכת</h1>
-              <p className="text-sm text-gray-600">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">ניהול התראות מערכת</h1>
+              <p className="text-xs sm:text-sm text-gray-600">
                 עריכת תבניות הודעה, תזמון שליחות והתראות על מצב מערכת VIPO
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => setTab('templates')}
               className={classNames(
-                'rounded-full px-4 py-2 text-sm font-semibold transition-all',
+                'rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold transition-all',
                 tab === 'templates'
                   ? 'bg-blue-600 text-white shadow-lg'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300',
@@ -389,7 +405,7 @@ export default function NotificationsManagerClient() {
               type="button"
               onClick={() => setTab('scheduled')}
               className={classNames(
-                'rounded-full px-4 py-2 text-sm font-semibold transition-all',
+                'rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold transition-all',
                 tab === 'scheduled'
                   ? 'bg-emerald-600 text-white shadow-lg'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300',
@@ -414,57 +430,106 @@ export default function NotificationsManagerClient() {
         ) : (
           <div className="space-y-10">
             {tab === 'templates' && selectedTemplateData && (
-              <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
-                <div className="grid gap-6 lg:grid-cols-[280px,1fr]">
-                  <aside className="space-y-4 overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-                    <div className="flex items-center gap-2 border-b border-gray-200 pb-3">
+              <section className="space-y-6">
+                {/* Template Selector */}
+                <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-lg">
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <div className="flex items-center gap-2">
                       <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                       </svg>
-                      <h2 className="text-base font-bold text-gray-900">תבניות התראה</h2>
+                      <h2 className="text-base sm:text-lg font-bold text-gray-900">בחר תבנית</h2>
                     </div>
-                    <div className="max-h-[500px] space-y-2 overflow-y-auto pr-1">
+                    <TemplateBadge template={selectedTemplateData} />
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={selectedTemplate || ''}
+                      onChange={(e) => handleTemplateSelect(e.target.value)}
+                      className="w-full rounded-lg border-2 border-gray-300 bg-white px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base font-semibold text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all appearance-none cursor-pointer"
+                    >
                       {availableTemplates.map((tpl) => (
-                        <button
-                          key={tpl.type}
-                          type="button"
-                          onClick={() => handleTemplateSelect(tpl.type)}
-                          className={classNames(
-                            'w-full rounded-lg px-4 py-3 text-right transition-all',
-                            tpl.type === selectedTemplate
-                              ? 'bg-gradient-to-l from-blue-600 to-blue-500 text-white shadow-md border-2 border-blue-600'
-                              : 'bg-gray-50 text-gray-800 hover:bg-gray-100 border border-gray-200 hover:border-blue-300',
-                          )}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                <span className="text-base font-bold">{tpl.type}</span>
-                              </div>
-                              {tpl.description && (
-                                <p className={classNames(
-                                  "text-xs leading-relaxed line-clamp-2",
-                                  tpl.type === selectedTemplate ? "text-blue-100" : "text-gray-600"
-                                )}>{tpl.description}</p>
-                              )}
-                            </div>
-                            <TemplateBadge template={tpl} />
-                          </div>
-                        </button>
+                        <option key={tpl.type} value={tpl.type}>
+                          {tpl.type} ({TEMPLATE_HEBREW_NAMES[tpl.type] || tpl.type})
+                        </option>
                       ))}
+                    </select>
+                    <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  {selectedTemplateData?.description && (
+                    <div className="mt-3 sm:mt-4 rounded-lg bg-blue-50 border border-blue-200 p-2.5 sm:p-3">
+                      <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">{selectedTemplateData.description}</p>
                     </div>
-                  </aside>
+                  )}
+                </div>
 
+                {/* Sub Tabs */}
+                <div className="flex gap-1 sm:gap-2 border-b border-gray-200 overflow-x-auto">
+                  <button
+                    type="button"
+                    onClick={() => setSubTab('edit')}
+                    className={classNames(
+                      'px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-semibold transition-all relative whitespace-nowrap',
+                      subTab === 'edit'
+                        ? 'text-blue-600 border-b-2 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900'
+                    )}
+                  >
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      עריכת תוכן
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSubTab('schedule')}
+                    className={classNames(
+                      'px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-semibold transition-all relative whitespace-nowrap',
+                      subTab === 'schedule'
+                        ? 'text-emerald-600 border-b-2 border-emerald-600'
+                        : 'text-gray-600 hover:text-gray-900'
+                    )}
+                  >
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      תזמון
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSubTab('preview')}
+                    className={classNames(
+                      'px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-semibold transition-all relative whitespace-nowrap',
+                      subTab === 'preview'
+                        ? 'text-purple-600 border-b-2 border-purple-600'
+                        : 'text-gray-600 hover:text-gray-900'
+                    )}
+                  >
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      תצוגה מקדימה
+                    </div>
+                  </button>
+                </div>
+
+                {/* Content Based on Sub Tab */}
+                {subTab === 'edit' && (
                   <div className="space-y-6">
-                    <div className="rounded-2xl border-2 border-gray-200 bg-white p-6 shadow-sm">
-                      <div className="flex flex-wrap items-start gap-4">
-                        <div className="flex-1 space-y-5">
+                    <div className="rounded-2xl border-2 border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+                      <div className="flex flex-col lg:flex-row lg:flex-wrap items-start gap-4">
+                        <div className="w-full lg:flex-1 space-y-4 sm:space-y-5">
                           <div>
-                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-2">
-                              <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <label className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-gray-800 mb-2">
+                              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                               </svg>
                               כותרת ההתראה
@@ -473,12 +538,12 @@ export default function NotificationsManagerClient() {
                               type="text"
                               value={selectedTemplateData.title || ''}
                               onChange={(e) => handleTemplateFieldChange('title', e.target.value)}
-                              className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all"
+                              className="w-full rounded-lg border-2 border-gray-300 bg-white px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all"
                             />
                           </div>
                           <div>
-                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-2">
-                              <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <label className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-gray-800 mb-2">
+                              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
                               </svg>
                               תוכן ההודעה
@@ -486,17 +551,17 @@ export default function NotificationsManagerClient() {
                             <textarea
                               value={selectedTemplateData.body || ''}
                               onChange={(e) => handleTemplateFieldChange('body', e.target.value)}
-                              rows={5}
-                              className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                              rows={4}
+                              className="w-full rounded-lg border-2 border-gray-300 bg-white px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all resize-none"
                             />
                           </div>
                         </div>
-                        <div className="w-full max-w-[240px] space-y-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 p-5 text-sm">
-                          <div className="flex items-center gap-2 border-b border-blue-200 pb-2">
+                        <div className="w-full lg:max-w-[240px] space-y-3 sm:space-y-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 p-4 sm:p-5 text-xs sm:text-sm">
+                          <div className="flex items-center gap-1.5 sm:gap-2 border-b border-blue-200 pb-2">
                             <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <p className="font-bold text-gray-900">פרטי תבנית</p>
+                            <p className="text-sm sm:text-base font-bold text-gray-900">פרטי תבנית</p>
                           </div>
                           <div>
                             <p className="text-xs font-semibold text-gray-700 mb-2">מצב תבנית</p>
@@ -520,7 +585,7 @@ export default function NotificationsManagerClient() {
                         </div>
                       </div>
 
-                      <div className="mt-5 flex flex-wrap justify-between gap-3 border-t border-gray-200 pt-4">
+                      <div className="mt-6 space-y-4 border-t border-gray-200 pt-4">
                         <div className="flex flex-wrap items-center gap-4">
                           <div className="flex items-center gap-2 text-xs text-gray-600">
                             <span>קהל יעד מותאם:</span>
@@ -589,86 +654,110 @@ export default function NotificationsManagerClient() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex justify-center sm:justify-end gap-2 sm:gap-3">
                           <button
                             type="button"
-                            onClick={loadData}
-                            className="round июalformed"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="rounded-2xl border border-emerald-300 bg-emerald-50 p-4">
-                      <div className="flex flex-wrap items-center gap-4">
-                        <div className="flex items-center gap-2">
-                          <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span className="text-sm font-semibold text-gray-900">תזמון שליחה:</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <label className="text-xs text-gray-600">תאריך:</label>
-                          <input
-                            type="date"
-                            value={quickScheduleDate}
-                            onChange={(e) => setQuickScheduleDate(e.target.value)}
-                            className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                          />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <label className="text-xs text-gray-600">שעה:</label>
-                          <input
-                            type="time"
-                            value={quickScheduleTime}
-                            onChange={(e) => setQuickScheduleTime(e.target.value)}
-                            className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={handleQuickSchedule}
-                          disabled={schedulingQuick || !quickScheduleDate || !quickScheduleTime}
-                          className={classNames(
-                            'rounded-xl px-4 py-2 text-sm font-semibold transition-all',
-                            schedulingQuick || !quickScheduleDate || !quickScheduleTime
-                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                              : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg hover:scale-[1.02]',
-                          )}
-                        >
-                          <span className="flex items-center gap-2">
-                            {schedulingQuick ? (
-                              <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                              </svg>
-                            ) : (
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                              </svg>
+                            onClick={saveTemplate}
+                            disabled={savingTemplate}
+                            className={classNames(
+                              'rounded-xl px-6 py-2.5 sm:px-4 sm:py-2 text-sm font-semibold transition-all w-full sm:w-auto',
+                              savingTemplate
+                                ? 'bg-gray-300 text-gray-500 cursor-wait'
+                                : 'bg-blue-600 text-white shadow-lg hover:scale-[1.01]',
                             )}
-                            {schedulingQuick ? 'מתזמן...' : 'תזמן שליחה'}
-                          </span>
-                        </button>
+                          >
+                            {savingTemplate ? 'שומר...' : 'שמור תבנית'}
+                          </button>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                )}
 
-                    <div className="flex justify-end gap-3">
+                {/* Schedule Tab */}
+                {subTab === 'schedule' && (
+                  <div className="rounded-2xl border border-emerald-300 bg-emerald-50 p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-sm font-semibold text-gray-900">תזמון שליחה:</span>
+                      </div>
+                      <div className="flex items-center gap-2 flex-1">
+                        <label className="text-xs text-gray-600 whitespace-nowrap">תאריך:</label>
+                        <input
+                          type="date"
+                          value={quickScheduleDate}
+                          onChange={(e) => setQuickScheduleDate(e.target.value)}
+                          className="flex-1 rounded-lg border border-gray-300 bg-white px-2 py-1.5 sm:px-3 text-xs sm:text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2 flex-1">
+                        <label className="text-xs text-gray-600 whitespace-nowrap">שעה:</label>
+                        <input
+                          type="time"
+                          value={quickScheduleTime}
+                          onChange={(e) => setQuickScheduleTime(e.target.value)}
+                          className="flex-1 rounded-lg border border-gray-300 bg-white px-2 py-1.5 sm:px-3 text-xs sm:text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                      </div>
                       <button
                         type="button"
-                        onClick={saveTemplate}
-                        disabled={savingTemplate}
+                        onClick={handleQuickSchedule}
+                        disabled={schedulingQuick || !quickScheduleDate || !quickScheduleTime}
                         className={classNames(
-                          'rounded-xl px-4 py-2 text-sm font-semibold transition-all',
-                          savingTemplate
-                            ? 'bg-gray-300 text-gray-500 cursor-wait'
-                            : 'bg-blue-600 text-white shadow-lg hover:scale-[1.01]',
+                          'rounded-xl px-4 py-2 text-xs sm:text-sm font-semibold transition-all w-full sm:w-auto',
+                          schedulingQuick || !quickScheduleDate || !quickScheduleTime
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg hover:scale-[1.02]',
                         )}
                       >
-                        {savingTemplate ? 'שומר...' : 'שמור תבנית'}
+                        <span className="flex items-center gap-2">
+                          {schedulingQuick ? (
+                            <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                          ) : (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                          )}
+                          {schedulingQuick ? 'מתזמן...' : 'תזמן שליחה'}
+                        </span>
                       </button>
                     </div>
                   </div>
-                </div>
+                )}
+
+                {/* Preview Tab */}
+                {subTab === 'preview' && (
+                  <div className="rounded-2xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-4 sm:p-6">
+                    <div className="flex items-center gap-2 mb-3 sm:mb-4 border-b border-purple-200 pb-2 sm:pb-3">
+                      <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                      <h3 className="text-sm sm:text-base font-bold text-gray-900">תצוגה מקדימה - כך ההתראה תיראה</h3>
+                    </div>
+                    <div className="mx-auto max-w-sm">
+                      <div className="rounded-2xl border border-gray-300 bg-white p-3 sm:p-4 shadow-xl">
+                        <div className="flex items-start gap-2.5 sm:gap-3">
+                          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">VIPO</p>
+                            <p className="text-xs sm:text-sm font-bold text-gray-900 mb-0.5 sm:mb-1 line-clamp-2">{selectedTemplateData?.title || 'כותרת ההתראה'}</p>
+                            <p className="text-xs sm:text-sm text-gray-700 leading-relaxed line-clamp-3">{selectedTemplateData?.body || 'תוכן ההודעה יופיע כאן'}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="mt-2 sm:mt-3 text-[10px] sm:text-xs text-center text-gray-500">התצוגה בפועל עשויה להשתנות בהתאם למכשיר</p>
+                    </div>
+                  </div>
+                )}
               </section>
             )}
 
