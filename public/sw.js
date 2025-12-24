@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vipo-static-v4';
+const CACHE_NAME = 'vipo-static-v5';
 const PRECACHE_URLS = [
   '/',
   '/products',
