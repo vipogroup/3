@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vipo-static-v7';
+const CACHE_NAME = 'vipo-static-v8';
 const PRECACHE_URLS = [
   '/',
   '/products',
@@ -150,36 +150,30 @@ function normalizePayload(event) {
 }
 
 self.addEventListener('push', (event) => {
+  console.log('SW_PUSH: Received push event');
   const payload = normalizePayload(event);
+  console.log('SW_PUSH: Payload:', JSON.stringify(payload).slice(0, 200));
 
   const title = payload.title || 'VIPO';
   const defaultUrl = '/dashboard';
   
-  // בדיקה אם זה iOS - חלק מהאפשרויות לא נתמכות
-  const isIOS = /iPad|iPhone|iPod/.test(self.navigator?.userAgent || '');
+  // בדיקה אם זה iOS - שימוש ב-navigator גלובלי
+  let isIOS = false;
+  try {
+    const ua = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
+    isIOS = /iPad|iPhone|iPod/.test(ua);
+    console.log('SW_PUSH: isIOS:', isIOS, 'UA:', ua.slice(0, 50));
+  } catch (e) {
+    console.log('SW_PUSH: Could not detect platform');
+  }
   
   const options = {
     body: payload.body || 'יש לך עדכון חדש ב-VIPO',
     icon: payload.icon || '/icons/192.png',
     badge: payload.badge || '/icons/badge.png',
-    image: payload.image,
     tag: payload.tag || 'vipo-notification',
     renotify: true,
-    // iOS לא תומך באפשרויות האלה
-    requireInteraction: !isIOS,
     silent: false,
-    // רטט רק באנדרואיד
-    ...(isIOS ? {} : { vibrate: [200, 100, 200] }),
-    // כפתורי פעולה רק באנדרואיד
-    ...(isIOS ? {} : {
-      actions: [
-        {
-          action: 'open',
-          title: 'פתח',
-          icon: '/icons/open.png'
-        }
-      ]
-    }),
     data: {
       url: payload.url || payload.data?.url || defaultUrl,
       templateType: payload.data?.templateType,
@@ -188,6 +182,21 @@ self.addEventListener('push', (event) => {
       ...payload.data,
     },
   };
+  
+  // הוספת אפשרויות שלא נתמכות ב-iOS רק אם לא iOS
+  if (!isIOS) {
+    options.requireInteraction = true;
+    options.vibrate = [200, 100, 200];
+    options.actions = [
+      {
+        action: 'open',
+        title: 'פתח',
+        icon: '/icons/open.png'
+      }
+    ];
+  }
+  
+  console.log('SW_PUSH: Showing notification with options:', JSON.stringify(options).slice(0, 300));
 
   event.waitUntil(
     self.registration.showNotification(title, options).catch((err) => {
