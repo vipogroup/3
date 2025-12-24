@@ -158,6 +158,8 @@ export default function NotificationsManagerClient() {
   const [schedulingQuick, setSchedulingQuick] = useState(false);
   const [sendingTest, setSendingTest] = useState(false);
   const [testResult, setTestResult] = useState(null);
+  const [sendingLive, setSendingLive] = useState(false);
+  const [liveResult, setLiveResult] = useState(null);
 
   const templateMap = useMemo(() => {
     const map = new Map();
@@ -393,6 +395,61 @@ export default function NotificationsManagerClient() {
       setSendingTest(false);
     }
   }, []);
+
+  const handleSendLiveNotification = useCallback(async () => {
+    if (!selectedTemplateData) return;
+    setSendingLive(true);
+    setLiveResult(null);
+    setError('');
+    try {
+      const titleOverride = scheduleForm.payloadOverrides?.titleOverride;
+      const bodyAppend = scheduleForm.payloadOverrides?.bodyAppend;
+      const combinedBody = bodyAppend
+        ? `${selectedTemplateData.body || ''}\n\n${bodyAppend}`
+        : selectedTemplateData.body;
+      const res = await fetch('/api/admin/notifications/send', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateType: selectedTemplateData.type || selectedTemplate,
+          variables: {},
+          audienceRoles:
+            Array.isArray(selectedTemplateData.audience) && selectedTemplateData.audience.length
+              ? selectedTemplateData.audience
+              : ['all'],
+          payloadOverrides: {
+            title: titleOverride || selectedTemplateData.title,
+            body: combinedBody,
+          },
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || 'failed_to_send_notification');
+      }
+
+      const deliveries = data.result?.deliveries || [];
+      const totalDelivered = deliveries.reduce((sum, delivery) => sum + (delivery.count || 0), 0);
+      const breakdown = deliveries
+        .filter((delivery) => delivery.count !== undefined)
+        .map((delivery) => `${delivery.channel}: ${delivery.count}`)
+        .join(' · ');
+
+      setLiveResult({
+        success: true,
+        message:
+          totalDelivered > 0
+            ? `נשלחו ${totalDelivered} התראות${breakdown ? ` (${breakdown})` : ''}`
+            : 'הבקשה נשלחה (לא אותרו מכשירים מחוברים)',
+      });
+    } catch (err) {
+      console.error('live_notification_error', err);
+      setLiveResult({ success: false, message: err.message || 'שגיאה בשליחת התראה' });
+    } finally {
+      setSendingLive(false);
+    }
+  }, [selectedTemplateData, selectedTemplate]);
 
   const availableTemplates = templates;
 
@@ -821,6 +878,84 @@ export default function NotificationsManagerClient() {
                           </div>
                         )}
                         <p className="mt-2 text-[10px] text-center text-purple-600">ההתראה תישלח למכשיר שלך לבדיקה</p>
+                      </div>
+
+                      <div className="mt-6 sm:mt-8 pt-4 border-t border-purple-200 space-y-4">
+                        <div className="space-y-3">
+                          <div>
+                            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                              כותרת מותאמת (אופציונלי)
+                            </label>
+                            <input
+                              type="text"
+                              className="w-full rounded-xl border border-purple-200 bg-white p-3 text-xs sm:text-sm text-gray-700 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 transition"
+                              placeholder="אם תזין כאן טקסט - הוא יחליף את הכותרת הנוכחית"
+                              value={scheduleForm.payloadOverrides?.titleOverride || ''}
+                              onChange={(e) =>
+                                handleScheduleFieldChange(['payloadOverrides', 'titleOverride'], e.target.value)
+                              }
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                              תוכן נוסף להודעה (אופציונלי)
+                            </label>
+                            <textarea
+                              className="w-full rounded-xl border border-purple-200 bg-white p-3 text-xs sm:text-sm text-gray-700 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 transition"
+                              rows={3}
+                              placeholder="הוסף טקסט נוסף שיופיע בסוף ההודעה"
+                              value={scheduleForm.payloadOverrides?.bodyAppend || ''}
+                              onChange={(e) =>
+                                handleScheduleFieldChange(['payloadOverrides', 'bodyAppend'], e.target.value)
+                              }
+                            />
+                            <p className="mt-1 text-[10px] text-gray-500">
+                              ההודעה תישלח לכל מי שמוגדר בתבנית. אם לא תוסיף טקסט, תישלח ההודעה המקורית כמו שהיא.
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleSendLiveNotification}
+                          disabled={sendingLive}
+                          className={classNames(
+                            'w-full rounded-xl px-4 py-3 text-sm font-semibold transition-all flex items-center justify-center gap-2',
+                            sendingLive
+                              ? 'bg-gray-300 text-gray-500 cursor-wait'
+                              : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white shadow-lg hover:scale-[1.02]'
+                          )}
+                        >
+                          {sendingLive ? (
+                            <>
+                              <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                              </svg>
+                              שולח לכל המשתמשים...
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-18 4v5a2 2 0 002 2h14a2 2 0 002-2v-5" />
+                              </svg>
+                              שלח את ההתראה לכל הקהל
+                            </>
+                          )}
+                        </button>
+
+                        {liveResult && (
+                          <div
+                            className={classNames(
+                              'p-3 rounded-lg text-sm text-center',
+                              liveResult.success
+                                ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                                : 'bg-red-100 text-red-700 border border-red-200'
+                            )}
+                          >
+                            {liveResult.message}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
