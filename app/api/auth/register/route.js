@@ -12,6 +12,8 @@ import { connectMongo } from '@/lib/mongoose';
 import Notification from '@/models/Notification';
 import { rateLimiters } from '@/lib/rateLimit';
 import { generateAgentCoupon } from '@/lib/agents';
+import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
+import { pushToUsers } from '@/lib/pushSender';
 
 const automationKey = process.env.AUTOMATION_KEY || 'test-automation-key';
 
@@ -195,6 +197,37 @@ export async function POST(req) {
       });
     } catch (notifyErr) {
       console.error('REGISTER_NOTIFICATION_ERROR', notifyErr);
+    }
+
+    // Send push notifications
+    try {
+      // 1. Welcome notification to new user
+      await pushToUsers([String(newUserId)], {
+        title: 'ברוכים הבאים ל-VIPO!',
+        body: `שלום ${doc.fullName || 'משתמש יקר'}, ההרשמה שלך הושלמה בהצלחה!`,
+        icon: '/icons/192.png',
+        url: '/dashboard',
+        data: { type: 'welcome_user', userId: String(newUserId) },
+      });
+
+      // 2. Admin notification about new registration
+      await sendTemplateNotification({
+        templateType: 'admin_new_registration',
+        variables: {
+          user_type: normalizedRole === 'agent' ? 'סוכן' : 'לקוח',
+          datetime: new Date().toLocaleString('he-IL'),
+        },
+        audienceRoles: ['admin'],
+        payloadOverrides: {
+          url: '/admin/users',
+          data: {
+            userId: String(newUserId),
+            userType: normalizedRole,
+          },
+        },
+      });
+    } catch (pushErr) {
+      console.error('REGISTER_PUSH_ERROR', pushErr);
     }
 
     // Clear refSource cookie after successful registration

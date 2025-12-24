@@ -6,6 +6,7 @@ import { ObjectId } from 'mongodb';
 import { cookies } from 'next/headers';
 
 import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
+import { pushToUsers } from '@/lib/pushSender';
 import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
@@ -104,8 +105,9 @@ export async function POST(req) {
     const result = await orders.insertOne(orderDoc);
     const orderId = result.insertedId;
 
-    // Notify admins about the new order
+    // Send notifications
     try {
+      // 1. Admin notification about new order
       await sendTemplateNotification({
         templateType: 'order_new',
         variables: {
@@ -123,6 +125,44 @@ export async function POST(req) {
           },
         },
       });
+
+      // 2. Order confirmation to customer
+      await pushToUsers([String(me.id)], {
+        title: 'ההזמנה שלך התקבלה!',
+        body: `תודה על הרכישה! סכום: ${totalAmount.toLocaleString('he-IL')} ₪`,
+        icon: '/icons/192.png',
+        url: `/orders/${orderId}`,
+        data: { type: 'order_confirmation', orderId: String(orderId) },
+      });
+
+      // 3. If order has agent referral - notify agent
+      if (refAgentId && commissionAmount > 0) {
+        await pushToUsers([String(refAgentId)], {
+          title: 'עמלה חדשה!',
+          body: `בוצעה רכישה דרך הקופון שלך. עמלה: ${commissionAmount.toLocaleString('he-IL')} ₪`,
+          icon: '/icons/192.png',
+          url: '/dashboard/agent',
+          data: { type: 'agent_commission_awarded', orderId: String(orderId), commission: commissionAmount },
+        });
+
+        // 4. Admin notification about agent sale
+        await sendTemplateNotification({
+          templateType: 'admin_agent_sale',
+          variables: {
+            agent_name: 'סוכן',
+            order_id: String(orderId),
+          },
+          audienceRoles: ['admin'],
+          payloadOverrides: {
+            url: `/admin/orders/${orderId}`,
+            data: {
+              orderId: String(orderId),
+              agentId: String(refAgentId),
+              commission: commissionAmount,
+            },
+          },
+        });
+      }
     } catch (notifyErr) {
       console.warn('ORDER_PUSH_NOTIFY_FAILED', notifyErr?.message || notifyErr);
     }
