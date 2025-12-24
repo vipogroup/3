@@ -54,7 +54,7 @@ export default function InstallPrompt() {
       <div className="max-w-lg mx-auto flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Image
-            src="/icons/192.png"
+            src="/icons/vipo-icon.svg"
             alt="VIPO App"
             width={48}
             height={48}
