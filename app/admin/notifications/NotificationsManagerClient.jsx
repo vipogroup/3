@@ -35,17 +35,20 @@ function TemplateBadge({ template }) {
   return (
     <span
       className={classNames(
-        'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide',
+        'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide',
         enabled ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-600',
       )}
     >
-      <span
-        className={classNames(
-          'inline-block h-2 w-2 rounded-full',
-          enabled ? 'bg-emerald-500' : 'bg-gray-400',
-        )}
-      />
-      {template.type}
+      {enabled ? (
+        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+        </svg>
+      ) : (
+        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+        </svg>
+      )}
+      <span>{template.type}</span>
     </span>
   );
 }
@@ -358,7 +361,9 @@ export default function NotificationsManagerClient() {
         <header className="flex flex-col gap-4 pb-8">
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
-              <span className="text-2xl">🔔</span>
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
             </div>
             <div>
               <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">ניהול התראות מערכת</h1>
@@ -427,7 +432,12 @@ export default function NotificationsManagerClient() {
                           )}
                         >
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold capitalize">{tpl.type}</span>
+                            <div className="flex items-center gap-2">
+                              <svg className="w-4 h-4 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              <span className="text-sm font-semibold capitalize">{tpl.type}</span>
+                            </div>
                             <TemplateBadge template={tpl} />
                           </div>
                           {tpl.description && (
@@ -567,7 +577,9 @@ export default function NotificationsManagerClient() {
                     <div className="rounded-2xl border border-emerald-300 bg-emerald-50 p-4">
                       <div className="flex flex-wrap items-center gap-4">
                         <div className="flex items-center gap-2">
-                          <span className="text-lg">⏰</span>
+                          <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
                           <span className="text-sm font-semibold text-gray-900">תזמון שליחה:</span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -599,7 +611,18 @@ export default function NotificationsManagerClient() {
                               : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg hover:scale-[1.02]',
                           )}
                         >
-                          {schedulingQuick ? 'מתזמן...' : '📅 תזמן שליחה'}
+                          <span className="flex items-center gap-2">
+                            {schedulingQuick ? (
+                              <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                              </svg>
+                            ) : (
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                            )}
+                            {schedulingQuick ? 'מתזמן...' : 'תזמן שליחה'}
+                          </span>
                         </button>
                       </div>
                     </div>
