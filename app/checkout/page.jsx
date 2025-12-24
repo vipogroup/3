@@ -1340,7 +1340,7 @@ function CheckoutClient() {
                 <span className="font-semibold text-green-600">חינם</span>
               </div>
               <div className="flex justify-between text-lg font-bold text-gray-900 border-t pt-3">
-                <span>{'סה&quot;כ לתשלום'}</span>
+                <span>סה"כ לתשלום</span>
                 <span>₪{grandTotal.toLocaleString('he-IL')}</span>
               </div>
             </div>

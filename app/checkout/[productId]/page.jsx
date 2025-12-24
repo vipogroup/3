@@ -435,7 +435,7 @@ export default function CheckoutPage() {
               {/* Total */}
               <div className="pt-6 border-t-2 border-gray-300">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-xl font-bold text-gray-900">{'סה&quot;כ לתשלום:'}</span>
+                  <span className="text-xl font-bold text-gray-900">סה"כ לתשלום:</span>
                   <span className="text-3xl font-bold text-purple-600">₪{product.price}</span>
                 </div>
               </div>
