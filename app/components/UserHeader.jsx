@@ -163,13 +163,13 @@ export default function UserHeader() {
     }
   }, [showAccountMenu]);
 
-  // Auto-close account menu after 5 seconds
+  // Auto-close account menu after 10 seconds
   useEffect(() => {
     if (!showAccountMenu) return;
 
     const timer = setTimeout(() => {
       setShowAccountMenu(false);
-    }, 5000);
+    }, 10000);
 
     return () => clearTimeout(timer);
   }, [showAccountMenu]);
