@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { requireAuthApi } from '@/lib/auth/server';
-import { findSubscriptionsByUserIds } from '@/lib/pushSubscriptions';
+import { findSubscriptionsByUserIds, getAllSubscriptions } from '@/lib/pushSubscriptions';
 import { sendPushNotification, getWebPushConfig } from '@/lib/webPush';
 
 // POST - שליחת התראת בדיקה למשתמש המחובר
@@ -22,25 +22,51 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
+    // Get ALL subscriptions for debugging
+    const allSubs = await getAllSubscriptions();
+    console.log('SEND_TEST: Total subscriptions in DB:', allSubs?.length || 0);
+    
+    // Log all subscriptions for debugging
+    allSubs.forEach((s, i) => {
+      console.log(`SEND_TEST: Sub[${i}]:`, JSON.stringify({
+        userId: s.userId,
+        endpoint: s.endpoint?.slice(0, 60),
+        revokedAt: s.revokedAt,
+        tags: s.tags
+      }));
+    });
+
     // Find subscriptions for this user
-    console.log('SEND_TEST: Looking for subscriptions for userId:', user.id);
+    console.log('SEND_TEST: Looking for subscriptions for userId:', user.id, 'type:', typeof user.id);
     const subs = await findSubscriptionsByUserIds([user.id]);
-    console.log('SEND_TEST: Found subscriptions:', subs?.length || 0);
+    console.log('SEND_TEST: Found subscriptions for user:', subs?.length || 0);
     
     if (subs.length > 0) {
       console.log('SEND_TEST: First subscription:', JSON.stringify({
         endpoint: subs[0].endpoint?.slice(0, 80),
         hasKeys: !!subs[0].keys,
         tags: subs[0].tags,
-        revokedAt: subs[0].revokedAt
+        revokedAt: subs[0].revokedAt,
+        userId: subs[0].userId,
+        userObjectId: subs[0].userObjectId?.toString()
       }));
     }
     
     if (!subs.length) {
+      // Return debug info
+      const debugInfo = allSubs.map(s => ({
+        userId: s.userId,
+        endpointPrefix: s.endpoint?.slice(0, 40),
+        revokedAt: s.revokedAt ? 'YES' : 'NO',
+        tags: s.tags
+      }));
+      
       return NextResponse.json({ 
         ok: false, 
-        error: 'לא נמצאו התקנים רשומים להתראות. נסה לכבות ולהפעיל מחדש את ההתראות.',
-        hint: 'לחץ על "התראות מופעלות" לכיבוי, ואז שוב על "אפשר התראות דחיפה" להפעלה'
+        error: `לא נמצאו התקנים רשומים למשתמש ${user.id}`,
+        hint: 'לחץ על "התראות מופעלות" לכיבוי, ואז שוב על "אפשר התראות דחיפה" להפעלה',
+        totalSubsInDb: allSubs.length,
+        debug: debugInfo
       }, { status: 404 });
     }
 
