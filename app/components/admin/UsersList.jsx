@@ -152,14 +152,14 @@ export default function UsersList() {
 
     try {
       setError('');
-      const res = await fetch('/api/users/role', {
+      const res = await fetch(`/api/users/${encodeURIComponent(userId)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, role: newRole }),
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         throw new Error(data.error || 'Failed to update role');
       }
 

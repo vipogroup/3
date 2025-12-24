@@ -1,0 +1,133 @@
+[
+  {
+    "_id": {
+      "$oid": "690f366dc3841a52e00e5d63"
+    },
+    "fullName": "מנהל ראשי",
+    "email": "admin@vipo.local",
+    "phone": "0501234567",
+    "passwordHash": "$2a$10$aGMpU3gZdp9Neeyg0FOsQOKS5fZtZyREGhgCXjzWe7RebwLvwWJqi",
+    "role": "admin",
+    "isActive": true,
+    "isAgent": false,
+    "agentId": null,
+    "referralsCount": 0,
+    "referralCount": 0,
+    "commissionBalance": 0,
+    "totalSales": 0,
+    "createdAt": {
+      "$date": "2025-11-08T12:24:13.376Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-01T01:43:58.763Z"
+    },
+    "password": "$2a$10$N6bTS91A6uK8V7h2xZe8Luub2SQKVLG5yMLCR3nocGTxjcVRpENSG"
+  },
+  {
+    "_id": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "email": "m0587009938@gmail.com",
+    "phone": "0587009938",
+    "fullName": "System Admin",
+    "passwordHash": "$2a$10$6wc1L54jbVkaTiD5PMg84uqSvuONB/y7mh5XRlmWWHQWw0K3rprlO",
+    "role": "admin",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-15T14:51:21.929Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-15T14:51:21.929Z"
+    },
+    "referralsCount": 0,
+    "commissionBalance": 0,
+    "totalSales": 0,
+    "commissionOnHold": 0
+  },
+  {
+    "_id": {
+      "$oid": "6949f4991a2d1474dd313010"
+    },
+    "fullName": "אלקיים ישראל מאיר",
+    "phone": "0556693802",
+    "email": "israelelkayam20@gmail.com",
+    "passwordHash": "$2a$10$39ZPey5xG7K.7GaqJ9j4ZePFg8Thh.QJbHpRi.1XNzi0jWaVRJfwe",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-23T01:47:05.518Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T01:47:06.042Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "alkyym-yshral-mayr-001",
+    "couponSequence": 1,
+    "couponSlug": "alkyym-yshral-mayr",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "694a8b0c92a58b1a20c872e1"
+    },
+    "fullName": "מיכאל מדר",
+    "phone": "0584151451",
+    "email": "mmm88697@gmail.com",
+    "passwordHash": "$2a$10$OpLNKZ2SlVeH3LuH8gp4TuLmZoeS/7oilCZbawI/TMuPSgDI9lmIG",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:29:00.562Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T12:29:03.039Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "mykal-mdr-001",
+    "couponSequence": 1,
+    "couponSlug": "mykal-mdr",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "694a9739acb9d0c1222bb849"
+    },
+    "fullName": "יניב דרור",
+    "phone": "0525732457",
+    "email": "dror201031@gmail.com",
+    "passwordHash": "$2a$10$xDERu0yrQadACZRqokhTh.o9ude1E1AISUKuGmQWivwgqVuJMfp86",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-23T13:20:57.071Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T13:20:57.591Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "ynyb-drvr-001",
+    "couponSequence": 1,
+    "couponSlug": "ynyb-drvr",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "694ba66a57fd7cef5b0128a3"
+    },
+    "fullName": "ניסוי ",
+    "phone": "0523004374",
+    "email": "m0523004374@gmail.com",
+    "passwordHash": "$2a$10$tqxZXhRRqCv.hyUNsN7MveBjnGi.ae/fjTg4CM/QxiENrgH2wGfpm",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-24T08:38:02.117Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-24T08:38:02.117Z"
+    }
+  }
+]
