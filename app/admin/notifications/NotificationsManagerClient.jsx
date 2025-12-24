@@ -372,19 +372,13 @@ export default function NotificationsManagerClient() {
   }, [selectedTemplate, selectedTemplateData, quickScheduleDate, quickScheduleTime, loadData]);
 
   const handleSendTestNotification = useCallback(async () => {
-    if (!selectedTemplate || !selectedTemplateData) return;
     setSendingTest(true);
     setTestResult(null);
     setError('');
     try {
-      const res = await fetch('/api/admin/notifications/test', {
+      const res = await fetch('/api/push/send-test', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          templateType: selectedTemplate,
-          title: selectedTemplateData.title,
-          body: selectedTemplateData.body,
-        }),
+        credentials: 'include',
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
@@ -398,7 +392,7 @@ export default function NotificationsManagerClient() {
     } finally {
       setSendingTest(false);
     }
-  }, [selectedTemplate, selectedTemplateData]);
+  }, []);
 
   const availableTemplates = templates;
 
