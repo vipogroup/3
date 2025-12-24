@@ -2,11 +2,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '../../../lib/http';
-import {
-  markConsentAccepted,
-  PUSH_CONSENT_VERSION,
-} from '@/app/lib/pushConsent';
-import { subscribeToPush } from '@/app/lib/pushClient';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,9 +12,6 @@ export default function LoginPage() {
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPushPopup, setShowPushPopup] = useState(false);
-  const [pushPermissionStatus, setPushPermissionStatus] = useState('default');
-  const [loginData, setLoginData] = useState(null);
 
   useEffect(() => {
     try {
@@ -34,68 +26,7 @@ export default function LoginPage() {
     } catch {
       // ignore corrupted localStorage data
     }
-
-    // Check push permission status
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      setPushPermissionStatus(Notification.permission);
-    }
   }, []);
-
-  // Request push permission using the existing pushClient
-  async function requestPushPermission() {
-    if (!('Notification' in window)) {
-      console.log('Browser does not support notifications');
-      return false;
-    }
-
-    try {
-      const result = await subscribeToPush({
-        tags: [loginData?.role || 'customer'],
-        consentAt: new Date().toISOString(),
-        consentVersion: PUSH_CONSENT_VERSION,
-        consentMeta: { source: 'login', role: loginData?.role },
-      });
-
-      if (result?.ok) {
-        setPushPermissionStatus('granted');
-        markConsentAccepted({
-          role: loginData?.role,
-          version: PUSH_CONSENT_VERSION,
-          meta: { source: 'login', consentAt: new Date().toISOString() },
-        });
-        return true;
-      }
-      return false;
-    } catch (err) {
-      console.error('Push permission error:', err);
-      setPushPermissionStatus(err?.message || 'error');
-      return false;
-    }
-  }
-
-  function redirectAfterLogin() {
-    if (!loginData) return;
-    let targetPath = '/dashboard';
-    if (loginData.role === 'customer') {
-      targetPath = '/products';
-    } else if (loginData.role === 'agent') {
-      targetPath = '/agent';
-    } else if (loginData.role === 'admin') {
-      targetPath = '/dashboard';
-    }
-    window.location.href = targetPath;
-  }
-
-  async function handlePushPopupAccept() {
-    await requestPushPermission();
-    setShowPushPopup(false);
-    redirectAfterLogin();
-  }
-
-  function handlePushPopupDecline() {
-    setShowPushPopup(false);
-    redirectAfterLogin();
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -136,168 +67,44 @@ export default function LoginPage() {
         localStorage.removeItem('vipo-login');
       }
 
-      setMsg('התחברת בהצלחה!');
+      setMsg('התחברת בהצלחה! מעביר לדשבורד...');
       setLoading(false);
-      setLoginData(data);
 
-      // Check if we should show push popup (for admins/agents who haven't enabled yet)
-      if (pushPermissionStatus === 'default' && (data.role === 'admin' || data.role === 'agent')) {
-        // Show push popup for admins and agents
-        setTimeout(() => {
-          setShowPushPopup(true);
-        }, 500);
-      } else {
-        // Regular redirect
-        setTimeout(() => {
-          console.log('[LOGIN] About to redirect for role:', data.role);
+      // Add a longer delay to ensure cookie is properly set and synced
+      setTimeout(() => {
+        console.log('[LOGIN] About to redirect for role:', data.role);
 
-          let targetPath = '/dashboard';
-          if (data.role === 'customer') {
-            targetPath = '/products';
-          } else if (data.role === 'agent') {
-            targetPath = '/agent';
-          } else if (data.role === 'admin') {
-            targetPath = '/dashboard';
-          }
+        let targetPath = '/dashboard';
+        if (data.role === 'customer') {
+          targetPath = '/products';
+        } else if (data.role === 'agent') {
+          targetPath = '/agent';
+        } else if (data.role === 'admin') {
+          targetPath = '/dashboard';
+        }
 
-          console.log('[LOGIN] Redirecting to:', targetPath);
+        console.log('[LOGIN] Redirecting to:', targetPath);
 
-          // First update the cookie status
-          fetch('/api/auth/me', { credentials: 'include' })
-            .then(() => {
-              // Then do the navigation after cookie is confirmed
-              setTimeout(() => {
-                window.location.href = targetPath;
-              }, 100);
-            })
-            .catch(() => {
-              // If cookie check fails, try direct navigation
+        // First update the cookie status
+        fetch('/api/auth/me', { credentials: 'include' })
+          .then(() => {
+            // Then do the navigation after cookie is confirmed
+            setTimeout(() => {
               window.location.href = targetPath;
-            });
+            }, 100);
+          })
+          .catch(() => {
+            // If cookie check fails, try direct navigation
+            window.location.href = targetPath;
+          });
 
-        }, 1000);
-      }
+      }, 1000);
     } catch (e) {
       console.error('[LOGIN] Exception:', e);
       setErr('שגיאה בחיבור לשרת. אנא נסה שוב.');
       setLoading(false);
     }
   };
-
-  // Push Permission Popup for Admins/Agents
-  if (showPushPopup) {
-    return (
-      <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-        <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl animate-fade-in">
-          {/* Icon */}
-          <div className="flex justify-center mb-4">
-            <div
-              className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-            >
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Title */}
-          <h2 className="text-xl font-bold text-center text-gray-900 mb-2">
-            הפעל התראות
-          </h2>
-
-          {/* Description */}
-          <p className="text-center text-gray-600 mb-6">
-            {loginData?.role === 'admin' 
-              ? 'קבל התראות על משתמשים חדשים, הזמנות ופעילות חשובות!'
-              : 'קבל התראות על עמלות, בונוסים והפניות חדשות!'
-            }
-          </p>
-
-          {/* Benefits */}
-          <div className="space-y-3 mb-6">
-            {loginData?.role === 'admin' ? (
-              <>
-                <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <span>משתמש חדש נרשם</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <span>הזמנה חדשה התקבלה</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <span>פעילות חשובות במערכת</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <span>עמלות חדשות</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <span>הפניות מלקוחות חדשים</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <span>בונוסים ומבצעים</span>
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Buttons */}
-          <div className="space-y-3">
-            <button
-              onClick={handlePushPopupAccept}
-              className="w-full py-3 rounded-xl font-bold text-white text-lg"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-            >
-              אשר התראות
-            </button>
-            <button
-              onClick={handlePushPopupDecline}
-              className="w-full py-3 rounded-xl font-medium text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              אולי אחר כך
-            </button>
-          </div>
-
-          {/* Note */}
-          <p className="text-xs text-gray-400 text-center mt-4">
-            תוכל לבטל בכל רגע דרך ההגדרות
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-white px-4">

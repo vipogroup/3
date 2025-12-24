@@ -12,7 +12,6 @@ import { connectMongo } from '@/lib/mongoose';
 import Notification from '@/models/Notification';
 import { rateLimiters } from '@/lib/rateLimit';
 import { generateAgentCoupon } from '@/lib/agents';
-import { pushToRoles } from '@/lib/pushSender';
 
 const automationKey = process.env.AUTOMATION_KEY || 'test-automation-key';
 
@@ -194,17 +193,6 @@ export async function POST(req) {
           fullName: doc.fullName,
         },
       });
-
-      // Send Push notification to admins
-      await pushToRoles(['admin'], {
-        title: 'משתמש חדש נרשם',
-        body: `${doc.fullName || doc.email || doc.phone || 'משתמש'} נרשם למערכת`,
-        data: {
-          type: 'new_user',
-          userId: String(newUserId),
-          url: '/admin/users',
-        },
-      }).catch((pushErr) => console.error('REGISTER_PUSH_ERROR', pushErr));
     } catch (notifyErr) {
       console.error('REGISTER_NOTIFICATION_ERROR', notifyErr);
     }

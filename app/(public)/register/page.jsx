@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '../../../lib/http';
 import {
@@ -8,7 +8,6 @@ import {
   markConsentDeclined,
   PUSH_CONSENT_VERSION,
 } from '@/app/lib/pushConsent';
-import { subscribeToPush } from '@/app/lib/pushClient';
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
@@ -20,70 +19,7 @@ export default function RegisterPage() {
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPushPopup, setShowPushPopup] = useState(false);
-  const [pushPermissionStatus, setPushPermissionStatus] = useState('default');
-  const [registeredRole, setRegisteredRole] = useState('');
   const router = useRouter();
-
-  // Check push permission status
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      setPushPermissionStatus(Notification.permission);
-    }
-  }, []);
-
-  // Request push permission using the existing pushClient
-  async function requestPushPermission() {
-    if (!('Notification' in window)) {
-      console.log('Browser does not support notifications');
-      return false;
-    }
-
-    try {
-      const result = await subscribeToPush({
-        tags: [registeredRole || 'customer'],
-        consentAt: new Date().toISOString(),
-        consentVersion: PUSH_CONSENT_VERSION,
-        consentMeta: { source: 'register', role: registeredRole },
-      });
-
-      if (result?.ok) {
-        setPushPermissionStatus('granted');
-        markConsentAccepted({
-          role: registeredRole,
-          version: PUSH_CONSENT_VERSION,
-          meta: { source: 'register', consentAt: new Date().toISOString() },
-        });
-        return true;
-      }
-      return false;
-    } catch (err) {
-      console.error('Push permission error:', err);
-      setPushPermissionStatus(err?.message || 'error');
-      return false;
-    }
-  }
-
-  async function handlePushPopupAccept() {
-    await requestPushPermission();
-    setShowPushPopup(false);
-    // Redirect based on role
-    if (registeredRole === 'customer') {
-      router.push('/customer');
-    } else {
-      router.push('/login');
-    }
-  }
-
-  function handlePushPopupDecline() {
-    setShowPushPopup(false);
-    // Redirect based on role
-    if (registeredRole === 'customer') {
-      router.push('/customer');
-    } else {
-      router.push('/login');
-    }
-  }
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -162,111 +98,16 @@ export default function RegisterPage() {
       });
 
       if (loginRes.ok) {
-        setRegisteredRole(role);
-        // Show push popup if user consented and permission not yet granted
-        if (wantsPush && pushPermissionStatus === 'default') {
-          setLoading(false);
-          setShowPushPopup(true);
-        } else {
-          setTimeout(() => router.push('/customer'), 500);
-        }
+        setTimeout(() => router.push('/customer'), 500);
       } else {
         setMsg('נרשמת בהצלחה, אבל ההתחברות נכשלה. מעביר לעמוד כניסה...');
         setTimeout(() => router.push('/login'), 1500);
       }
     } else {
       // Admin/Agent - manual login required
-      setMsg('נרשמת בהצלחה!');
-      setRegisteredRole(role);
-      // Show push popup if user consented and permission not yet granted
-      if (wantsPush && pushPermissionStatus === 'default') {
-        setLoading(false);
-        setShowPushPopup(true);
-      } else {
-        setTimeout(() => router.push('/login'), 2000);
-      }
+      setMsg('נרשמת בהצלחה! המתן לאישור מנהל ולאחר מכן התחבר.');
+      setTimeout(() => router.push('/login'), 2000);
     }
-  }
-
-  // Push Permission Popup
-  if (showPushPopup) {
-    return (
-      <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-        <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl animate-fade-in">
-          {/* Icon */}
-          <div className="flex justify-center mb-4">
-            <div
-              className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-            >
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Title */}
-          <h2 className="text-xl font-bold text-center text-gray-900 mb-2">
-            הפעל התראות
-          </h2>
-
-          {/* Description */}
-          <p className="text-center text-gray-600 mb-6">
-            קבל עדכונים על מבצעים, הזמנות ועמלות ישירות למכשיר שלך!
-          </p>
-
-          {/* Benefits */}
-          <div className="space-y-3 mb-6">
-            <div className="flex items-center gap-3 text-sm text-gray-700">
-              <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <span>עדכונים על מבצעים חדשים</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-gray-700">
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <span>התראות על הזמנות ורכישות</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-gray-700">
-              <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <span>עמלות ובונוסים (לסוכנים)</span>
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="space-y-3">
-            <button
-              onClick={handlePushPopupAccept}
-              className="w-full py-3 rounded-xl font-bold text-white text-lg"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-            >
-              אשר התראות
-            </button>
-            <button
-              onClick={handlePushPopupDecline}
-              className="w-full py-3 rounded-xl font-medium text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              אולי אחר כך
-            </button>
-          </div>
-
-          {/* Note */}
-          <p className="text-xs text-gray-400 text-center mt-4">
-            תוכל לבטל בכל רגע דרך ההגדרות
-          </p>
-        </div>
-      </div>
-    );
   }
 
   return (
