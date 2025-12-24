@@ -156,6 +156,8 @@ export default function NotificationsManagerClient() {
   const [quickScheduleDate, setQuickScheduleDate] = useState('');
   const [quickScheduleTime, setQuickScheduleTime] = useState('');
   const [schedulingQuick, setSchedulingQuick] = useState(false);
+  const [sendingTest, setSendingTest] = useState(false);
+  const [testResult, setTestResult] = useState(null);
 
   const templateMap = useMemo(() => {
     const map = new Map();
@@ -368,6 +370,34 @@ export default function NotificationsManagerClient() {
       setSchedulingQuick(false);
     }
   }, [selectedTemplate, selectedTemplateData, quickScheduleDate, quickScheduleTime, loadData]);
+
+  const handleSendTestNotification = useCallback(async () => {
+    if (!selectedTemplate || !selectedTemplateData) return;
+    setSendingTest(true);
+    setTestResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/notifications/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateType: selectedTemplate,
+          title: selectedTemplateData.title,
+          body: selectedTemplateData.body,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || 'failed_to_send_test');
+      }
+      setTestResult({ success: true, message: `התראת בדיקה נשלחה בהצלחה ל-${data.sentTo}` });
+    } catch (err) {
+      console.error('test_notification_error', err);
+      setTestResult({ success: false, message: err.message || 'שגיאה בשליחת התראת בדיקה' });
+    } finally {
+      setSendingTest(false);
+    }
+  }, [selectedTemplate, selectedTemplateData]);
 
   const availableTemplates = templates;
 
@@ -755,6 +785,48 @@ export default function NotificationsManagerClient() {
                         </div>
                       </div>
                       <p className="mt-2 sm:mt-3 text-[10px] sm:text-xs text-center text-gray-500">התצוגה בפועל עשויה להשתנות בהתאם למכשיר</p>
+                      
+                      {/* Test Notification Button */}
+                      <div className="mt-4 sm:mt-6 pt-4 border-t border-purple-200">
+                        <button
+                          type="button"
+                          onClick={handleSendTestNotification}
+                          disabled={sendingTest}
+                          className={classNames(
+                            'w-full rounded-xl px-4 py-3 text-sm font-semibold transition-all flex items-center justify-center gap-2',
+                            sendingTest
+                              ? 'bg-gray-300 text-gray-500 cursor-wait'
+                              : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:scale-[1.02]',
+                          )}
+                        >
+                          {sendingTest ? (
+                            <>
+                              <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                              </svg>
+                              שולח התראת בדיקה...
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                              </svg>
+                              שלח התראת בדיקה
+                            </>
+                          )}
+                        </button>
+                        {testResult && (
+                          <div className={classNames(
+                            'mt-3 p-3 rounded-lg text-sm text-center',
+                            testResult.success
+                              ? 'bg-green-100 text-green-700 border border-green-200'
+                              : 'bg-red-100 text-red-700 border border-red-200'
+                          )}>
+                            {testResult.message}
+                          </div>
+                        )}
+                        <p className="mt-2 text-[10px] text-center text-purple-600">ההתראה תישלח למכשיר שלך לבדיקה</p>
+                      </div>
                     </div>
                   </div>
                 )}
