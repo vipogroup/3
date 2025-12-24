@@ -54,10 +54,18 @@ export default function LoginPage() {
       if (permission === 'granted') {
         // Subscribe to push notifications
         if ('serviceWorker' in navigator) {
+          // Get VAPID public key from API
+          const configRes = await fetch('/api/push/config');
+          const configData = await configRes.json();
+          if (!configData?.configured || !configData?.publicKey) {
+            console.error('Push config not available');
+            return false;
+          }
+
           const registration = await navigator.serviceWorker.ready;
           const subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
+            applicationServerKey: configData.publicKey,
           });
 
           // Send subscription to server
