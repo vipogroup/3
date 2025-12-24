@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { requireAuthApi } from '@/lib/auth/server';
-import { findSubscriptionsByUserIds, getAllSubscriptions } from '@/lib/pushSubscriptions';
+import { findSubscriptionsByUserIds, getAllSubscriptions, removePushSubscription } from '@/lib/pushSubscriptions';
 import { sendPushNotification, getWebPushConfig } from '@/lib/webPush';
 
 // POST - שליחת התראת בדיקה למשתמש המחובר
@@ -95,8 +95,16 @@ export async function POST(request) {
         results.push({ ok: true, endpoint: sub.endpoint?.slice(0, 30) });
         console.log('SEND_TEST: SUCCESS');
       } catch (err) {
-        console.error('SEND_TEST: FAILED', err?.message, err?.statusCode || err?.status);
-        results.push({ ok: false, error: err?.message, statusCode: err?.statusCode || err?.status, endpoint: sub.endpoint?.slice(0, 30) });
+        const statusCode = err?.statusCode || err?.status;
+        console.error('SEND_TEST: FAILED', err?.message, statusCode);
+        
+        // מחיקת subscriptions פגות (403 = VAPID mismatch, 410 = Gone)
+        if (statusCode === 403 || statusCode === 410) {
+          console.log('SEND_TEST: Removing invalid subscription:', sub.endpoint?.slice(0, 50));
+          await removePushSubscription(sub.endpoint).catch(() => {});
+        }
+        
+        results.push({ ok: false, error: err?.message, statusCode, endpoint: sub.endpoint?.slice(0, 30) });
       }
     }
 
