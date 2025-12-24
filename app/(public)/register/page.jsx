@@ -8,6 +8,7 @@ import {
   markConsentDeclined,
   PUSH_CONSENT_VERSION,
 } from '@/app/lib/pushConsent';
+import { subscribeToPush } from '@/app/lib/pushClient';
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
@@ -31,7 +32,7 @@ export default function RegisterPage() {
     }
   }, []);
 
-  // Request push permission
+  // Request push permission using the existing pushClient
   async function requestPushPermission() {
     if (!('Notification' in window)) {
       console.log('Browser does not support notifications');
@@ -39,42 +40,26 @@ export default function RegisterPage() {
     }
 
     try {
-      const permission = await Notification.requestPermission();
-      setPushPermissionStatus(permission);
-      
-      if (permission === 'granted') {
-        // Subscribe to push notifications
-        if ('serviceWorker' in navigator) {
-          // Get VAPID public key from API
-          const configRes = await fetch('/api/push/config');
-          const configData = await configRes.json();
-          if (!configData?.configured || !configData?.publicKey) {
-            console.error('Push config not available');
-            return false;
-          }
+      const result = await subscribeToPush({
+        tags: [registeredRole || 'customer'],
+        consentAt: new Date().toISOString(),
+        consentVersion: PUSH_CONSENT_VERSION,
+        consentMeta: { source: 'register', role: registeredRole },
+      });
 
-          const registration = await navigator.serviceWorker.ready;
-          const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: configData.publicKey,
-          });
-
-          // Send subscription to server
-          await fetch('/api/push/subscribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              subscription,
-              role: registeredRole,
-              tags: [registeredRole],
-            }),
-          });
-        }
+      if (result?.ok) {
+        setPushPermissionStatus('granted');
+        markConsentAccepted({
+          role: registeredRole,
+          version: PUSH_CONSENT_VERSION,
+          meta: { source: 'register', consentAt: new Date().toISOString() },
+        });
         return true;
       }
       return false;
     } catch (err) {
       console.error('Push permission error:', err);
+      setPushPermissionStatus(err?.message || 'error');
       return false;
     }
   }
