@@ -646,10 +646,10 @@ function CheckoutClient() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           <form
             onSubmit={handleSubmit}
-            className="bg-white rounded-xl p-4 sm:p-6 lg:col-span-2 space-y-6 order-2 lg:order-1"
+            className="bg-white rounded-xl p-3 sm:p-4 lg:p-6 lg:col-span-2 space-y-4 sm:space-y-6 order-2 lg:order-1"
             style={{
               border: '2px solid transparent',
               backgroundImage:
@@ -1297,19 +1297,19 @@ function CheckoutClient() {
                   </button>
                 </div>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value)}
                     placeholder="הזן קוד קופון"
-                    className="flex-1 px-4 py-2 border-2 rounded-xl focus:outline-none focus:border-cyan-500 border-gray-300"
+                    className="flex-1 px-4 py-2 border-2 rounded-xl focus:outline-none focus:border-cyan-500 border-gray-300 min-w-0"
                   />
                   <button
                     type="button"
                     onClick={() => handleApplyCoupon()}
                     disabled={applyingCoupon || !couponInput.trim()}
-                    className="px-4 py-2 rounded-xl font-semibold text-white transition"
+                    className="px-4 py-2 rounded-xl font-semibold text-white transition whitespace-nowrap flex-shrink-0"
                     style={{
                       background: applyingCoupon || !couponInput.trim() ? '#d1d5db' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
                       cursor: applyingCoupon || !couponInput.trim() ? 'not-allowed' : 'pointer',
@@ -1340,7 +1340,7 @@ function CheckoutClient() {
                 <span className="font-semibold text-green-600">חינם</span>
               </div>
               <div className="flex justify-between text-lg font-bold text-gray-900 border-t pt-3">
-                <span>סה"כ לתשלום</span>
+                <span>סה&quot;כ לתשלום</span>
                 <span>₪{grandTotal.toLocaleString('he-IL')}</span>
               </div>
             </div>
