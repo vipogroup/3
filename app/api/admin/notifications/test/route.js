@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { getNotificationTemplate } from '@/lib/notifications/templates';
-import { pushToUsers } from '@/lib/pushSender';
+import { findSubscriptionsByUserIds } from '@/lib/pushSubscriptions';
+import { sendPushNotification, getWebPushConfig } from '@/lib/webPush';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,15 @@ export async function POST(req) {
     const rateLimit = rateLimiters.admin(req, identifier);
     if (!rateLimit.allowed) {
       return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 });
+    }
+
+    // Check VAPID config
+    const config = getWebPushConfig();
+    if (!config.configured) {
+      return NextResponse.json({ 
+        ok: false, 
+        error: 'VAPID keys not configured' 
+      }, { status: 400 });
     }
 
     const body = await req.json();
@@ -28,27 +38,65 @@ export async function POST(req) {
       return NextResponse.json({ ok: false, error: 'template_not_found' }, { status: 404 });
     }
 
+    // Find subscriptions for this admin user
+    const subs = await findSubscriptionsByUserIds([admin.id]);
+    console.log('TEST_NOTIFICATION: Found subscriptions for admin', admin.id, ':', subs?.length || 0);
+    
+    if (!subs.length) {
+      return NextResponse.json({ 
+        ok: false, 
+        error: 'לא נמצאו מכשירים רשומים להתראות',
+        hint: 'לחץ על "אפשר התראות דחיפה" בתפריט החשבון שלי'
+      }, { status: 404 });
+    }
+
     const payload = {
-      title: title || template.title || 'התראת בדיקה',
+      title: title || template.title || '🔔 התראת בדיקה',
       body: messageBody || template.body || 'זוהי התראת בדיקה מדף ניהול ההתראות',
+      icon: '/icons/192.png',
+      badge: '/icons/badge.png',
+      tag: 'test-template-' + Date.now(),
       data: {
         templateType: template.type,
         isTest: true,
+        url: '/admin/notifications',
+        timestamp: Date.now(),
       },
     };
 
-    const result = await pushToUsers([admin.id], payload);
+    const results = [];
+    for (const sub of subs) {
+      try {
+        console.log('TEST_NOTIFICATION: Sending to endpoint', sub.endpoint?.slice(0, 50));
+        await sendPushNotification(
+          { endpoint: sub.endpoint, keys: sub.keys },
+          payload
+        );
+        results.push({ ok: true, endpoint: sub.endpoint?.slice(0, 30) });
+        console.log('TEST_NOTIFICATION: SUCCESS');
+      } catch (err) {
+        console.error('TEST_NOTIFICATION: FAILED', err?.message);
+        results.push({ ok: false, error: err?.message, endpoint: sub.endpoint?.slice(0, 30) });
+      }
+    }
+
+    const successCount = results.filter(r => r.ok).length;
+    const failCount = results.filter(r => !r.ok).length;
 
     return NextResponse.json({
-      ok: true,
-      message: 'test_notification_sent',
+      ok: successCount > 0,
+      sent: successCount,
+      failed: failCount,
+      results,
       sentTo: admin.email,
-      deliveryCount: result?.length || 0,
+      message: successCount > 0 
+        ? `נשלחו ${successCount} התראות בהצלחה!` 
+        : 'לא הצלחנו לשלוח התראות',
     });
   } catch (error) {
     console.error('Test notification error:', error);
     const status = error?.status || 500;
-    const message = status === 401 ? 'unauthorized' : status === 403 ? 'forbidden' : 'server_error';
+    const message = status === 401 ? 'unauthorized' : status === 403 ? 'forbidden' : error?.message || 'server_error';
     return NextResponse.json({ ok: false, error: message }, { status });
   }
 }

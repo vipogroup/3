@@ -388,9 +388,10 @@ export default function NotificationsManagerClient() {
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        throw new Error(data.error || 'failed_to_send_test');
+        const errorMsg = data.hint ? `${data.error}\n${data.hint}` : data.error;
+        throw new Error(errorMsg || 'failed_to_send_test');
       }
-      setTestResult({ success: true, message: `התראת בדיקה נשלחה בהצלחה ל-${data.sentTo}` });
+      setTestResult({ success: true, message: data.message || `נשלחו ${data.sent} התראות בהצלחה!` });
     } catch (err) {
       console.error('test_notification_error', err);
       setTestResult({ success: false, message: err.message || 'שגיאה בשליחת התראת בדיקה' });
