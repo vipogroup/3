@@ -416,66 +416,91 @@ export default function NotificationsManagerClient() {
             {tab === 'templates' && selectedTemplateData && (
               <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
                 <div className="grid gap-6 lg:grid-cols-[280px,1fr]">
-                  <aside className="space-y-3 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                    <h2 className="text-sm font-semibold text-gray-700">תבניות קיימות</h2>
-                    <div className="max-h-[420px] space-y-2 overflow-y-auto pr-2">
+                  <aside className="space-y-4 overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                    <div className="flex items-center gap-2 border-b border-gray-200 pb-3">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      <h2 className="text-base font-bold text-gray-900">תבניות התראה</h2>
+                    </div>
+                    <div className="max-h-[500px] space-y-2 overflow-y-auto pr-1">
                       {availableTemplates.map((tpl) => (
                         <button
                           key={tpl.type}
                           type="button"
                           onClick={() => handleTemplateSelect(tpl.type)}
                           className={classNames(
-                            'w-full rounded-xl px-3 py-3 text-left transition-all border border-transparent',
+                            'w-full rounded-lg px-4 py-3 text-right transition-all',
                             tpl.type === selectedTemplate
-                              ? 'bg-blue-600 text-white shadow-lg'
-                              : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200',
+                              ? 'bg-gradient-to-l from-blue-600 to-blue-500 text-white shadow-md border-2 border-blue-600'
+                              : 'bg-gray-50 text-gray-800 hover:bg-gray-100 border border-gray-200 hover:border-blue-300',
                           )}
                         >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <svg className="w-4 h-4 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
-                              <span className="text-sm font-semibold capitalize">{tpl.type}</span>
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <span className="text-base font-bold">{tpl.type}</span>
+                              </div>
+                              {tpl.description && (
+                                <p className={classNames(
+                                  "text-xs leading-relaxed line-clamp-2",
+                                  tpl.type === selectedTemplate ? "text-blue-100" : "text-gray-600"
+                                )}>{tpl.description}</p>
+                              )}
                             </div>
                             <TemplateBadge template={tpl} />
                           </div>
-                          {tpl.description && (
-                            <p className="mt-1 line-clamp-2 text-xs text-gray-500">{tpl.description}</p>
-                          )}
                         </button>
                       ))}
                     </div>
                   </aside>
 
                   <div className="space-y-6">
-                    <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6 shadow-inner">
+                    <div className="rounded-2xl border-2 border-gray-200 bg-white p-6 shadow-sm">
                       <div className="flex flex-wrap items-start gap-4">
-                        <div className="flex-1 space-y-3">
+                        <div className="flex-1 space-y-5">
                           <div>
-                            <label className="block text-xs uppercase tracking-wide text-gray-600">כותרת</label>
+                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-2">
+                              <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                              </svg>
+                              כותרת ההתראה
+                            </label>
                             <input
                               type="text"
                               value={selectedTemplateData.title || ''}
                               onChange={(e) => handleTemplateFieldChange('title', e.target.value)}
-                              className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs uppercase tracking-wide text-gray-600">תוכן ההודעה</label>
+                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-2">
+                              <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                              </svg>
+                              תוכן ההודעה
+                            </label>
                             <textarea
                               value={selectedTemplateData.body || ''}
                               onChange={(e) => handleTemplateFieldChange('body', e.target.value)}
-                              rows={4}
-                              className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              rows={5}
+                              className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all resize-none"
                             />
                           </div>
                         </div>
-                        <div className="w-full max-w-[220px] space-y-4 rounded-2xl bg-blue-50 border border-blue-200 p-4 text-xs text-gray-700">
-                          <p className="font-semibold text-gray-900">פרטי תבנית</p>
+                        <div className="w-full max-w-[240px] space-y-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 p-5 text-sm">
+                          <div className="flex items-center gap-2 border-b border-blue-200 pb-2">
+                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p className="font-bold text-gray-900">פרטי תבנית</p>
+                          </div>
                           <div>
-                            <p className="text-gray-600">מצב תבנית</p>
-                            <label className="mt-1 flex items-center gap-2 text-sm">
+                            <p className="text-xs font-semibold text-gray-700 mb-2">מצב תבנית</p>
+                            <label className="flex items-center gap-2 text-sm font-medium text-gray-800 cursor-pointer">
                               <input
                                 type="checkbox"
                                 checked={selectedTemplateData.enabled !== false}
@@ -485,11 +510,11 @@ export default function NotificationsManagerClient() {
                             </label>
                           </div>
                           <div className="space-y-1">
-                            <p className="text-gray-600">קהל יעד</p>
+                            <p className="text-xs font-semibold text-gray-700 mb-2">קהל יעד</p>
                             <AudienceChips audience={selectedTemplateData.audience} />
                           </div>
                           <div className="space-y-1">
-                            <p className="text-gray-600">Placeholders</p>
+                            <p className="text-xs font-semibold text-gray-700 mb-2">משתנים</p>
                             <VariablesList variables={selectedTemplateData.variables} />
                           </div>
                         </div>
