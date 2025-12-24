@@ -444,24 +444,37 @@ export default function NotificationsManagerClient() {
                       </div>
 
                       <div className="mt-5 flex flex-wrap justify-between gap-3 border-t border-white/10 pt-4">
-                        <div className="flex flex-wrap items-center gap-3">
-                          <label className="inline-flex items-center gap-2 text-xs text-white/70">
-                            <span>קהל יעד מותאם</span>
-                            <input
-                              type="text"
-                              className="w-40 rounded-lg border border-white/20 bg-transparent px-2 py-1 text-xs text-white focus:border-white focus:outline-none"
-                              placeholder="הפרד בפסיק"
-                              value={(selectedTemplateData.audience || []).join(',')}
-                              onChange={(e) =>
-                                handleTemplateAudienceChange(
-                                  e.target.value
-                                    .split(',')
-                                    .map((item) => item.trim())
-                                    .filter(Boolean),
-                                )
-                              }
-                            />
-                          </label>
+                        <div className="flex flex-wrap items-center gap-4">
+                          <div className="flex items-center gap-2 text-xs text-white/70">
+                            <span>קהל יעד מותאם:</span>
+                            <div className="flex items-center gap-3">
+                              {[
+                                { value: 'customer', label: 'לקוחות' },
+                                { value: 'agent', label: 'סוכנים' },
+                                { value: 'admin', label: 'מנהלים' },
+                              ].map((option) => (
+                                <label
+                                  key={option.value}
+                                  className="inline-flex items-center gap-1.5 cursor-pointer"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={(selectedTemplateData.audience || []).includes(option.value)}
+                                    onChange={(e) => {
+                                      const current = selectedTemplateData.audience || [];
+                                      if (e.target.checked) {
+                                        handleTemplateAudienceChange([...current, option.value]);
+                                      } else {
+                                        handleTemplateAudienceChange(current.filter((v) => v !== option.value));
+                                      }
+                                    }}
+                                    className="w-4 h-4 rounded border-white/30 bg-white/10 text-blue-500 focus:ring-blue-500 focus:ring-offset-0"
+                                  />
+                                  <span className="text-white/80">{option.label}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </div>
                           <label className="inline-flex items-center gap-2 text-xs text-white/70">
                             <span>משתנים דינמיים</span>
                             <input
