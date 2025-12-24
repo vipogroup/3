@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 
 import { verifyJwt } from '@/src/lib/auth/createToken.js';
 import { getDb } from '@/lib/db';
+import { isSuperAdminUser, DEFAULT_ADMIN_PERMISSIONS } from '@/lib/superAdmins';
 
 async function usersCollection() {
   const dbo = await getDb();
@@ -13,11 +14,25 @@ function getToken(req) {
   return req.cookies.get('auth_token')?.value || req.cookies.get('token')?.value || '';
 }
 
-function ensureAdmin(req) {
+async function ensureAdmin(req) {
   const decoded = verifyJwt(getToken(req));
   if (decoded?.role !== 'admin') {
     return null;
   }
+  
+  // Hydrate user from DB to get current role and email
+  const db = await getDb();
+  const usersCol = db.collection('users');
+  const userId = decoded.userId || decoded.sub || decoded.id;
+  const objectId = ObjectId.isValid(userId) ? new ObjectId(userId) : null;
+  
+  if (objectId) {
+    const user = await usersCol.findOne({ _id: objectId }, { projection: { email: 1, role: 1 } });
+    if (user) {
+      return { ...decoded, email: user.email, role: user.role, _id: user._id };
+    }
+  }
+  
   return decoded;
 }
 
@@ -60,7 +75,8 @@ export async function GET(req, { params }) {
 
 export async function PATCH(req, { params }) {
   try {
-    if (!ensureAdmin(req)) {
+    const currentUser = await ensureAdmin(req);
+    if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -78,10 +94,29 @@ export async function PATCH(req, { params }) {
       updates.isActive = Boolean(body.isActive);
     }
     if (body.role) {
-      if (!['admin', 'agent'].includes(body.role)) {
+      if (!['admin', 'agent', 'customer'].includes(body.role)) {
         return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
       }
+      
+      // Only super admins can promote users to admin
+      if (body.role === 'admin' && !isSuperAdminUser(currentUser)) {
+        return NextResponse.json({ error: 'רק מנהלים ראשיים יכולים להעניק הרשאות מנהל' }, { status: 403 });
+      }
+      
       updates.role = body.role;
+      
+      // If promoting to admin, set default permissions
+      if (body.role === 'admin' && existing.role !== 'admin') {
+        updates.permissions = DEFAULT_ADMIN_PERMISSIONS;
+      }
+    }
+    
+    // Handle permissions update (only for admins and only by super admins)
+    if (body.permissions && Array.isArray(body.permissions)) {
+      if (!isSuperAdminUser(currentUser)) {
+        return NextResponse.json({ error: 'רק מנהלים ראשיים יכולים לערוך הרשאות' }, { status: 403 });
+      }
+      updates.permissions = body.permissions;
     }
 
     if (!Object.keys(updates).length) {

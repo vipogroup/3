@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
+import { isSuperAdmin } from '@/lib/superAdmins';
+import AdminPermissionsModal from './AdminPermissionsModal';
 
 export default function UsersList() {
   const [users, setUsers] = useState([]);
@@ -11,13 +13,20 @@ export default function UsersList() {
   const [agents, setAgents] = useState({});
   const [deletingId, setDeletingId] = useState(null);
   const [togglingId, setTogglingId] = useState(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState('');
+  const [isSuperAdminUser, setIsSuperAdminUser] = useState(false);
+  const [permissionsModalUser, setPermissionsModalUser] = useState(null);
 
   const getCurrentUser = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' });
       if (res.ok) {
         const data = await res.json();
-        setCurrentUserId(data.sub);
+        const userId = data.user?._id || data.user?.id || data.sub;
+        const email = data.user?.email || '';
+        setCurrentUserId(userId);
+        setCurrentUserEmail(email);
+        setIsSuperAdminUser(isSuperAdmin(email));
       }
     } catch (err) {
       console.error('Failed to get current user:', err);
@@ -149,6 +158,12 @@ export default function UsersList() {
       setError('לא ניתן לשנות את התפקיד של עצמך');
       return;
     }
+    
+    // Check if promoting to admin and user is not super admin
+    if (newRole === 'admin' && !isSuperAdminUser) {
+      setError('רק מנהלים ראשיים יכולים להעניק הרשאות מנהל');
+      return;
+    }
 
     try {
       setError('');
@@ -163,11 +178,24 @@ export default function UsersList() {
         throw new Error(data.error || 'Failed to update role');
       }
 
-      // Update local state
-      setUsers(users.map((u) => (u._id === userId ? { ...u, role: newRole } : u)));
+      const result = await res.json();
+      // Update local state with full user data from response
+      setUsers(users.map((u) => (u._id === userId ? { ...u, ...result.user } : u)));
     } catch (err) {
       setError(err.message);
     }
+  }
+  
+  function handleOpenPermissionsModal(user) {
+    setPermissionsModalUser(user);
+  }
+  
+  function handleClosePermissionsModal() {
+    setPermissionsModalUser(null);
+  }
+  
+  function handleSavePermissions(updatedUser) {
+    setUsers(users.map((u) => (u._id === updatedUser._id ? { ...u, ...updatedUser } : u)));
   }
 
   if (loading) {
@@ -422,6 +450,27 @@ export default function UsersList() {
                             </option>
                           ))}
                         </select>
+                        {user.role === 'admin' && isSuperAdminUser && !isSuperAdmin(user.email) && (
+                          <button
+                            type="button"
+                            onClick={() => handleOpenPermissionsModal(user)}
+                            className="px-3 py-1 rounded-lg text-xs font-semibold transition"
+                            style={{
+                              background: 'white',
+                              border: '2px solid #0891b2',
+                              color: '#0891b2',
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.currentTarget.style.background =
+                                'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)')
+                            }
+                            onMouseLeave={(e) =>
+                              (e.currentTarget.style.background = 'white')
+                            }
+                          >
+                            הרשאות
+                          </button>
+                        )}
                         {!isCurrentUser && (
                           <button
                             type="button"
@@ -605,8 +654,22 @@ export default function UsersList() {
             <span style={{ color: '#0891b2' }}>•</span>
             <span>שינוי תפקיד מתבצע מיידית</span>
           </li>
+          {isSuperAdminUser && (
+            <li className="flex items-start gap-2">
+              <span style={{ color: '#0891b2' }}>•</span>
+              <span>רק מנהלים ראשיים יכולים להעניק הרשאות מנהל ולנהל הרשאות של מנהלים אחרים</span>
+            </li>
+          )}
         </ul>
       </div>
+
+      {/* Permissions Modal */}
+      <AdminPermissionsModal
+        user={permissionsModalUser}
+        isOpen={!!permissionsModalUser}
+        onClose={handleClosePermissionsModal}
+        onSave={handleSavePermissions}
+      />
     </div>
   );
 }
