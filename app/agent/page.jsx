@@ -348,7 +348,7 @@ async function getAgentStats(agentId, originBaseUrl = null) {
     process.env.NEXTAUTH_URL ||
     'http://localhost:3001';
   const baseUrl = (originBaseUrl || fallbackBase).replace(/\/$/, '');
-  const referralLink = `${baseUrl}/api/join?ref=${encodeURIComponent(referralCode)}`;
+  const referralLink = `${baseUrl}/api/join?ref=${encodeURIComponent(referralCode)}&coupon=${encodeURIComponent(referralCode)}&next=/products`;
 
   return {
     totalReferrals: totalReferralsBase,
@@ -480,58 +480,64 @@ export default async function AgentPage() {
 
             {/* Content */}
             <div className="p-5">
-              {/* Coupon Code Display */}
+              {/* Share Link - Primary */}
               <div className="mb-5">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-500">קוד הקופון</span>
-                  <CopyCouponButton code={stats.referralCode} />
-                </div>
-                {stats.referralCode ? (
+                <div className="flex items-center gap-2 mb-3">
                   <div
-                    className="relative rounded-xl overflow-hidden"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center"
                     style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                   >
-                    <div className="absolute inset-0 opacity-10">
-                      <div className="absolute -right-4 -top-4 w-24 h-24 bg-white rounded-full" />
-                      <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-white rounded-full" />
-                    </div>
-                    <div className="relative text-center py-4 px-3">
-                      <p className="text-2xl md:text-3xl font-bold text-white tracking-widest">
-                        {stats.referralCode.toUpperCase()}
-                      </p>
-                    </div>
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
                   </div>
-                ) : (
-                  <div className="text-center py-4 rounded-xl bg-gray-50 border-2 border-dashed border-gray-200">
-                    <span className="text-gray-400">לא הוגדר</span>
+                  <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>לינק לשיתוף</span>
+                </div>
+                <div
+                  className="relative rounded-xl overflow-hidden p-4"
+                  style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%)', border: '2px solid rgba(8, 145, 178, 0.3)' }}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div
+                      className="flex-1 rounded-lg p-3 text-sm break-all font-mono bg-white"
+                      style={{ border: '1px solid #e2e8f0', color: '#1e3a8a' }}
+                    >
+                      {stats.referralLink || '-'}
+                    </div>
+                    <CopyCouponButton code={stats.referralLink} label="העתק לינק" successMessage="הלינק הועתק!" />
                   </div>
-                )}
-                <p className="text-xs text-gray-500 mt-2 text-center">
-                  שתף את הקוד עם לקוחות וקבל עמלה על כל רכישה
-                </p>
+                  <p className="text-xs text-gray-600 mt-3 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>הלינק כולל את קוד הקופון - הלקוח יראה הנחה אוטומטית!</span>
+                  </p>
+                </div>
               </div>
 
               {/* Divider */}
               <div className="border-t border-gray-100 my-4" />
 
-              {/* Share Link */}
+              {/* Coupon Code Display - Secondary/Smaller */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-500">לינק לשיתוף</span>
-                  <CopyCouponButton code={stats.referralLink} label="העתק" successMessage="הלינק הועתק!" />
+                  <span className="text-xs font-medium text-gray-400">קוד הקופון (לשימוש ידני)</span>
+                  <CopyCouponButton code={stats.referralCode} />
                 </div>
-                <div
-                  className="rounded-xl p-3 text-xs text-gray-600 break-all font-mono"
-                  style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }}
-                >
-                  {stats.referralLink || '-'}
-                </div>
-                <p className="text-[11px] text-gray-400 mt-2 flex items-center gap-1">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  כל קליק דרך הלינק נרשם אוטומטית בדשבורד שלך
-                </p>
+                {stats.referralCode ? (
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="flex-1 text-center py-2 px-3 rounded-lg text-base font-bold tracking-wider"
+                      style={{ backgroundColor: '#f1f5f9', color: '#1e3a8a', border: '1px solid #e2e8f0' }}
+                    >
+                      {stats.referralCode.toUpperCase()}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-2 rounded-lg bg-gray-50 border border-dashed border-gray-200">
+                    <span className="text-gray-400 text-sm">לא הוגדר</span>
+                  </div>
+                )}
               </div>
             </div>
           </section>
