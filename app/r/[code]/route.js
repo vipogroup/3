@@ -1,10 +1,14 @@
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
+import { getDb } from '@/lib/db';
+import { ObjectId } from 'mongodb';
+import { headers } from 'next/headers';
 
 /**
  * Short referral link redirect
  * /r/CODE -> redirects to /products with coupon applied
+ * Also logs the click for agent statistics
  */
 export async function GET(req, context) {
   const params = await context.params;
@@ -12,6 +16,47 @@ export async function GET(req, context) {
   
   if (!code) {
     return NextResponse.redirect(new URL('/products', req.url));
+  }
+
+  // Log the click to referral_logs
+  try {
+    const db = await getDb();
+    const users = db.collection('users');
+    const referralLogs = db.collection('referral_logs');
+
+    // Find agent by ref code - could be couponCode, referralId, or ObjectId
+    let agent = null;
+    agent = await users.findOne({ couponCode: code, role: 'agent' });
+    if (!agent) {
+      agent = await users.findOne({ referralId: code, role: 'agent' });
+    }
+    if (!agent) {
+      try {
+        const objectId = new ObjectId(code);
+        agent = await users.findOne({ _id: objectId, role: 'agent' });
+      } catch {
+        // Not a valid ObjectId
+      }
+    }
+
+    if (agent) {
+      const headersList = headers();
+      const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || 'unknown';
+      const userAgent = headersList.get('user-agent') || 'unknown';
+
+      await referralLogs.insertOne({
+        agentId: agent._id,
+        refCode: code,
+        ip: ip.split(',')[0].trim(),
+        userAgent,
+        url: req.url,
+        action: 'click',
+        createdAt: new Date(),
+      });
+      console.log('Referral click logged for agent:', agent._id);
+    }
+  } catch (err) {
+    console.error('Error logging referral click:', err);
   }
 
   // Use request URL origin for redirect
