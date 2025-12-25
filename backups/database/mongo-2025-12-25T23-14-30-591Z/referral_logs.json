@@ -1,0 +1,50 @@
+[
+  {
+    "_id": {
+      "$oid": "694dae4b016d9163420f2921"
+    },
+    "agentId": {
+      "$oid": "694dadedd95291ad95eb8eca"
+    },
+    "refCode": "mrym-chdsh-svkn-001",
+    "ip": "79.177.148.208",
+    "userAgent": "WhatsApp/2.23.20.0",
+    "url": "https://vipo-group.com/r/mrym-chdsh-svkn-001",
+    "action": "click",
+    "createdAt": {
+      "$date": "2025-12-25T21:36:11.461Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "694db0372b3e24895d72bd27"
+    },
+    "agentId": {
+      "$oid": "694d6f160336573278e6048b"
+    },
+    "refCode": "mrym-chdd-1-001",
+    "ip": "79.177.148.208",
+    "userAgent": "WhatsApp/2.23.20.0",
+    "url": "https://vipo-agents-test.vercel.app/r/mrym-chdd-1-001",
+    "action": "click",
+    "createdAt": {
+      "$date": "2025-12-25T21:44:23.215Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "694db20212a6420d73223363"
+    },
+    "agentId": {
+      "$oid": "694dadedd95291ad95eb8eca"
+    },
+    "refCode": "mrym-chdsh-svkn-001",
+    "ip": "79.177.148.208",
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.2 Mobile/15E148 Safari/604.1",
+    "url": "https://vipo-group.com/r/mrym-chdsh-svkn-001",
+    "action": "click",
+    "createdAt": {
+      "$date": "2025-12-25T21:52:02.287Z"
+    }
+  }
+]

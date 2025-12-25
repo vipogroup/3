@@ -1,0 +1,44 @@
+[
+  {
+    "_id": {
+      "$oid": "694a8e432673bf4efa54061e"
+    },
+    "title": "סרטון הסבר",
+    "type": "video",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766493745/vipo-products/51056b44-d353-45b8-92e5-1ac174923740_ev4lu8.mov",
+    "thumbnailUrl": null,
+    "messageTemplate": "",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:42:43.125Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T12:42:43.125Z"
+    },
+    "tags": []
+  },
+  {
+    "_id": {
+      "$oid": "694dc48db2f75a7d2b5715a5"
+    },
+    "title": "תן לי חצי דקה",
+    "type": "video",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766704155/vipo-products/1000647709_pi13k9.mp4",
+    "thumbnailUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766704258/vipo-products/1000647710_djbqxb.jpg",
+    "messageTemplate": "הסבר למה כדאי להיות סוכן בלי לצאת מהבית ",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-25T23:11:09.939Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T23:11:09.939Z"
+    },
+    "tags": []
+  }
+]
