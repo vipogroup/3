@@ -22,8 +22,8 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    // Get ALL subscriptions for debugging
-    const allSubs = await getAllSubscriptions();
+    // Get ALL subscriptions for debugging (including revoked)
+    const allSubs = await getAllSubscriptions(true);
     console.log('SEND_TEST: Total subscriptions in DB:', allSubs?.length || 0);
     
     // Log all subscriptions for debugging
@@ -53,19 +53,32 @@ export async function POST(request) {
     }
     
     if (!subs.length) {
+      // Check if user has any subscription (even revoked)
+      const userSubsIncludingRevoked = allSubs.filter(s => 
+        String(s.userId) === String(user.id) || 
+        (s.userObjectId && String(s.userObjectId) === String(user.id))
+      );
+      
       // Return debug info
-      const debugInfo = allSubs.map(s => ({
-        userId: s.userId,
+      const debugInfo = allSubs.slice(0, 10).map(s => ({
+        oderId: s.userId,
         endpointPrefix: s.endpoint?.slice(0, 40),
         revokedAt: s.revokedAt ? 'YES' : 'NO',
-        tags: s.tags
+        tags: s.tags,
+        role: s.role
       }));
+      
+      let hint = 'לחץ על "אפשר התראות דחיפה" בתפריט החשבון שלי';
+      if (userSubsIncludingRevoked.length > 0) {
+        hint = 'נמצאו מנויים מבוטלים. לחץ על "אפשר התראות דחיפה" להפעלה מחדש';
+      }
       
       return NextResponse.json({ 
         ok: false, 
-        error: `לא נמצאו התקנים רשומים למשתמש ${user.id}`,
-        hint: 'לחץ על "התראות מופעלות" לכיבוי, ואז שוב על "אפשר התראות דחיפה" להפעלה',
+        error: `לא נמצאו התקנים רשומים למשתמש`,
+        hint,
         totalSubsInDb: allSubs.length,
+        userSubsFound: userSubsIncludingRevoked.length,
         debug: debugInfo
       }, { status: 404 });
     }
@@ -96,7 +109,15 @@ export async function POST(request) {
         console.log('SEND_TEST: SUCCESS');
       } catch (err) {
         const statusCode = err?.statusCode || err?.status;
-        console.error('SEND_TEST: FAILED', err?.message, statusCode);
+        const errorBody = err?.body || err?.response?.body || '';
+        const errorHeaders = err?.headers || err?.response?.headers || {};
+        console.error('SEND_TEST: FAILED', {
+          message: err?.message,
+          statusCode,
+          body: errorBody,
+          endpoint: sub.endpoint?.slice(0, 80),
+          isApple: sub.endpoint?.includes('apple'),
+        });
         
         // מחיקת subscriptions פגות (403 = VAPID mismatch, 410 = Gone)
         if (statusCode === 403 || statusCode === 410) {
@@ -104,7 +125,7 @@ export async function POST(request) {
           await removePushSubscription(sub.endpoint).catch(() => {});
         }
         
-        results.push({ ok: false, error: err?.message, statusCode, endpoint: sub.endpoint?.slice(0, 30) });
+        results.push({ ok: false, error: err?.message, statusCode, body: errorBody, endpoint: sub.endpoint?.slice(0, 30) });
       }
     }
 
