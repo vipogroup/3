@@ -83,9 +83,20 @@ export async function POST(request) {
       }, { status: 404 });
     }
 
+    // Check if custom title/body were sent in request
+    let customTitle = null;
+    let customBody = null;
+    try {
+      const body = await request.json();
+      customTitle = body?.title;
+      customBody = body?.body;
+    } catch {
+      // No body sent, use defaults
+    }
+
     const payload = {
-      title: '🔔 התראת בדיקה',
-      body: 'זוהי התראת בדיקה מ-VIPO - התראות עובדות!',
+      title: customTitle || '🔔 התראת בדיקה',
+      body: customBody || 'זוהי התראת בדיקה מ-VIPO - התראות עובדות!',
       icon: '/icons/192.png',
       badge: '/icons/badge.png',
       tag: 'test-notification-' + Date.now(),

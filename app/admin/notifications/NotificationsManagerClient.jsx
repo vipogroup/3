@@ -378,9 +378,22 @@ export default function NotificationsManagerClient() {
     setTestResult(null);
     setError('');
     try {
+      // Get title and body from preview (with overrides if set)
+      const titleOverride = scheduleForm.payloadOverrides?.titleOverride;
+      const bodyAppend = scheduleForm.payloadOverrides?.bodyAppend;
+      const finalTitle = titleOverride || selectedTemplateData?.title;
+      const finalBody = bodyAppend
+        ? `${selectedTemplateData?.body || ''}\n\n${bodyAppend}`
+        : selectedTemplateData?.body;
+
       const res = await fetch('/api/push/send-test', {
         method: 'POST',
         credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: finalTitle,
+          body: finalBody,
+        }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
@@ -394,7 +407,7 @@ export default function NotificationsManagerClient() {
     } finally {
       setSendingTest(false);
     }
-  }, []);
+  }, [selectedTemplateData, scheduleForm.payloadOverrides]);
 
   const handleSendLiveNotification = useCallback(async () => {
     if (!selectedTemplateData) return;
