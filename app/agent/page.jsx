@@ -6,6 +6,7 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import CopyCouponButton from './components/CopyCouponButton';
 import KPICard from './components/KPICard';
+import ShareButton from './components/ShareButton';
 
 const TrophyIcon = ({ className = 'w-10 h-10' }) => (
   <svg
@@ -342,13 +343,9 @@ async function getAgentStats(agentId, originBaseUrl = null) {
   const { level, nextLevelXp } = calcLevel(xp);
 
   const referralCode = agentDoc?.referralId || agentDoc?.couponCode || agentObjectId.toString();
-  const fallbackBase =
-    process.env.PUBLIC_URL ||
-    process.env.NEXT_PUBLIC_HOME_URL ||
-    process.env.NEXTAUTH_URL ||
-    'http://localhost:3001';
-  const baseUrl = (originBaseUrl || fallbackBase).replace(/\/$/, '');
-  const referralLink = `${baseUrl}/api/join?ref=${encodeURIComponent(referralCode)}&coupon=${encodeURIComponent(referralCode)}&next=/products`;
+  // Short link format: /r/CODE
+  const baseUrl = (originBaseUrl || 'https://vipo-group.com').replace(/\/$/, '');
+  const referralLink = `${baseUrl}/r/${encodeURIComponent(referralCode)}`;
 
   return {
     totalReferrals: totalReferralsBase,
@@ -497,16 +494,17 @@ export default async function AgentPage() {
                   className="relative rounded-xl overflow-hidden p-4"
                   style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%)', border: '2px solid rgba(8, 145, 178, 0.3)' }}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <div
-                      className="flex-1 rounded-lg p-3 text-sm break-all font-mono bg-white"
-                      style={{ border: '1px solid #e2e8f0', color: '#1e3a8a' }}
-                    >
-                      {stats.referralLink || '-'}
-                    </div>
-                    <CopyCouponButton code={stats.referralLink} label="העתק לינק" successMessage="הלינק הועתק!" />
+                  <div
+                    className="rounded-lg p-3 text-sm font-mono bg-white mb-3 text-center"
+                    style={{ border: '1px solid #e2e8f0', color: '#1e3a8a' }}
+                  >
+                    {stats.referralLink || '-'}
                   </div>
-                  <p className="text-xs text-gray-600 mt-3 flex items-center gap-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <CopyCouponButton code={stats.referralLink} label="העתק" successMessage="הלינק הועתק!" />
+                    <ShareButton link={stats.referralLink} />
+                  </div>
+                  <p className="text-xs text-gray-600 mt-3 flex items-center justify-center gap-2">
                     <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
