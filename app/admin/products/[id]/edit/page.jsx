@@ -10,7 +10,7 @@ import {
   saveProductCategories,
   DEFAULT_PRODUCT_CATEGORIES,
 } from '@/app/lib/productCategories';
-import ImageUpload from '@/app/components/ImageUpload';
+import MultiMediaUpload from '@/app/components/MultiMediaUpload';
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function EditProductPage() {
     price: '',
     originalPrice: '',
     category: '',
-    image: '',
+    images: [],
     videoUrl: '',
     inStock: true,
     stockCount: '',
@@ -124,7 +124,9 @@ export default function EditProductPage() {
           price: loadedProduct.price?.toString() || '',
           originalPrice: loadedProduct.originalPrice?.toString() || '',
           category: loadedProduct.category || '',
-          image: loadedProduct.image || loadedProduct.imageUrl || '',
+          images: Array.isArray(loadedProduct.images) && loadedProduct.images.length 
+            ? loadedProduct.images 
+            : (loadedProduct.image || loadedProduct.imageUrl ? [loadedProduct.image || loadedProduct.imageUrl] : []),
           videoUrl: loadedProduct.videoUrl || '',
           inStock: loadedProduct.inStock !== undefined ? loadedProduct.inStock : true,
           stockCount: loadedProduct.stockCount?.toString() || '',
@@ -254,9 +256,9 @@ export default function EditProductPage() {
         originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
         category:
           formData.category?.trim() || (formData.purchaseType === 'group' ? 'רכישה קבוצתית' : ''),
-        image: formData.image,
-        imageUrl: formData.image,
-        images: formData.image ? [formData.image] : [],
+        image: formData.images[0] || '',
+        imageUrl: formData.images[0] || '',
+        images: formData.images,
         videoUrl: formData.videoUrl || '',
         inStock: formData.inStock,
         stockCount: parseInt(formData.stockCount) || 0,
@@ -573,16 +575,19 @@ export default function EditProductPage() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <ImageUpload
-                    value={formData.image}
-                    onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
-                    label="תמונת מוצר *"
+                  <MultiMediaUpload
+                    images={formData.images}
+                    videoUrl={formData.videoUrl}
+                    onImagesChange={(urls) => setFormData((prev) => ({ ...prev, images: urls }))}
+                    onVideoChange={(url) => setFormData((prev) => ({ ...prev, videoUrl: url }))}
+                    maxImages={5}
+                    label="תמונות וסרטון למוצר *"
                   />
                 </div>
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-bold text-gray-900 mb-2">
-                    קישור לסרטון YouTube (אופציונלי)
+                    קישור לסרטון YouTube (אופציונלי - במקום העלאה)
                   </label>
                   <input
                     type="url"

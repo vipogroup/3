@@ -9,7 +9,7 @@ import {
   saveProductCategories,
   DEFAULT_PRODUCT_CATEGORIES,
 } from '@/app/lib/productCategories';
-import ImageUpload from '@/app/components/ImageUpload';
+import MultiMediaUpload from '@/app/components/MultiMediaUpload';
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -23,8 +23,8 @@ export default function NewProductPage() {
     price: '',
     originalPrice: '',
     category: '',
-    image: '',
-    videoUrl: '', // YouTube embed URL
+    images: [], // Multiple images array
+    videoUrl: '', // Video URL (uploaded or YouTube)
     inStock: true,
     stockCount: '',
     rating: '4.5',
@@ -197,9 +197,9 @@ export default function NewProductPage() {
         price: priceValue,
         originalPrice: originalPriceValue,
         category: normalizedCategory,
-        image: formData.image,
-        imageUrl: formData.image,
-        images: formData.image ? [formData.image] : [],
+        image: formData.images[0] || '',
+        imageUrl: formData.images[0] || '',
+        images: formData.images,
         videoUrl: formData.videoUrl || '',
         inStock: formData.inStock,
         stockCount: stockCountValue,
@@ -497,16 +497,19 @@ export default function NewProductPage() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <ImageUpload
-                    value={formData.image}
-                    onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
-                    label="תמונת מוצר *"
+                  <MultiMediaUpload
+                    images={formData.images}
+                    videoUrl={formData.videoUrl}
+                    onImagesChange={(urls) => setFormData((prev) => ({ ...prev, images: urls }))}
+                    onVideoChange={(url) => setFormData((prev) => ({ ...prev, videoUrl: url }))}
+                    maxImages={5}
+                    label="תמונות וסרטון למוצר *"
                   />
                 </div>
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-bold text-gray-900 mb-2">
-                    קישור לסרטון YouTube (אופציונלי)
+                    קישור לסרטון YouTube (אופציונלי - במקום העלאה)
                   </label>
                   <input
                     type="url"
