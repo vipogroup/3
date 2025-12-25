@@ -164,7 +164,24 @@ export default function AgentDashboardPage() {
 
   return (
     <MainLayout>
-      <h1 className="text-2xl font-bold mb-6">הביצועים שלי</h1>
+      {/* Header */}
+      <div className="mb-6">
+        <h1
+          className="text-2xl font-bold"
+          style={{
+            background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          הביצועים שלי
+        </h1>
+        <div
+          className="h-1 w-24 rounded-full mt-2"
+          style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+        />
+      </div>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
@@ -178,104 +195,100 @@ export default function AgentDashboardPage() {
         </div>
       ) : (
         <>
-          {/* Aggregated agent stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <KpiCard
-              title="יתרת עמלות זמינה"
-              value={formatCurrencyILS(agentStats?.stats?.commissionBalance || 0)}
-              subtitle="מעודכן מכל הזמנה עם קוד הקופון שלך"
-            />
-            <KpiCard
-              title="שווי הזמנות מצטבר"
-              value={formatCurrencyILS(agentStats?.stats?.totalOrderValue || 0)}
-              subtitle="סכום כל ההזמנות שיוחסו אליך"
-            />
-            <KpiCard
-              title={'סה"כ הזמנות'}
-              value={agentStats?.stats?.totalSales || 0}
-              subtitle="כולל כל ההזמנות שהושלמו עם הקוד שלך"
-            />
+          {/* Stats Grid - Compact 2x2 on mobile */}
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="bg-white rounded-xl p-4 shadow-sm border" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
+              <p className="text-xs text-gray-500">יתרת עמלות</p>
+              <p className="text-xl font-bold" style={{ color: '#1e3a8a' }}>{formatCurrencyILS(agentStats?.stats?.commissionBalance || 0)}</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm border" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
+              <p className="text-xs text-gray-500">שווי הזמנות</p>
+              <p className="text-xl font-bold" style={{ color: '#1e3a8a' }}>{formatCurrencyILS(agentStats?.stats?.totalOrderValue || 0)}</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm border" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
+              <p className="text-xs text-gray-500">סה״כ הזמנות</p>
+              <p className="text-xl font-bold" style={{ color: '#1e3a8a' }}>{agentStats?.stats?.totalSales || 0}</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm border" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
+              <p className="text-xs text-gray-500">עמלות החודש</p>
+              <p className="text-xl font-bold" style={{ color: '#0891b2' }}>{formatCurrencyILS(monthlyStats.totalCommission)}</p>
+            </div>
           </div>
 
-          {/* Coupon */}
-          <div className="bg-white rounded-lg shadow mb-6 p-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          {/* Coupon & Link - Compact */}
+          <div
+            className="rounded-xl p-4 mb-4"
+            style={{
+              border: '2px solid transparent',
+              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            {/* Coupon Code */}
+            <div className="flex items-center justify-between gap-3 mb-3">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">קוד הקופון שלך</h2>
-                <p className="text-sm text-gray-600">
-                  שתף את הקוד כדי להעניק ללקוחות {coupon?.discountPercent ?? 0}% הנחה ולקבל עמלה של{' '}
-                  {coupon?.commissionPercent ?? 0}%.
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                <code className="bg-gray-100 px-4 py-2 rounded-lg font-mono text-lg tracking-widest">
+                <p className="text-xs text-gray-500">קוד קופון</p>
+                <code className="text-lg font-bold tracking-wider" style={{ color: '#1e3a8a' }}>
                   {(coupon?.code || '---').toUpperCase()}
                 </code>
-                <button
-                  onClick={copyCouponCode}
-                  disabled={!coupon?.code}
-                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition"
-                >
-                  {copyStatus === 'copied' ? '✓ הועתק' : 'העתק קוד'}
-                </button>
+              </div>
+              <div className="flex gap-2">
+                <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">
+                  {coupon?.discountPercent ?? 0}% הנחה
+                </span>
+                <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700">
+                  {coupon?.commissionPercent ?? 0}% עמלה
+                </span>
               </div>
             </div>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-700">
-              <div className="p-3 bg-gray-50 rounded-lg border">
-                <p className="font-semibold text-purple-600">הנחה ללקוח</p>
-                <p>{coupon?.discountPercent ?? 0}%</p>
+            <button
+              onClick={copyCouponCode}
+              disabled={!coupon?.code}
+              className="w-full py-2 text-white rounded-lg text-sm font-medium mb-3 disabled:bg-gray-400"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              {copyStatus === 'copied' ? '✓ הקוד הועתק' : 'העתק קוד'}
+            </button>
+
+            {/* Share Link */}
+            <div className="border-t pt-3">
+              <p className="text-xs text-gray-500 mb-2">לינק לשיתוף (כולל קופון)</p>
+              <div className="bg-gray-50 rounded-lg px-3 py-2 text-xs break-all text-gray-600 mb-2">
+                {agentStats?.referral?.link || '-'}
               </div>
-              <div className="p-3 bg-gray-50 rounded-lg border">
-                <p className="font-semibold text-purple-600">עמלה עבורך</p>
-                <p>{coupon?.commissionPercent ?? 0}%</p>
-              </div>
-              <div className="p-3 bg-gray-50 rounded-lg border">
-                <p className="font-semibold text-purple-600">סטטוס</p>
-                <p>{coupon?.status === 'active' ? 'פעיל' : 'לא פעיל'}</p>
-              </div>
+              <button
+                onClick={copyReferralLink}
+                disabled={!agentStats?.referral?.link}
+                className="w-full py-2 text-white rounded-lg text-sm font-medium disabled:bg-gray-400"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                {refLinkCopyStatus === 'copied' ? '✓ הלינק הועתק' : 'העתק לינק'}
+              </button>
             </div>
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">לינק לשיתוף</h3>
-              <p className="text-sm text-gray-600 mb-3">
-                שתף את הלינק כדי שמבקרים יזוהו כסוכנים שלך (נרשם בלוג הקליקים).
-              </p>
-              <div className="flex flex-col lg:flex-row lg:items-center gap-3">
-                <div className="flex-1">
-                  <div className="bg-gray-50 border rounded-lg px-4 py-2 text-sm break-all">
-                    {agentStats?.referral?.link || '-'}
+          </div>
+
+          {/* Recent Sales - Compact List */}
+          <div className="bg-white rounded-xl p-4 shadow-sm border" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
+            <p className="text-sm font-semibold mb-3" style={{ color: '#1e3a8a' }}>מכירות אחרונות</p>
+            {sales.length === 0 ? (
+              <p className="text-sm text-gray-500 text-center py-4">אין מכירות עדיין</p>
+            ) : (
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {sales.slice(0, 5).map((sale) => (
+                  <div key={sale._id} className="flex items-center justify-between text-sm py-2 border-b last:border-0">
+                    <div>
+                      <p className="font-medium">{sale.customerName}</p>
+                      <p className="text-xs text-gray-500">{new Date(sale.createdAt).toLocaleDateString('he-IL')}</p>
+                    </div>
+                    <div className="text-left">
+                      <p className="font-bold" style={{ color: '#1e3a8a' }}>{formatCurrencyILS(sale.salePrice)}</p>
+                      <p className="text-xs text-green-600">+{formatCurrencyILS(sale.commission)}</p>
+                    </div>
                   </div>
-                </div>
-                <button
-                  onClick={copyReferralLink}
-                  disabled={!agentStats?.referral?.link}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition"
-                >
-                  {refLinkCopyStatus === 'copied' ? '✓ הועתק' : 'העתק לינק'}
-                </button>
+                ))}
               </div>
-              <div className="text-xs text-gray-500 mt-2">
-                מזהה הסוכן: {agentStats?.referral?.code?.toUpperCase() || '---'}
-              </div>
-            </div>
-          </div>
-
-          {/* KPIs */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <KpiCard title="מכירות החודש" value={formatCurrencyILS(monthlyStats.totalSales)} />
-            <KpiCard title="עמלות החודש" value={formatCurrencyILS(monthlyStats.totalCommission)} />
-            <KpiCard title="עסקאות החודש" value={monthlyStats.count} />
-          </div>
-
-          {/* Daily Sales Chart */}
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">מגמת מכירות</h2>
-            <AgentChart data={sales} />
-          </div>
-
-          {/* Recent Sales Table */}
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">מכירות אחרונות</h2>
-            <RecentSalesTable rows={sales} />
+            )}
           </div>
         </>
       )}
