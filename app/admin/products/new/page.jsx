@@ -445,36 +445,25 @@ export default function NewProductPage() {
                   )}
                   {categoryOptions.length > 0 && (
                     <div className="space-y-2">
-                      <p className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>
-                        קטגוריות קיימות
+                      <p className="text-sm text-gray-500">
+                        לחץ על קטגוריה לבחירה
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {categoryOptions.map((option) => {
-                          const isLast = categories.length <= 1;
+                          const isSelected = formData.category === option;
                           return (
-                            <div
+                            <button
                               key={option}
-                              className="flex items-center gap-2 px-3 py-2 rounded-lg border-2"
-                              style={{ borderColor: 'rgba(8, 145, 178, 0.2)', background: 'white' }}
+                              type="button"
+                              onClick={() => setFormData(prev => ({ ...prev, category: option }))}
+                              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                                isSelected 
+                                  ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md' 
+                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              }`}
                             >
-                              <span className="text-sm font-medium" style={{ color: '#0f172a' }}>
-                                {option}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() => removeCategory(option)}
-                                disabled={isLast}
-                                className="text-xs font-semibold px-2 py-1 rounded-lg transition-all"
-                                style={{
-                                  background: '#dc2626',
-                                  color: 'white',
-                                  opacity: isLast ? 0.6 : 1,
-                                  cursor: isLast ? 'not-allowed' : 'pointer',
-                                }}
-                              >
-                                מחיקה
-                              </button>
-                            </div>
+                              {option}
+                            </button>
                           );
                         })}
                       </div>
