@@ -210,7 +210,7 @@ export default function AgentMarketingLibrary({
                           <video 
                             src={selectedAsset.mediaUrl} 
                             preload="metadata"
-                            className="w-full h-full object-contain bg-black"
+                            className="w-full h-full object-contain bg-black pointer-events-none"
                             style={{ maxHeight: '100%' }}
                           />
                           {/* Play overlay */}
