@@ -31,6 +31,7 @@ export default function AgentMarketingLibrary({
 }) {
   const [copyStatus, setCopyStatus] = useState(null);
   const [selectedAssetId, setSelectedAssetId] = useState(assets?.[0]?.id || null);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   const selectedAsset = useMemo(() => assets?.find((asset) => asset.id === selectedAssetId) || assets?.[0] || null, [
     assets,
@@ -197,21 +198,33 @@ export default function AgentMarketingLibrary({
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    {/* Video/Image Preview */}
-                    <div className="rounded-xl overflow-hidden bg-black aspect-video mb-3 relative">
+                    {/* Video/Image Preview - Clickable for video */}
+                    <div 
+                      className={`rounded-xl overflow-hidden bg-black aspect-video mb-3 relative ${selectedAsset.type === 'video' ? 'cursor-pointer group' : ''}`}
+                      onClick={() => selectedAsset.type === 'video' && setVideoModalOpen(true)}
+                    >
                       {selectedAsset.type === 'video' ? (
-                        /* eslint-disable-next-line jsx-a11y/media-has-caption */
-                        <video 
-                          src={selectedAsset.mediaUrl} 
-                          controls
-                          controlsList="nodownload"
-                          playsInline
-                          preload="metadata"
-                          className="w-full h-full object-contain bg-black"
-                          style={{ maxHeight: '100%' }}
-                        >
-                          הדפדפן שלך לא תומך בנגן וידאו
-                        </video>
+                        <>
+                          {/* Video thumbnail with poster frame */}
+                          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+                          <video 
+                            src={selectedAsset.mediaUrl} 
+                            preload="metadata"
+                            className="w-full h-full object-contain bg-black"
+                            style={{ maxHeight: '100%' }}
+                          />
+                          {/* Play overlay */}
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-all">
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                              <svg className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 mr-[-4px]" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                              </svg>
+                            </div>
+                          </div>
+                          <p className="absolute bottom-2 left-0 right-0 text-center text-white text-xs sm:text-sm font-medium drop-shadow-lg">
+                            לחץ לצפייה בסרטון
+                          </p>
+                        </>
                       ) : (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img
@@ -221,13 +234,6 @@ export default function AgentMarketingLibrary({
                         />
                       )}
                     </div>
-                    
-                    {/* Video hint */}
-                    {selectedAsset.type === 'video' && (
-                      <p className="text-xs text-gray-500 text-center mb-2">
-                        💡 לחץ על הנגן למעלה כדי לצפות בסרטון לפני ההורדה
-                      </p>
-                    )}
                     
                     {/* Action Buttons */}
                     <div className="flex gap-2">
@@ -401,6 +407,46 @@ export default function AgentMarketingLibrary({
           </section>
         </div>
       </div>
+
+      {/* Video Modal */}
+      {videoModalOpen && selectedAsset?.type === 'video' && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setVideoModalOpen(false)}
+        >
+          <div 
+            className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setVideoModalOpen(false)}
+              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center transition-all"
+            >
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            {/* Video Player */}
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <video
+              src={selectedAsset.mediaUrl}
+              controls
+              autoPlay
+              playsInline
+              className="w-full aspect-video"
+            >
+              הדפדפן שלך לא תומך בנגן וידאו
+            </video>
+            
+            {/* Video title */}
+            <div className="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0">
+              <h3 className="text-white font-semibold text-lg">{selectedAsset.title}</h3>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
