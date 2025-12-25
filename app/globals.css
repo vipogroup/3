@@ -16,12 +16,97 @@
   --danger: #dc2626;
   --card: #ffffff;
   --muted: #6b7280;
+  --border: #e5e7eb;
 
   /* Theme presets defaults */
   --font-family: 'Inter', 'Heebo', sans-serif;
   --line-height: 1.5;
   --letter-spacing: 0.01em;
   --direction: rtl;
+}
+
+/* Dark Mode Variables */
+.dark {
+  --bg: #0f172a;
+  --text: #f1f5f9;
+  --card: #1e293b;
+  --muted: #94a3b8;
+  --border: #334155;
+}
+
+.dark body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* Dark mode specific overrides */
+.dark .bg-white {
+  background-color: var(--card) !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: var(--bg) !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-gray-200 {
+  background-color: #334155 !important;
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-gray-600,
+.dark .text-gray-500 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-gray-400 {
+  color: #64748b !important;
+}
+
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: #334155 !important;
+}
+
+.dark .shadow-md,
+.dark .shadow-lg,
+.dark .shadow-xl {
+  --tw-shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+.dark .product-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+}
+
+.dark .card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748b;
+}
+
+.dark .loading-shimmer {
+  background: linear-gradient(to right, #1e293b 0%, #334155 20%, #1e293b 40%, #1e293b 100%);
 }
 
 * {

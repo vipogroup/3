@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCartContext } from '@/app/context/CartContext';
 import PushNotificationsToggle from '@/app/components/PushNotificationsToggle';
+import DarkModeToggle from '@/app/components/DarkModeToggle';
 import { hasActiveSubscription, subscribeToPush, unsubscribeFromPush, ensureNotificationPermission } from '@/app/lib/pushClient';
 import { getFilteredNavItems } from '@/lib/adminNavigation';
 import { hasPermission } from '@/lib/superAdmins';
@@ -212,6 +213,9 @@ export default function UserHeader() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4 justify-end w-full">
+          {/* Dark Mode Toggle */}
+          <DarkModeToggle />
+
           {/* Install App Button */}
           <button
             onClick={() => {
