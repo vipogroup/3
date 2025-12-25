@@ -7,6 +7,8 @@ import { refreshProductsFromApi } from '@/app/lib/products';
 import {
   loadProductCategories,
   saveProductCategories,
+  deleteCategory,
+  addCategory,
   DEFAULT_PRODUCT_CATEGORIES,
 } from '@/app/lib/productCategories';
 import MultiMediaUpload from '@/app/components/MultiMediaUpload';
@@ -129,20 +131,18 @@ export default function NewProductPage() {
       alert('לא ניתן למחוק את הקטגוריה האחרונה.');
       return;
     }
-    const confirmed = window.confirm(`האם למחוק את הקטגוריה "${name}"?`);
+    const confirmed = window.confirm(`האם למחוק את הקטגוריה "${name}" לצמיתות?`);
     if (!confirmed) {
       return;
     }
 
-    setCategories((prev) => {
-      const updated = prev.filter((cat) => cat !== name);
-      const persisted = persistCategories(updated);
-      setFormData((prevForm) => ({
-        ...prevForm,
-        category: prevForm.category === name ? '' : prevForm.category,
-      }));
-      return persisted;
-    });
+    // Use deleteCategory for permanent deletion
+    const updated = deleteCategory(name, categories);
+    setCategories(updated);
+    setFormData((prevForm) => ({
+      ...prevForm,
+      category: prevForm.category === name ? '' : prevForm.category,
+    }));
   };
 
   const handleFeatureChange = (index, value) => {
