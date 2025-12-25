@@ -203,10 +203,15 @@ export default function AgentMarketingLibrary({
                         /* eslint-disable-next-line jsx-a11y/media-has-caption */
                         <video 
                           src={selectedAsset.mediaUrl} 
-                          controls 
-                          className="w-full h-full object-cover"
-                          poster=""
-                        />
+                          controls
+                          controlsList="nodownload"
+                          playsInline
+                          preload="metadata"
+                          className="w-full h-full object-contain bg-black"
+                          style={{ maxHeight: '100%' }}
+                        >
+                          הדפדפן שלך לא תומך בנגן וידאו
+                        </video>
                       ) : (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img
@@ -216,6 +221,13 @@ export default function AgentMarketingLibrary({
                         />
                       )}
                     </div>
+                    
+                    {/* Video hint */}
+                    {selectedAsset.type === 'video' && (
+                      <p className="text-xs text-gray-500 text-center mb-2">
+                        💡 לחץ על הנגן למעלה כדי לצפות בסרטון לפני ההורדה
+                      </p>
+                    )}
                     
                     {/* Action Buttons */}
                     <div className="flex gap-2">
