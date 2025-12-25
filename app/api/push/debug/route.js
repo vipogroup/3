@@ -11,7 +11,7 @@ export async function GET(request) {
     const user = await requireAuthApi(request);
     
     const config = getWebPushConfig();
-    const allSubs = await getAllSubscriptions();
+    const allSubs = await getAllSubscriptions(true);
     const userSubs = await findSubscriptionsByUserIds([user.id]);
     
     // בדיקת iOS subscriptions
@@ -20,6 +20,9 @@ export async function GET(request) {
       s.userAgent?.includes('iPhone') || 
       s.userAgent?.includes('iPad')
     );
+
+    // בדיקת admin subscriptions
+    const adminSubs = allSubs.filter(s => s.role === 'admin');
     
     return NextResponse.json({
       ok: true,
@@ -37,11 +40,19 @@ export async function GET(request) {
         total: allSubs.length,
         forCurrentUser: userSubs.length,
         iosTotal: iosSubs.length,
+        adminTotal: adminSubs.length,
+        byRole: {
+          admin: allSubs.filter(s => s.role === 'admin').length,
+          agent: allSubs.filter(s => s.role === 'agent').length,
+          customer: allSubs.filter(s => s.role === 'customer').length,
+          unknown: allSubs.filter(s => !s.role).length,
+        },
         userSubscriptions: userSubs.map(s => ({
           endpoint: s.endpoint?.slice(0, 60),
           hasKeys: !!s.keys,
           hasAuth: !!s.keys?.auth,
           hasP256dh: !!s.keys?.p256dh,
+          role: s.role,
           tags: s.tags,
           revokedAt: s.revokedAt,
           createdAt: s.createdAt,
