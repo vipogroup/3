@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
 import { requireAuthApi } from '@/lib/auth/server';
-import { upsertPushSubscription, removePushSubscription, deleteAllUserSubscriptions } from '@/lib/pushSubscriptions';
+import { upsertPushSubscription, removePushSubscription } from '@/lib/pushSubscriptions';
 import { getWebPushConfig } from '@/lib/webPush';
 
 function safeJsonParse(body) {
@@ -44,16 +44,10 @@ export async function POST(req) {
     const consentMeta = payload.consentMeta && typeof payload.consentMeta === 'object' ? payload.consentMeta : null;
     const lastConsentAction = payload.lastConsentAction || 'accepted';
 
-    const headersList = headers();
+    const headersList = await headers();
     const userAgent = headersList.get('user-agent');
     const ipHeader = headersList.get('x-forwarded-for') || headersList.get('x-real-ip');
     const ip = ipHeader ? ipHeader.split(',')[0].trim() : null;
-
-    // מחיקת כל ה-subscriptions הישנות של המשתמש לפני יצירת חדשה
-    // זה פותר בעיית VAPID key mismatch (שגיאת 403)
-    console.log('PUSH_SUBSCRIBE: Deleting old subscriptions for user:', user.id);
-    const deleteResult = await deleteAllUserSubscriptions(user.id);
-    console.log('PUSH_SUBSCRIBE: Deleted', deleteResult.deletedCount, 'old subscriptions');
 
     console.log('PUSH_SUBSCRIBE: Creating new subscription...');
     await upsertPushSubscription({
