@@ -272,13 +272,11 @@ export default function ProductPage() {
               selectedMedia.src.includes('youtube') || selectedMedia.src.includes('youtu.be') ? (
                 <iframe src={selectedMedia.src} className="w-full h-full" allowFullScreen />
               ) : (
+                /* eslint-disable-next-line jsx-a11y/media-has-caption */
                 <video 
                   src={selectedMedia.src} 
                   controls 
-                  autoPlay={false}
-                  playsInline
-                  preload="metadata"
-                  className="w-full h-full object-contain bg-black"
+                  className="w-full h-full object-cover"
                 />
               )
             ) : (
