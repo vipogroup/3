@@ -50,6 +50,7 @@ export default function NewProductPage() {
   const [categories, setCategories] = useState(DEFAULT_PRODUCT_CATEGORIES);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategory, setNewCategory] = useState('');
+  const [editingCategories, setEditingCategories] = useState(false);
 
   useEffect(() => {
     const initial = loadProductCategories();
@@ -445,25 +446,51 @@ export default function NewProductPage() {
                   )}
                   {categoryOptions.length > 0 && (
                     <div className="space-y-2">
-                      <p className="text-sm text-gray-500">
-                        לחץ על קטגוריה לבחירה
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-500">
+                          {editingCategories ? 'לחץ על X למחיקת קטגוריה' : 'לחץ על קטגוריה לבחירה'}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setEditingCategories(!editingCategories)}
+                          className={`text-xs px-2 py-1 rounded-lg transition-all ${
+                            editingCategories 
+                              ? 'bg-green-500 text-white' 
+                              : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                          }`}
+                        >
+                          {editingCategories ? '✓ סיום' : '✎ ערוך'}
+                        </button>
+                      </div>
                       <div className="flex flex-wrap gap-2">
                         {categoryOptions.map((option) => {
                           const isSelected = formData.category === option;
+                          const isLast = categoryOptions.length <= 1;
                           return (
-                            <button
-                              key={option}
-                              type="button"
-                              onClick={() => setFormData(prev => ({ ...prev, category: option }))}
-                              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                                isSelected 
-                                  ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md' 
-                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                              }`}
-                            >
-                              {option}
-                            </button>
+                            <div key={option} className="relative group">
+                              <button
+                                type="button"
+                                onClick={() => !editingCategories && setFormData(prev => ({ ...prev, category: option }))}
+                                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                                  editingCategories
+                                    ? 'bg-red-50 text-red-700 border border-red-200'
+                                    : isSelected 
+                                      ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md' 
+                                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }`}
+                              >
+                                {option}
+                              </button>
+                              {editingCategories && !isLast && (
+                                <button
+                                  type="button"
+                                  onClick={() => removeCategory(option)}
+                                  className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center shadow-md hover:bg-red-600"
+                                >
+                                  ×
+                                </button>
+                              )}
+                            </div>
                           );
                         })}
                       </div>
