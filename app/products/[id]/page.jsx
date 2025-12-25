@@ -205,7 +205,7 @@ export default function ProductPage() {
     ...(Array.isArray(product.images) ? product.images : []),
   ].filter(Boolean);
 
-  const uniqueImages = [...new Set(imageCandidates)].slice(0, 3);
+  const uniqueImages = [...new Set(imageCandidates)];
 
   const mediaItems = [
     ...uniqueImages.map((src) => ({ type: 'image', src })),
@@ -269,7 +269,11 @@ export default function ProductPage() {
         <div className="relative bg-gray-50">
           <div className="relative aspect-[4/3] max-h-[280px]">
             {selectedMedia.type === 'video' ? (
-              <iframe src={selectedMedia.src} className="w-full h-full" allowFullScreen />
+              selectedMedia.src.includes('youtube') || selectedMedia.src.includes('youtu.be') ? (
+                <iframe src={selectedMedia.src} className="w-full h-full" allowFullScreen />
+              ) : (
+                <video src={selectedMedia.src} controls className="w-full h-full object-contain" />
+              )
             ) : (
               <Image
                 src={selectedMedia.src || 'https://placehold.co/400x300?text=VIPO'}
