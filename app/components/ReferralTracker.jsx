@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 
 /**
- * ReferralTracker - Fallback for localStorage when cookie fails
- * Captures ?ref= parameter and stores in localStorage
+ * ReferralTracker - Tracks referral clicks and stores ref in localStorage
+ * Captures ?ref= parameter, stores in localStorage, and logs the click to API
  */
 export default function ReferralTracker() {
   useEffect(() => {
@@ -18,6 +18,30 @@ export default function ReferralTracker() {
         // Store in localStorage as fallback
         localStorage.setItem('referrerId', ref);
         console.log('Referral ID stored:', ref);
+
+        // Check if we already logged this visit in this session
+        const sessionKey = `refClick_${ref}`;
+        if (!sessionStorage.getItem(sessionKey)) {
+          // Log the click to the API
+          fetch('/api/referral/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              refCode: ref,
+              url: window.location.href,
+              action: 'click',
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.ok) {
+                // Mark as logged for this session
+                sessionStorage.setItem(sessionKey, '1');
+                console.log('Referral click logged');
+              }
+            })
+            .catch((err) => console.error('Failed to log referral click:', err));
+        }
       }
     } catch (err) {
       console.error('Failed to store referral:', err);
