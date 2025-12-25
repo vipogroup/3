@@ -431,7 +431,7 @@ export default function AgentMarketingLibrary({
       {/* Video Modal */}
       {videoModalOpen && selectedAsset?.type === 'video' && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
           onClick={() => setVideoModalOpen(false)}
         >
           <div 
@@ -441,7 +441,7 @@ export default function AgentMarketingLibrary({
             {/* Close button */}
             <button
               onClick={() => setVideoModalOpen(false)}
-              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center transition-all"
+              className="absolute top-3 right-3 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center transition-all"
             >
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -451,17 +451,23 @@ export default function AgentMarketingLibrary({
             {/* Video Player */}
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <video
+              key={selectedAsset.id}
               src={selectedAsset.mediaUrl}
+              poster={getVideoThumbnail(selectedAsset.mediaUrl)}
               controls
               autoPlay
               playsInline
-              className="w-full aspect-video"
+              webkit-playsinline="true"
+              preload="auto"
+              className="w-full aspect-video bg-black"
+              style={{ maxHeight: '80vh' }}
             >
+              <source src={selectedAsset.mediaUrl} type="video/mp4" />
               הדפדפן שלך לא תומך בנגן וידאו
             </video>
             
             {/* Video title */}
-            <div className="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0">
+            <div className="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0 pointer-events-none">
               <h3 className="text-white font-semibold text-lg">{selectedAsset.title}</h3>
             </div>
           </div>
