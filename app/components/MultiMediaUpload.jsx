@@ -23,7 +23,7 @@ export default function MultiMediaUpload({
   const allowedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
   const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo', 'video/avi'];
 
-  async function uploadFile(file) {
+  async function uploadFile(file, isVideo = false) {
     // Upload directly to Cloudinary (bypasses Vercel size limit)
     const formData = new FormData();
     formData.append('file', file);
@@ -31,7 +31,11 @@ export default function MultiMediaUpload({
     formData.append('folder', 'vipo-products');
 
     const cloudName = 'dckhhnoqh';
-    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
+    // Use specific endpoint for videos vs images
+    const resourceType = isVideo ? 'video' : 'image';
+    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
+
+    console.log(`Uploading ${resourceType} to Cloudinary...`, file.name, file.size);
 
     const res = await fetch(cloudinaryUrl, {
       method: 'POST',
@@ -45,6 +49,7 @@ export default function MultiMediaUpload({
     }
 
     const data = await res.json();
+    console.log(`Upload success:`, data.secure_url);
     return data.secure_url;
   }
 
@@ -98,7 +103,7 @@ export default function MultiMediaUpload({
 
     setUploadingVideo(true);
     try {
-      const url = await uploadFile(file);
+      const url = await uploadFile(file, true); // true = isVideo
       onVideoChange(url);
     } catch (err) {
       setVideoError(err.message);
