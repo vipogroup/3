@@ -87,7 +87,7 @@ async function migrateAgentCoupons() {
             couponSlug: slugBase,
             couponSequence: nextCounter,
             discountPercent: agent.discountPercent ?? 10,
-            commissionPercent: agent.commissionPercent ?? 12,
+            commissionPercent: agent.commissionPercent ?? 10,
             couponStatus: agent.couponStatus || 'active',
           },
         },
