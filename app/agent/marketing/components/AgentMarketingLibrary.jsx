@@ -21,6 +21,23 @@ function buildShareMessage(asset, { coupon, link, discountPercent }) {
     .replaceAll('{discount}', discountPercent != null ? `${discountPercent}%` : '');
 }
 
+// Generate video thumbnail from Cloudinary video URL
+function getVideoThumbnail(videoUrl) {
+  if (!videoUrl) return null;
+  
+  // Check if it's a Cloudinary URL
+  if (videoUrl.includes('cloudinary.com') && videoUrl.includes('/video/upload/')) {
+    // Transform video URL to thumbnail
+    // From: .../video/upload/v123/file.mp4
+    // To: .../video/upload/so_0,w_600,h_400,c_fill/v123/file.jpg
+    return videoUrl
+      .replace('/video/upload/', '/video/upload/so_0,w_600,h_400,c_fill,f_jpg/')
+      .replace(/\.(mp4|mov|avi|webm|mkv)$/i, '.jpg');
+  }
+  
+  return null;
+}
+
 export default function AgentMarketingLibrary({
   agentName,
   referralLink,
@@ -205,13 +222,16 @@ export default function AgentMarketingLibrary({
                     >
                       {selectedAsset.type === 'video' ? (
                         <>
-                          {/* Video thumbnail with poster frame */}
-                          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                          <video 
-                            src={selectedAsset.mediaUrl} 
-                            preload="metadata"
-                            className="w-full h-full object-contain bg-black pointer-events-none"
-                            style={{ maxHeight: '100%' }}
+                          {/* Video thumbnail from Cloudinary */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={getVideoThumbnail(selectedAsset.mediaUrl) || selectedAsset.mediaUrl}
+                            alt={selectedAsset.title}
+                            className="w-full h-full object-cover pointer-events-none"
+                            onError={(e) => {
+                              // Fallback to video element if thumbnail fails
+                              e.target.style.display = 'none';
+                            }}
                           />
                           {/* Play overlay */}
                           <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-all">
