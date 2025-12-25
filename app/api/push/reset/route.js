@@ -1,0 +1,26 @@
+import { NextResponse } from 'next/server';
+import { requireAuthApi } from '@/lib/auth/server';
+import { deleteAllUserSubscriptions } from '@/lib/pushSubscriptions';
+
+export async function POST(request) {
+  try {
+    const user = await requireAuthApi(request);
+    const userId = user.id;
+    console.log('PUSH_RESET: Deleting all subscriptions for user:', userId);
+
+    const result = await deleteAllUserSubscriptions(userId);
+    console.log('PUSH_RESET: Deleted', result.deletedCount, 'subscriptions');
+
+    return NextResponse.json({
+      ok: true,
+      deletedCount: result.deletedCount,
+      message: `נמחקו ${result.deletedCount} רישומים. כעת יש להפעיל מחדש את ההתראות.`,
+    });
+  } catch (error) {
+    console.error('PUSH_RESET: Error:', error);
+    return NextResponse.json(
+      { ok: false, error: error.message || 'Unknown error' },
+      { status: 500 }
+    );
+  }
+}

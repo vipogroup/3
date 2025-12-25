@@ -501,6 +501,52 @@ export default function UserHeader() {
                         שלח התראת בדיקה
                       </button>
                     )}
+                    {/* Reset Push Button - for fixing iOS issues */}
+                    {pushEnabled && (
+                      <button
+                        onClick={async () => {
+                          if (!confirm('פעולה זו תמחק את כל רישומי ההתראות שלך ותירשם מחדש. להמשיך?')) {
+                            return;
+                          }
+                          try {
+                            // Step 1: Delete all subscriptions from server
+                            const resetRes = await fetch('/api/push/reset', {
+                              method: 'POST',
+                              credentials: 'include',
+                            });
+                            const resetData = await resetRes.json();
+                            if (!resetRes.ok) {
+                              alert('❌ שגיאה במחיקת רישומים: ' + (resetData.error || 'Unknown error'));
+                              return;
+                            }
+                            
+                            // Step 2: Unsubscribe locally
+                            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                              const registration = await navigator.serviceWorker.ready;
+                              const subscription = await registration.pushManager.getSubscription();
+                              if (subscription) {
+                                await subscription.unsubscribe();
+                              }
+                            }
+                            
+                            // Step 3: Re-subscribe
+                            const { subscribeToPush } = await import('@/app/lib/pushClient');
+                            await subscribeToPush({ tags: [], forcePrompt: true });
+                            
+                            alert('✅ ההתראות אופסו ונרשמו מחדש בהצלחה! נסה לשלוח התראת בדיקה.');
+                          } catch (err) {
+                            console.error('Reset push error:', err);
+                            alert('❌ שגיאה: ' + err.message);
+                          }
+                        }}
+                        className="flex items-center gap-2 w-full text-right px-4 py-2 text-sm text-orange-600 hover:bg-orange-50 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        אפס והירשם מחדש להתראות
+                      </button>
+                    )}
                   </div>
 
                   {/* Menu Items */}
