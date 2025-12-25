@@ -342,13 +342,10 @@ async function getAgentStats(agentId, originBaseUrl = null) {
   const { level, nextLevelXp } = calcLevel(xp);
 
   const referralCode = agentDoc?.referralId || agentDoc?.couponCode || agentObjectId.toString();
-  const fallbackBase =
-    process.env.PUBLIC_URL ||
-    process.env.NEXT_PUBLIC_HOME_URL ||
-    process.env.NEXTAUTH_URL ||
-    'http://localhost:3001';
-  const baseUrl = (originBaseUrl || fallbackBase).replace(/\/$/, '');
-  const referralLink = `${baseUrl}/api/join?ref=${encodeURIComponent(referralCode)}&coupon=${encodeURIComponent(referralCode)}&next=/products`;
+  // Always use production domain for referral links
+  const productionDomain = 'https://vipo-group.com';
+  // Short link format: /r/CODE (will redirect to products with coupon applied)
+  const referralLink = `${productionDomain}/r/${encodeURIComponent(referralCode)}`;
 
   return {
     totalReferrals: totalReferralsBase,
@@ -497,14 +494,34 @@ export default async function AgentPage() {
                   className="relative rounded-xl overflow-hidden p-4"
                   style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%)', border: '2px solid rgba(8, 145, 178, 0.3)' }}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <div
-                      className="flex-1 rounded-lg p-3 text-sm break-all font-mono bg-white"
-                      style={{ border: '1px solid #e2e8f0', color: '#1e3a8a' }}
-                    >
-                      {stats.referralLink || '-'}
-                    </div>
+                  <div
+                    className="rounded-lg p-3 text-sm break-all font-mono bg-white mb-3"
+                    style={{ border: '1px solid #e2e8f0', color: '#1e3a8a' }}
+                  >
+                    {stats.referralLink || '-'}
+                  </div>
+                  <div className="flex items-center gap-2">
                     <CopyCouponButton code={stats.referralLink} label="העתק לינק" successMessage="הלינק הועתק!" />
+                    <button
+                      onClick={() => {
+                        if (navigator.share) {
+                          navigator.share({
+                            title: 'הנחה מיוחדת ב-VIPO',
+                            text: 'קבלו הנחה מיוחדת על המוצרים שלנו!',
+                            url: stats.referralLink,
+                          });
+                        } else {
+                          window.open(`https://wa.me/?text=${encodeURIComponent('קבלו הנחה מיוחדת! ' + stats.referralLink)}`, '_blank');
+                        }
+                      }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-all hover:opacity-90"
+                      style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                      </svg>
+                      שיתוף
+                    </button>
                   </div>
                   <p className="text-xs text-gray-600 mt-3 flex items-center gap-2">
                     <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
