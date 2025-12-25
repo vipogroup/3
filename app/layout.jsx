@@ -10,9 +10,22 @@ import UpdateNotifier from '@/app/components/UpdateNotifier';
 import PushNotificationModal from '@/app/components/PushNotificationModal';
 
 export const metadata = {
-  title: 'VIPO - רוכשים ביחד',
-  description: 'מוצרים איכותיים במחירים משתלמים - משלוח מהיר לכל הארץ',
+  title: 'Vipo - ביחד ננצח',
+  description: 'נלחמים ביוקר המחיה ורוכשים ביחד',
   manifest: '/manifest.webmanifest',
+  openGraph: {
+    title: 'Vipo - ביחד ננצח',
+    description: 'נלחמים ביוקר המחיה ורוכשים ביחד',
+    url: 'https://vipo-group.com',
+    siteName: 'Vipo',
+    locale: 'he_IL',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Vipo - ביחד ננצח',
+    description: 'נלחמים ביוקר המחיה ורוכשים ביחד',
+  },
 };
 
 export default function RootLayout({ children }) {
