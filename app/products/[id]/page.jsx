@@ -242,7 +242,7 @@ export default function ProductPage() {
               <div
                 className={`relative ${
                   selectedMedia.type === 'video' ? 'aspect-video' : 'aspect-square'
-                } border border-gray-200 rounded-lg overflow-hidden mb-3 bg-gray-50`}
+                } border border-gray-200 rounded-xl overflow-hidden mb-3 bg-white shadow-sm`}
               >
                 {selectedMedia.type === 'video' ? (
                   <iframe src={selectedMedia.src} className="w-full h-full" allowFullScreen />
@@ -259,9 +259,9 @@ export default function ProductPage() {
 
                 {hasDiscount && (
                   <div
-                    className="absolute top-2 right-2 text-white px-2 py-1 rounded-md text-xs font-bold shadow-md"
+                    className="absolute top-3 right-3 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg"
                     style={{
-                      background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+                      background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)',
                       transform: 'rotate(-8deg)',
                     }}
                   >
@@ -400,34 +400,73 @@ export default function ProductPage() {
               )}
 
               {/* Price Box */}
-              <div className="border-t border-gray-200 pt-3 mt-2">
-                <div className="flex items-baseline gap-3">
-                  <span className="text-3xl lg:text-4xl font-bold text-red-600">
+              <div className="border-t border-gray-200 pt-4 mt-2">
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  {hasDiscount && (
+                    <span className="text-xl lg:text-2xl font-bold line-through text-gray-400">
+                      ₪{product.originalPrice.toLocaleString('he-IL')}
+                    </span>
+                  )}
+                  <span className="text-3xl lg:text-4xl font-bold" style={{ color: hasDiscount ? '#16a34a' : '#1e3a8a' }}>
                     ₪{product.price.toLocaleString('he-IL')}
                   </span>
                   {hasDiscount && (
-                    <span className="text-base line-through text-gray-400">
-                      ₪{product.originalPrice.toLocaleString('he-IL')}
+                    <span className="text-sm font-bold px-2 py-1 rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)' }}>
+                      חסכת {discountPercent}%
                     </span>
                   )}
                 </div>
               </div>
 
-              {/* Group Purchase Details */}
+              {/* Group Purchase Details - Clean Design */}
               {product.purchaseType === 'group' && product.groupPurchaseDetails && (
-                <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <div className="text-sm font-semibold text-blue-900 mb-2">🏭 רכישה קבוצתית</div>
-                  <div className="text-sm text-blue-700 space-y-1">
-                    <div>
-                      הזמנות: {product.groupPurchaseDetails.currentQuantity || 0}/
-                      {product.groupPurchaseDetails.minQuantity}
+                <div
+                  className="mt-4 rounded-xl overflow-hidden border-2"
+                  style={{ borderColor: '#0891b2' }}
+                >
+                  {/* Header */}
+                  <div
+                    className="px-4 py-2 text-white font-bold flex items-center justify-between"
+                    style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      <span>רכישה קבוצתית</span>
                     </div>
-                    <div>
-                      זמן אספקה: ~
-                      {product.groupPurchaseDetails.totalDays ||
-                        product.groupPurchaseDetails.closingDays +
-                          product.groupPurchaseDetails.shippingDays}{' '}
-                      ימים
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="p-3 bg-gray-50">
+                    {/* Progress */}
+                    <div className="flex items-center justify-between text-sm mb-2">
+                      <span className="text-gray-600">הזמנות:</span>
+                      <span className="font-bold" style={{ color: '#1e3a8a' }}>
+                        {product.groupPurchaseDetails.currentQuantity || 0}/{product.groupPurchaseDetails.minQuantity}
+                      </span>
+                    </div>
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-3">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${Math.min(100, ((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) * 100)}%`,
+                          background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)',
+                        }}
+                      />
+                    </div>
+                    
+                    {/* Info Row */}
+                    <div className="flex justify-between text-sm">
+                      <div>
+                        <span className="text-gray-500">אספקה: </span>
+                        <span className="font-medium">~{product.groupPurchaseDetails.totalDays || (product.groupPurchaseDetails.closingDays || 0) + (product.groupPurchaseDetails.shippingDays || 0)} ימים</span>
+                      </div>
+                      {groupTimeLeft && !groupTimeLeft.expired && (
+                        <div className="font-medium" style={{ color: '#dc2626' }}>
+                          נסגר: {formatGroupCountdown(groupTimeLeft)}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

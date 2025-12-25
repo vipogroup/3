@@ -870,9 +870,17 @@ function ProductCard({
           )}
         </div>
 
-        {isGroupPurchase(product) && groupCountdown && (
-          <div className="mb-2 text-xs font-semibold" style={{ color: '#0891b2' }}>
-            {groupCountdown}
+        {/* Group Purchase Details */}
+        {isGroupPurchase(product) && (
+          <div className="mb-2 p-2 rounded-lg text-xs" style={{ background: 'rgba(8, 145, 178, 0.1)' }}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-semibold" style={{ color: '#1e3a8a' }}>🏭 רכישה קבוצתית</span>
+            </div>
+            <div className="text-gray-600 space-y-0.5">
+              <div>הזמנות: {product.groupPurchaseDetails?.currentQuantity || 0}/{product.groupPurchaseDetails?.minQuantity || 10}</div>
+              <div>אספקה: ~{product.groupPurchaseDetails?.totalDays || (product.groupPurchaseDetails?.closingDays || 0) + (product.groupPurchaseDetails?.shippingDays || 0) || 30} ימים</div>
+              {groupCountdown && <div style={{ color: '#0891b2' }}>{groupCountdown}</div>}
+            </div>
           </div>
         )}
 
