@@ -47,12 +47,14 @@ export function getGroupTimeRemaining(product, referenceTime = Date.now()) {
   const days = Math.floor(totalMs / DAY_MS);
   const hours = Math.floor((totalMs % DAY_MS) / HOUR_MS);
   const minutes = Math.floor((totalMs % HOUR_MS) / MINUTE_MS);
+  const seconds = Math.floor((totalMs % MINUTE_MS) / 1000);
 
   return {
     totalMs,
     days,
     hours,
     minutes,
+    seconds,
     expired: false,
   };
 }
