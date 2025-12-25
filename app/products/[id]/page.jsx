@@ -267,12 +267,19 @@ export default function ProductPage() {
         
         {/* Image Section - Compact with Swipe */}
         <div className="relative bg-gray-50">
-          <div className="relative aspect-[4/3] max-h-[280px]">
+          <div className={`relative ${selectedMedia.type === 'video' ? 'aspect-video' : 'aspect-[4/3] max-h-[280px]'}`}>
             {selectedMedia.type === 'video' ? (
               selectedMedia.src.includes('youtube') || selectedMedia.src.includes('youtu.be') ? (
                 <iframe src={selectedMedia.src} className="w-full h-full" allowFullScreen />
               ) : (
-                <video src={selectedMedia.src} controls className="w-full h-full object-contain" />
+                <video 
+                  src={selectedMedia.src} 
+                  controls 
+                  autoPlay={false}
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-full object-contain bg-black"
+                />
               )
             ) : (
               <Image
