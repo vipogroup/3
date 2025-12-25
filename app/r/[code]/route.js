@@ -6,17 +6,15 @@ import { NextResponse } from 'next/server';
  * Short referral link redirect
  * /r/CODE -> redirects to /products with coupon applied
  */
-export async function GET(req, context) {
-  const params = await context.params;
-  const code = params?.code;
+export async function GET(req, { params }) {
+  const { code } = await params;
   
   if (!code) {
     return NextResponse.redirect(new URL('/products', req.url));
   }
 
-  // Use request URL origin for redirect to avoid cross-origin issues
-  const url = new URL(req.url);
-  const redirectUrl = new URL('/products', url.origin);
+  const baseUrl = process.env.PUBLIC_URL || 'https://vipo-group.com';
+  const redirectUrl = new URL('/products', baseUrl);
   
   const response = NextResponse.redirect(redirectUrl);
 
