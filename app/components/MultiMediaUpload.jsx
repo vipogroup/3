@@ -23,34 +23,29 @@ export default function MultiMediaUpload({
   const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo', 'video/avi'];
 
   async function uploadFile(file) {
+    // Upload directly to Cloudinary (bypasses Vercel size limit)
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('upload_preset', 'vipo_unsigned');
+    formData.append('folder', 'vipo-products');
 
-    const res = await fetch('/api/upload', {
+    const cloudName = 'dckhhnoqh';
+    // Use 'auto' resource type to let Cloudinary detect the file type
+    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
+
+    const res = await fetch(cloudinaryUrl, {
       method: 'POST',
       body: formData,
     });
 
     if (!res.ok) {
-      // Handle non-JSON error responses
-      const text = await res.text();
-      let errorMessage = 'העלאה נכשלה';
-      try {
-        const data = JSON.parse(text);
-        errorMessage = data.error || errorMessage;
-      } catch {
-        // Response is not JSON (e.g., "forbidden")
-        if (text.toLowerCase().includes('forbidden')) {
-          errorMessage = 'אין הרשאה להעלאת קבצים. נסה להתחבר מחדש.';
-        } else {
-          errorMessage = text || errorMessage;
-        }
-      }
-      throw new Error(errorMessage);
+      const data = await res.json().catch(() => ({}));
+      console.error('Cloudinary upload error:', data);
+      throw new Error(data.error?.message || `העלאה נכשלה (${res.status})`);
     }
 
     const data = await res.json();
-    return data.url;
+    return data.secure_url;
   }
 
   async function handleFileChange(e) {
@@ -71,8 +66,8 @@ export default function MultiMediaUpload({
             setError(`ניתן להעלות עד ${maxImages} תמונות`);
             continue;
           }
-          if (file.size > 5 * 1024 * 1024) {
-            setError('תמונה גדולה מדי. מקסימום 5MB');
+          if (file.size > 10 * 1024 * 1024) {
+            setError('תמונה גדולה מדי. מקסימום 10MB');
             continue;
           }
           const url = await uploadFile(file);
@@ -87,7 +82,7 @@ export default function MultiMediaUpload({
           const url = await uploadFile(file);
           onVideoChange(url);
         } else {
-          setError('סוג קובץ לא נתמך. תמונות: PNG, JPEG, WebP. סרטונים: MP4, WebM');
+          setError('סוג קובץ לא נתמך. תמונות: PNG, JPEG, WebP. סרטונים: MP4, MOV, AVI');
         }
       }
     } catch (err) {
@@ -165,7 +160,7 @@ export default function MultiMediaUpload({
             <div>
               <p className="text-gray-700 font-medium">גרור קבצים לכאן או לחץ לבחירה</p>
               <p className="text-gray-500 text-sm mt-1">
-                עד {maxImages} תמונות (PNG, JPEG, WebP) + סרטון אחד (MP4, WebM)
+                עד {maxImages} תמונות (PNG, JPEG, WebP - עד 10MB) + סרטון אחד (MP4, MOV - עד 100MB)
               </p>
             </div>
           </div>
