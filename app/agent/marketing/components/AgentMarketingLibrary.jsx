@@ -2,11 +2,15 @@
 
 import { useMemo, useState } from 'react';
 
-const DEFAULT_TEMPLATE = `היי! הכנתי עבורך תוכן שיווקי מוכן לשיתוף.
+const DEFAULT_TEMPLATE = `🔥 הזדמנות מיוחדת! 🔥
 
-{link}
+הצטרפו לרכישה קבוצתית ותיהנו ממחירים מטורפים!
 
-אל תשכח להשתמש בקוד הקופון {coupon} כדי לקבל את ההטבה.`;
+🛒 לרכישה: {link}
+
+🎁 קוד קופון להנחה: {coupon}
+
+נלחמים ביוקר המחיה - ורוכשים ביחד! 💪`;
 
 function buildShareMessage(asset, { coupon, link, discountPercent }) {
   const template = (asset.messageTemplate ? asset.messageTemplate.trim() : '') || DEFAULT_TEMPLATE;
@@ -193,10 +197,16 @@ export default function AgentMarketingLibrary({
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <div className="rounded-xl overflow-hidden bg-black aspect-video mb-3">
+                    {/* Video/Image Preview */}
+                    <div className="rounded-xl overflow-hidden bg-black aspect-video mb-3 relative">
                       {selectedAsset.type === 'video' ? (
                         /* eslint-disable-next-line jsx-a11y/media-has-caption */
-                        <video src={selectedAsset.mediaUrl} controls className="w-full h-full object-cover" />
+                        <video 
+                          src={selectedAsset.mediaUrl} 
+                          controls 
+                          className="w-full h-full object-cover"
+                          poster=""
+                        />
                       ) : (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img
@@ -206,13 +216,34 @@ export default function AgentMarketingLibrary({
                         />
                       )}
                     </div>
-                    <button
-                      onClick={() => handleDownloadMedia(selectedAsset)}
-                      className="w-full py-2.5 rounded-lg text-sm font-semibold text-white"
-                      style={{ background: 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)' }}
-                    >
-                      הורד קובץ
-                    </button>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      {selectedAsset.type === 'video' && (
+                        <a
+                          href={selectedAsset.mediaUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white text-center flex items-center justify-center gap-2"
+                          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                        >
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                          צפה בסרטון
+                        </a>
+                      )}
+                      <button
+                        onClick={() => handleDownloadMedia(selectedAsset)}
+                        className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white flex items-center justify-center gap-2"
+                        style={{ background: 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)' }}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        הורד קובץ
+                      </button>
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-4">

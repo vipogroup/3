@@ -60,9 +60,9 @@ export default async function AgentMarketingPage() {
     .toArray();
 
   const baseUrl = resolveBaseUrl();
-  const nextPath = '/products';
   const referralCode = agent?.couponCode || agent?.referralId || user.id;
-  const referralLink = `${baseUrl}/api/join?ref=${encodeURIComponent(referralCode)}&next=${encodeURIComponent(nextPath)}`;
+  // Use short /r/ format for cleaner sharing links
+  const referralLink = `${baseUrl}/r/${encodeURIComponent(referralCode)}`;
 
   const formattedAssets = assets.map((asset) => ({
     id: asset._id?.toString() ?? '',
