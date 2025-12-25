@@ -551,21 +551,6 @@ export default function UserHeader() {
 
                   {/* Menu Items */}
                   <div className="py-1">
-                    <Link
-                      href="/messages"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 8h10M7 12h6m5 8H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2v14a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                      מרכז הודעות
-                    </Link>
-
                     {role === 'agent' && (
                       <>
                         <Link
@@ -630,6 +615,20 @@ export default function UserHeader() {
                             />
                           </svg>
                           תוכן שיווקי
+                        </Link>
+                        <Link
+                          href="/messages"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 8h10M7 12h6m5 8H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2v14a2 2 0 01-2 2z"
+                            />
+                          </svg>
+                          מרכז הודעות
                         </Link>
                       </>
                     )}

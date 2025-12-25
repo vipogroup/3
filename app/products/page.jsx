@@ -809,9 +809,9 @@ function ProductCard({
           {/* Badges */}
           {discountPercent > 0 && (
             <div
-              className="absolute top-2 right-2 text-white px-2 py-0.5 rounded-md text-xs font-bold shadow-md"
+              className="absolute top-2 right-2 text-white px-3 py-1 rounded-lg text-sm font-bold shadow-lg"
               style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+                background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)',
                 transform: 'rotate(-8deg)',
               }}
             >
@@ -854,16 +854,20 @@ function ProductCard({
 
         {/* Price */}
         <div className="mb-3 mt-auto">
-          <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold text-gray-900">
-              ₪{product.price.toLocaleString('he-IL')}
-            </span>
-            {product.originalPrice && (
-              <span className="text-xs text-gray-400 line-through">
+          {product.originalPrice ? (
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <span className="text-lg font-bold line-through text-gray-400">
                 ₪{product.originalPrice.toLocaleString('he-IL')}
               </span>
-            )}
-          </div>
+              <span className="text-2xl font-bold" style={{ color: '#16a34a' }}>
+                ₪{product.price.toLocaleString('he-IL')}
+              </span>
+            </div>
+          ) : (
+            <span className="text-2xl font-bold text-gray-900">
+              ₪{product.price.toLocaleString('he-IL')}
+            </span>
+          )}
         </div>
 
         {isGroupPurchase(product) && groupCountdown && (
