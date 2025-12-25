@@ -462,93 +462,76 @@ export default async function AgentPage() {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Coupon Code Section */}
-          <section
-            className="rounded-xl p-5"
-            style={{
-              border: '2px solid transparent',
-              backgroundImage:
-                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-              backgroundOrigin: 'border-box',
-              backgroundClip: 'padding-box, border-box',
-              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
-            }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold" style={{ color: '#1e3a8a' }}>
-                קוד קופון שלך
-              </h2>
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-              >
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
-                  />
-                </svg>
+          <section className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            {/* Header with gradient */}
+            <div
+              className="px-5 py-4"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                  </svg>
+                </div>
+                <h2 className="text-lg font-bold text-white">קוד קופון שלך</h2>
               </div>
             </div>
-            <div
-              className="rounded-xl p-4"
-              style={{
-                background:
-                  'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)',
-                border: '2px solid rgba(8, 145, 178, 0.2)',
-              }}
-            >
-              <div className="border rounded-2xl p-4" style={{ backgroundColor: '#f8fafc' }}>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold" style={{ color: '#1e3a8a' }}>
-                    קוד הקופון שלך:
-                  </span>
+
+            {/* Content */}
+            <div className="p-5">
+              {/* Coupon Code Display */}
+              <div className="mb-5">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-500">קוד הקופון</span>
                   <CopyCouponButton code={stats.referralCode} />
                 </div>
                 {stats.referralCode ? (
                   <div
-                    className="text-2xl font-bold text-center py-3 rounded-xl"
-                    style={{ backgroundColor: '#1e3a8a', color: '#fff', letterSpacing: '0.2em' }}
+                    className="relative rounded-xl overflow-hidden"
+                    style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                   >
-                    {stats.referralCode.toUpperCase()}
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute -right-4 -top-4 w-24 h-24 bg-white rounded-full" />
+                      <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-white rounded-full" />
+                    </div>
+                    <div className="relative text-center py-4 px-3">
+                      <p className="text-2xl md:text-3xl font-bold text-white tracking-widest">
+                        {stats.referralCode.toUpperCase()}
+                      </p>
+                    </div>
                   </div>
                 ) : (
-                  <div
-                    className="text-center py-3 rounded-xl"
-                    style={{
-                      backgroundColor: '#f1f5f9',
-                      color: '#6b7280',
-                      border: '2px dashed rgba(107, 114, 128, 0.3)',
-                    }}
-                  >
-                    לא הוגדר
+                  <div className="text-center py-4 rounded-xl bg-gray-50 border-2 border-dashed border-gray-200">
+                    <span className="text-gray-400">לא הוגדר</span>
                   </div>
                 )}
-                <p className="text-xs text-gray-600 mt-3 text-center font-medium">
-                  שתף קוד זה עם לקוחות לקבלת עמלה
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  שתף את הקוד עם לקוחות וקבל עמלה על כל רכישה
                 </p>
-                <div className="mt-4">
-                  <p className="text-xs font-semibold text-gray-600 mb-2">לינק לשיתוף</p>
-                  <div className="bg-white border rounded-lg px-3 py-2 text-xs break-all">
-                    {stats.referralLink || '-'}
-                  </div>
-                  <div className="text-right mt-2">
-                    <CopyCouponButton
-                      code={stats.referralLink}
-                      label="העתק לינק"
-                      successMessage="לינק הועתק!"
-                    />
-                  </div>
-                  <p className="text-[11px] text-gray-500 mt-1">
-                    כל קליק דרך הלינק הזה ירשם בדשבורד שלך.
-                  </p>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-100 my-4" />
+
+              {/* Share Link */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-500">לינק לשיתוף</span>
+                  <CopyCouponButton code={stats.referralLink} label="העתק" successMessage="הלינק הועתק!" />
                 </div>
+                <div
+                  className="rounded-xl p-3 text-xs text-gray-600 break-all font-mono"
+                  style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }}
+                >
+                  {stats.referralLink || '-'}
+                </div>
+                <p className="text-[11px] text-gray-400 mt-2 flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  כל קליק דרך הלינק נרשם אוטומטית בדשבורד שלך
+                </p>
               </div>
             </div>
           </section>

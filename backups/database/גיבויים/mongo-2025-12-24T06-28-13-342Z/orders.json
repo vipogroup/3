@@ -1,0 +1,54 @@
+[
+  {
+    "_id": {
+      "$oid": "694a8f379299c3db79b16fb0"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6949dc9ef43ef2d2b696d709"
+        },
+        "name": "מכונת לייזר משולבת אנגלית",
+        "quantity": 1,
+        "unitPrice": 258,
+        "totalPrice": 258,
+        "image": "https://placehold.co/600x600/8B5CF6/FFFFFF?text=⌨️+RGB+Keyboard&font=roboto",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 258,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 258
+    },
+    "totalAmount": 258,
+    "discountAmount": 0,
+    "createdBy": "694a8b0c92a58b1a20c872e1",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:47.063Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T12:46:47.063Z"
+    },
+    "customer": {
+      "fullName": "חיים לל",
+      "email": "mmm88697@gmail.com",
+      "phone": "0584151451",
+      "address": "חיי",
+      "city": "תל אביב",
+      "zipCode": "123456"
+    },
+    "paymentMethod": "paypal"
+  }
+]

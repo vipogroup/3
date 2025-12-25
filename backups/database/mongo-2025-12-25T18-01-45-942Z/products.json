@@ -1,0 +1,94 @@
+[
+  {
+    "_id": {
+      "$oid": "694d757fc38fc70b29db852e"
+    },
+    "name": "מכונת לייזר משולבת אנגלית",
+    "description": "ממממ",
+    "fullDescription": "וטאעיח",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 677,
+    "originalPrice": 888,
+    "commission": 67.7,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": {
+      "$date": "2026-02-03T17:33:51.578Z"
+    },
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 10,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": {
+      "closingDays": 40,
+      "shippingDays": 60,
+      "minQuantity": 10,
+      "currentQuantity": 0,
+      "totalDays": 100
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766684013/vipo-products/ycuapqkspm7z2vvzqs8r.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766684013/vipo-products/ycuapqkspm7z2vvzqs8r.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766684013/vipo-products/ycuapqkspm7z2vvzqs8r.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T17:33:51.495Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T17:33:51.495Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694d7ad18c45d9931295f0a3"
+    },
+    "name": "חדש",
+    "description": "קרג",
+    "fullDescription": "ערע",
+    "category": "רכישה קבוצתית",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 700,
+    "originalPrice": 990,
+    "commission": 70,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766685390/vipo-products/kxrr5riyb801c9jdshk7.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766685390/vipo-products/kxrr5riyb801c9jdshk7.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766685390/vipo-products/kxrr5riyb801c9jdshk7.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T17:56:33.880Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T17:56:33.880Z"
+    },
+    "__v": 0
+  }
+]

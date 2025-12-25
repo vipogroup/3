@@ -1,0 +1,302 @@
+[
+  {
+    "_id": {
+      "$oid": "6946119ac7eb77953c514541"
+    },
+    "name": "כורסת עיסוי",
+    "description": "בדיקה",
+    "fullDescription": "בדיקה",
+    "category": "עיסוי בדיקה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 10000,
+    "originalPrice": 20000,
+    "commission": 1000,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": null,
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 75,
+    "groupCurrentQuantity": 25,
+    "groupPurchaseDetails": {
+      "closingDays": 29,
+      "shippingDays": 60,
+      "minQuantity": 75,
+      "currentQuantity": 25,
+      "totalDays": 89
+    },
+    "image": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 15,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-20T03:01:46.883Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T03:01:46.883Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694bfc7e9b55f8e4c63b5d6d"
+    },
+    "name": "חבחבצ",
+    "description": "לגלכצחכחעחמ",
+    "fullDescription": "צמחצ",
+    "category": "מסכים",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766587509/vipo-products/infkutyrpoc3vsguseub.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766587509/vipo-products/infkutyrpoc3vsguseub.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766587509/vipo-products/infkutyrpoc3vsguseub.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-24T14:45:18.224Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-24T14:45:18.224Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694bffdf9adfd00733d8ec68"
+    },
+    "name": "ממי",
+    "description": "ממממ",
+    "fullDescription": "ממממ",
+    "category": "אודיו",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 400,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766588378/vipo-products/wkj24lshjfn0r2smj3wz.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766588378/vipo-products/wkj24lshjfn0r2smj3wz.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766588378/vipo-products/wkj24lshjfn0r2smj3wz.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-24T14:59:43.562Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-24T14:59:43.562Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694c019aa22e3454d6983f07"
+    },
+    "name": "יהחיה",
+    "description": "חינהחיהני",
+    "fullDescription": "חיהנחינהחי",
+    "category": "מסכים",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 700,
+    "originalPrice": 800,
+    "commission": 70,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766588820/vipo-products/hvfuo8qfq3zkrrwl3dq9.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766588820/vipo-products/hvfuo8qfq3zkrrwl3dq9.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766588820/vipo-products/hvfuo8qfq3zkrrwl3dq9.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-24T15:07:06.506Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-24T15:07:06.506Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694c19a7c43b6cc6f51ce018"
+    },
+    "name": "טעטוןחעטו",
+    "description": "טןטעטןע",
+    "fullDescription": "ןועןלוטעיןטולע",
+    "category": "מסכים",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 50,
+    "originalPrice": 10,
+    "commission": 5,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766594976/vipo-products/ylr25ydkb6c6jvhkxdks.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766594976/vipo-products/ylr25ydkb6c6jvhkxdks.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766594976/vipo-products/ylr25ydkb6c6jvhkxdks.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-24T16:49:43.744Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-24T16:49:43.744Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694c1c1de4636025a5e82823"
+    },
+    "name": "יחיעח",
+    "description": "לחיחליע",
+    "fullDescription": "ילוחיולי",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 5500,
+    "originalPrice": 555555,
+    "commission": 550,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766595607/vipo-products/mxpfeho4h7efrwmlbhkq.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766595607/vipo-products/mxpfeho4h7efrwmlbhkq.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766595607/vipo-products/mxpfeho4h7efrwmlbhkq.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-24T17:00:13.296Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-24T17:00:13.296Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694d0aeb7cb4637b2d770e62"
+    },
+    "name": "עיחעכ",
+    "description": "עיעי",
+    "fullDescription": "עיעי",
+    "category": "מסכים",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766656737/vipo-products/cdqc9qnhm3ymohongnyq.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766656737/vipo-products/cdqc9qnhm3ymohongnyq.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766656737/vipo-products/cdqc9qnhm3ymohongnyq.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T09:59:07.088Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T09:59:07.088Z"
+    },
+    "__v": 0
+  }
+]

@@ -1,0 +1,427 @@
+[
+  {
+    "_id": {
+      "$oid": "694600258df42a022a157a2c"
+    },
+    "name": "שולחן נירוסטה 200/60/90",
+    "description": "שולחן נירוסטה בדיקה",
+    "fullDescription": "שולחן נירוסטה תעשייתי",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 1499,
+    "originalPrice": 1900,
+    "commission": 149.9,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766488879/vipo-products/xnc8o3qf3mjkg7zglq3n.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766488879/vipo-products/xnc8o3qf3mjkg7zglq3n.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766488879/vipo-products/xnc8o3qf3mjkg7zglq3n.jpg"
+    ],
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 32,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-20T01:47:17.800Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T11:21:37.682Z"
+    },
+    "__v": 0,
+    "specs": {}
+  },
+  {
+    "_id": {
+      "$oid": "6946119ac7eb77953c514541"
+    },
+    "name": "כורסת עיסוי",
+    "description": "בדיקה",
+    "fullDescription": "בדיקה",
+    "category": "עיסוי בדיקה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 10000,
+    "originalPrice": 20000,
+    "commission": 1000,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": null,
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 75,
+    "groupCurrentQuantity": 25,
+    "groupPurchaseDetails": {
+      "closingDays": 29,
+      "shippingDays": 60,
+      "minQuantity": 75,
+      "currentQuantity": 25,
+      "totalDays": 89
+    },
+    "image": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 15,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-20T03:01:46.883Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T03:01:46.883Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6949c657a9854aa5fcbc83fa"
+    },
+    "name": "מסך 27\" 4K HDR מקצועי",
+    "description": "Hgg",
+    "fullDescription": "Hgg",
+    "category": "מסכים",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 951,
+    "originalPrice": 357,
+    "commission": 95.10000000000001,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-22T22:29:43.414Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-22T22:29:43.414Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6949cbbc24240f291c308dda"
+    },
+    "name": "מכונת לייזר משולבת",
+    "description": "ינני",
+    "fullDescription": "יני",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 10000,
+    "originalPrice": 9951,
+    "commission": 95.10000000000001,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "https://www.google.com/aclk?sa=L&ai=DChsSEwjo7_XA7s-QAxWflIMHHfoIAtgYACICCAEQBxoCZWY&co=1&ase=2&gclid=Cj0KCQjwvJHIBhCgARIsAEQnWlDC9GnQJ42cgYv4_AHq-eW9CT62IPMmgT_NlRgYjQGKquk2bK3ZlAgaAn2xEALw_wcB&cid=CAASN-Rop7S3vjvq6RSSb6OxscGMpVHWzkrGA2vTmr5gqL90vWjY7_UQ-DUqKrmeQlho3ulBeC6YGMU&cce=2&category=acrcp_v1_32&sig=AOD64_3Ot_Vrqkj8JXvD3ihVKc_jHfDoXw&ctype=5&q=&nis=4&ved=2ahUKEwj36fDA7s-QAxWrAtsEHbiLD-UQ9aACKAB6BAgIECQ&adurl=",
+    "imageUrl": "https://www.google.com/aclk?sa=L&ai=DChsSEwjo7_XA7s-QAxWflIMHHfoIAtgYACICCAEQBxoCZWY&co=1&ase=2&gclid=Cj0KCQjwvJHIBhCgARIsAEQnWlDC9GnQJ42cgYv4_AHq-eW9CT62IPMmgT_NlRgYjQGKquk2bK3ZlAgaAn2xEALw_wcB&cid=CAASN-Rop7S3vjvq6RSSb6OxscGMpVHWzkrGA2vTmr5gqL90vWjY7_UQ-DUqKrmeQlho3ulBeC6YGMU&cce=2&category=acrcp_v1_32&sig=AOD64_3Ot_Vrqkj8JXvD3ihVKc_jHfDoXw&ctype=5&q=&nis=4&ved=2ahUKEwj36fDA7s-QAxWrAtsEHbiLD-UQ9aACKAB6BAgIECQ&adurl=",
+    "images": [
+      "https://www.google.com/aclk?sa=L&ai=DChsSEwjo7_XA7s-QAxWflIMHHfoIAtgYACICCAEQBxoCZWY&co=1&ase=2&gclid=Cj0KCQjwvJHIBhCgARIsAEQnWlDC9GnQJ42cgYv4_AHq-eW9CT62IPMmgT_NlRgYjQGKquk2bK3ZlAgaAn2xEALw_wcB&cid=CAASN-Rop7S3vjvq6RSSb6OxscGMpVHWzkrGA2vTmr5gqL90vWjY7_UQ-DUqKrmeQlho3ulBeC6YGMU&cce=2&category=acrcp_v1_32&sig=AOD64_3Ot_Vrqkj8JXvD3ihVKc_jHfDoXw&ctype=5&q=&nis=4&ved=2ahUKEwj36fDA7s-QAxWrAtsEHbiLD-UQ9aACKAB6BAgIECQ&adurl="
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-22T22:52:44.859Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T11:20:26.224Z"
+    },
+    "__v": 0,
+    "specs": {}
+  },
+  {
+    "_id": {
+      "$oid": "6949d32c8bef2911ee1b1ec3"
+    },
+    "name": "מכונת לייזר משולבת אנגלית",
+    "description": "יעניחלעי",
+    "fullDescription": "ינינ",
+    "category": "מסכים",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 10000,
+    "originalPrice": 9852,
+    "commission": 85.2,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "https://placehold.co/600x600/8B5CF6/FFFFFF?text=⌨️+RGB+Keyboard&font=roboto",
+    "imageUrl": "https://placehold.co/600x600/8B5CF6/FFFFFF?text=⌨️+RGB+Keyboard&font=roboto",
+    "images": [
+      "https://placehold.co/600x600/8B5CF6/FFFFFF?text=⌨️+RGB+Keyboard&font=roboto"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-22T23:24:28.153Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T11:19:33.944Z"
+    },
+    "__v": 0,
+    "specs": {}
+  },
+  {
+    "_id": {
+      "$oid": "6949dc9ef43ef2d2b696d709"
+    },
+    "name": "מכונת לייזר משולבת אנגלית",
+    "description": "ניינ",
+    "fullDescription": "ינ",
+    "category": "מסכים",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 258,
+    "originalPrice": 8552,
+    "commission": 25.8,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://placehold.co/600x600/8B5CF6/FFFFFF?text=⌨️+RGB+Keyboard&font=roboto",
+    "imageUrl": "https://placehold.co/600x600/8B5CF6/FFFFFF?text=⌨️+RGB+Keyboard&font=roboto",
+    "images": [
+      "https://placehold.co/600x600/8B5CF6/FFFFFF?text=⌨️+RGB+Keyboard&font=roboto"
+    ],
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-23T00:04:46.720Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T00:04:46.720Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694a79cdc2ff948f58df73ff"
+    },
+    "name": "מסך 27\" 4K HDR מקצועי",
+    "description": "חדש",
+    "fullDescription": "בדיקה",
+    "category": "מסכים",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 963,
+    "originalPrice": 9951,
+    "commission": 96.30000000000001,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-23T11:15:25.499Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T11:15:25.499Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694a7b9213e933ea8a7c7019"
+    },
+    "name": "מסך 27\" 4K HDR מקצועי",
+    "description": "מציכ",
+    "fullDescription": "ממממ",
+    "category": "אוכל",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 236,
+    "originalPrice": 0,
+    "commission": 23.6,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766488965/vipo-products/urye6mewlote5uzsedec.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766488965/vipo-products/urye6mewlote5uzsedec.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766488965/vipo-products/urye6mewlote5uzsedec.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-23T11:22:58.725Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T11:22:58.725Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694a96e95875dc5c141be6bc"
+    },
+    "name": "חדש ניסוי",
+    "description": "חדש",
+    "fullDescription": "ח",
+    "category": "מסכים",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 778,
+    "originalPrice": 779,
+    "commission": 77.80000000000001,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-23T13:19:37.862Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T13:19:37.862Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694a9a73d4892b1e6e873da4"
+    },
+    "name": "מכונת לייזר משולבת אנגלית",
+    "description": "ע",
+    "fullDescription": "עעי",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 3500,
+    "originalPrice": 5555,
+    "commission": 350,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-23T13:34:43.419Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T13:34:43.419Z"
+    },
+    "__v": 0
+  }
+]

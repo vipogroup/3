@@ -1,0 +1,219 @@
+[
+  {
+    "_id": {
+      "$oid": "694600258df42a022a157a2c"
+    },
+    "name": "שולחן נירוסטה 200/60/90",
+    "description": "שולחן נירוסטה בדיקה",
+    "fullDescription": "שולחן נירוסטה תעשייתי",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 1499,
+    "originalPrice": 1900,
+    "commission": 149.9,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766488879/vipo-products/xnc8o3qf3mjkg7zglq3n.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766488879/vipo-products/xnc8o3qf3mjkg7zglq3n.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766488879/vipo-products/xnc8o3qf3mjkg7zglq3n.jpg"
+    ],
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 32,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-20T01:47:17.800Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T11:21:37.682Z"
+    },
+    "__v": 0,
+    "specs": {}
+  },
+  {
+    "_id": {
+      "$oid": "6946119ac7eb77953c514541"
+    },
+    "name": "כורסת עיסוי",
+    "description": "בדיקה",
+    "fullDescription": "בדיקה",
+    "category": "עיסוי בדיקה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 10000,
+    "originalPrice": 20000,
+    "commission": 1000,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": null,
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 75,
+    "groupCurrentQuantity": 25,
+    "groupPurchaseDetails": {
+      "closingDays": 29,
+      "shippingDays": 60,
+      "minQuantity": 75,
+      "currentQuantity": 25,
+      "totalDays": 89
+    },
+    "image": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 15,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-20T03:01:46.883Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T03:01:46.883Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694ab9813a012362ceba47dc"
+    },
+    "name": "יחליחל",
+    "description": "לחילחילחי",
+    "fullDescription": "לחילחיחל",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 222,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766504823/vipo-products/mbez3s5xjvq1aunz9rn8.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766504823/vipo-products/mbez3s5xjvq1aunz9rn8.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766504823/vipo-products/mbez3s5xjvq1aunz9rn8.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-23T15:47:13.074Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T15:47:13.074Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694abffcf4d12afc5ab86f17"
+    },
+    "name": "יולחיןוי",
+    "description": "עןלעילחע",
+    "fullDescription": "ןועיןועיןולעי",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 400,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766506487/vipo-products/gwuaxbqtxzzyofqrczig.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766506487/vipo-products/gwuaxbqtxzzyofqrczig.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766506487/vipo-products/gwuaxbqtxzzyofqrczig.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-23T16:14:52.132Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T16:14:52.132Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694ba51ce8b263bca3ccc3ca"
+    },
+    "name": "כעעעכ",
+    "description": "כעכע",
+    "fullDescription": "חמנלחנמ",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766565139/vipo-products/eaprmbfo8tphopnizvka.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766565139/vipo-products/eaprmbfo8tphopnizvka.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766565139/vipo-products/eaprmbfo8tphopnizvka.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-24T08:32:28.519Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-24T08:32:28.519Z"
+    },
+    "__v": 0
+  }
+]
