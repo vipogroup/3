@@ -1,0 +1,236 @@
+[
+  {
+    "_id": {
+      "$oid": "694d92a9c5735216feac7608"
+    },
+    "name": "יעחע",
+    "description": "טטחי",
+    "fullDescription": "חייי",
+    "category": "מסכים",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T19:38:17.199Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T19:38:17.199Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694d95ba315db9d33faa2e51"
+    },
+    "name": "יעחע",
+    "description": "יחעצע",
+    "fullDescription": "ילעחעי",
+    "category": "אודיו",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 400,
+    "originalPrice": 500,
+    "commission": 40,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T19:51:22.977Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T19:51:22.977Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694d96ee376447f9c2083101"
+    },
+    "name": "כורסת עיסוי",
+    "description": "חכיכחכח",
+    "fullDescription": "לרצכצכ",
+    "category": "רכישה קבוצתית",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 600,
+    "originalPrice": 1000,
+    "commission": 60,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": {
+      "$date": "2026-02-03T19:56:30.299Z"
+    },
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 10,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": {
+      "closingDays": 40,
+      "shippingDays": 60,
+      "minQuantity": 10,
+      "currentQuantity": 0,
+      "totalDays": 100
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766692579/vipo-products/pnjsrmimexsmx7eahkra.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766692579/vipo-products/pnjsrmimexsmx7eahkra.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766692579/vipo-products/pnjsrmimexsmx7eahkra.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T19:56:30.484Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T19:56:30.484Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694d9e0e3338f5f2cf613c61"
+    },
+    "name": "כורסת עיסוי יוקרתית – Luxury Pro 4D",
+    "description": "כורסת עיסוי מתקדמת בטכנולוגיית 4D עם מסילת SL מלאה, חימום, Zero Gravity ועיסוי רגליים עמוק – לחוויית ספא מושלמת בבית.",
+    "fullDescription": "תיאור מלא\nכורסת Luxury Pro 4D נועדה למי שלא מוכן להתפשר.\nהיא משלבת טכנולוגיית עיסוי חכמה עם עיצוב יוקרתי ונוחות מקסימלית, ומספקת טיפול עמוק לשרירים, שחרור מתחים והפגת עייפות – בלחיצת כפתור.\nהכורסה סורקת את מבנה הגוף ומתאימה את העיסוי אישית לכל משתמש, מהצוואר ועד כפות הרגליים. אידיאלית לבית, משרד יוקרתי או קליניקה.",
+    "category": "עיסוי",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 10000,
+    "originalPrice": 21000,
+    "commission": 1000,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": {
+      "$date": "2026-01-24T20:26:54.562Z"
+    },
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 70,
+    "groupCurrentQuantity": 25,
+    "groupPurchaseDetails": {
+      "closingDays": 30,
+      "shippingDays": 60,
+      "minQuantity": 70,
+      "currentQuantity": 25,
+      "totalDays": 90
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766694554/vipo-products/hlnhjd0afpstobpyqywh.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766694554/vipo-products/hlnhjd0afpstobpyqywh.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766694554/vipo-products/hlnhjd0afpstobpyqywh.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": false,
+    "rating": 4.5,
+    "reviews": 25,
+    "features": [
+      "✔ עיסוי 4D מתקדם (עומק משתנה) ✔ מסילת עיסוי SL מלאה (מהצוואר ועד הירך) ✔ Zero Gravity – תנוחת אפס כבידה ✔ חימום גב תחתון ✔ עיסוי רגליים ושוקיים ✔ רולרים לכפות הרגליים ✔ עיסוי כתפיים, צוואר וידיים ✔ מתיחת גוף חכמה (Stretch) ✔ סריקת גוף אוטומטית ✔ התאמת עוצמה אישית",
+      "תוכניות עיסוי מובנות מספר תוכניות: 10 תוכניות אוטומטיות רגיעה עמוקה שחרור שרירים עיסוי ספורטאים אנטי־סטרס עיסוי משרדי שינה ורוגע מתיחות גב תחתון צוואר וכתפיים עיסוי יומי כללי",
+      "שליטה ותפעול שליטה באמצעות מסך טאץ’ צבעוני שלט חכם כלול שפת ממשק: עברית / אנגלית זיכרון משתמשים: ✔ כן"
+    ],
+    "specs": {
+      "מפרט 1": "חומרים ועיצוב חומר ריפוד: דמוי עור איכותי סוג גימור: פרימיום רך ונושם צבעים זמינים: שחור | אפור כהה | שמנת סגנון עיצובי: מודרני יוקרתי",
+      "מפרט 2": "מידות ומשקל מצב רגיל: 150×78×120 ס״מ מצב שכיבה: 180×78×90 ס״מ משקל הכורסה: 95 ק״ג משקל משתמש מקסימלי: 150 ק״ג",
+      "מפרט 3": "חשמל ובטיחות מתח עבודה: 220–240V צריכת חשמל: 180W תקני בטיחות: CE / CB כיבוי אוטומטי: ✔ כן",
+      "מפרט 4": "קהל יעד ושימושים מתאים ל: בית | משרד | קליניקה | לובי יוקרתי גובה משתמש מומלץ: 155–190 ס״מ גיל מומלץ: 18+",
+      "מפרט 5": "אחריות ושירות אחריות: 12 חודשים מלאים כולל: מנגנון, מנועים ואלקטרוניקה שירות טכנאי בבית הלקוח: ✔ כן",
+      "מפרט 6": "מידע לוגיסטי מידות אריזה: 140×78×110 ס״מ משקל אריזה: 110 ק״ג מספר קרטונים: 1"
+    },
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T20:26:54.733Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T20:29:34.444Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694d9ed94edabb9395980731"
+    },
+    "name": "שולחן נירוסטה",
+    "description": "שולחן 70 6080",
+    "fullDescription": "שולחן מקצועי חזק אמיד נירוסכהמיוחדת וחזקה במיוחד מתאים לכל עסקים במחיר שלא קיים",
+    "category": "נירוסטה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 990,
+    "originalPrice": 1600,
+    "commission": 99,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766694595/vipo-products/q2lwqpklrtammdxhbxya.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766694595/vipo-products/q2lwqpklrtammdxhbxya.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766694595/vipo-products/q2lwqpklrtammdxhbxya.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T20:30:17.194Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T20:30:17.194Z"
+    },
+    "__v": 0
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "_id": {
+      "$oid": "694dae4b016d9163420f2921"
+    },
+    "agentId": {
+      "$oid": "694dadedd95291ad95eb8eca"
+    },
+    "refCode": "mrym-chdsh-svkn-001",
+    "ip": "79.177.148.208",
+    "userAgent": "WhatsApp/2.23.20.0",
+    "url": "https://vipo-group.com/r/mrym-chdsh-svkn-001",
+    "action": "click",
+    "createdAt": {
+      "$date": "2025-12-25T21:36:11.461Z"
+    }
+  }
+]
