@@ -276,8 +276,14 @@ export default function ProductPage() {
                 <video 
                   src={selectedMedia.src} 
                   controls 
+                  playsInline
+                  preload="auto"
                   className="w-full h-full object-cover"
-                />
+                  onError={(e) => console.error('Video error:', e.target.error, selectedMedia.src)}
+                >
+                  <source src={selectedMedia.src} type="video/mp4" />
+                  הדפדפן שלך לא תומך בתגית וידאו
+                </video>
               )
             ) : (
               <Image
