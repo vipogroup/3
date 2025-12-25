@@ -24,6 +24,15 @@ function uploadBufferToCloudinary(buffer, options = {}) {
 
 export async function POST(req) {
   try {
+    // Check Cloudinary credentials
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      console.error('Missing Cloudinary credentials');
+      return NextResponse.json(
+        { error: 'שגיאת הגדרות שרת - חסרים פרטי Cloudinary' },
+        { status: 500 }
+      );
+    }
+
     const form = await req.formData();
     const file = form.get('file');
 

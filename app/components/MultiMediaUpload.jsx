@@ -32,8 +32,21 @@ export default function MultiMediaUpload({
     });
 
     if (!res.ok) {
-      const data = await res.json();
-      throw new Error(data.error || 'העלאה נכשלה');
+      // Handle non-JSON error responses
+      const text = await res.text();
+      let errorMessage = 'העלאה נכשלה';
+      try {
+        const data = JSON.parse(text);
+        errorMessage = data.error || errorMessage;
+      } catch {
+        // Response is not JSON (e.g., "forbidden")
+        if (text.toLowerCase().includes('forbidden')) {
+          errorMessage = 'אין הרשאה להעלאת קבצים. נסה להתחבר מחדש.';
+        } else {
+          errorMessage = text || errorMessage;
+        }
+      }
+      throw new Error(errorMessage);
     }
 
     const data = await res.json();
