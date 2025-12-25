@@ -40,7 +40,6 @@ CatalogSchema.pre('validate', function catalogPreValidate(next) {
   next();
 });
 
-CatalogSchema.index({ slug: 1 }, { unique: true });
 CatalogSchema.index({ active: 1, sortOrder: 1 });
 
 export default mongoose.models.Catalog || mongoose.model('Catalog', CatalogSchema);
