@@ -1,0 +1,274 @@
+[
+  {
+    "_id": {
+      "$oid": "694db7fbf02532e8e69a6e7a"
+    },
+    "name": "ייחעח",
+    "description": "חילימ",
+    "fullDescription": "חיייי",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701263/vipo-products/1000635446_jfp3nf.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701274/vipo-products/1000635448_sd6jkx.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701281/vipo-products/1000635442_cf4o6j.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": false,
+    "rating": 4.5,
+    "reviews": 5,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T22:17:31.950Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T22:21:24.460Z"
+    },
+    "__v": 0,
+    "specs": {
+      "מפרט 1": "לגלגלגח",
+      "מפרט 2": "לגגחגחחג",
+      "מפרט 3": "לגלגלגח",
+      "מפרט 4": "בד גחגח",
+      "מפרט 5": "בלגחגח",
+      "מפרט 6": "ןקגחגח"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "694db885d544ca37ff71d0dc"
+    },
+    "name": "מכונת לייזר משולבת אנגלית",
+    "description": "ענ",
+    "fullDescription": "עמח",
+    "category": "אודיו",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 700,
+    "originalPrice": 888,
+    "commission": 70,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": null,
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 75,
+    "groupCurrentQuantity": 25,
+    "groupPurchaseDetails": {
+      "closingDays": 30,
+      "shippingDays": 60,
+      "minQuantity": 75,
+      "currentQuantity": 25,
+      "totalDays": 90
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701100/vipo-products/image_14_myocxl.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701100/vipo-products/image_14_myocxl.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701100/vipo-products/image_14_myocxl.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701114/vipo-products/%D7%AA%D7%9E%D7%95%D7%A0%D7%94_%D7%A9%D7%9C_WhatsApp_2025-11-20_%D7%91%D7%A9%D7%A2%D7%94_17.10.18_6acbd64a_w11buo.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701136/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_qvcp5v.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701168/vipo-products/3d-funny-bulb_mmvuvq.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701836/vipo-products/1000641525_g27rmx.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": false,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T22:19:49.282Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T22:31:17.110Z"
+    },
+    "__v": 0,
+    "specs": {}
+  },
+  {
+    "_id": {
+      "$oid": "694db9fefae399df7737edc1"
+    },
+    "name": "יבוא",
+    "description": "עני",
+    "fullDescription": "עני",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 700,
+    "originalPrice": 900,
+    "commission": 70,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701504/vipo-products/Untitled_design_20250729_224819_0000_aa5rd3.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701504/vipo-products/Untitled_design_20250729_224819_0000_aa5rd3.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701504/vipo-products/Untitled_design_20250729_224819_0000_aa5rd3.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701512/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_zrubty.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701520/vipo-products/image_14_ezabwn.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701536/vipo-products/eyes_protruding_tongue_furry_128327_1920x1080_hme4fs.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701543/vipo-products/wp5008951_qtf14e.jpg"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766701559/vipo-products/Sweet_Hanukkah_Joy_yljyrq.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T22:26:06.830Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T22:26:06.830Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694dbc5e48b50e60d721d073"
+    },
+    "name": "מא",
+    "description": "טי",
+    "fullDescription": "טי",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 6678,
+    "originalPrice": 66,
+    "commission": 667.8000000000001,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766702146/vipo-products/%D7%A8%D7%A9%D7%AA%D7%95%D7%AA_%D7%9C%D7%94%D7%9B%D7%A0%D7%A1%D7%94_reb7vp.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T22:36:14.282Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T22:36:14.282Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694dbd1a9bcb3f5201a762cc"
+    },
+    "name": "ניסוי מרים",
+    "description": "כעה",
+    "fullDescription": "כעה",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 900,
+    "originalPrice": 0,
+    "commission": 90,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766702348/vipo-products/%D7%A8%D7%A9%D7%AA%D7%95%D7%AA_%D7%9C%D7%94%D7%9B%D7%A0%D7%A1%D7%94_yr7krb.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T22:39:22.484Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T22:39:22.484Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "694dbe76faab8330b4ed2cce"
+    },
+    "name": "ניסוי מרים33",
+    "description": "כעהנ",
+    "fullDescription": "כענ",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 43,
+    "originalPrice": 333,
+    "commission": 4.3,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766702703/vipo-products/Sweet_Hanukkah_Joy_egqde3.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-25T22:45:10.959Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T22:45:10.959Z"
+    },
+    "__v": 0
+  }
+]

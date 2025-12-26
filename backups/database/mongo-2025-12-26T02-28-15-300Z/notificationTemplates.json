@@ -1,0 +1,325 @@
+[
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fb1"
+    },
+    "type": "welcome_user",
+    "audience": [
+      "customer",
+      "agent"
+    ],
+    "title": "ברוכים הבאים ל-vipogroup",
+    "body": "ברוך הבא ל-vipogroup! ההרשמה שלך הושלמה בהצלחה. כאן תוכל ליהנות מרכישות קבוצתיות, מחירים חכמים והזדמנויות ייחודיות.",
+    "variables": [
+      "datetime"
+    ],
+    "description": "הודעת פתיחה לאחר הרשמה של לקוח או סוכן.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:45:27.010Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fb2"
+    },
+    "type": "admin_new_registration",
+    "audience": [
+      "admin"
+    ],
+    "title": "הצטרפות חדשה למערכת",
+    "body": "נרשמה הצטרפות חדשה ל-vipogroup. סוג משתמש: {{user_type}}. תאריך ושעה: {{datetime}}.",
+    "variables": [
+      "user_type",
+      "datetime",
+      "customer_name",
+      "agent_name"
+    ],
+    "description": "התראה למנהל על משתמש חדש.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:37:39.480Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fb3"
+    },
+    "type": "order_confirmation",
+    "audience": [
+      "customer"
+    ],
+    "title": "הרכישה שלך ב-vipogroup הושלמה",
+    "body": "תודה רבה על הרכישה! התשלום התקבל בהצלחה וההזמנה נקלטה במערכת. ניתן לצפות בפרטי ההזמנה באזור האישי.",
+    "variables": [
+      "order_id",
+      "product_name",
+      "product_url",
+      "total_amount"
+    ],
+    "description": "אישור רכישה ללקוח.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:42:34.581Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fb4"
+    },
+    "type": "agent_commission_awarded",
+    "audience": [
+      "agent"
+    ],
+    "title": "הרווחת עמלה חדשה 🎉",
+    "body": "בוצעה רכישה דרך הלינק או קוד הקופון שלך ב-vipogroup. עמלה לזכותך: {{commission_percent}}% (הוספה לחשבון הסוכן שלך).",
+    "variables": [
+      "commission_percent",
+      "datetime",
+      "product_name"
+    ],
+    "description": "התראה לסוכן על עמלה חדשה.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:39:50.930Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fb5"
+    },
+    "type": "admin_agent_sale",
+    "audience": [
+      "admin"
+    ],
+    "title": "רכישה דרך קוד סוכן",
+    "body": "בוצעה רכישה דרך קוד קופון של סוכן. הסוכן זכאי לעמלה בהתאם למדיניות vipogroup.",
+    "variables": [
+      "agent_name",
+      "order_id"
+    ],
+    "description": "התראה למנהל על רכישה שנעשתה דרך קוד סוכן.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fb6"
+    },
+    "type": "admin_payment_completed",
+    "audience": [
+      "admin"
+    ],
+    "title": "מכירה חדשה שולמה",
+    "body": "תשלום הושלם בהצלחה ב-vipogroup והעסקה נקלטה במערכת.",
+    "variables": [
+      "order_id",
+      "amount",
+      "customer_name",
+      "product_name",
+      "product_url",
+      "datetime",
+      "agent_name",
+      "user_type",
+      "total_amount",
+      "commission_percent"
+    ],
+    "description": "התראה למנהל על השלמת תשלום.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:38:56.781Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fb7"
+    },
+    "type": "order_new",
+    "audience": [
+      "admin"
+    ],
+    "title": "התקבלה הזמנה חדשה",
+    "body": "התקבלה הזמנה חדשה במערכת. לקוח: {{customer_name}} · סכום: {{total_amount}} ₪ · מזהה: {{order_id}}.",
+    "variables": [
+      "order_id",
+      "customer_name",
+      "total_amount",
+      "product_name",
+      "datetime",
+      "agent_name"
+    ],
+    "description": "התראת PUSH למנהלים על הזמנה חדשה שנוצרה.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:44:07.730Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fb8"
+    },
+    "type": "agent_daily_digest",
+    "audience": [
+      "agent"
+    ],
+    "title": "דוח יומי – פעילות ועמלות ב-vipogroup",
+    "body": "שלום {{agent_name}}, זהו סיכום הפעילות שלך להיום: כניסות דרך הלינק שלך: {{visits}} · רכישות שבוצעו: {{orders}} · סך עמלות שנצברו היום: {{commission}} ₪. המשך לשתף ולהרוויח!",
+    "variables": [
+      "agent_name",
+      "visits",
+      "orders",
+      "commission",
+      "commission_percent",
+      "datetime"
+    ],
+    "description": "דוח יומי לסוכן.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:40:23.841Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fb9"
+    },
+    "type": "product_new_release",
+    "audience": [
+      "customer",
+      "agent"
+    ],
+    "title": "מוצר חדש עלה ל-vipogroup 🔥",
+    "body": "מוצר חדש נוסף ל-vipogroup ועכשיו זמין לרכישה. זה הזמן להיכנס ולבדוק!",
+    "variables": [
+      "product_name",
+      "product_url",
+      "total_amount",
+      "datetime"
+    ],
+    "description": "התראה על מוצר חדש במערכת.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:44:31.811Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fba"
+    },
+    "type": "group_buy_weekly_reminder",
+    "audience": [
+      "customer",
+      "agent"
+    ],
+    "title": "תזכורת – הרכישה הקבוצתית עדיין פתוחה ⏳",
+    "body": "הרכישה הקבוצתית בה נרשמת עדיין פתוחה. זמן שנותר עד הסגירה: {{time_left}}. הצטרף עכשיו ואל תפספס את המחיר הקבוצתי.",
+    "variables": [
+      "time_left",
+      "group_name",
+      "product_name",
+      "datetime",
+      "product_url",
+      "total_amount"
+    ],
+    "description": "תזכורת חוזרת עבור רכישה קבוצתית פתוחה.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:42:05.152Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fbb"
+    },
+    "type": "group_buy_last_call",
+    "audience": [
+      "customer",
+      "agent",
+      "admin"
+    ],
+    "title": "⏰ 24 שעות אחרונות לרכישה הקבוצתית",
+    "body": "בעוד 24 שעות הרכישה הקבוצתית ב-vipogroup נסגרת. אם עוד לא רכשת, זו ההזדמנות האחרונה ליהנות מהמחיר הקבוצתי.",
+    "variables": [
+      "group_name",
+      "product_name",
+      "datetime",
+      "total_amount",
+      "product_url"
+    ],
+    "description": "תזכורת 24 שעות לפני סגירה.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:41:32.486Z"
+    },
+    "version": 1
+  },
+  {
+    "_id": {
+      "$oid": "694a8f389299c3db79b16fbc"
+    },
+    "type": "group_buy_closed",
+    "audience": [
+      "customer",
+      "agent",
+      "admin"
+    ],
+    "title": "הרכישה הקבוצתית נסגרה",
+    "body": "הרכישה הקבוצתית ב-vipogroup נסגרה בהצלחה. תודה לכל המשתתפים! מכירות חדשות והזדמנויות נוספות יעלו בקרוב.",
+    "variables": [
+      "group_name"
+    ],
+    "description": "התראה על סגירת רכישה קבוצתית.",
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-12-23T12:46:48.361Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-26T01:40:52.636Z"
+    },
+    "version": 1
+  }
+]

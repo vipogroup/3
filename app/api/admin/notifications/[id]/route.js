@@ -70,6 +70,7 @@ export async function PUT(req, { params }) {
     }
 
     const updated = await upsertNotificationTemplate(type, {
+      name: payload.name,
       title: payload.title,
       body: payload.body,
       description: payload.description,
