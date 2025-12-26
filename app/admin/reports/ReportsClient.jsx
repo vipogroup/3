@@ -23,18 +23,24 @@ export default function ReportsClient() {
     setError(null);
     
     Promise.all([
-      fetch(`/api/admin/reports/overview${q}`).then((r) => r.json()),
-      fetch(`/api/admin/reports/by-product${q}`).then((r) => r.json()),
-      fetch(`/api/admin/reports/by-agent${q}`).then((r) => r.json()),
+      fetch(`/api/admin/reports/overview${q}`, { credentials: 'include' }).then((r) => r.json()),
+      fetch(`/api/admin/reports/by-product${q}`, { credentials: 'include' }).then((r) => r.json()),
+      fetch(`/api/admin/reports/by-agent${q}`, { credentials: 'include' }).then((r) => r.json()),
     ])
       .then(([overviewRes, productRes, agentRes]) => {
+        // Check for API errors
+        if (overviewRes.error) {
+          console.error('Overview API error:', overviewRes.error);
+          setError(`שגיאה: ${overviewRes.error}`);
+          return;
+        }
         setOverview(overviewRes.data || { newCustomers: 0, activeAgents: 0, ordersCount: 0, gmv: 0, commissions: 0 });
         setByProduct(productRes.items || []);
         setByAgent(agentRes.items || []);
       })
       .catch((err) => {
         console.error('Reports fetch error:', err);
-        setError('שגיאה בטעינת הדוחות');
+        setError('שגיאה בטעינת הדוחות: ' + err.message);
       })
       .finally(() => setLoading(false));
   }, [q]);
