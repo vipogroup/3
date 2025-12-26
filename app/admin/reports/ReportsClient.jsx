@@ -13,22 +13,63 @@ export default function ReportsClient() {
   const [overview, setOverview] = useState(null);
   const [byProduct, setByProduct] = useState([]);
   const [byAgent, setByAgent] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const q = '';
 
   useEffect(() => {
-    fetch(`/api/admin/reports/overview${q}`)
-      .then((r) => r.json())
-      .then((d) => setOverview(d.data));
-
-    fetch(`/api/admin/reports/by-product${q}`)
-      .then((r) => r.json())
-      .then((d) => setByProduct(d.items || []));
-
-    fetch(`/api/admin/reports/by-agent${q}`)
-      .then((r) => r.json())
-      .then((d) => setByAgent(d.items || []));
+    setLoading(true);
+    setError(null);
+    
+    Promise.all([
+      fetch(`/api/admin/reports/overview${q}`).then((r) => r.json()),
+      fetch(`/api/admin/reports/by-product${q}`).then((r) => r.json()),
+      fetch(`/api/admin/reports/by-agent${q}`).then((r) => r.json()),
+    ])
+      .then(([overviewRes, productRes, agentRes]) => {
+        setOverview(overviewRes.data || { newCustomers: 0, activeAgents: 0, ordersCount: 0, gmv: 0, commissions: 0 });
+        setByProduct(productRes.items || []);
+        setByAgent(agentRes.items || []);
+      })
+      .catch((err) => {
+        console.error('Reports fetch error:', err);
+        setError('שגיאה בטעינת הדוחות');
+      })
+      .finally(() => setLoading(false));
   }, [q]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-white p-3 sm:p-6 md:p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">טוען דוחות...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-white p-3 sm:p-6 md:p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <p className="text-red-600 font-medium">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            נסה שוב
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-white p-3 sm:p-6 md:p-8">
@@ -120,31 +161,42 @@ export default function ReportsClient() {
                   </tr>
                 </thead>
                 <tbody>
-                  {byProduct.map((r) => (
-                    <tr
-                      key={r._id || r.productName}
-                      className="border-b border-gray-100 transition-all"
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.background =
-                          'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)')
-                      }
-                      onMouseLeave={(e) => (e.currentTarget.style.background = 'white')}
-                    >
-                      <td className="px-4 py-3 text-gray-900">{r.productName || r._id || '—'}</td>
-                      <td className="px-4 py-3 text-center text-gray-900">{r.qty}</td>
-                      <td
-                        className="px-4 py-3 text-center font-semibold"
-                        style={{ color: '#1e3a8a' }}
-                      >
-                        ₪{r.revenue}
+                  {byProduct.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
+                        אין נתונים להצגה - טרם בוצעו הזמנות
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    byProduct.map((r) => (
+                      <tr
+                        key={r._id || r.productName}
+                        className="border-b border-gray-100 transition-all"
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.background =
+                            'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)')
+                        }
+                        onMouseLeave={(e) => (e.currentTarget.style.background = 'white')}
+                      >
+                        <td className="px-4 py-3 text-gray-900">{r.productName || r._id || '—'}</td>
+                        <td className="px-4 py-3 text-center text-gray-900">{r.qty}</td>
+                        <td
+                          className="px-4 py-3 text-center font-semibold"
+                          style={{ color: '#1e3a8a' }}
+                        >
+                          ₪{r.revenue}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
             {/* Mobile Cards */}
             <div className="md:hidden p-4">
+              {byProduct.length === 0 ? (
+                <p className="text-center text-gray-500 py-8">אין נתונים להצגה - טרם בוצעו הזמנות</p>
+              ) : (
               <div className="space-y-3">
                 {byProduct.map((r) => (
                   <div
@@ -169,6 +221,7 @@ export default function ReportsClient() {
                   </div>
                 ))}
               </div>
+              )}
             </div>
           </div>
         </section>
