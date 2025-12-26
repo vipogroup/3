@@ -243,6 +243,7 @@ export default function NotificationsManagerClient() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          name: selectedTemplateData.name,
           title: selectedTemplateData.title,
           body: selectedTemplateData.body,
           description: selectedTemplateData.description,
@@ -545,7 +546,7 @@ export default function NotificationsManagerClient() {
                     >
                       {availableTemplates.map((tpl) => (
                         <option key={tpl.type} value={tpl.type}>
-                          {tpl.type} ({TEMPLATE_HEBREW_NAMES[tpl.type] || tpl.type})
+                          {tpl.type} ({tpl.name || TEMPLATE_HEBREW_NAMES[tpl.type] || tpl.type})
                         </option>
                       ))}
                     </select>
@@ -622,6 +623,21 @@ export default function NotificationsManagerClient() {
                     <div className="rounded-2xl border-2 border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
                       <div className="flex flex-col lg:flex-row lg:flex-wrap items-start gap-4">
                         <div className="w-full lg:flex-1 space-y-4 sm:space-y-5">
+                          <div>
+                            <label className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-gray-800 mb-2">
+                              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" />
+                              </svg>
+                              שם התבנית (לתצוגה)
+                            </label>
+                            <input
+                              type="text"
+                              value={selectedTemplateData.name || TEMPLATE_HEBREW_NAMES[selectedTemplateData.type] || ''}
+                              onChange={(e) => handleTemplateFieldChange('name', e.target.value)}
+                              placeholder={TEMPLATE_HEBREW_NAMES[selectedTemplateData.type] || selectedTemplateData.type}
+                              className="w-full rounded-lg border-2 border-gray-300 bg-white px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all"
+                            />
+                          </div>
                           <div>
                             <label className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-gray-800 mb-2">
                               <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
