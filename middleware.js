@@ -10,14 +10,18 @@ export function middleware(request) {
 
   if (pathname === '/login') {
     if (token) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
+      const url = request.nextUrl.clone();
+      url.pathname = '/dashboard';
+      return NextResponse.redirect(url);
     }
     return NextResponse.next();
   }
 
   if (PROTECTED_ROUTES.some((route) => pathname.startsWith(route))) {
     if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
     }
     return NextResponse.next();
   }
