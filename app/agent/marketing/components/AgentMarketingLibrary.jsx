@@ -216,9 +216,12 @@ export default function AgentMarketingLibrary({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     {/* Video/Image Preview - Clickable for video */}
-                    <div 
-                      className={`rounded-xl overflow-hidden bg-black aspect-video mb-3 relative ${selectedAsset.type === 'video' ? 'cursor-pointer group' : ''}`}
-                      onClick={() => selectedAsset.type === 'video' && setVideoModalOpen(true)}
+                    <a 
+                      href={selectedAsset.type === 'video' ? selectedAsset.mediaUrl : undefined}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`block rounded-xl overflow-hidden bg-black aspect-video mb-3 relative ${selectedAsset.type === 'video' ? 'cursor-pointer group' : ''}`}
+                      onClick={(e) => selectedAsset.type !== 'video' && e.preventDefault()}
                     >
                       {selectedAsset.type === 'video' ? (
                         <>
@@ -253,7 +256,7 @@ export default function AgentMarketingLibrary({
                           className="w-full h-full object-cover"
                         />
                       )}
-                    </div>
+                    </a>
                     
                     {/* Action Buttons */}
                     <div className="flex gap-2">
