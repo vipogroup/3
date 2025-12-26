@@ -14,7 +14,7 @@ export async function GET(req) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
 
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = req.nextUrl || new URL(req.url, 'http://localhost');
     const from = searchParams.get('from');
     const to = searchParams.get('to');
     const data = await getAdminOverview({ from, to });
