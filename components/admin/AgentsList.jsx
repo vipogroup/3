@@ -16,6 +16,8 @@ export default function AgentsList() {
     email: '',
     phone: '',
     password: '',
+    commissionPercent: 10,
+    discountPercent: 10,
   });
 
   useEffect(() => {
@@ -63,7 +65,7 @@ export default function AgentsList() {
       }
 
       // Reset form and refresh list
-      setFormData({ fullName: '', email: '', phone: '', password: '' });
+      setFormData({ fullName: '', email: '', phone: '', password: '', commissionPercent: 10, discountPercent: 10 });
       setEditingAgent(null);
       setShowForm(false);
       fetchAgents();
@@ -79,6 +81,8 @@ export default function AgentsList() {
       email: agent.email,
       phone: agent.phone,
       password: '', // Don't populate password
+      commissionPercent: agent.commissionPercent ?? 10,
+      discountPercent: agent.discountPercent ?? 10,
     });
     setShowForm(true);
   }
@@ -86,7 +90,7 @@ export default function AgentsList() {
   function handleCancel() {
     setShowForm(false);
     setEditingAgent(null);
-    setFormData({ fullName: '', email: '', phone: '', password: '' });
+    setFormData({ fullName: '', email: '', phone: '', password: '', commissionPercent: 10, discountPercent: 10 });
     setError('');
   }
 
@@ -224,6 +228,30 @@ export default function AgentsList() {
                   className="w-full px-3 py-2 border rounded-lg"
                   required={!editingAgent}
                 />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1">עמלה (%)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.commissionPercent}
+                    onChange={(e) => setFormData({ ...formData, commissionPercent: Number(e.target.value) })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">הנחה (%)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.discountPercent}
+                    onChange={(e) => setFormData({ ...formData, discountPercent: Number(e.target.value) })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
               </div>
               <div className="flex gap-2 justify-end pt-2">
                 <button
