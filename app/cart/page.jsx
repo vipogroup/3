@@ -64,13 +64,15 @@ export default function CartPage() {
   );
 
   const handleApplyCoupon = useCallback( async (codeOverride) => {
-    const codeToValidate = (codeOverride ?? couponCode).trim();
+    // If codeOverride is not a string (e.g., Event object from button click), ignore it
+    const code = typeof codeOverride === 'string' ? codeOverride : couponCode;
+    const codeToValidate = code.trim();
     if (!codeToValidate) {
       setCouponError('אנא הזן קוד קופון');
       return;
     }
 
-    if (codeOverride) {
+    if (typeof codeOverride === 'string') {
       setCouponCode(codeToValidate);
     }
 
