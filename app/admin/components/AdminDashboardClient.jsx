@@ -344,150 +344,151 @@ export default function AdminDashboardClient() {
           </h1>
         </div>
 
-        {/* Quick Actions */}
+        {/* ניהול משתמשים */}
         <section className="mb-4 sm:mb-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <Link
-              href="/admin/users"
-              className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
-              style={{
-                border: '2px solid transparent',
-                backgroundImage:
-                  'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                backgroundOrigin: 'border-box',
-                backgroundClip: 'padding-box, border-box',
-                boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
-              }}
-            >
-              <div className="relative flex flex-col gap-2 sm:gap-3">
-                <span
-                  className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg"
-                  style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                  }}
-                >
-                  <UsersIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+          <h2 className="text-sm sm:text-base font-bold mb-3 flex items-center gap-2" style={{ color: '#1e3a8a' }}>
+            <UsersIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+            ניהול משתמשים
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            <Link href="/admin/users" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <UsersIcon className="w-5 h-5" />
                 </span>
                 <div>
-                  <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול משתמשים</p>
-                  <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
-                    הוספה, עדכון ומעקב אחרי משתמשים רשומים
-                  </p>
+                  <p className="text-sm font-semibold text-gray-900">משתמשים</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">ניהול כל המשתמשים</p>
                 </div>
-                <span
-                  className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block"
-                  style={{ color: '#0891b2' }}
-                >
-                  כניסה לניהול משתמשים
-                </span>
               </div>
             </Link>
-
-            <Link
-              href="/admin/products"
-              className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
-              style={{
-                border: '2px solid transparent',
-                backgroundImage:
-                  'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                backgroundOrigin: 'border-box',
-                backgroundClip: 'padding-box, border-box',
-                boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
-              }}
-            >
-              <div className="relative flex flex-col gap-2 sm:gap-3">
-                <span
-                  className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg"
-                  style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                  }}
-                >
-                  <CubeIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+            <Link href="/admin/agents" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <AgentIcon className="w-5 h-5" />
                 </span>
                 <div>
-                  <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול מוצרים</p>
-                  <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
-                    עדכון קטלוג, מלאי ומידע על מוצרים
-                  </p>
+                  <p className="text-sm font-semibold text-gray-900">סוכנים</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">ניהול סוכנים ועמלות</p>
                 </div>
-                <span
-                  className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block"
-                  style={{ color: '#0891b2' }}
-                >
-                  כניסה לניהול מוצרים
-                </span>
               </div>
             </Link>
+          </div>
+        </section>
 
-            <Link
-              href="/admin/orders"
-              className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
-              style={{
-                border: '2px solid transparent',
-                backgroundImage:
-                  'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                backgroundOrigin: 'border-box',
-                backgroundClip: 'padding-box, border-box',
-                boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
-              }}
-            >
-              <div className="relative flex flex-col gap-2 sm:gap-3">
-                <span
-                  className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg"
-                  style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                  }}
-                >
-                  <CartIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+        {/* קטלוג ומכירות */}
+        <section className="mb-4 sm:mb-6">
+          <h2 className="text-sm sm:text-base font-bold mb-3 flex items-center gap-2" style={{ color: '#1e3a8a' }}>
+            <CubeIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+            קטלוג ומכירות
+          </h2>
+          <div className="grid grid-cols-3 gap-3">
+            <Link href="/admin/products" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <CubeIcon className="w-5 h-5" />
                 </span>
                 <div>
-                  <p className="text-sm sm:text-base font-semibold text-gray-900">ניהול הזמנות</p>
-                  <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
-                    מעקב אחר סטטוסים, עמלות ותשלומים
-                  </p>
+                  <p className="text-sm font-semibold text-gray-900">מוצרים</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">ניהול קטלוג</p>
                 </div>
-                <span
-                  className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block"
-                  style={{ color: '#0891b2' }}
-                >
-                  כניסה לרשימת ההזמנות
-                </span>
               </div>
             </Link>
-
-            <Link
-              href="/admin/reports"
-              className="group relative overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all hover:-translate-y-1 hover:shadow-2xl"
-              style={{
-                border: '2px solid transparent',
-                backgroundImage:
-                  'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                backgroundOrigin: 'border-box',
-                backgroundClip: 'padding-box, border-box',
-                boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
-              }}
-            >
-              <div className="relative flex flex-col gap-2 sm:gap-3">
-                <span
-                  className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl text-white shadow-lg"
-                  style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                  }}
-                >
-                  <ChartBarIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+            <Link href="/admin/orders" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <CartIcon className="w-5 h-5" />
                 </span>
                 <div>
-                  <p className="text-sm sm:text-base font-semibold text-gray-900">דוחות וביצועים</p>
-                  <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
-                    ניתוח נתונים והפקת תובנות עסקיות
-                  </p>
+                  <p className="text-sm font-semibold text-gray-900">הזמנות</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">מעקב הזמנות</p>
                 </div>
-                <span
-                  className="mt-1 sm:mt-2 text-xs sm:text-sm font-semibold hidden sm:block"
-                  style={{ color: '#0891b2' }}
-                >
-                  צפה בדוחות ובסטטיסטיקות
+              </div>
+            </Link>
+            <Link href="/admin/products/new" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #16a34a, #22c55e)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(22, 163, 74, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)' }}>
+                  <PlusCircleIcon className="w-5 h-5" />
                 </span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">הוסף מוצר</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">מוצר חדש</p>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        {/* כספים ודוחות */}
+        <section className="mb-4 sm:mb-6">
+          <h2 className="text-sm sm:text-base font-bold mb-3 flex items-center gap-2" style={{ color: '#1e3a8a' }}>
+            <CoinStackIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+            כספים ודוחות
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            <Link href="/admin/reports" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <ChartBarIcon className="w-5 h-5" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">דוחות</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">סטטיסטיקות וביצועים</p>
+                </div>
+              </div>
+            </Link>
+            <Link href="/admin/transactions" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <CoinStackIcon className="w-5 h-5" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">עסקאות</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">היסטוריית תשלומים</p>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        {/* הגדרות ושיווק */}
+        <section className="mb-4 sm:mb-6">
+          <h2 className="text-sm sm:text-base font-bold mb-3 flex items-center gap-2" style={{ color: '#1e3a8a' }}>
+            <SettingsIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+            הגדרות ושיווק
+          </h2>
+          <div className="grid grid-cols-3 gap-3">
+            <Link href="/admin/notifications" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">התראות</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">שליחת Push</p>
+                </div>
+              </div>
+            </Link>
+            <Link href="/admin/marketing-assets" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <SparkIcon className="w-5 h-5" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">שיווק</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">חומרי שיווק</p>
+                </div>
+              </div>
+            </Link>
+            <Link href="/admin/settings" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <SettingsIcon className="w-5 h-5" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">הגדרות</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">הגדרות מערכת</p>
+                </div>
               </div>
             </Link>
           </div>
