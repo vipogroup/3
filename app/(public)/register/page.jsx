@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '../../../lib/http';
 import {
@@ -22,10 +22,85 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
+  // OTP verification state
+  const [otpStep, setOtpStep] = useState('phone'); // 'phone' | 'verify' | 'complete'
+  const [otpCode, setOtpCode] = useState('');
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpError, setOtpError] = useState('');
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+
+  // Countdown timer for resend
+  React.useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
+  async function handleSendOtp() {
+    if (!phone || phone.length < 9) {
+      setOtpError('אנא הזן מספר טלפון תקין');
+      return;
+    }
+    setOtpLoading(true);
+    setOtpError('');
+    try {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'שליחת הקוד נכשלה');
+      }
+      setOtpStep('verify');
+      setCountdown(30);
+    } catch (e) {
+      setOtpError(e.message || 'שגיאה בשליחת קוד');
+    } finally {
+      setOtpLoading(false);
+    }
+  }
+
+  async function handleVerifyOtp() {
+    if (!otpCode || otpCode.length < 4) {
+      setOtpError('אנא הזן קוד תקין');
+      return;
+    }
+    setOtpLoading(true);
+    setOtpError('');
+    try {
+      const res = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, code: otpCode }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error('קוד שגוי. נסה שוב.');
+      }
+      setPhoneVerified(true);
+      setOtpStep('complete');
+    } catch (e) {
+      setOtpError(e.message || 'אימות נכשל');
+    } finally {
+      setOtpLoading(false);
+    }
+  }
+
   async function onSubmit(e) {
     e.preventDefault();
     setErr('');
     setMsg('');
+
+    // Check phone verification
+    if (!phoneVerified) {
+      setErr('אנא אמת את מספר הטלפון לפני ההרשמה');
+      return;
+    }
+
     setLoading(true);
 
     // Get referrerId from localStorage (fallback if cookie didn't work)
@@ -270,25 +345,99 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {/* Phone */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                מספר טלפון
+            {/* Phone with OTP Verification */}
+            <div className="space-y-3">
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                מספר טלפון <span className="text-red-500">*</span>
               </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder="050-1234567"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                disabled={loading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
-                aria-describedby="phone-help"
-              />
-              <p id="phone-help" className="text-xs text-gray-500 mt-1">
-                אופציונלי - לצורך יצירת קשר
-              </p>
+              
+              {/* Phone Input */}
+              <div className="flex gap-2">
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="050-1234567"
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    if (phoneVerified) {
+                      setPhoneVerified(false);
+                      setOtpStep('phone');
+                    }
+                  }}
+                  disabled={loading || otpLoading || phoneVerified}
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+                {!phoneVerified && otpStep === 'phone' && (
+                  <button
+                    type="button"
+                    onClick={handleSendOtp}
+                    disabled={otpLoading || !phone || phone.length < 9}
+                    className="px-4 py-3 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  >
+                    {otpLoading ? 'שולח...' : 'שלח קוד'}
+                  </button>
+                )}
+                {phoneVerified && (
+                  <div className="flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-lg">
+                    <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-green-700 font-medium text-sm">מאומת</span>
+                  </div>
+                )}
+              </div>
+
+              {/* OTP Input */}
+              {otpStep === 'verify' && !phoneVerified && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
+                  <p className="text-sm text-blue-800">שלחנו קוד אימות למספר {phone}</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="הזן קוד 6 ספרות"
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      maxLength={6}
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-center text-lg tracking-widest"
+                      dir="ltr"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleVerifyOtp}
+                      disabled={otpLoading || otpCode.length < 6}
+                      className="px-4 py-3 text-white font-medium rounded-lg transition-all disabled:opacity-50"
+                      style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                    >
+                      {otpLoading ? 'מאמת...' : 'אמת'}
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <button
+                      type="button"
+                      onClick={handleSendOtp}
+                      disabled={countdown > 0 || otpLoading}
+                      className="text-blue-600 hover:underline disabled:text-gray-400 disabled:no-underline"
+                    >
+                      {countdown > 0 ? `שלח שוב בעוד ${countdown} שניות` : 'שלח קוד שוב'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setOtpStep('phone'); setOtpCode(''); }}
+                      className="text-gray-500 hover:underline"
+                    >
+                      שנה מספר
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* OTP Error */}
+              {otpError && (
+                <p className="text-sm text-red-600">{otpError}</p>
+              )}
             </div>
 
             {/* Success Message */}
