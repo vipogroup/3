@@ -213,7 +213,7 @@ export default function ProductsPage() {
       <style jsx>{`
         .marquee-container {
           display: flex;
-          animation: marquee 15s linear infinite;
+          animation: marquee 10s linear infinite;
         }
         .marquee-content {
           display: flex;
