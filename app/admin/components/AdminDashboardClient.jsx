@@ -425,7 +425,7 @@ export default function AdminDashboardClient() {
             <CoinStackIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
             כספים ודוחות
           </h2>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Link href="/admin/reports" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
@@ -433,7 +433,18 @@ export default function AdminDashboardClient() {
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-gray-900">דוחות</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">סטטיסטיקות וביצועים</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">סטטיסטיקות</p>
+                </div>
+              </div>
+            </Link>
+            <Link href="/admin/analytics" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">ניתוח נתונים</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">מתקדם</p>
                 </div>
               </div>
             </Link>
@@ -444,7 +455,7 @@ export default function AdminDashboardClient() {
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-gray-900">עסקאות</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">היסטוריית תשלומים</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">תשלומים</p>
                 </div>
               </div>
             </Link>
