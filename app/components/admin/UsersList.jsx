@@ -16,6 +16,7 @@ export default function UsersList() {
   const [currentUserEmail, setCurrentUserEmail] = useState('');
   const [isSuperAdminUser, setIsSuperAdminUser] = useState(false);
   const [permissionsModalUser, setPermissionsModalUser] = useState(null);
+  const [roleFilter, setRoleFilter] = useState('all');
 
   const getCurrentUser = useCallback(async () => {
     try {
@@ -231,6 +232,15 @@ export default function UsersList() {
     { value: 'admin', label: 'מנהל', color: 'bg-red-100 text-red-800' },
   ];
 
+  const filteredUsers = roleFilter === 'all' ? users : users.filter(u => u.role === roleFilter);
+
+  const filterOptions = [
+    { value: 'all', label: 'הכל', count: users.length },
+    { value: 'customer', label: 'לקוחות', count: users.filter(u => u.role === 'customer').length },
+    { value: 'agent', label: 'סוכנים', count: users.filter(u => u.role === 'agent').length },
+    { value: 'admin', label: 'מנהלים', count: users.filter(u => u.role === 'admin').length },
+  ];
+
   return (
     <div>
       {/* Header */}
@@ -248,7 +258,24 @@ export default function UsersList() {
             >
               רשימת משתמשים
             </h2>
-            <p className="text-sm text-gray-600 mt-1">סה״כ {users.length} משתמשים</p>
+            <p className="text-sm text-gray-600 mt-1">סה״כ {filteredUsers.length} משתמשים</p>
+          </div>
+          <div className="flex flex-wrap gap-2 mt-3 sm:mt-0">
+            {filterOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setRoleFilter(option.value)}
+                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                  roleFilter === option.value
+                    ? 'text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+                style={roleFilter === option.value ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+              >
+                {option.label} ({option.count})
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -317,7 +344,7 @@ export default function UsersList() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {users.map((user) => {
+              {filteredUsers.map((user) => {
                 const roleOption = roleOptions.find((r) => r.value === user.role);
                 const isCurrentUser = user._id === currentUserId;
 
@@ -506,7 +533,7 @@ export default function UsersList() {
 
         {/* Mobile Cards */}
         <div className="md:hidden p-4 space-y-3">
-          {users.map((user) => {
+          {filteredUsers.map((user) => {
             const roleOption = roleOptions.find((r) => r.value === user.role);
             const isCurrentUser = user._id === currentUserId;
 
@@ -609,8 +636,10 @@ export default function UsersList() {
           })}
         </div>
 
-        {users.length === 0 && (
-          <div className="text-center py-8 text-gray-500 text-sm">אין משתמשים במערכת</div>
+        {filteredUsers.length === 0 && (
+          <div className="text-center py-8 text-gray-500 text-sm">
+            {roleFilter === 'all' ? 'אין משתמשים במערכת' : `אין ${filterOptions.find(o => o.value === roleFilter)?.label || ''} במערכת`}
+          </div>
         )}
       </div>
 
