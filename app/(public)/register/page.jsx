@@ -247,7 +247,7 @@ export default function RegisterPage() {
               </label>
               
               {/* Email Input */}
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   id="email"
                   name="email"
@@ -263,21 +263,21 @@ export default function RegisterPage() {
                   }}
                   required
                   disabled={loading || verifyLoading || emailVerified}
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
                 {!emailVerified && emailStep === 'email' && (
                   <button
                     type="button"
                     onClick={handleSendEmailCode}
                     disabled={verifyLoading || !email || !email.includes('@')}
-                    className="px-4 py-3 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    className="w-full sm:w-auto px-6 py-3 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                     style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                   >
                     {verifyLoading ? 'שולח...' : 'שלח קוד'}
                   </button>
                 )}
                 {emailVerified && (
-                  <div className="flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-lg">
                     <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
@@ -288,29 +288,29 @@ export default function RegisterPage() {
 
               {/* Verification Code Input */}
               {emailStep === 'verify' && !emailVerified && (
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
-                  <p className="text-sm text-blue-800">שלחנו קוד אימות למייל {email}</p>
-                  <div className="flex gap-2">
+                <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
+                  <p className="text-sm text-blue-800">שלחנו קוד אימות למייל</p>
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       type="text"
                       placeholder="הזן קוד 6 ספרות"
                       value={verifyCode}
                       onChange={(e) => setVerifyCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                       maxLength={6}
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-center text-lg tracking-widest"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg text-center text-lg tracking-widest"
                       dir="ltr"
                     />
                     <button
                       type="button"
                       onClick={handleVerifyEmailCode}
                       disabled={verifyLoading || verifyCode.length < 6}
-                      className="px-4 py-3 text-white font-medium rounded-lg transition-all disabled:opacity-50"
+                      className="w-full sm:w-auto px-6 py-3 text-white font-medium rounded-lg transition-all disabled:opacity-50"
                       style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                     >
                       {verifyLoading ? 'מאמת...' : 'אמת'}
                     </button>
                   </div>
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm">
                     <button
                       type="button"
                       onClick={handleSendEmailCode}
