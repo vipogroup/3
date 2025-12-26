@@ -160,6 +160,9 @@ export default function NotificationsManagerClient() {
   const [testResult, setTestResult] = useState(null);
   const [sendingLive, setSendingLive] = useState(false);
   const [liveResult, setLiveResult] = useState(null);
+  const [newTemplateFormOpen, setNewTemplateFormOpen] = useState(false);
+  const [newTemplateForm, setNewTemplateForm] = useState({ type: '', name: '', title: '', body: '' });
+  const [creatingTemplate, setCreatingTemplate] = useState(false);
 
   const templateMap = useMemo(() => {
     const map = new Map();
@@ -465,6 +468,40 @@ export default function NotificationsManagerClient() {
     }
   }, [selectedTemplateData, selectedTemplate]);
 
+  const handleCreateTemplate = useCallback(async () => {
+    if (!newTemplateForm.type.trim()) {
+      setError('יש להזין מזהה לתבנית');
+      return;
+    }
+    setCreatingTemplate(true);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: newTemplateForm.type.trim(),
+          name: newTemplateForm.name.trim() || newTemplateForm.type.trim(),
+          title: newTemplateForm.title.trim(),
+          body: newTemplateForm.body.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error === 'template_already_exists' ? 'תבנית עם מזהה זה כבר קיימת' : data.error || 'שגיאה ביצירת תבנית');
+      }
+      setNewTemplateForm({ type: '', name: '', title: '', body: '' });
+      setNewTemplateFormOpen(false);
+      await loadData();
+      setSelectedTemplate(data.template?.type);
+    } catch (err) {
+      console.error('create_template_error', err);
+      setError(err.message || 'שגיאה ביצירת תבנית');
+    } finally {
+      setCreatingTemplate(false);
+    }
+  }, [newTemplateForm, loadData]);
+
   const availableTemplates = templates;
 
   return (
@@ -509,8 +546,105 @@ export default function NotificationsManagerClient() {
             >
               שליחות מתוזמנות
             </button>
+            <button
+              type="button"
+              onClick={() => setNewTemplateFormOpen(true)}
+              className="rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold transition-all text-white shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              <span className="flex items-center gap-1.5">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                תבנית חדשה
+              </span>
+            </button>
           </div>
         </header>
+
+        {/* New Template Modal */}
+        {newTemplateFormOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+              <h3
+                className="text-xl font-bold mb-6"
+                style={{
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                יצירת תבנית חדשה
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">מזהה תבנית (באנגלית)</label>
+                  <input
+                    type="text"
+                    value={newTemplateForm.type}
+                    onChange={(e) => setNewTemplateForm({ ...newTemplateForm, type: e.target.value })}
+                    placeholder="my_custom_notification"
+                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                    dir="ltr"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">שם התבנית (לתצוגה)</label>
+                  <input
+                    type="text"
+                    value={newTemplateForm.name}
+                    onChange={(e) => setNewTemplateForm({ ...newTemplateForm, name: e.target.value })}
+                    placeholder="הודעה מותאמת אישית"
+                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">כותרת ההתראה</label>
+                  <input
+                    type="text"
+                    value={newTemplateForm.title}
+                    onChange={(e) => setNewTemplateForm({ ...newTemplateForm, title: e.target.value })}
+                    placeholder="כותרת ההודעה"
+                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">תוכן ההודעה</label>
+                  <textarea
+                    value={newTemplateForm.body}
+                    onChange={(e) => setNewTemplateForm({ ...newTemplateForm, body: e.target.value })}
+                    placeholder="תוכן ההודעה..."
+                    rows={3}
+                    className="w-full px-3 py-2 border rounded-lg text-sm resize-none"
+                  />
+                </div>
+                <div className="flex gap-2 justify-end pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewTemplateFormOpen(false);
+                      setNewTemplateForm({ type: '', name: '', title: '', body: '' });
+                    }}
+                    className="px-4 py-2 border-2 rounded-lg font-medium transition-all"
+                    style={{ borderColor: '#e5e7eb' }}
+                  >
+                    ביטול
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCreateTemplate}
+                    disabled={creatingTemplate}
+                    className="px-4 py-2 text-white rounded-lg font-medium transition-all shadow-md disabled:opacity-50"
+                    style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  >
+                    {creatingTemplate ? 'יוצר...' : 'צור תבנית'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="mb-6 rounded-xl border border-rose-300 bg-rose-50 p-4 text-sm text-rose-700">
