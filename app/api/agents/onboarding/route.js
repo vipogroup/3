@@ -19,17 +19,22 @@ export async function PATCH(req) {
     }
 
     const body = await req.json();
-    const { phone, payoutDetails, skip } = body;
+    const { phone, payoutDetails } = body;
 
-    // Validate phone if provided
-    if (phone && typeof phone === 'string') {
-      const cleanPhone = phone.replace(/\D/g, '');
-      if (cleanPhone.length > 0 && (cleanPhone.length < 9 || cleanPhone.length > 15)) {
-        return NextResponse.json(
-          { error: 'מספר טלפון לא תקין' },
-          { status: 400 }
-        );
-      }
+    // Phone is REQUIRED for onboarding
+    if (!phone || typeof phone !== 'string') {
+      return NextResponse.json(
+        { error: 'מספר טלפון הוא שדה חובה' },
+        { status: 400 }
+      );
+    }
+
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.length < 9 || cleanPhone.length > 15) {
+      return NextResponse.json(
+        { error: 'מספר טלפון לא תקין (9-15 ספרות)' },
+        { status: 400 }
+      );
     }
 
     // Validate payout details if provided
@@ -48,25 +53,15 @@ export async function PATCH(req) {
       return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 });
     }
 
-    // Build update object
+    // Build update object - phone is required, payout details optional
     const updateFields = {
+      phone: cleanPhone,
       onboardingCompletedAt: new Date(),
       updatedAt: new Date(),
     };
 
-    if (!skip) {
-      if (phone && typeof phone === 'string' && phone.trim()) {
-        // Normalize phone number
-        let normalizedPhone = phone.trim().replace(/\D/g, '');
-        if (normalizedPhone.startsWith('0')) {
-          normalizedPhone = normalizedPhone; // Keep as is for Israeli format
-        }
-        updateFields.phone = normalizedPhone;
-      }
-
-      if (payoutDetails && typeof payoutDetails === 'string') {
-        updateFields.payoutDetails = payoutDetails.trim();
-      }
+    if (payoutDetails && typeof payoutDetails === 'string') {
+      updateFields.payoutDetails = payoutDetails.trim();
     }
 
     // Update user
@@ -81,14 +76,13 @@ export async function PATCH(req) {
 
     console.log('[ONBOARDING] Updated user:', {
       userId: String(userId),
-      skip: !!skip,
-      hasPhone: !!updateFields.phone,
+      phone: updateFields.phone,
       hasPayoutDetails: !!updateFields.payoutDetails,
     });
 
     return NextResponse.json({
       ok: true,
-      message: skip ? 'Onboarding skipped' : 'Onboarding completed',
+      message: 'Onboarding completed',
     });
   } catch (error) {
     console.error('[ONBOARDING] Error:', error);

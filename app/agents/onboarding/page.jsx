@@ -16,6 +16,13 @@ export default function AgentOnboardingPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate phone is required
+    if (!phone || phone.trim().length < 9) {
+      setError('מספר טלפון הוא שדה חובה');
+      return;
+    }
+    
     setLoading(true);
     setError('');
 
@@ -39,34 +46,6 @@ export default function AgentOnboardingPage() {
       router.push('/dashboard');
     } catch (e) {
       console.error('[ONBOARDING] Error:', e);
-      setError('שגיאה בחיבור לשרת');
-      setLoading(false);
-    }
-  };
-
-  const handleSkip = async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      // Mark onboarding as complete without saving details
-      const res = await fetch('/api/agents/onboarding', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ skip: true }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || 'שגיאה');
-        setLoading(false);
-        return;
-      }
-
-      router.push('/dashboard');
-    } catch (e) {
-      console.error('[ONBOARDING] Skip error:', e);
       setError('שגיאה בחיבור לשרת');
       setLoading(false);
     }
@@ -113,7 +92,7 @@ export default function AgentOnboardingPage() {
             {/* Phone Field */}
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                מספר טלפון <span className="text-gray-400">(אופציונלי)</span>
+                מספר טלפון <span className="text-red-500">*</span>
               </label>
               <input
                 id="phone"
@@ -182,15 +161,7 @@ export default function AgentOnboardingPage() {
               )}
             </button>
 
-            {/* Skip Button */}
-            <button
-              type="button"
-              onClick={handleSkip}
-              disabled={loading}
-              className="w-full text-gray-600 font-medium py-2 px-6 rounded-lg transition-all hover:bg-gray-100 disabled:cursor-not-allowed"
-            >
-              דלג, אמלא אחר כך
-            </button>
+            {/* Skip button removed - phone is required */}
           </form>
 
           {/* Info */}
