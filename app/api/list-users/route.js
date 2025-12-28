@@ -2,9 +2,13 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
+import { requireAdminApi } from '@/lib/auth/server';
 
-export async function GET() {
+export async function GET(request) {
   try {
+    // Admin-only: list all users
+    await requireAdminApi(request);
+    
     const db = await getDb();
     const users = db.collection('users');
 

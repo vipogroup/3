@@ -17,7 +17,7 @@ import mongoose from 'mongoose';
 const UserSchema = new mongoose.Schema(
   {
     fullName: { type: String, required: true, trim: true },
-    phone: { type: String, required: true, unique: true, trim: true },
+    phone: { type: String, sparse: true, unique: true, trim: true }, // Optional for OAuth users
     email: { type: String, sparse: true, index: true, trim: true, lowercase: true },
     role: {
       type: String,
@@ -25,7 +25,16 @@ const UserSchema = new mongoose.Schema(
       default: 'customer',
       required: true,
     },
-    passwordHash: { type: String, required: true },
+    passwordHash: { type: String, default: null }, // Optional for OAuth users
+
+    // OAuth provider info
+    provider: { type: String, enum: ['local', 'google', 'otp'], default: 'local' },
+    providerAccountId: { type: String, sparse: true, index: true },
+    image: { type: String, default: null },
+
+    // Onboarding tracking
+    onboardingCompletedAt: { type: Date, default: null },
+    payoutDetails: { type: String, default: '', trim: true },
 
     // Stage 8.1 – מזהה הפניה ייחודי (למערכת ההפניות)
     referralId: { type: String, unique: true, sparse: true, index: true },
@@ -98,7 +107,7 @@ UserSchema.methods.toPublicUser = function () {
 
 // אינדקס מפורש (למקרה שה־autoIndex כבוי בפרודקשן)
 UserSchema.index({ referralId: 1 }, { unique: true, sparse: true, name: 'uniq_referralId_sparse' });
-UserSchema.index({ phone: 1 }, { unique: true, name: 'uniq_phone' });
+UserSchema.index({ phone: 1 }, { unique: true, sparse: true, name: 'uniq_phone_sparse' });
 UserSchema.index({ email: 1 }, { sparse: true, name: 'idx_email_sparse' });
 UserSchema.index({ referredBy: 1 }, { name: 'idx_referredBy' });
 UserSchema.index({ commissionOnHold: 1 }, { name: 'idx_commission_on_hold' });

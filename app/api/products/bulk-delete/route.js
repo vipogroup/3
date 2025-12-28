@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectMongo } from '@/lib/mongoose';
 import Product from '@/models/Product';
+import { requireAdminApi } from '@/lib/auth/server';
 
 function normalizeIds(ids) {
   if (!Array.isArray(ids)) {
@@ -31,6 +32,9 @@ function normalizeIds(ids) {
 
 export async function POST(request) {
   try {
+    // Admin-only: bulk delete products
+    await requireAdminApi(request);
+    
     await connectMongo();
     const body = await request.json();
     const { ids } = body || {};

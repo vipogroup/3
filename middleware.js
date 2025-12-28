@@ -1,15 +1,35 @@
 import { NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-const PROTECTED_ROUTES = ['/dashboard', '/admin'];
+const PROTECTED_ROUTES = ['/dashboard', '/admin', '/agent'];
 
-export function middleware(request) {
+/**
+ * Middleware that supports both legacy JWT cookies and NextAuth sessions
+ */
+export async function middleware(request) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get('auth_token')?.value;
 
-  console.log('[MW]', pathname, 'token?', !!token);
+  // Check for legacy auth_token cookie
+  const legacyToken = request.cookies.get('auth_token')?.value;
 
+  // Check for NextAuth session token
+  let nextAuthToken = null;
+  try {
+    nextAuthToken = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+  } catch (e) {
+    // NextAuth token check failed, continue with legacy check
+  }
+
+  const isAuthenticated = !!(legacyToken || nextAuthToken);
+
+  console.log('[MW]', pathname, 'legacy?', !!legacyToken, 'nextauth?', !!nextAuthToken);
+
+  // Redirect authenticated users away from login page
   if (pathname === '/login') {
-    if (token) {
+    if (isAuthenticated) {
       const url = request.nextUrl.clone();
       url.pathname = '/dashboard';
       return NextResponse.redirect(url);
@@ -17,8 +37,34 @@ export function middleware(request) {
     return NextResponse.next();
   }
 
+  // Protect routes that require authentication
   if (PROTECTED_ROUTES.some((route) => pathname.startsWith(route))) {
-    if (!token) {
+    if (!isAuthenticated) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+
+    // Note: Onboarding redirect temporarily disabled to prevent redirect loops
+    // TODO: Re-enable once NextAuth token properly includes onboardingCompletedAt
+    // if (nextAuthToken && !legacyToken) {
+    //   const needsOnboarding =
+    //     nextAuthToken.role === 'agent' &&
+    //     !nextAuthToken.onboardingCompletedAt &&
+    //     !pathname.startsWith('/agents/onboarding');
+    //   if (needsOnboarding) {
+    //     const url = request.nextUrl.clone();
+    //     url.pathname = '/agents/onboarding';
+    //     return NextResponse.redirect(url);
+    //   }
+    // }
+
+    return NextResponse.next();
+  }
+
+  // Allow onboarding page for authenticated users
+  if (pathname.startsWith('/agents/onboarding')) {
+    if (!isAuthenticated) {
       const url = request.nextUrl.clone();
       url.pathname = '/login';
       return NextResponse.redirect(url);
@@ -30,5 +76,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/dashboard/:path*', '/login'],
+  matcher: ['/admin/:path*', '/dashboard/:path*', '/agent/:path*', '/agents/:path*', '/login'],
 };
