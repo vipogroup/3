@@ -134,10 +134,14 @@ export default function RegisterPage() {
         errorMsg = 'משתמש עם האימייל או הטלפון הזה כבר קיים. נסה להתחבר במקום.';
       } else if (errorMsg === 'missing fields') {
         errorMsg = 'חסרים שדות חובה. אנא מלא את כל השדות המסומנים בכוכבית.';
-      } else if (errorMsg === 'phone or email required') {
-        errorMsg = 'נדרש אימייל או טלפון לפחות.';
+      } else if (errorMsg === 'phone required') {
+        errorMsg = 'נדרש מספר טלפון להרשמה.';
+      } else if (errorMsg === 'email required') {
+        errorMsg = 'נדרשת כתובת אימייל להרשמה.';
       } else if (errorMsg === 'invalid role') {
         errorMsg = 'סוג משתמש לא תקין.';
+      } else if (errorMsg === 'TOO_MANY_REQUESTS') {
+        errorMsg = 'יותר מדי ניסיונות. נסה שוב מאוחר יותר.';
       }
       setErr(errorMsg);
       setLoading(false);
@@ -419,10 +423,10 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {/* Phone (Optional) */}
+            {/* Phone (Required) */}
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                מספר טלפון
+                מספר טלפון <span className="text-red-500">*</span>
               </label>
               <input
                 id="phone"
@@ -431,12 +435,13 @@ export default function RegisterPage() {
                 placeholder="050-1234567"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                required
                 disabled={loading}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
                 aria-describedby="phone-help"
               />
               <p id="phone-help" className="text-xs text-gray-500 mt-1">
-                אופציונלי - לצורך יצירת קשר בוואטסאפ
+                נדרש לצורך יצירת קשר ואימות
               </p>
             </div>
 

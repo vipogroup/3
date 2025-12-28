@@ -53,7 +53,7 @@ export async function POST(req) {
     const { fullName, phone, email, password, role, referrerId } = body;
     const normalizedPhone = normalizePhone(phone);
 
-    // Support both phone and email registration
+    // Validate required fields
     if (!password) {
       return NextResponse.json(
         { ok: false, error: 'missing fields' },
@@ -61,9 +61,18 @@ export async function POST(req) {
       );
     }
 
-    if (!normalizedPhone && !email) {
+    // Phone is required for registration
+    if (!normalizedPhone) {
       return NextResponse.json(
-        { ok: false, error: 'phone or email required' },
+        { ok: false, error: 'phone required' },
+        { status: 400 },
+      );
+    }
+
+    // Email is also required for verification
+    if (!email) {
+      return NextResponse.json(
+        { ok: false, error: 'email required' },
         { status: 400 },
       );
     }
@@ -80,11 +89,13 @@ export async function POST(req) {
     const db = await getDb();
     const users = db.collection('users');
 
-    // Check if user exists
-    const query = email
-      ? { email: email.toLowerCase().trim() }
-      : { phone: normalizedPhone };
-    const exists = await users.findOne(query);
+    // Check if user exists (by phone or email)
+    const exists = await users.findOne({
+      $or: [
+        { phone: normalizedPhone },
+        { email: email.toLowerCase().trim() },
+      ],
+    });
     if (exists) {
       return NextResponse.json(
         { ok: false, error: 'user exists' },
@@ -240,6 +251,15 @@ export async function POST(req) {
     return res;
   } catch (e) {
     console.error('REGISTER_ERROR:', e);
+    
+    // Handle duplicate key error (user already exists)
+    if (e.code === 11000) {
+      return NextResponse.json(
+        { ok: false, error: 'user exists' },
+        { status: 409 },
+      );
+    }
+    
     return NextResponse.json(
       { ok: false, error: 'server error' },
       { status: 500 },

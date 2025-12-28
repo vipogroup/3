@@ -45,19 +45,18 @@ export async function middleware(request) {
       return NextResponse.redirect(url);
     }
 
-    // Note: Onboarding redirect temporarily disabled to prevent redirect loops
-    // TODO: Re-enable once NextAuth token properly includes onboardingCompletedAt
-    // if (nextAuthToken && !legacyToken) {
-    //   const needsOnboarding =
-    //     nextAuthToken.role === 'agent' &&
-    //     !nextAuthToken.onboardingCompletedAt &&
-    //     !pathname.startsWith('/agents/onboarding');
-    //   if (needsOnboarding) {
-    //     const url = request.nextUrl.clone();
-    //     url.pathname = '/agents/onboarding';
-    //     return NextResponse.redirect(url);
-    //   }
-    // }
+    // Redirect Google users who haven't completed onboarding (phone required)
+    if (nextAuthToken && !legacyToken) {
+      const needsOnboarding =
+        !nextAuthToken.onboardingCompletedAt &&
+        !pathname.startsWith('/agents/onboarding');
+
+      if (needsOnboarding) {
+        const url = request.nextUrl.clone();
+        url.pathname = '/agents/onboarding';
+        return NextResponse.redirect(url);
+      }
+    }
 
     return NextResponse.next();
   }
