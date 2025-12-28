@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 /**
  * Agent Onboarding Page
- * Collects optional phone and payout details for first-time Google sign-in users
+ * Collects phone and payout details for first-time Google sign-in users
+ * Phone is pre-filled from localStorage if user came from register page
  */
 export default function AgentOnboardingPage() {
   const router = useRouter();
@@ -13,6 +14,20 @@ export default function AgentOnboardingPage() {
   const [payoutDetails, setPayoutDetails] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Check for pending phone from register page
+  useEffect(() => {
+    try {
+      const pendingPhone = localStorage.getItem('pendingGooglePhone');
+      if (pendingPhone) {
+        setPhone(pendingPhone);
+        // Clear it after use
+        localStorage.removeItem('pendingGooglePhone');
+      }
+    } catch (e) {
+      console.log('localStorage not available');
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
