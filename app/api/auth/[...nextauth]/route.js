@@ -53,11 +53,14 @@ const handler = NextAuth({
           // Note: Skip referral from cookies in signIn callback - handled elsewhere
           let referredBy = null;
 
+          // Note: Phone will be updated from localStorage after redirect
+          // The onboarding page or a separate API will handle this
+
           // Create new user (agent role by default for Google signups)
           const newUser = {
             fullName: user.name || email.split('@')[0],
             email,
-            phone: null, // Will be collected in onboarding
+            phone: null, // Will be updated after OAuth from localStorage
             role: 'agent',
             passwordHash: null, // OAuth users don't have password
             provider: 'google',

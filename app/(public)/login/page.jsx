@@ -38,17 +38,9 @@ function LoginPageContent() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setErr('');
-    setGoogleLoading(true);
-    saveReferralToCookie();
-    try {
-      await signIn('google', { callbackUrl: '/dashboard' });
-    } catch (e) {
-      console.error('[LOGIN] Google sign-in error:', e);
-      setErr('שגיאה בהתחברות עם Google');
-      setGoogleLoading(false);
-    }
+  const handleGoogleSignIn = () => {
+    // Redirect to register page - phone is required before Google login
+    router.push('/register?google=1');
   };
 
   useEffect(() => {
