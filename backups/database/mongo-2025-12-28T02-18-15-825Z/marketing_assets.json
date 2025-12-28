@@ -1,0 +1,170 @@
+[
+  {
+    "_id": {
+      "$oid": "694dc48db2f75a7d2b5715a5"
+    },
+    "title": "תן לי חצי דקה",
+    "type": "video",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766704155/vipo-products/1000647709_pi13k9.mp4",
+    "thumbnailUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766704258/vipo-products/1000647710_djbqxb.jpg",
+    "messageTemplate": "🔥 הזדמנות מיוחדת! 🔥\n\nהצטרפו לרכישה קבוצתית ותיהנו מ 50% הנחה \n\n🛒 לרכישה: https://vipo-group.com/r/mrym-chdsh-svkn-001\n\n🎁 קוד קופון להנחה: mrym-chdsh-svkn-001\n\nנלחמים ביוקר המחיה - ורוכשים ביחד! 💪",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-25T23:11:09.939Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T23:36:50.585Z"
+    },
+    "tags": []
+  },
+  {
+    "_id": {
+      "$oid": "694dc8216e2f0c02ffe8f758"
+    },
+    "title": "למה לשלם פי שלוש",
+    "type": "video",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766705176/vipo-products/1000647711_ejmeu2.mp4",
+    "thumbnailUrl": null,
+    "messageTemplate": "🔥 הזדמנות מיוחדת! 🔥\n\nהצטרפו לרכישה קבוצתית ותיהנו ממחירים מטורפים!\n\n🛒 לרכישה: https://vipo-group.com/r/mrym-chdsh-svkn-001\n\n🎁 קוד קופון להנחה: mrym-chdsh-svkn-001\n\nנלחמים ביוקר המחיה - ורוכשים ביחד! 💪",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-25T23:26:25.501Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T23:26:25.501Z"
+    },
+    "tags": []
+  },
+  {
+    "_id": {
+      "$oid": "694dc887eeb94067ceb80ab0"
+    },
+    "title": "רוכשים יחד נלחמים ביוקר המחיה",
+    "type": "image",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766705243/vipo-products/1000647710_z6qk7g.jpg",
+    "thumbnailUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766705215/vipo-products/1000647710_i0lpmy.jpg",
+    "messageTemplate": "🔥 הזדמנות מיוחדת! 🔥\n\nהצטרפו לרכישה קבוצתית ותיהנו ממחירים מטורפים!\n\n🛒 לרכישה: https://vipo-group.com/r/mrym-chdsh-svkn-001\n\n🎁 קוד קופון להנחה: mrym-chdsh-svkn-001\n\nנלחמים ביוקר המחיה - ורוכשים ביחד! 💪",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-25T23:28:07.887Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T23:28:07.887Z"
+    },
+    "tags": []
+  },
+  {
+    "_id": {
+      "$oid": "694dc8eaeeb94067ceb80abb"
+    },
+    "title": "רוצה להרוויח כסף בלי סיכון",
+    "type": "video",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766705353/vipo-products/1000647708_hkzyyj.mp4",
+    "thumbnailUrl": null,
+    "messageTemplate": "🔥 הזדמנות מיוחדת! 🔥\n\nהצטרפו לרכישה קבוצתית ותיהנו ממחירים מטורפים!\n\n🛒 לרכישה: https://vipo-group.com/r/mrym-chdsh-svkn-001\n\n🎁 קוד קופון להנחה: mrym-chdsh-svkn-001\n\nנלחמים ביוקר המחיה - ורוכשים ביחד! 💪",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-25T23:29:46.100Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T23:29:46.100Z"
+    },
+    "tags": []
+  },
+  {
+    "_id": {
+      "$oid": "694dc91e6e2f0c02ffe8f76e"
+    },
+    "title": "כל יום אתה משלם יותר",
+    "type": "video",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766705428/vipo-products/1000647707_zsyfun.mp4",
+    "thumbnailUrl": null,
+    "messageTemplate": "🔥 הזדמנות מיוחדת! 🔥\n\nהצטרפו לרכישה קבוצתית ותיהנו ממחירים מטורפים!\n\n🛒 לרכישה: https://vipo-group.com/r/mrym-chdsh-svkn-001\n\n🎁 קוד קופון להנחה: mrym-chdsh-svkn-001\n\nנלחמים ביוקר המחיה - ורוכשים ביחד! 💪",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-25T23:30:38.206Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T23:30:38.206Z"
+    },
+    "tags": []
+  },
+  {
+    "_id": {
+      "$oid": "694dc96aeeb94067ceb80ac1"
+    },
+    "title": "ברוכים הבאים ל vipo coneect",
+    "type": "video",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766705504/vipo-products/1000647706_f1ozwy.mp4",
+    "thumbnailUrl": null,
+    "messageTemplate": "🔥 הזדמנות מיוחדת! 🔥\n\nהצטרפו לרכישה קבוצתית ותיהנו ממחירים מטורפים!\n\n🛒 לרכישה: https://vipo-group.com/r/mrym-chdsh-svkn-001\n\n🎁 קוד קופון להנחה: mrym-chdsh-svkn-001\n\nנלחמים ביוקר המחיה - ורוכשים ביחד! 💪",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-25T23:31:54.091Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T23:31:54.091Z"
+    },
+    "tags": []
+  },
+  {
+    "_id": {
+      "$oid": "694dc9ab405787bb6fde806a"
+    },
+    "title": "למה לשלם יותר על כל דבר",
+    "type": "video",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766705568/vipo-products/1000647705_vs9wt8.mp4",
+    "thumbnailUrl": null,
+    "messageTemplate": "🔥 הזדמנות מיוחדת! 🔥\n\nהצטרפו לרכישה קבוצתית ותיהנו ממחירים מטורפים!\n\n🛒 לרכישה: https://vipo-group.com/r/mrym-chdsh-svkn-001\n\n🎁 קוד קופון להנחה: mrym-chdsh-svkn-001\n\nנלחמים ביוקר המחיה - ורוכשים ביחד! 💪",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-25T23:32:59.104Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T23:32:59.104Z"
+    },
+    "tags": []
+  },
+  {
+    "_id": {
+      "$oid": "694dcf20e947929290305c0d"
+    },
+    "title": "ניסוי חדש",
+    "type": "video",
+    "mediaUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1766706963/vipo-products/1000647711_wmqevt.mp4",
+    "thumbnailUrl": null,
+    "messageTemplate": "",
+    "target": {
+      "type": "products"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-25T23:56:16.244Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-25T23:56:16.244Z"
+    },
+    "tags": []
+  }
+]
