@@ -436,16 +436,47 @@ function RegisterPageContent() {
             </div>
 
             <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="הזן קוד 6 ספרות"
-                value={verifyCode}
-                onChange={(e) => setVerifyCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                maxLength={6}
-                className="w-full px-4 py-4 border-2 border-gray-300 rounded-xl text-center text-2xl tracking-[0.5em] font-bold focus:outline-none focus:border-cyan-500"
-                dir="ltr"
-                autoFocus
-              />
+              {/* 6 separate input boxes */}
+              <div className="flex justify-center gap-2" dir="ltr">
+                {[0, 1, 2, 3, 4, 5].map((index) => (
+                  <input
+                    key={index}
+                    id={`code-${index}`}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={verifyCode[index] || ''}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '');
+                      if (val.length <= 1) {
+                        const newCode = verifyCode.split('');
+                        newCode[index] = val;
+                        setVerifyCode(newCode.join(''));
+                        // Auto-focus next input
+                        if (val && index < 5) {
+                          document.getElementById(`code-${index + 1}`)?.focus();
+                        }
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      // Handle backspace to go to previous input
+                      if (e.key === 'Backspace' && !verifyCode[index] && index > 0) {
+                        document.getElementById(`code-${index - 1}`)?.focus();
+                      }
+                    }}
+                    onPaste={(e) => {
+                      e.preventDefault();
+                      const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+                      setVerifyCode(pastedData);
+                      // Focus last filled or first empty
+                      const focusIndex = Math.min(pastedData.length, 5);
+                      document.getElementById(`code-${focusIndex}`)?.focus();
+                    }}
+                    className="w-12 h-14 border-2 border-gray-300 rounded-lg text-center text-2xl font-bold focus:outline-none focus:border-cyan-500 transition-all"
+                    autoFocus={index === 0}
+                  />
+                ))}
+              </div>
 
               {verifyError && (
                 <p className="text-red-500 text-sm text-center">{verifyError}</p>
