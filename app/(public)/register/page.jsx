@@ -169,18 +169,22 @@ function RegisterPageContent() {
     const j = await res.json().catch(() => ({}));
     if (!res.ok || !j?.ok) {
       // Better error messages
-      let errorMsg = j?.error || 'הרשמה נכשלה';
-      if (errorMsg === 'user exists') {
+      let errorMsg = j?.message || j?.error || 'הרשמה נכשלה';
+      if (j?.error === 'phone exists') {
+        errorMsg = 'מספר הטלפון הזה כבר רשום במערכת. נסה להתחבר במקום.';
+      } else if (j?.error === 'email exists') {
+        errorMsg = 'כתובת האימייל הזו כבר רשומה במערכת. נסה להתחבר במקום.';
+      } else if (j?.error === 'user exists') {
         errorMsg = 'משתמש עם האימייל או הטלפון הזה כבר קיים. נסה להתחבר במקום.';
-      } else if (errorMsg === 'missing fields') {
+      } else if (j?.error === 'missing fields') {
         errorMsg = 'חסרים שדות חובה. אנא מלא את כל השדות המסומנים בכוכבית.';
-      } else if (errorMsg === 'phone required') {
+      } else if (j?.error === 'phone required') {
         errorMsg = 'נדרש מספר טלפון להרשמה.';
-      } else if (errorMsg === 'email required') {
+      } else if (j?.error === 'email required') {
         errorMsg = 'נדרשת כתובת אימייל להרשמה.';
-      } else if (errorMsg === 'invalid role') {
+      } else if (j?.error === 'invalid role') {
         errorMsg = 'סוג משתמש לא תקין.';
-      } else if (errorMsg === 'TOO_MANY_REQUESTS') {
+      } else if (j?.error === 'TOO_MANY_REQUESTS') {
         errorMsg = 'יותר מדי ניסיונות. נסה שוב מאוחר יותר.';
       }
       setErr(errorMsg);

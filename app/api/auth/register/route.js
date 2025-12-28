@@ -89,16 +89,20 @@ export async function POST(req) {
     const db = await getDb();
     const users = db.collection('users');
 
-    // Check if user exists (by phone or email)
-    const exists = await users.findOne({
-      $or: [
-        { phone: normalizedPhone },
-        { email: email.toLowerCase().trim() },
-      ],
-    });
-    if (exists) {
+    // Check if user exists (by phone or email) - with specific error message
+    const emailLower = email.toLowerCase().trim();
+    const existingByPhone = await users.findOne({ phone: normalizedPhone });
+    if (existingByPhone) {
       return NextResponse.json(
-        { ok: false, error: 'user exists' },
+        { ok: false, error: 'phone exists', message: 'מספר הטלפון הזה כבר רשום במערכת' },
+        { status: 409 },
+      );
+    }
+
+    const existingByEmail = await users.findOne({ email: emailLower });
+    if (existingByEmail) {
+      return NextResponse.json(
+        { ok: false, error: 'email exists', message: 'כתובת האימייל הזו כבר רשומה במערכת' },
         { status: 409 },
       );
     }
