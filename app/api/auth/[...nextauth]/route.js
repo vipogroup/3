@@ -144,7 +144,11 @@ const handler = NextAuth({
      * Redirect callback - handles post-login routing
      */
     async redirect({ url, baseUrl }) {
-      // If signing in, check if user needs onboarding
+      // Handle both absolute and relative URLs
+      if (url.startsWith('/')) {
+        // Relative URL - append to baseUrl
+        return baseUrl + url;
+      }
       if (url.startsWith(baseUrl)) {
         return url;
       }
