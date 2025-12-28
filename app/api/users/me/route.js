@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
+import { getToken } from 'next-auth/jwt';
 
 import { getDb } from '@/lib/db';
 import { generateAgentCoupon, DEFAULT_AGENT_COMMISSION_PERCENT, DEFAULT_AGENT_DISCOUNT_PERCENT } from '@/lib/agents';
@@ -37,10 +38,35 @@ async function ensureAgentCoupon(user) {
   }
 }
 
-function resolveUserId(req) {
+async function resolveUserId(req) {
+  // Try legacy JWT first
   const token = extractToken(req);
-  const decoded = token ? verifyJwt(token) : null;
-  return decoded?.userId || decoded?.sub || null;
+  if (token) {
+    try {
+      const decoded = verifyJwt(token);
+      if (decoded?.userId || decoded?.sub) {
+        return decoded.userId || decoded.sub;
+      }
+    } catch (e) {
+      // Legacy token invalid, try NextAuth
+    }
+  }
+
+  // Try NextAuth token
+  try {
+    const nextAuthToken = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+    
+    if (nextAuthToken) {
+      return nextAuthToken.userId || nextAuthToken.sub || null;
+    }
+  } catch (e) {
+    // NextAuth token check failed
+  }
+
+  return null;
 }
 
 function buildUserFilter(userId) {
@@ -67,7 +93,7 @@ function normalizeUpdates(body = {}) {
 
 export async function GET(req) {
   try {
-    const filter = buildUserFilter(resolveUserId(req));
+    const filter = buildUserFilter(await resolveUserId(req));
     if (!filter) {
       return NextResponse.json({ authenticated: false }, { status: 401 });
     }
@@ -93,7 +119,7 @@ export async function GET(req) {
 
 export async function PATCH(req) {
   try {
-    const filter = buildUserFilter(resolveUserId(req));
+    const filter = buildUserFilter(await resolveUserId(req));
     if (!filter) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
