@@ -57,7 +57,7 @@ const handler = NextAuth({
             fullName: user.name || email.split('@')[0],
             email,
             phone: null,
-            role: 'agent',
+            role: 'customer',
             passwordHash: null,
             provider: 'google',
             providerAccountId: account.providerAccountId,
@@ -115,7 +115,7 @@ const handler = NextAuth({
 
           if (dbUser) {
             token.userId = String(dbUser._id);
-            token.role = dbUser.role || 'agent';
+            token.role = dbUser.role || 'customer';
             token.fullName = dbUser.fullName;
             token.onboardingCompletedAt = dbUser.onboardingCompletedAt;
           }
