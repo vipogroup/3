@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
 import { getDb } from '@/lib/db';
-import { verifyJwt } from '@/src/lib/auth/createToken.js';
+import { requireAuthApi } from '@/lib/auth/server';
 
 async function ordersCollection() {
   const db = await getDb();
@@ -14,9 +14,7 @@ async function ordersCollection() {
 
 export async function GET(req, { params }) {
   try {
-    const token = req.cookies.get('token')?.value || '';
-    const decoded = verifyJwt(token);
-    if (!decoded?.userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = await requireAuthApi(req);
 
     const { id } = params || {};
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
@@ -25,22 +23,28 @@ export async function GET(req, { params }) {
     const order = await col.findOne({ _id: new ObjectId(id) });
     if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-    if (decoded.role !== 'admin' && String(order.agentId) !== String(decoded.userId)) {
+    // Check access: admin, order owner (createdBy), or agent
+    const isAdmin = user.role === 'admin';
+    const isOwner = String(order.createdBy) === String(user.id) || 
+                   (user.email && order.customer?.email === user.email);
+    const isAgent = String(order.agentId) === String(user.id);
+    
+    if (!isAdmin && !isOwner && !isAgent) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     return NextResponse.json(order);
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    const status = e?.status || 500;
+    return NextResponse.json({ error: status === 401 ? 'Unauthorized' : 'Server error' }, { status });
   }
 }
 
 export async function DELETE(req, { params }) {
   try {
-    const token = req.cookies.get('token')?.value || '';
-    const decoded = verifyJwt(token);
-    if (decoded?.role !== 'admin') {
+    const user = await requireAuthApi(req);
+    if (user.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -56,15 +60,14 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    const status = e?.status || 500;
+    return NextResponse.json({ error: status === 401 ? 'Unauthorized' : 'Server error' }, { status });
   }
 }
 
 export async function PATCH(req, { params }) {
   try {
-    const token = req.cookies.get('token')?.value || '';
-    const decoded = verifyJwt(token);
-    if (!decoded?.userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = await requireAuthApi(req);
 
     const { id } = params || {};
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
@@ -73,8 +76,9 @@ export async function PATCH(req, { params }) {
     const order = await col.findOne({ _id: new ObjectId(id) });
     if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-    const isOwner = String(order.agentId) === String(decoded.userId);
-    if (!(decoded.role === 'admin' || isOwner)) {
+    const isOwner = String(order.agentId) === String(user.id) ||
+                   String(order.createdBy) === String(user.id);
+    if (!(user.role === 'admin' || isOwner)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -97,6 +101,7 @@ export async function PATCH(req, { params }) {
     return NextResponse.json({ success: true, order: updated });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    const status = e?.status || 500;
+    return NextResponse.json({ error: status === 401 ? 'Unauthorized' : 'Server error' }, { status });
   }
 }
