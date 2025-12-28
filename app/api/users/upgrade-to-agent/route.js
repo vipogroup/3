@@ -5,18 +5,49 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { verifyJwt, signJwt } from '@/src/lib/auth/createToken.js';
 import { generateAgentCoupon } from '@/lib/agents';
+import { getToken } from 'next-auth/jwt';
 
 export async function POST(req) {
   try {
-    // Get user from cookie
-    const token = req.cookies.get('auth_token')?.value || req.cookies.get('token')?.value || '';
-    const decoded = verifyJwt(token);
+    let userId = null;
+    let userEmail = null;
+    let isNextAuthUser = false;
 
-    if (!decoded || !decoded.userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // Try legacy JWT first
+    const token = req.cookies.get('auth_token')?.value || req.cookies.get('token')?.value || '';
+    if (token) {
+      try {
+        const decoded = verifyJwt(token);
+        if (decoded?.userId) {
+          userId = decoded.userId;
+          userEmail = decoded.email;
+        }
+      } catch (e) {
+        // Legacy token invalid, try NextAuth
+      }
     }
 
-    const userId = decoded.userId;
+    // Try NextAuth token if legacy failed
+    if (!userId) {
+      try {
+        const nextAuthToken = await getToken({
+          req,
+          secret: process.env.NEXTAUTH_SECRET,
+        });
+        
+        if (nextAuthToken) {
+          userId = nextAuthToken.userId || nextAuthToken.sub;
+          userEmail = nextAuthToken.email;
+          isNextAuthUser = true;
+        }
+      } catch (e) {
+        // NextAuth token check failed
+      }
+    }
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const userFilter = ObjectId.isValid(userId) ? { _id: new ObjectId(userId) } : { _id: userId };
     const db = await getDb();
     const users = db.collection('users');
