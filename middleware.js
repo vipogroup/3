@@ -45,29 +45,6 @@ export async function middleware(request) {
       return NextResponse.redirect(url);
     }
 
-    // Redirect Google users who haven't completed onboarding (phone required)
-    if (nextAuthToken && !legacyToken) {
-      const needsOnboarding =
-        !nextAuthToken.onboardingCompletedAt &&
-        !pathname.startsWith('/agents/onboarding');
-
-      if (needsOnboarding) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/agents/onboarding';
-        return NextResponse.redirect(url);
-      }
-    }
-
-    return NextResponse.next();
-  }
-
-  // Allow onboarding page for authenticated users
-  if (pathname.startsWith('/agents/onboarding')) {
-    if (!isAuthenticated) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/login';
-      return NextResponse.redirect(url);
-    }
     return NextResponse.next();
   }
 
@@ -75,5 +52,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/dashboard/:path*', '/agent/:path*', '/agents/:path*', '/login'],
+  matcher: ['/admin/:path*', '/dashboard/:path*', '/agent/:path*', '/login'],
 };
