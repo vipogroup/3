@@ -36,38 +36,34 @@ const handler = NextAuth({
         return true;
       }
 
+      const email = user.email?.toLowerCase().trim();
+      if (!email) {
+        console.error('[GOOGLE_AUTH] No email from Google');
+        return false;
+      }
+
+      // Allow sign-in first, handle DB operations in background
+      // This prevents DB errors from blocking OAuth
       try {
         const db = await getDb();
         const users = db.collection('users');
-
-        const email = user.email?.toLowerCase().trim();
-        if (!email) {
-          console.error('[GOOGLE_AUTH] No email from Google');
-          return false;
-        }
 
         // Check if user exists
         let existingUser = await users.findOne({ email });
 
         if (!existingUser) {
-          // Note: Skip referral from cookies in signIn callback - handled elsewhere
-          let referredBy = null;
-
-          // Note: Phone will be updated from localStorage after redirect
-          // The onboarding page or a separate API will handle this
-
-          // Create new user (agent role by default for Google signups)
+          // Create new user
           const newUser = {
             fullName: user.name || email.split('@')[0],
             email,
-            phone: null, // Will be updated after OAuth from localStorage
+            phone: null,
             role: 'agent',
-            passwordHash: null, // OAuth users don't have password
+            passwordHash: null,
             provider: 'google',
             providerAccountId: account.providerAccountId,
             image: user.image || null,
             isActive: true,
-            referredBy,
+            referredBy: null,
             referralsCount: 0,
             referralCount: 0,
             commissionBalance: 0,
@@ -76,33 +72,8 @@ const handler = NextAuth({
             updatedAt: new Date(),
           };
 
-          const result = await users.insertOne(newUser);
-          existingUser = { ...newUser, _id: result.insertedId };
-
-          console.log('[GOOGLE_AUTH] Created new user:', {
-            userId: String(existingUser._id),
-            email,
-            referredBy: referredBy ? String(referredBy) : null,
-          });
-
-          // Update referrer counters if applicable
-          if (referredBy) {
-            try {
-              await users.updateOne(
-                { _id: referredBy },
-                {
-                  $inc: {
-                    referralsCount: 1,
-                    referralCount: 1,
-                    commissionBalance: 25, // Commission per referral
-                  },
-                }
-              );
-              console.log('[GOOGLE_AUTH] Referral applied:', String(referredBy));
-            } catch (e) {
-              console.error('[GOOGLE_AUTH] Failed to update referrer:', e.message);
-            }
-          }
+          await users.insertOne(newUser);
+          console.log('[GOOGLE_AUTH] Created new user:', email);
         } else {
           // Update existing user with provider info if missing
           if (!existingUser.provider) {
@@ -118,14 +89,15 @@ const handler = NextAuth({
               }
             );
           }
-          console.log('[GOOGLE_AUTH] Existing user signed in:', String(existingUser._id));
+          console.log('[GOOGLE_AUTH] Existing user signed in:', email);
         }
-
-        return true;
       } catch (error) {
-        console.error('[GOOGLE_AUTH] Sign-in error:', error);
-        return false;
+        // Log error but still allow sign-in
+        console.error('[GOOGLE_AUTH] DB error (allowing sign-in anyway):', error.message);
       }
+
+      // Always return true to allow OAuth sign-in
+      return true;
     },
 
     /**
