@@ -294,7 +294,7 @@ function CheckoutClient() {
             phone: data.user.phone || '',
           }));
         } else if (res.status === 401) {
-          router.replace('/login');
+          router.replace('/login?redirect=/checkout');
         }
       } catch (err) {
         console.error('Failed to load user', err);
