@@ -70,7 +70,7 @@ function RegisterPageContent() {
     }
 
     try {
-      await signIn('google', { callbackUrl: '/products' });
+      await signIn('google', { callbackUrl: '/auth/complete-google' });
     } catch (e) {
       setErr('שגיאה בהתחברות עם Google');
       setGoogleLoading(false);
