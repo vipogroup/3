@@ -142,6 +142,7 @@ const handler = NextAuth({
 
     /**
      * Redirect callback - handles post-login routing
+     * Always redirect to /products for new registrations
      */
     async redirect({ url, baseUrl }) {
       // Handle both absolute and relative URLs
@@ -152,7 +153,8 @@ const handler = NextAuth({
       if (url.startsWith(baseUrl)) {
         return url;
       }
-      return baseUrl + '/dashboard';
+      // Default to /products for new users
+      return baseUrl + '/products';
     },
   },
 

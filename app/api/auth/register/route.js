@@ -77,14 +77,8 @@ export async function POST(req) {
       );
     }
 
-    const allowedRoles = ['customer', 'agent'];
-    const normalizedRole = allowedRoles.includes(role) ? role : 'customer';
-    if (role && !allowedRoles.includes(role)) {
-      return NextResponse.json(
-        { ok: false, error: 'invalid role' },
-        { status: 400 },
-      );
-    }
+    // Always register as customer - users can upgrade to agent later
+    const normalizedRole = 'customer';
 
     const db = await getDb();
     const users = db.collection('users');
@@ -146,16 +140,7 @@ export async function POST(req) {
     const r = await users.insertOne(doc);
     const newUserId = r.insertedId;
 
-    // Auto-generate coupon for newly registered agents
-    let generatedCouponCode = null;
-    if (normalizedRole === 'agent') {
-      try {
-        const couponInfo = await generateAgentCoupon({ fullName: doc.fullName || doc.email || 'agent', agentId: newUserId });
-        generatedCouponCode = couponInfo?.couponCode || null;
-      } catch (couponErr) {
-        console.error('REGISTER_AGENT_COUPON_ERROR', couponErr);
-      }
-    }
+    // Note: Agent coupons are generated when user upgrades to agent via /api/users/upgrade-to-agent
 
     // Prevent self-referral (if somehow user referred themselves)
     if (doc.referredBy && String(doc.referredBy) === String(newUserId)) {
@@ -247,7 +232,7 @@ export async function POST(req) {
 
     // Clear refSource cookie after successful registration
     const res = NextResponse.json(
-      { ok: true, userId: String(newUserId), role: normalizedRole, couponCode: generatedCouponCode },
+      { ok: true, userId: String(newUserId), role: normalizedRole },
       { status: 201 },
     );
     res.cookies.set('refSource', '', { path: '/', maxAge: 0 });
