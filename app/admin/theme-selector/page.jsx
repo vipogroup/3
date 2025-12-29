@@ -95,7 +95,7 @@ export default function ThemeSelectorPage() {
             <p className="text-gray-600">בחר סגנון עיצוב למערכת - בהשראת אתרי e-commerce מובילים</p>
           </div>
           <Link
-            href="/admin/dashboard-improved"
+            href="/admin"
             className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold px-6 py-3 rounded-lg transition shadow-md"
           >
             ← חזרה לדשבורד
