@@ -25,10 +25,12 @@ export default function CompleteGooglePage() {
       }
 
       try {
-        // Read phone from localStorage
+        // Read phone and name from localStorage
         let phone = null;
+        let fullName = null;
         try {
           phone = localStorage.getItem('pendingGooglePhone');
+          fullName = localStorage.getItem('pendingGoogleName');
         } catch (e) {
           console.log('localStorage not available');
         }
@@ -37,7 +39,7 @@ export default function CompleteGooglePage() {
         const res = await fetch('/api/auth/complete-google', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone }),
+          body: JSON.stringify({ phone, fullName }),
         });
 
         const data = await res.json();
@@ -49,6 +51,7 @@ export default function CompleteGooglePage() {
         // Clear localStorage
         try {
           localStorage.removeItem('pendingGooglePhone');
+          localStorage.removeItem('pendingGoogleName');
           localStorage.removeItem('pendingGoogleRole');
         } catch (e) {
           console.log('localStorage not available');

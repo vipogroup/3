@@ -42,7 +42,7 @@ export async function POST(req) {
 
     const email = token.email.toLowerCase().trim();
     const body = await req.json();
-    const { phone } = body;
+    const { phone, fullName } = body;
     const normalizedPhone = normalizePhone(phone);
 
     const db = await getDb();
@@ -61,6 +61,12 @@ export async function POST(req) {
     const updateData = {
       updatedAt: new Date(),
     };
+
+    // Update fullName if provided and different from current
+    if (fullName && fullName.trim() && fullName.trim() !== user.fullName) {
+      updateData.fullName = fullName.trim();
+      console.log('[COMPLETE_GOOGLE] Updating fullName for user:', email, fullName.trim());
+    }
 
     // Update phone if provided and user doesn't have one
     if (normalizedPhone && !user.phone) {
