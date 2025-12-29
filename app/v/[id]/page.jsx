@@ -6,6 +6,7 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 
 import ReferralCookieSetter from './ReferralCookieSetter';
+import VideoPlayer from './VideoPlayer';
 
 export const dynamic = 'force-dynamic';
 
@@ -218,18 +219,7 @@ export default async function VideoSharePage({ params, searchParams }) {
         <section className="bg-white/90 backdrop-blur shadow-xl rounded-3xl overflow-hidden border border-slate-100">
           <div className="aspect-video bg-slate-900">
             {hasVideo ? (
-              <video
-                key={asset.mediaUrl}
-                poster={thumbnail ?? undefined}
-                controls
-                playsInline
-                preload="metadata"
-                className="w-full h-full object-contain"
-              >
-                <source src={asset.mediaUrl} type="video/mp4" />
-                <track kind="captions" label="Hebrew" />
-                הדפדפן שלך לא תומך בהפעלת וידאו.
-              </video>
+              <VideoPlayer mediaUrl={asset.mediaUrl} poster={thumbnail ?? undefined} title={asset.title || ''} />
             ) : thumbnail ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={thumbnail} alt={asset.title} className="w-full h-full object-cover" />

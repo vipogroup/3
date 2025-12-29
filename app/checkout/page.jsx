@@ -1198,12 +1198,38 @@ function CheckoutClient() {
                   e.currentTarget.style.background =
                     'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.25)';
                 }
               }}
             >
-              {processing ? 'מעבד...' : 'אשר הזמנה ושלם'}
+              {processing ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span
+                    className="h-5 w-5 rounded-full border-2 border-white/40 border-t-white animate-spin"
+                    aria-hidden="true"
+                  />
+                  מעבד את ההזמנה…
+                </span>
+              ) : (
+                'אשר הזמנה ושלם'
+              )}
             </button>
+
+            {processing ? (
+              <div className="mt-3 flex items-center justify-center gap-2 text-sm text-gray-600" role="status">
+                <svg
+                  className="h-4 w-4 text-gray-400 animate-pulse"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                מפנים אותך למסך התשלום, אנא המתן לרגע…
+              </div>
+            ) : null}
           </form>
 
           <aside
