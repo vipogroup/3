@@ -15,10 +15,18 @@ const DEFAULT_TEMPLATE = `🔥 הזדמנות מיוחדת! 🔥
 function buildShareMessage(asset, { coupon, link, discountPercent }) {
   const template = (asset.messageTemplate ? asset.messageTemplate.trim() : '') || DEFAULT_TEMPLATE;
 
-  return template
+  let message = template
     .replaceAll('{coupon}', coupon || '')
     .replaceAll('{link}', link || '')
     .replaceAll('{discount}', discountPercent != null ? `${discountPercent}%` : '');
+
+  const normalizedLink = typeof link === 'string' ? link.trim() : '';
+  if (asset?.type === 'video' && normalizedLink && !message.includes(normalizedLink)) {
+    const prefix = `לצפייה בסרטון: ${normalizedLink}`;
+    message = `${prefix}\n\n${message.trim()}`;
+  }
+
+  return message;
 }
 
 // Generate video thumbnail from Cloudinary video URL
