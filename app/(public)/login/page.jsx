@@ -38,16 +38,10 @@ function LoginPageContent() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setGoogleLoading(true);
+  const handleGoogleSignIn = () => {
+    // Redirect to intermediate page to collect name and phone before Google OAuth
     saveReferralToCookie();
-    try {
-      // Always redirect to complete-google to finish registration (phone, referral)
-      await signIn('google', { callbackUrl: '/auth/complete-google' });
-    } catch (error) {
-      setErr('שגיאה בהתחברות עם Google. אנא נסה שוב.');
-      setGoogleLoading(false);
-    }
+    router.push('/login/google');
   };
 
   useEffect(() => {
