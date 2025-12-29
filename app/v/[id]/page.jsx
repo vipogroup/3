@@ -49,6 +49,22 @@ function getVideoThumbnail(url) {
   return null;
 }
 
+function extractParamValue(param) {
+  if (!param) return '';
+  if (Array.isArray(param)) {
+    return param[0] ?? '';
+  }
+  return param;
+}
+
+function normalizeReferralCode(value) {
+  if (!value) return '';
+  const trimmed = value.toString().trim();
+  // Remove trailing punctuation that might arrive from copy/paste in messaging apps
+  const withoutTrailing = trimmed.replace(/[?&#/\\]+$/g, '');
+  return withoutTrailing;
+}
+
 async function fetchMarketingAsset(id) {
   try {
     const db = await getDb();
@@ -98,7 +114,8 @@ async function findAgentByCode(code) {
 export async function generateMetadata({ params, searchParams }) {
   const { origin } = resolveRequestContext();
   const id = await params?.id;
-  const ref = searchParams?.ref ? String(searchParams.ref) : '';
+  const rawRef = extractParamValue(searchParams?.ref);
+  const ref = normalizeReferralCode(rawRef);
 
   const asset = id ? await fetchMarketingAsset(id) : null;
   if (!asset) {
@@ -156,7 +173,8 @@ export async function generateMetadata({ params, searchParams }) {
 
 export default async function VideoSharePage({ params, searchParams }) {
   const id = await params?.id;
-  const ref = searchParams?.ref ? String(searchParams.ref) : '';
+  const rawRef = extractParamValue(searchParams?.ref);
+  const ref = normalizeReferralCode(rawRef);
 
   if (!id) {
     notFound();
@@ -170,12 +188,13 @@ export default async function VideoSharePage({ params, searchParams }) {
   const { origin } = resolveRequestContext();
 
   const agent = ref ? await findAgentByCode(ref) : null;
-  const couponCode = ref || agent?.couponCode || agent?.referralId || '';
+  const couponCode = normalizeReferralCode(ref || agent?.couponCode || agent?.referralId || '');
   const discountPercent = agent?.discountPercent ?? null;
 
   const thumbnail = asset.thumbnailUrl || getVideoThumbnail(asset.mediaUrl);
   const purchaseUrl = couponCode ? `/r/${encodeURIComponent(couponCode)}` : '/products';
   const shareUrl = `${origin}/v/${asset.id}${couponCode ? `?ref=${encodeURIComponent(couponCode)}` : ''}`;
+  const hasVideo = asset.type === 'video' && asset.mediaUrl;
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-white via-sky-50 to-white">
@@ -198,15 +217,16 @@ export default async function VideoSharePage({ params, searchParams }) {
 
         <section className="bg-white/90 backdrop-blur shadow-xl rounded-3xl overflow-hidden border border-slate-100">
           <div className="aspect-video bg-slate-900">
-            {asset.type === 'video' && asset.mediaUrl ? (
+            {hasVideo ? (
               <video
-                src={asset.mediaUrl}
+                key={asset.mediaUrl}
                 poster={thumbnail ?? undefined}
                 controls
                 playsInline
                 preload="metadata"
                 className="w-full h-full object-contain"
               >
+                <source src={asset.mediaUrl} type="video/mp4" />
                 <track kind="captions" label="Hebrew" />
                 הדפדפן שלך לא תומך בהפעלת וידאו.
               </video>
@@ -230,6 +250,20 @@ export default async function VideoSharePage({ params, searchParams }) {
                 <li>
                   לינק לשיתוף: <span className="font-mono text-xs break-all">{shareUrl}</span>
                 </li>
+                {hasVideo ? (
+                  <li>
+                    אם הווידאו אינו נטען, ניתן לפתוח אותו ישירות{' '}
+                    <a
+                      href={asset.mediaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-cyan-700 underline"
+                    >
+                      בקישור הבא
+                    </a>
+                    .
+                  </li>
+                ) : null}
                 {asset.createdAt ? (
                   <li>עודכן לאחרונה: {asset.createdAt.toLocaleDateString('he-IL')}</li>
                 ) : null}
