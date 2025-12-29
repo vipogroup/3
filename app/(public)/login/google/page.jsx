@@ -7,6 +7,7 @@ import { signIn } from 'next-auth/react';
 /**
  * Google Sign-in intermediate page
  * Collects name and phone before redirecting to Google OAuth
+ * Updated: 2024-12-29
  */
 export default function GoogleLoginPage() {
   const [fullName, setFullName] = useState('');
