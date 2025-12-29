@@ -146,8 +146,7 @@ function RegisterPageContent() {
       setMsg('נרשמת בהצלחה!');
 
       if (loginRes.ok) {
-        const targetPath = role === 'customer' ? '/products' : '/agent';
-        setTimeout(() => router.push(targetPath), 500);
+        setTimeout(() => router.push('/products'), 500);
       } else {
         setTimeout(() => router.push('/login'), 1500);
       }
@@ -309,23 +308,6 @@ function RegisterPageContent() {
                 </button>
               </div>
               <p className="text-xs text-gray-500 mt-1">מינימום 8 תווים, מספר אחד ואות אחת</p>
-            </div>
-
-            {/* Role */}
-            <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-                סוג משתמש
-              </label>
-              <select
-                id="role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                disabled={loading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-cyan-500 transition-all disabled:bg-gray-100"
-              >
-                <option value="customer">לקוח</option>
-                <option value="agent">סוכן</option>
-              </select>
             </div>
 
             {/* Terms */}
