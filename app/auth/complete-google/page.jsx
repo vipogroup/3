@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
 /**
  * Page that completes Google OAuth registration
@@ -10,20 +8,10 @@ import { useSession } from 'next-auth/react';
  * Processes referral attribution
  */
 export default function CompleteGooglePage() {
-  const router = useRouter();
-  const { data: session, status } = useSession();
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function completeRegistration() {
-      // Wait for session to be ready
-      if (status === 'loading') return;
-      
-      if (status === 'unauthenticated') {
-        router.push('/login');
-        return;
-      }
-
       try {
         // Read phone and name from localStorage
         let phone = null;
@@ -46,6 +34,11 @@ export default function CompleteGooglePage() {
 
         if (!res.ok) {
           console.error('Complete Google error:', data);
+          // If not authenticated, redirect to login
+          if (data.error === 'not_authenticated') {
+            window.location.href = '/login';
+            return;
+          }
         }
 
         // Clear localStorage
@@ -58,17 +51,17 @@ export default function CompleteGooglePage() {
         }
 
         // Redirect to products page
-        router.push('/products');
+        window.location.href = '/products';
       } catch (e) {
         console.error('Complete Google error:', e);
         setError('שגיאה בהשלמת ההרשמה');
         // Still redirect after error
-        setTimeout(() => router.push('/products'), 2000);
+        setTimeout(() => { window.location.href = '/products'; }, 2000);
       }
     }
 
     completeRegistration();
-  }, [status, router]);
+  }, []);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-white">
