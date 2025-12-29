@@ -45,6 +45,7 @@ export default function AgentMarketingLibrary({
   discountPercent,
   commissionPercent,
   assets,
+  baseUrl,
 }) {
   const [copyStatus, setCopyStatus] = useState(null);
   const [selectedAssetId, setSelectedAssetId] = useState(assets?.[0]?.id || null);
@@ -55,13 +56,36 @@ export default function AgentMarketingLibrary({
     selectedAssetId,
   ]);
 
+  const normalizedBaseUrl = useMemo(() => {
+    if (typeof baseUrl === 'string' && baseUrl.trim()) {
+      return baseUrl.replace(/\/$/, '');
+    }
+    if (typeof window !== 'undefined') {
+      return window.location.origin;
+    }
+    return '';
+  }, [baseUrl]);
+
+  const shareLink = useMemo(() => {
+    if (!selectedAsset) {
+      return referralLink || '';
+    }
+
+    if (selectedAsset.type === 'video' && normalizedBaseUrl) {
+      const videoUrl = `${normalizedBaseUrl}/v/${selectedAsset.id}`;
+      return couponCode ? `${videoUrl}?ref=${encodeURIComponent(couponCode)}` : videoUrl;
+    }
+
+    return referralLink || '';
+  }, [couponCode, normalizedBaseUrl, referralLink, selectedAsset]);
+
   const sharePayload = useMemo(
     () => ({
       coupon: couponCode || '',
-      link: referralLink || '',
+      link: shareLink,
       discountPercent: discountPercent ?? 0,
     }),
-    [couponCode, discountPercent, referralLink],
+    [couponCode, discountPercent, shareLink],
   );
 
   async function handleCopyText(text) {
@@ -80,10 +104,10 @@ export default function AgentMarketingLibrary({
   }
 
   async function handleCopyLink() {
-    if (!referralLink) return;
+    if (!shareLink) return;
     try {
       if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(referralLink);
+        await navigator.clipboard.writeText(shareLink);
         setCopyStatus('link');
         setTimeout(() => setCopyStatus(null), 2000);
       } else {
@@ -154,10 +178,10 @@ export default function AgentMarketingLibrary({
                 className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
                 style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
               >
-                {copyStatus === 'link' ? '✓ הלינק הועתק' : 'העתק לינק אישי'}
+                {copyStatus === 'link' ? '✓ הלינק הועתק' : 'העתק לינק לשיתוף'}
               </button>
               <a
-                href={referralLink}
+                href={shareLink || referralLink || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-4 py-2 rounded-lg text-sm font-semibold text-white text-center"
@@ -328,7 +352,7 @@ export default function AgentMarketingLibrary({
 
                         {/* Telegram */}
                         <a
-                          href={`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(preview)}`}
+                          href={`https://t.me/share/url?url=${encodeURIComponent(shareLink)}&text=${encodeURIComponent(preview)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex flex-col items-center justify-center p-3 rounded-lg transition-all hover:scale-105"
@@ -342,7 +366,7 @@ export default function AgentMarketingLibrary({
 
                         {/* Facebook */}
                         <a
-                          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}&quote=${encodeURIComponent(preview)}`}
+                          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareLink)}&quote=${encodeURIComponent(preview)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex flex-col items-center justify-center p-3 rounded-lg transition-all hover:scale-105"
@@ -356,7 +380,7 @@ export default function AgentMarketingLibrary({
 
                         {/* Twitter/X */}
                         <a
-                          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(preview)}`}
+                          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(preview)}&url=${encodeURIComponent(shareLink)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex flex-col items-center justify-center p-3 rounded-lg transition-all hover:scale-105"
@@ -370,7 +394,7 @@ export default function AgentMarketingLibrary({
 
                         {/* LinkedIn */}
                         <a
-                          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`}
+                          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareLink)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex flex-col items-center justify-center p-3 rounded-lg transition-all hover:scale-105"
