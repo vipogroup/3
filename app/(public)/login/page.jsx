@@ -39,10 +39,9 @@ function LoginPageContent() {
   };
 
   const handleGoogleSignIn = () => {
-    // Redirect to intermediate page to collect name and phone before Google OAuth
-    // Updated: 2024-12-29 21:00
+    console.log('[LOGIN] Redirecting to /login/google page');
     saveReferralToCookie();
-    router.push('/login/google');
+    window.location.href = '/login/google';
   };
 
   useEffect(() => {
