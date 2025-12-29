@@ -124,6 +124,14 @@ export function CartProvider({ children }) {
 
   const clearCart = useCallback(() => {
     setItems([]);
+    // Also clear localStorage immediately to ensure cart is empty even if redirect happens before useEffect runs
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.removeItem(STORAGE_KEY);
+      } catch (error) {
+        console.warn('Failed to clear cart from storage', error);
+      }
+    }
   }, []);
 
   const dismissLastAdded = useCallback(() => {

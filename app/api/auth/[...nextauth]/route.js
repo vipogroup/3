@@ -1,6 +1,10 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { getDb } from '@/lib/db';
+import { connectMongo } from '@/lib/mongoose';
+import Notification from '@/models/Notification';
+import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
+import { pushToUsers } from '@/lib/pushSender';
 
 /**
  * NextAuth configuration for Google OAuth
@@ -45,11 +49,14 @@ const handler = NextAuth({
       // Allow sign-in first, handle DB operations in background
       // This prevents DB errors from blocking OAuth
       try {
+        console.log('[GOOGLE_AUTH] Starting DB operations for:', email);
         const db = await getDb();
+        console.log('[GOOGLE_AUTH] DB connection established');
         const users = db.collection('users');
 
         // Check if user exists
         let existingUser = await users.findOne({ email });
+        console.log('[GOOGLE_AUTH] Existing user check:', existingUser ? 'FOUND' : 'NOT FOUND');
 
         if (!existingUser) {
           // Create new user
@@ -72,8 +79,60 @@ const handler = NextAuth({
             updatedAt: new Date(),
           };
 
-          await users.insertOne(newUser);
-          console.log('[GOOGLE_AUTH] Created new user:', email);
+          const result = await users.insertOne(newUser);
+          const newUserId = result.insertedId;
+          console.log('[GOOGLE_AUTH] Created new user:', email, 'ID:', String(newUserId));
+
+          // Create admin notification for new Google user
+          try {
+            await connectMongo();
+            await Notification.create({
+              type: 'new_user',
+              message: `נרשם משתמש חדש (Google): ${newUser.fullName || email}`,
+              payload: {
+                userId: newUserId,
+                email: newUser.email,
+                fullName: newUser.fullName,
+                provider: 'google',
+              },
+            });
+            console.log('[GOOGLE_AUTH] Admin notification created for new user');
+          } catch (notifyErr) {
+            console.error('[GOOGLE_AUTH] Notification error:', notifyErr.message);
+          }
+
+          // Send push notifications
+          try {
+            // 1. Welcome notification to new user
+            await pushToUsers([String(newUserId)], {
+              title: 'ברוכים הבאים ל-VIPO!',
+              body: `שלום ${newUser.fullName || 'משתמש יקר'}, ההרשמה שלך הושלמה בהצלחה!`,
+              icon: '/icons/192.png',
+              url: '/products',
+              data: { type: 'welcome_user', userId: String(newUserId) },
+            });
+
+            // 2. Admin notification about new Google registration
+            await sendTemplateNotification({
+              templateType: 'admin_new_registration',
+              variables: {
+                user_type: 'לקוח (Google)',
+                datetime: new Date().toLocaleString('he-IL'),
+              },
+              audienceRoles: ['admin'],
+              payloadOverrides: {
+                url: '/admin/users',
+                data: {
+                  userId: String(newUserId),
+                  userType: 'customer',
+                  provider: 'google',
+                },
+              },
+            });
+            console.log('[GOOGLE_AUTH] Push notifications sent for new user');
+          } catch (pushErr) {
+            console.error('[GOOGLE_AUTH] Push error:', pushErr.message);
+          }
         } else {
           // Update existing user with provider info if missing
           if (!existingUser.provider) {
@@ -102,22 +161,35 @@ const handler = NextAuth({
 
     /**
      * JWT callback - adds user data to token
+     * Refreshes user data from DB on every token refresh to ensure role is up-to-date
      */
     async jwt({ token, user, account }) {
-      if (account?.provider === 'google' && user?.email) {
+      // Get email from account (first login) or from existing token
+      const email = user?.email?.toLowerCase().trim() || token?.email?.toLowerCase().trim();
+      
+      if (email) {
         try {
           const db = await getDb();
           const users = db.collection('users');
           const dbUser = await users.findOne(
-            { email: user.email.toLowerCase().trim() },
+            { email },
             { projection: { _id: 1, role: 1, fullName: 1, onboardingCompletedAt: 1 } }
           );
 
           if (dbUser) {
+            // Always update token with latest DB values
             token.userId = String(dbUser._id);
             token.role = dbUser.role || 'customer';
             token.fullName = dbUser.fullName;
             token.onboardingCompletedAt = dbUser.onboardingCompletedAt;
+            token.email = email; // Store email for future refreshes
+            console.log('[GOOGLE_AUTH] JWT refreshed for:', email, 'role:', token.role);
+          } else {
+            // User was deleted from DB - reset to customer defaults
+            console.log('[GOOGLE_AUTH] User not found in DB, resetting token:', email);
+            token.role = 'customer';
+            token.userId = null;
+            token.email = email;
           }
         } catch (e) {
           console.error('[GOOGLE_AUTH] JWT callback error:', e.message);

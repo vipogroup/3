@@ -14,6 +14,12 @@ export async function POST(req) {
   try {
     // Get current user
     const user = await requireAuthApi(req);
+    
+    // Validate user object exists
+    if (!user || !user.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    
     const identifier = buildRateLimitKey(req, user.id);
     const rateLimit = rateLimiters.withdrawals(req, identifier);
     if (!rateLimit.allowed) {
@@ -31,6 +37,11 @@ export async function POST(req) {
     const db = await getDb();
     const users = db.collection('users');
     const withdrawals = db.collection('withdrawalRequests');
+    
+    // Validate user.id before creating ObjectId
+    if (!user.id || !ObjectId.isValid(user.id)) {
+      return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 });
+    }
     const userObjectId = new ObjectId(user.id);
 
     // Prevent multiple pending/approved requests
@@ -142,6 +153,12 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     const user = await requireAuthApi(req);
+    
+    // Validate user object exists
+    if (!user || !user.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    
     const identifier = buildRateLimitKey(req, user.id);
     const rateLimit = rateLimiters.withdrawals(req, identifier);
     if (!rateLimit.allowed) {
@@ -150,6 +167,11 @@ export async function GET(req) {
 
     const db = await getDb();
     const withdrawals = db.collection('withdrawalRequests');
+    
+    // Validate user.id is valid ObjectId
+    if (!ObjectId.isValid(user.id)) {
+      return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 });
+    }
     const userObjectId = new ObjectId(user.id);
 
     const requests = await withdrawals

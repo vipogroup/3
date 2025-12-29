@@ -386,7 +386,7 @@ export async function POST(req) {
           title: 'עמלה חדשה!',
           body: `בוצעה רכישה דרך הקופון שלך. עמלה: ${finalCommissionAmount.toLocaleString('he-IL')} ₪`,
           icon: '/icons/192.png',
-          url: '/dashboard/agent',
+          url: '/agent',
           data: { type: 'agent_commission_awarded', orderId: String(orderId), commission: finalCommissionAmount },
         });
 

@@ -425,7 +425,7 @@ export default function AdminDashboardClient() {
             <CoinStackIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
             כספים ודוחות
           </h2>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <Link href="/admin/reports" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
@@ -456,6 +456,17 @@ export default function AdminDashboardClient() {
                 <div>
                   <p className="text-sm font-semibold text-gray-900">ניהול עסקאות</p>
                   <p className="text-xs text-gray-500 hidden sm:block">תשלומים</p>
+                </div>
+              </div>
+            </Link>
+            <Link href="/dashboard/admin/withdrawals" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #b91c1c, #ef4444)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(239, 68, 68, 0.1)' }}>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #b91c1c 0%, #ef4444 100%)' }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">בקשות משיכה</p>
+                  <p className="text-xs text-gray-500 hidden sm:block">אישור תשלומים</p>
                 </div>
               </div>
             </Link>

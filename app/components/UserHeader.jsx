@@ -24,7 +24,14 @@ export default function UserHeader() {
     let ignore = false;
     (async () => {
       try {
-        const res = await fetch('/api/auth/me', { cache: 'no-store', credentials: 'include' });
+        const res = await fetch(`/api/auth/me?_t=${Date.now()}`, { 
+          cache: 'no-store', 
+          credentials: 'include',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
+        });
         if (!ignore && res.ok) {
           const data = await res.json();
           const userData = data?.user || null;

@@ -1,0 +1,99 @@
+[
+  {
+    "_id": {
+      "$oid": "690f366dc3841a52e00e5d63"
+    },
+    "fullName": "מנהל ראשי",
+    "email": "admin@vipo.local",
+    "phone": "0501234567",
+    "passwordHash": "$2a$10$aGMpU3gZdp9Neeyg0FOsQOKS5fZtZyREGhgCXjzWe7RebwLvwWJqi",
+    "role": "admin",
+    "isActive": false,
+    "isAgent": false,
+    "agentId": null,
+    "referralsCount": 0,
+    "referralCount": 0,
+    "commissionBalance": 0,
+    "totalSales": 0,
+    "createdAt": {
+      "$date": "2025-11-08T12:24:13.376Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-01T01:43:58.763Z"
+    },
+    "password": "$2a$10$N6bTS91A6uK8V7h2xZe8Luub2SQKVLG5yMLCR3nocGTxjcVRpENSG"
+  },
+  {
+    "_id": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "email": "m0587009938@gmail.com",
+    "phone": "0587009938",
+    "fullName": "System Admin",
+    "passwordHash": "$2a$10$6wc1L54jbVkaTiD5PMg84uqSvuONB/y7mh5XRlmWWHQWw0K3rprlO",
+    "role": "admin",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-15T14:51:21.929Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T03:29:57.204Z"
+    },
+    "referralsCount": 0,
+    "commissionBalance": 0,
+    "totalSales": 0,
+    "commissionOnHold": 0,
+    "image": "https://lh3.googleusercontent.com/a/ACg8ocKlEEr9IghCHms0u85l_TpnFhmxb0OfvSccjrNtfdlFusI--w=s96-c",
+    "provider": "google",
+    "providerAccountId": "107129372780600575444"
+  },
+  {
+    "_id": {
+      "$oid": "6951e66d76253b6ccfb4c1cb"
+    },
+    "fullName": "מרים שבו",
+    "email": "m0533858881@gmail.com",
+    "phone": null,
+    "role": "agent",
+    "passwordHash": null,
+    "provider": "google",
+    "providerAccountId": "113714861477354962076",
+    "image": "https://lh3.googleusercontent.com/a/ACg8ocK5AmU4CGJrpOrXlr_X1B5xcT_sSV0aKMCrm9awNMCoKTqA0A=s96-c",
+    "isActive": true,
+    "referredBy": null,
+    "referralsCount": 0,
+    "referralCount": 0,
+    "commissionBalance": 205.2,
+    "onboardingCompletedAt": null,
+    "createdAt": {
+      "$date": "2025-12-29T02:24:45.829Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-29T13:17:15.737Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "mrym-shbv-001",
+    "couponSequence": 1,
+    "couponSlug": "mrym-shbv",
+    "couponStatus": "active",
+    "discountPercent": 10,
+    "totalSales": 3
+  },
+  {
+    "_id": {
+      "$oid": "69527f27cea1854abd006229"
+    },
+    "fullName": "לקוח חדש 2",
+    "phone": "0525852583",
+    "email": "miriamshabo22@gmail.com",
+    "passwordHash": "$2a$10$8tF6pTHjx42ldIfn6SACCOWeRT19gnrFwE8nb8wgHWS1edw5dDfQS",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-29T13:16:23.931Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-29T13:16:23.931Z"
+    }
+  }
+]
