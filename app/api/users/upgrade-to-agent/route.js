@@ -63,24 +63,33 @@ export async function POST(req) {
     let user = null;
     const normalizedEmail = userEmail?.toLowerCase()?.trim();
 
-    // Prefer lookup by ObjectId when possible
-    if (userId && ObjectId.isValid(userId)) {
+    // For NextAuth users, prefer email lookup (userId is Google sub, not MongoDB ID)
+    if (isNextAuthUser && normalizedEmail) {
+      console.log('[UPGRADE_AGENT] NextAuth user - searching by email first:', normalizedEmail);
+      user = await users.findOne({ email: normalizedEmail });
+    }
+
+    // For legacy users or if email lookup failed, try by ObjectId
+    if (!user && userId && ObjectId.isValid(userId)) {
+      console.log('[UPGRADE_AGENT] Trying lookup by ObjectId:', userId);
       user = await users.findOne({ _id: new ObjectId(userId) });
     }
 
-    // Fallback: legacy string _id or email
-    if (!user && userId) {
-      console.log('[UPGRADE_AGENT] Retrying lookup by string _id');
+    // Fallback: legacy string _id
+    if (!user && userId && !isNextAuthUser) {
+      console.log('[UPGRADE_AGENT] Trying lookup by string _id:', userId);
       user = await users.findOne({ _id: userId });
     }
 
-    if (!user && normalizedEmail) {
-      console.log('[UPGRADE_AGENT] Retrying lookup by email', normalizedEmail);
+    // Final fallback: email for non-NextAuth users
+    if (!user && normalizedEmail && !isNextAuthUser) {
+      console.log('[UPGRADE_AGENT] Final fallback - email lookup:', normalizedEmail);
       user = await users.findOne({ email: normalizedEmail });
     }
 
     console.log('[UPGRADE_AGENT] User lookup result', {
       found: !!user,
+      foundId: user?._id ? String(user._id) : null,
       userId,
       userEmail: normalizedEmail,
       isNextAuthUser,
@@ -106,12 +115,15 @@ export async function POST(req) {
     }
 
     // Upgrade user to agent
-    const result = await users.updateOne(userFilter, {
-      $set: {
-        role: 'agent',
-        updatedAt: new Date(),
-      },
-    });
+    const result = await users.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          role: 'agent',
+          updatedAt: new Date(),
+        },
+      }
+    );
 
     if (result.modifiedCount === 0) {
       return NextResponse.json({ error: 'Failed to upgrade user' }, { status: 500 });
