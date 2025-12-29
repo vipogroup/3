@@ -21,9 +21,10 @@ export async function POST(req) {
         if (decoded?.userId) {
           userId = decoded.userId;
           userEmail = decoded.email;
+          console.log('[UPGRADE_AGENT] Legacy JWT detected for user:', userId, userEmail);
         }
       } catch (e) {
-        // Legacy token invalid, try NextAuth
+        console.log('[UPGRADE_AGENT] Legacy JWT invalid, will try NextAuth token');
       }
     }
 
@@ -39,24 +40,55 @@ export async function POST(req) {
           userId = nextAuthToken.userId || nextAuthToken.sub;
           userEmail = nextAuthToken.email;
           isNextAuthUser = true;
+          console.log('[UPGRADE_AGENT] NextAuth token resolved', {
+            userId,
+            email: userEmail,
+            sub: nextAuthToken.sub,
+          });
+        } else {
+          console.log('[UPGRADE_AGENT] getToken returned null');
         }
       } catch (e) {
-        // NextAuth token check failed
+        console.error('[UPGRADE_AGENT] NextAuth token check failed:', e.message);
       }
     }
 
     if (!userId) {
+      console.warn('[UPGRADE_AGENT] No userId from cookies/tokens');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const userFilter = ObjectId.isValid(userId) ? { _id: new ObjectId(userId) } : { _id: userId };
     const db = await getDb();
     const users = db.collection('users');
 
-    // Get current user
-    const user = await users.findOne(userFilter);
+    let user = null;
+    const normalizedEmail = userEmail?.toLowerCase()?.trim();
+
+    // Prefer lookup by ObjectId when possible
+    if (userId && ObjectId.isValid(userId)) {
+      user = await users.findOne({ _id: new ObjectId(userId) });
+    }
+
+    // Fallback: legacy string _id or email
+    if (!user && userId) {
+      console.log('[UPGRADE_AGENT] Retrying lookup by string _id');
+      user = await users.findOne({ _id: userId });
+    }
+
+    if (!user && normalizedEmail) {
+      console.log('[UPGRADE_AGENT] Retrying lookup by email', normalizedEmail);
+      user = await users.findOne({ email: normalizedEmail });
+    }
+
+    console.log('[UPGRADE_AGENT] User lookup result', {
+      found: !!user,
+      userId,
+      userEmail: normalizedEmail,
+      isNextAuthUser,
+    });
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      console.warn('[UPGRADE_AGENT] User not found in DB', { userId, userEmail });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Check if user is already an agent or admin
