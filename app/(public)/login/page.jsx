@@ -43,7 +43,7 @@ function LoginPageContent() {
     saveReferralToCookie();
     try {
       // Use redirect URL from query params or default to /dashboard
-      const redirectUrl = searchParams.get('redirect') || searchParams.get('callbackUrl') || '/dashboard';
+      const redirectUrl = searchParams.get('redirect') || searchParams.get('callbackUrl') || '/products';
       await signIn('google', { callbackUrl: redirectUrl });
     } catch (error) {
       setErr('שגיאה בהתחברות עם Google. אנא נסה שוב.');
