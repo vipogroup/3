@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
@@ -9,7 +9,7 @@ import { signIn } from 'next-auth/react';
  * Collects name and phone before redirecting to Google OAuth
  * Updated: 2024-12-29
  */
-export default function GoogleLoginPage() {
+function GoogleLoginPageContent() {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -203,5 +203,17 @@ export default function GoogleLoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function GoogleLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+      </div>
+    }>
+      <GoogleLoginPageContent />
+    </Suspense>
   );
 }
