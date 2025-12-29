@@ -59,8 +59,8 @@ const handler = NextAuth({
         console.log('[GOOGLE_AUTH] Existing user check:', existingUser ? 'FOUND' : 'NOT FOUND');
 
         if (!existingUser) {
-          // Create new user
-          const newUser = {
+          // Create new user using upsert to handle race conditions
+          const newUserData = {
             fullName: user.name || email.split('@')[0],
             email,
             phone: null,
@@ -79,59 +79,96 @@ const handler = NextAuth({
             updatedAt: new Date(),
           };
 
-          const result = await users.insertOne(newUser);
-          const newUserId = result.insertedId;
-          console.log('[GOOGLE_AUTH] Created new user:', email, 'ID:', String(newUserId));
+          let newUserId;
+          let isNewUser = false;
 
-          // Create admin notification for new Google user
           try {
-            await connectMongo();
-            await Notification.create({
-              type: 'new_user',
-              message: `נרשם משתמש חדש (Google): ${newUser.fullName || email}`,
-              payload: {
-                userId: newUserId,
-                email: newUser.email,
-                fullName: newUser.fullName,
-                provider: 'google',
+            // Use findOneAndUpdate with upsert to avoid duplicate key errors
+            const result = await users.findOneAndUpdate(
+              { email },
+              { 
+                $setOnInsert: newUserData 
               },
-            });
-            console.log('[GOOGLE_AUTH] Admin notification created for new user');
-          } catch (notifyErr) {
-            console.error('[GOOGLE_AUTH] Notification error:', notifyErr.message);
+              { 
+                upsert: true, 
+                returnDocument: 'after' 
+              }
+            );
+            
+            newUserId = result._id;
+            // Check if this was a new insert by comparing createdAt
+            const timeDiff = Date.now() - new Date(result.createdAt).getTime();
+            isNewUser = timeDiff < 5000; // Created in last 5 seconds = new user
+            
+            console.log('[GOOGLE_AUTH] User upsert result:', email, 'ID:', String(newUserId), 'isNew:', isNewUser);
+          } catch (insertErr) {
+            // If upsert fails, try to find existing user
+            console.error('[GOOGLE_AUTH] Upsert error, trying findOne:', insertErr.message);
+            const existingAfterError = await users.findOne({ email });
+            if (existingAfterError) {
+              newUserId = existingAfterError._id;
+              isNewUser = false;
+            } else {
+              throw insertErr;
+            }
           }
 
-          // Send push notifications
-          try {
-            // 1. Welcome notification to new user
-            await pushToUsers([String(newUserId)], {
-              title: 'ברוכים הבאים ל-VIPO!',
-              body: `שלום ${newUser.fullName || 'משתמש יקר'}, ההרשמה שלך הושלמה בהצלחה!`,
-              icon: '/icons/192.png',
-              url: '/products',
-              data: { type: 'welcome_user', userId: String(newUserId) },
-            });
-
-            // 2. Admin notification about new Google registration
-            await sendTemplateNotification({
-              templateType: 'admin_new_registration',
-              variables: {
-                user_type: 'לקוח (Google)',
-                datetime: new Date().toLocaleString('he-IL'),
-              },
-              audienceRoles: ['admin'],
-              payloadOverrides: {
-                url: '/admin/users',
-                data: {
-                  userId: String(newUserId),
-                  userType: 'customer',
+          // Only send notifications for truly new users
+          if (isNewUser && newUserId) {
+            console.log('[GOOGLE_AUTH] New user created, sending notifications:', email);
+            
+            // Create admin notification for new Google user
+            try {
+              await connectMongo();
+              await Notification.create({
+                type: 'new_user',
+                message: `נרשם משתמש חדש (Google): ${newUserData.fullName || email}`,
+                payload: {
+                  userId: newUserId,
+                  email: newUserData.email,
+                  fullName: newUserData.fullName,
                   provider: 'google',
                 },
-              },
-            });
-            console.log('[GOOGLE_AUTH] Push notifications sent for new user');
-          } catch (pushErr) {
-            console.error('[GOOGLE_AUTH] Push error:', pushErr.message);
+              });
+              console.log('[GOOGLE_AUTH] Admin notification created for new user');
+            } catch (notifyErr) {
+              console.error('[GOOGLE_AUTH] Notification error:', notifyErr.message);
+            }
+
+            // Send push notifications
+            try {
+              // 1. Welcome notification to new user
+              await pushToUsers([String(newUserId)], {
+                title: 'ברוכים הבאים ל-VIPO!',
+                body: `שלום ${newUserData.fullName || 'משתמש יקר'}, ההרשמה שלך הושלמה בהצלחה!`,
+                icon: '/icons/192.png',
+                url: '/products',
+                data: { type: 'welcome_user', userId: String(newUserId) },
+              });
+
+              // 2. Admin notification about new Google registration
+              await sendTemplateNotification({
+                templateType: 'admin_new_registration',
+                variables: {
+                  user_type: 'לקוח (Google)',
+                  datetime: new Date().toLocaleString('he-IL'),
+                },
+                audienceRoles: ['admin'],
+                payloadOverrides: {
+                  url: '/admin/users',
+                  data: {
+                    userId: String(newUserId),
+                    userType: 'customer',
+                    provider: 'google',
+                  },
+                },
+              });
+              console.log('[GOOGLE_AUTH] Push notifications sent for new user');
+            } catch (pushErr) {
+              console.error('[GOOGLE_AUTH] Push error:', pushErr.message);
+            }
+          } else {
+            console.log('[GOOGLE_AUTH] User already existed, skipping notifications:', email);
           }
         } else {
           // Update existing user with provider info if missing
