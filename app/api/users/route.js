@@ -5,17 +5,44 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/hash';
 import { verify as verifyJwt } from '@/lib/auth/createToken';
+import { getToken as getNextAuthToken } from 'next-auth/jwt';
 
-function getToken(req) {
+function getLegacyToken(req) {
   return req.cookies.get('auth_token')?.value || req.cookies.get('token')?.value || '';
 }
 
-function ensureAdmin(req) {
-  const decoded = verifyJwt(getToken(req));
-  if (!decoded || decoded.role !== 'admin') {
-    return null;
+async function ensureAdmin(req) {
+  // Try legacy JWT first
+  const legacyToken = getLegacyToken(req);
+  if (legacyToken) {
+    try {
+      const decoded = verifyJwt(legacyToken);
+      if (decoded?.role === 'admin') {
+        return decoded;
+      }
+    } catch (e) {
+      // Legacy token invalid, try NextAuth
+    }
   }
-  return decoded;
+
+  // Try NextAuth token
+  try {
+    const nextAuthToken = await getNextAuthToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+    if (nextAuthToken?.role === 'admin') {
+      return {
+        userId: nextAuthToken.userId || nextAuthToken.sub,
+        email: nextAuthToken.email,
+        role: nextAuthToken.role,
+      };
+    }
+  } catch (e) {
+    console.error('NextAuth token check failed:', e.message);
+  }
+
+  return null;
 }
 
 function normalizeId(doc) {
@@ -37,7 +64,8 @@ function applyPagination(array, skip, limit) {
 
 export async function GET(req) {
   try {
-    if (!ensureAdmin(req)) {
+    const admin = await ensureAdmin(req);
+    if (!admin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -77,7 +105,8 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    if (!ensureAdmin(req)) {
+    const admin = await ensureAdmin(req);
+    if (!admin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

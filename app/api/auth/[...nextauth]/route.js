@@ -56,7 +56,15 @@ const handler = NextAuth({
 
         // Check if user exists
         let existingUser = await users.findOne({ email });
-        console.log('[GOOGLE_AUTH] Existing user check:', existingUser ? 'FOUND' : 'NOT FOUND');
+        console.log('[GOOGLE_AUTH] Existing user check:', existingUser ? 'FOUND' : 'NOT FOUND', 'email:', email);
+        if (existingUser) {
+          console.log('[GOOGLE_AUTH] Existing user details:', {
+            id: String(existingUser._id),
+            role: existingUser.role,
+            provider: existingUser.provider,
+            createdAt: existingUser.createdAt,
+          });
+        }
 
         if (!existingUser) {
           // Create new user using upsert to handle race conditions
@@ -114,6 +122,7 @@ const handler = NextAuth({
           }
 
           // Only send notifications for truly new users
+          console.log('[GOOGLE_AUTH] Notification check:', { isNewUser, newUserId: String(newUserId), email });
           if (isNewUser && newUserId) {
             console.log('[GOOGLE_AUTH] New user created, sending notifications:', email);
             
