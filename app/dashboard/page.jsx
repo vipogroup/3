@@ -49,6 +49,6 @@ export default async function DashboardPage() {
   if (role === 'admin') {
     redirect('/admin');
   } else {
-    redirect('/agent/dashboard-improved');
+    redirect('/agent');
   }
 }
