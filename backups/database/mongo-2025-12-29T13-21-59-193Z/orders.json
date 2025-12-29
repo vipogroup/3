@@ -1,0 +1,914 @@
+[
+  {
+    "_id": {
+      "$oid": "695175c8a66ecdce4f842b66"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db7fbf02532e8e69a6e7a"
+        },
+        "name": "ייחעח",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 500
+    },
+    "totalAmount": 500,
+    "discountAmount": 0,
+    "createdBy": "6951759438c994bbf5c80a40",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-28T18:24:08.549Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T18:24:08.549Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0523004374",
+      "address": "עיעכיכ",
+      "city": "עיעי",
+      "zipCode": "5646456"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "695179008705d1df88626883"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db7fbf02532e8e69a6e7a"
+        },
+        "name": "ייחעח",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 500
+    },
+    "totalAmount": 500,
+    "discountAmount": 0,
+    "createdBy": "695178d8bce972e7ea2e3c7c",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-28T18:37:52.474Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T18:37:52.474Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0523004374",
+      "address": "חטט",
+      "city": "כעיעכי",
+      "zipCode": "766565"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69517d5583fa3cd23b2410c5"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db7fbf02532e8e69a6e7a"
+        },
+        "name": "ייחעח",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 500
+    },
+    "totalAmount": 500,
+    "discountAmount": 0,
+    "createdBy": "69517cf283fa3cd23b2410ba",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-28T18:56:21.620Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T18:56:21.620Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0523004374",
+      "address": "עיעכיכ",
+      "city": "עיכעיכ",
+      "zipCode": "565675"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69517d5e83fa3cd23b2410c6"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db7fbf02532e8e69a6e7a"
+        },
+        "name": "ייחעח",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 500
+    },
+    "totalAmount": 500,
+    "discountAmount": 0,
+    "createdBy": "69517cf283fa3cd23b2410ba",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-28T18:56:30.237Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T18:56:30.237Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0523004374",
+      "address": "עיעכיכ",
+      "city": "עיכעיכ",
+      "zipCode": "565675"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6951bcb054098a4e136ba131"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694df9e09d3bae54c9a127f8"
+        },
+        "name": "חכחכחכח",
+        "quantity": 1,
+        "unitPrice": 600,
+        "totalPrice": 600,
+        "image": null,
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 600,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 600
+    },
+    "totalAmount": 600,
+    "discountAmount": 0,
+    "createdBy": "69519f0b12f461d78b05ca73",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-28T23:26:40.214Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T23:26:40.214Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6951bd09e6a617caf6af82e7"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694df9e09d3bae54c9a127f8"
+        },
+        "name": "חכחכחכח",
+        "quantity": 1,
+        "unitPrice": 600,
+        "totalPrice": 600,
+        "image": null,
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 600,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 600
+    },
+    "totalAmount": 600,
+    "discountAmount": 0,
+    "createdBy": "695190e920eb0c12e975c9f6",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-28T23:28:09.896Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T23:28:09.896Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0523004374",
+      "address": "עע",
+      "city": "עיעי",
+      "zipCode": "85282"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6951bf61b935d502d3bd234e"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db7fbf02532e8e69a6e7a"
+        },
+        "name": "ייחעח",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 500
+    },
+    "totalAmount": 500,
+    "discountAmount": 0,
+    "createdBy": "6950a467aba7088a28dd9a1e",
+    "status": "paid",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-28T23:38:09.315Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T23:38:13.484Z"
+    },
+    "customer": {
+      "fullName": "VIPO GROUP",
+      "email": "vipogroup1@gmail.com",
+      "phone": "0523004374",
+      "address": "5",
+      "city": "באר יעקב",
+      "zipCode": "305540"
+    },
+    "paymentMethod": "credit_card",
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": {
+        "$date": "2025-12-28T23:38:13.484Z"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6951bfb8b935d502d3bd2359"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db7fbf02532e8e69a6e7a"
+        },
+        "name": "ייחעח",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 500
+    },
+    "totalAmount": 500,
+    "discountAmount": 0,
+    "createdBy": "6950a467aba7088a28dd9a1e",
+    "status": "paid",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-28T23:39:36.410Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T23:39:39.393Z"
+    },
+    "customer": {
+      "fullName": "VIPO GROUP",
+      "email": "vipogroup1@gmail.com",
+      "phone": "0523004374",
+      "address": "5",
+      "city": "באר יעקב",
+      "zipCode": "305540"
+    },
+    "paymentMethod": "credit_card",
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": {
+        "$date": "2025-12-28T23:39:39.393Z"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6951c162440e0e4b2b5d2330"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db9fefae399df7737edc1"
+        },
+        "name": "יבוא",
+        "quantity": 1,
+        "unitPrice": 700,
+        "totalPrice": 700,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701504/vipo-products/Untitled_design_20250729_224819_0000_aa5rd3.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 700,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 700
+    },
+    "totalAmount": 700,
+    "discountAmount": 0,
+    "createdBy": "6951c10e440e0e4b2b5d232f",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-28T23:46:42.115Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T23:46:42.115Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0533858881",
+      "address": "באר יעקב",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6951c3ef9e9f6bfb16135aa2"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db9fefae399df7737edc1"
+        },
+        "name": "יבוא",
+        "quantity": 1,
+        "unitPrice": 700,
+        "totalPrice": 700,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701504/vipo-products/Untitled_design_20250729_224819_0000_aa5rd3.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 700,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 700
+    },
+    "totalAmount": 700,
+    "discountAmount": 0,
+    "createdBy": "6951c3bb440e0e4b2b5d2358",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-28T23:57:35.558Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T23:57:35.558Z"
+    },
+    "customer": {
+      "fullName": "מרים שבו",
+      "email": "m0533858881@gmail.com",
+      "phone": "0523004374",
+      "address": "ת",
+      "city": "צ",
+      "zipCode": "12457"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6951c6cf9e9f6bfb16135add"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db7fbf02532e8e69a6e7a"
+        },
+        "name": "ייחעח",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 500
+    },
+    "totalAmount": 500,
+    "discountAmount": 0,
+    "createdBy": "6951c6739e9f6bfb16135ad9",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-29T00:09:51.627Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-29T00:09:51.627Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0523004344",
+      "address": "גכהג",
+      "city": "כעכע",
+      "zipCode": "4655656"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6951d8341f45fc3ae5eecef7"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db9fefae399df7737edc1"
+        },
+        "name": "יבוא",
+        "quantity": 1,
+        "unitPrice": 700,
+        "totalPrice": 700,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701504/vipo-products/Untitled_design_20250729_224819_0000_aa5rd3.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 700,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 700
+    },
+    "totalAmount": 700,
+    "discountAmount": 0,
+    "createdBy": "6951d7c90bcee7586156c3fe",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-29T01:24:04.305Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-29T01:24:04.305Z"
+    },
+    "customer": {
+      "fullName": "מנחם דחגח",
+      "email": "m0507123331@gmail.com",
+      "phone": "0533858881",
+      "address": "5 חיי",
+      "city": "לוד",
+      "zipCode": "56565"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6951def7aaab89c8855946de"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db9fefae399df7737edc1"
+        },
+        "name": "יבוא",
+        "quantity": 1,
+        "unitPrice": 700,
+        "totalPrice": 700,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701504/vipo-products/Untitled_design_20250729_224819_0000_aa5rd3.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 700,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 700
+    },
+    "totalAmount": 700,
+    "discountAmount": 0,
+    "createdBy": "6951dec0671243ab59773df4",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-29T01:52:55.834Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-29T01:52:55.834Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0533858881",
+      "address": "באר יעקב",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6951dff856a5bd842a094d28"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db7fbf02532e8e69a6e7a"
+        },
+        "name": "ייחעח",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 10,
+      "discountAmount": 50,
+      "totalAmount": 450
+    },
+    "totalAmount": 450,
+    "discountAmount": 50,
+    "createdBy": "69402069f10dd22ad6e73efc",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": "harel2021-dror-001",
+    "refAgentId": {
+      "$oid": "6951dec0671243ab59773df4"
+    },
+    "commissionAmount": 54,
+    "appliedCouponCode": "harel2021-dror-001",
+    "agentId": {
+      "$oid": "6951dec0671243ab59773df4"
+    },
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": {
+      "$date": "2025-12-29T01:57:12.677Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-29T01:57:12.677Z"
+    },
+    "customer": {
+      "fullName": "System Admin",
+      "email": "m0587009938@gmail.com",
+      "phone": "0587009938",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6951ece4f81737c76f40f955"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db7fbf02532e8e69a6e7a"
+        },
+        "name": "ייחעח",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 10,
+      "discountAmount": 50,
+      "totalAmount": 450
+    },
+    "totalAmount": 450,
+    "discountAmount": 50,
+    "createdBy": "100019183532938381271",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": "mrym-shbv-001",
+    "refAgentId": {
+      "$oid": "6951e66d76253b6ccfb4c1cb"
+    },
+    "commissionAmount": 54,
+    "appliedCouponCode": "mrym-shbv-001",
+    "agentId": {
+      "$oid": "6951e66d76253b6ccfb4c1cb"
+    },
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": {
+      "$date": "2025-12-29T02:52:20.453Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-29T02:52:20.453Z"
+    },
+    "customer": {
+      "fullName": "Vipo Coneect",
+      "email": "vipo.a1985@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69527b9e5f3edebb14533dfe"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694dbd1a9bcb3f5201a762cc"
+        },
+        "name": "ניסוי מרים",
+        "quantity": 1,
+        "unitPrice": 900,
+        "totalPrice": 900,
+        "image": null,
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 900,
+      "discountPercent": 10,
+      "discountAmount": 90,
+      "totalAmount": 810
+    },
+    "totalAmount": 810,
+    "discountAmount": 90,
+    "createdBy": "116684218632189880703",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": "mrym-shbv-001",
+    "refAgentId": {
+      "$oid": "6951e66d76253b6ccfb4c1cb"
+    },
+    "commissionAmount": 97.2,
+    "appliedCouponCode": "mrym-shbv-001",
+    "agentId": {
+      "$oid": "6951e66d76253b6ccfb4c1cb"
+    },
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": {
+      "$date": "2025-12-29T13:01:18.693Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-29T13:01:18.693Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69527f56766f1bc0bf86a332"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "694db7fbf02532e8e69a6e7a"
+        },
+        "name": "ייחעח",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1766701251/vipo-products/1000635493_sn9hwc.png",
+        "sku": null,
+        "slug": null
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 10,
+      "discountAmount": 50,
+      "totalAmount": 450
+    },
+    "totalAmount": 450,
+    "discountAmount": 50,
+    "createdBy": "69527f27cea1854abd006229",
+    "status": "pending",
+    "commissionSettled": false,
+    "refSource": "mrym-shbv-001",
+    "refAgentId": {
+      "$oid": "6951e66d76253b6ccfb4c1cb"
+    },
+    "commissionAmount": 54,
+    "appliedCouponCode": "mrym-shbv-001",
+    "agentId": {
+      "$oid": "6951e66d76253b6ccfb4c1cb"
+    },
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": {
+      "$date": "2025-12-29T13:17:10.708Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-29T13:17:10.708Z"
+    },
+    "customer": {
+      "fullName": "לקוח חדש 2",
+      "email": "miriamshabo22@gmail.com",
+      "phone": "0525852583",
+      "address": "Jdjjdj",
+      "city": "Jdjddj",
+      "zipCode": "837484"
+    },
+    "paymentMethod": "credit_card"
+  }
+]

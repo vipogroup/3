@@ -48,7 +48,10 @@ export default async function DashboardPage() {
   // Redirect based on user role
   if (role === 'admin') {
     redirect('/admin');
-  } else {
+  } else if (role === 'agent') {
     redirect('/agent');
+  } else {
+    // Customer or any other role - redirect to products
+    redirect('/products');
   }
 }

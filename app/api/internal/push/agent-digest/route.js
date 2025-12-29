@@ -124,7 +124,7 @@ export async function POST(req) {
           },
           audienceUserIds: [String(agent._id)],
           payloadOverrides: {
-            url: '/dashboard/agent',
+            url: '/agent',
             data: {
               type: 'agent_daily_digest',
               agentId: String(agent._id),

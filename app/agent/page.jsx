@@ -7,6 +7,7 @@ import Link from 'next/link';
 import CopyCouponButton from './components/CopyCouponButton';
 import KPICard from './components/KPICard';
 import ShareButton from './components/ShareButton';
+import AgentCommissionsClient from './components/AgentCommissionsClient';
 
 const TrophyIcon = ({ className = 'w-10 h-10' }) => (
   <svg
@@ -427,6 +428,7 @@ export default async function AgentPage() {
     },
   ];
 
+
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white">
       <div className="max-w-7xl mx-auto px-4 py-4">
@@ -455,6 +457,11 @@ export default async function AgentPage() {
             <KPICard key={title} title={title} value={value} iconName={iconName} />
           ))}
         </div>
+
+        {/* Commissions Section */}
+        <section className="mb-6">
+          <AgentCommissionsClient />
+        </section>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

@@ -12,6 +12,10 @@ export async function GET(req) {
     const user = await requireAuthApi(req);
     await connectMongo();
 
+    // Validate user.id before creating ObjectId
+    if (!user.id || !ObjectId.isValid(user.id)) {
+      return NextResponse.json({ ok: true, count: 0 });
+    }
     const userObjectId = new ObjectId(user.id);
 
     // Find messages where user should see them but hasn't read

@@ -29,19 +29,38 @@ export default function VideoPlayer({ mediaUrl, poster, title }) {
       return;
     }
 
-    try {
-      if (el.readyState >= 2) {
-        if (el.paused) {
-          const promise = el.play();
-          if (promise && typeof promise.catch === 'function') {
-            promise.catch(() => openFallback());
-          }
+    const attemptPlay = () => {
+      try {
+        const promise = el.play();
+        if (promise && typeof promise.catch === 'function') {
+          promise.catch(() => openFallback());
         }
-      } else {
+      } catch (error) {
+        console.error('[VideoPlayer] play() failed, opening fallback', error);
         openFallback();
       }
+    };
+
+    if (el.readyState >= 2) {
+      if (el.paused) {
+        attemptPlay();
+      }
+      return;
+    }
+
+    const handleCanPlay = () => {
+      el.removeEventListener('canplay', handleCanPlay);
+      if (el.paused) {
+        attemptPlay();
+      }
+    };
+
+    el.addEventListener('canplay', handleCanPlay, { once: true });
+    try {
+      el.load();
     } catch (error) {
-      console.error('[VideoPlayer] Playback failed, opening fallback', error);
+      console.error('[VideoPlayer] load() failed, opening fallback', error);
+      el.removeEventListener('canplay', handleCanPlay);
       openFallback();
     }
   }, [openFallback]);
