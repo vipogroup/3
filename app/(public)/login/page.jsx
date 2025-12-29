@@ -40,6 +40,7 @@ function LoginPageContent() {
 
   const handleGoogleSignIn = () => {
     // Redirect to intermediate page to collect name and phone before Google OAuth
+    // Updated: 2024-12-29 21:00
     saveReferralToCookie();
     router.push('/login/google');
   };
