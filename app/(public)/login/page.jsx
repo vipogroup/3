@@ -42,9 +42,8 @@ function LoginPageContent() {
     setGoogleLoading(true);
     saveReferralToCookie();
     try {
-      // Use redirect URL from query params or default to /dashboard
-      const redirectUrl = searchParams.get('redirect') || searchParams.get('callbackUrl') || '/products';
-      await signIn('google', { callbackUrl: redirectUrl });
+      // Always redirect to complete-google to finish registration (phone, referral)
+      await signIn('google', { callbackUrl: '/auth/complete-google' });
     } catch (error) {
       setErr('שגיאה בהתחברות עם Google. אנא נסה שוב.');
       setGoogleLoading(false);

@@ -214,7 +214,7 @@ const handler = NextAuth({
 
     /**
      * Redirect callback - handles post-login routing
-     * Always redirect to /products for new registrations
+     * Redirects to /auth/complete-google to finish registration (update phone, process referral)
      */
     async redirect({ url, baseUrl }) {
       // Handle both absolute and relative URLs
@@ -225,8 +225,8 @@ const handler = NextAuth({
       if (url.startsWith(baseUrl)) {
         return url;
       }
-      // Default to /products for new users
-      return baseUrl + '/products';
+      // Redirect to complete-google page to finish registration
+      return baseUrl + '/auth/complete-google';
     },
   },
 
