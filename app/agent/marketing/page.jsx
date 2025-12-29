@@ -83,6 +83,7 @@ export default async function AgentMarketingPage() {
       discountPercent={agent?.discountPercent ?? 0}
       commissionPercent={agent?.commissionPercent ?? 0}
       assets={formattedAssets}
+      baseUrl={baseUrl}
     />
   );
 }
