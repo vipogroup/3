@@ -75,45 +75,45 @@ export default function AboutPage() {
     >
       {/* About Section - Compact with Wave */}
       <section 
-        className="relative pt-6 pb-12 sm:pt-8 sm:pb-16 px-3 sm:px-4 w-full overflow-hidden"
+        className="relative pt-8 pb-14 sm:pt-10 sm:pb-18 px-4 sm:px-6 w-full overflow-hidden"
         style={{ background: gradient }}
       >
         {/* Decorative circles */}
-        <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-white/10" />
-        <div className="absolute top-1/2 -left-6 w-16 h-16 rounded-full bg-white/10" />
+        <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-white/10" />
+        <div className="absolute top-1/2 -left-6 w-20 h-20 rounded-full bg-white/10" />
 
         <div className="relative max-w-3xl mx-auto text-center text-white">
-          <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-white/20 flex items-center justify-center">
-            <Globe className="w-6 h-6" />
+          <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-white/20 flex items-center justify-center">
+            <Globe className="w-7 h-7" />
           </div>
           
-          <h1 className="text-xl sm:text-2xl font-bold mb-2">מי אנחנו</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-3">מי אנחנו</h1>
           
-          <p className="text-xs sm:text-sm leading-relaxed mb-3 opacity-95">
+          <p className="text-sm sm:text-base leading-relaxed mb-3 opacity-95">
             <span className="font-bold">VIPO Group</span> הוקמה בשנת 2018 מתוך הבנה פשוטה: הדרך לחיסכון אמיתי עוברת דרך קשר ישיר עם מקור הייצור.
           </p>
-          <p className="text-[10px] sm:text-xs leading-relaxed mb-3 opacity-85">
+          <p className="text-xs sm:text-sm leading-relaxed mb-4 opacity-85">
             אנחנו חברה ישראלית המתמחה באיתור מפעלים גלובליים, ניהול שינוע וסגירת עסקאות - הכל תחת קורת גג אחת. אנו מלווים עסקים ואנשים פרטיים לאורך כל הדרך: מרגע האיתור, דרך המשא ומתן, ועד לרגע שהסחורה מגיעה לפתח הבית.
           </p>
           
           {/* Stats row */}
-          <div className="flex justify-center gap-5 sm:gap-8 mb-4">
+          <div className="flex justify-center gap-6 sm:gap-10 mb-5">
             {[
               { value: '7+', label: 'שנים' },
               { value: '5K+', label: 'לקוחות' },
               { value: '15+', label: 'מדינות' },
             ].map((stat, idx) => (
               <div key={idx} className="text-center">
-                <div className="text-lg sm:text-xl font-bold">{stat.value}</div>
-                <div className="text-[10px] opacity-70">{stat.label}</div>
+                <div className="text-xl sm:text-2xl font-bold">{stat.value}</div>
+                <div className="text-xs opacity-70">{stat.label}</div>
               </div>
             ))}
           </div>
           
           {/* Vision - inline */}
-          <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-4 py-2">
-            <Heart className="w-4 h-4" style={{ color: colors.orange }} />
-            <span className="text-xs">להנגיש את עולם הייבוא לכל אחד - בשקיפות מלאה, במחירים הוגנים, ובליווי מקצועי</span>
+          <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-5 py-2.5">
+            <Heart className="w-5 h-5" style={{ color: colors.orange }} />
+            <span className="text-sm">להנגיש את עולם הייבוא לכל אחד - בשקיפות מלאה, במחירים הוגנים, ובליווי מקצועי</span>
           </div>
         </div>
 
@@ -126,7 +126,7 @@ export default function AboutPage() {
       </section>
 
       {/* Services - Compact */}
-      <section className="relative py-4 sm:py-6 px-3 sm:px-4 w-full bg-white overflow-hidden">
+      <section className="relative py-6 sm:py-8 px-4 sm:px-6 w-full bg-white overflow-hidden">
         {/* Background Graphics */}
         <div className="absolute top-0 left-0 w-32 h-32 opacity-5" style={{ background: `radial-gradient(circle, ${colors.primary} 0%, transparent 70%)` }} />
         <div className="absolute bottom-0 right-0 w-28 h-28 opacity-5" style={{ background: `radial-gradient(circle, ${colors.secondary} 0%, transparent 70%)` }} />
@@ -134,14 +134,14 @@ export default function AboutPage() {
         <div className="absolute top-1/3 left-8 w-1.5 h-1.5 rounded-full opacity-15" style={{ background: colors.primary }} />
         
         <div className="relative max-w-4xl mx-auto">
-          <div className="text-center mb-3">
-            <h2 className="text-base sm:text-lg font-bold mb-1" style={{ color: colors.primary }}>
+          <div className="text-center mb-4">
+            <h2 className="text-lg sm:text-xl font-bold mb-1" style={{ color: colors.primary }}>
               השירותים שלנו
             </h2>
-            <div className="w-12 h-0.5 mx-auto rounded-full" style={{ background: gradient }} />
+            <div className="w-14 h-1 mx-auto rounded-full" style={{ background: gradient }} />
           </div>
           
-          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {[
               { icon: Search, title: 'איתור מפעלים גלובליים', desc: 'גישה למפעלי ייצור מובילים במגוון תחומים, עם הצעות מחיר מותאמות אישית' },
               { icon: Truck, title: 'ניהול שינוע מתקדם', desc: 'שירותי שינוע ועמילות מכס מהמובילים בעולם, אנחנו מטפלים בכל הבירוקרטיה' },
@@ -150,7 +150,7 @@ export default function AboutPage() {
             ].map((service, idx) => (
               <div 
                 key={idx} 
-                className="relative overflow-hidden group bg-white rounded-lg p-2 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 text-center"
+                className="relative overflow-hidden group bg-white rounded-xl p-3 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 text-center"
                 style={{ 
                   border: '2px solid transparent',
                   backgroundImage: `linear-gradient(white, white), ${gradient}`,
@@ -160,23 +160,23 @@ export default function AboutPage() {
               >
                 {/* Decorative corner */}
                 <div 
-                  className="absolute -top-3 -right-3 w-8 h-8 rounded-full opacity-20"
+                  className="absolute -top-3 -right-3 w-10 h-10 rounded-full opacity-20"
                   style={{ background: colors.secondary }}
                 />
                 {/* Decorative dots */}
                 <div className="absolute bottom-1 left-1 flex gap-0.5 opacity-25">
-                  <div className="w-1 h-1 rounded-full" style={{ background: colors.secondary }} />
-                  <div className="w-1 h-1 rounded-full" style={{ background: colors.primary }} />
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: colors.secondary }} />
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: colors.primary }} />
                 </div>
                 
                 {/* Icon */}
-                <div className="relative w-8 h-8 mx-auto rounded-md flex items-center justify-center mb-1.5 transition-transform group-hover:scale-110">
-                  <service.icon className="w-5 h-5" style={{ color: colors.primary }} />
+                <div className="relative w-10 h-10 mx-auto rounded-md flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
+                  <service.icon className="w-6 h-6" style={{ color: colors.primary }} />
                 </div>
                 
                 {/* Content */}
-                <h3 className="font-bold text-xs mb-0.5" style={{ color: colors.primary }}>{service.title}</h3>
-                <p className="text-[10px] leading-tight" style={{ color: colors.textLight }}>{service.desc}</p>
+                <h3 className="font-bold text-sm mb-1" style={{ color: colors.primary }}>{service.title}</h3>
+                <p className="text-xs leading-tight" style={{ color: colors.textLight }}>{service.desc}</p>
               </div>
             ))}
           </div>
@@ -184,11 +184,11 @@ export default function AboutPage() {
       </section>
 
       {/* Process - New Design */}
-      <section className="py-5 sm:py-6 px-3 sm:px-4 w-full bg-white">
+      <section className="py-6 sm:py-8 px-4 sm:px-6 w-full bg-white">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-5">
-            <h2 className="text-lg sm:text-xl font-bold mb-2" style={{ color: colors.primary }}>התהליך שלנו</h2>
-            <div className="w-16 h-1 mx-auto rounded-full" style={{ background: gradient }} />
+          <div className="text-center mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold mb-2" style={{ color: colors.primary }}>התהליך שלנו</h2>
+            <div className="w-20 h-1 mx-auto rounded-full" style={{ background: gradient }} />
           </div>
           
           {/* Process Steps */}
@@ -199,7 +199,7 @@ export default function AboutPage() {
               style={{ background: gradient }}
             />
             
-            <div className="flex items-start justify-center gap-1 sm:gap-2">
+            <div className="flex items-start justify-center gap-1 sm:gap-3">
               {[
                 { num: '1', title: 'פגישת ייעוץ', subtitle: 'הבנת הצרכים', icon: MessageCircle },
                 { num: '2', title: 'איתור מפעל', subtitle: 'חיפוש גלובלי', icon: Search },
@@ -209,15 +209,15 @@ export default function AboutPage() {
               ].map((step, idx, arr) => (
                 <div key={idx} className="flex items-start">
                   {/* Step */}
-                  <div className="text-center w-12 sm:w-14">
+                  <div className="text-center w-14 sm:w-16">
                     <div 
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl mx-auto mb-2 flex items-center justify-center text-white"
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl mx-auto mb-2 flex items-center justify-center text-white"
                       style={{ background: gradient, boxShadow: '0 4px 12px rgba(30, 58, 138, 0.3)' }}
                     >
-                      <step.icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                      <step.icon className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
                     <div 
-                      className="text-[10px] sm:text-xs font-bold mb-0.5"
+                      className="text-xs sm:text-sm font-bold mb-0.5"
                       style={{ color: colors.primary }}
                     >
                       {step.title}
@@ -226,8 +226,8 @@ export default function AboutPage() {
                   
                   {/* Arrow (not after last item) */}
                   {idx < arr.length - 1 && (
-                    <div className="flex items-center h-10 sm:h-12 px-0.5 sm:px-1">
-                      <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: colors.secondary }} />
+                    <div className="flex items-center h-12 sm:h-14 px-0.5 sm:px-1">
+                      <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: colors.secondary }} />
                     </div>
                   )}
                 </div>
@@ -236,30 +236,30 @@ export default function AboutPage() {
           </div>
           
           {/* Time indicator */}
-          <div className="flex items-center justify-center gap-2 mt-4 bg-white rounded-full px-4 py-2 w-fit mx-auto border" style={{ borderColor: `${colors.secondary}30` }}>
-            <Clock className="w-4 h-4" style={{ color: colors.secondary }} />
-            <span className="text-xs" style={{ color: colors.textLight }}>4-8 שבועות בממוצע</span>
+          <div className="flex items-center justify-center gap-2 mt-5 bg-white rounded-full px-5 py-2.5 w-fit mx-auto border" style={{ borderColor: `${colors.secondary}30` }}>
+            <Clock className="w-5 h-5" style={{ color: colors.secondary }} />
+            <span className="text-sm" style={{ color: colors.textLight }}>4-8 שבועות בממוצע</span>
           </div>
         </div>
       </section>
 
       {/* Group Purchase - Full Content */}
-      <section className="relative py-5 sm:py-6 px-3 sm:px-4 w-full bg-white overflow-hidden">
+      <section className="relative py-6 sm:py-8 px-4 sm:px-6 w-full bg-white overflow-hidden">
         {/* Background Graphics */}
-        <div className="absolute top-0 right-0 w-24 h-24 opacity-5" style={{ background: `radial-gradient(circle, ${colors.secondary} 0%, transparent 70%)` }} />
-        <div className="absolute bottom-0 left-0 w-20 h-20 opacity-5" style={{ background: `radial-gradient(circle, ${colors.primary} 0%, transparent 70%)` }} />
+        <div className="absolute top-0 right-0 w-28 h-28 opacity-5" style={{ background: `radial-gradient(circle, ${colors.secondary} 0%, transparent 70%)` }} />
+        <div className="absolute bottom-0 left-0 w-24 h-24 opacity-5" style={{ background: `radial-gradient(circle, ${colors.primary} 0%, transparent 70%)` }} />
         
         <div className="relative max-w-4xl mx-auto">
-          <div className="text-center mb-4">
-            <h2 className="text-base sm:text-lg font-bold mb-1" style={{ color: colors.primary }}>הפלטפורמה שלנו - רכישה קבוצתית חכמה</h2>
-            <div className="w-16 h-0.5 mx-auto rounded-full mb-2" style={{ background: gradient }} />
-            <p className="text-[10px] sm:text-xs max-w-lg mx-auto" style={{ color: colors.textLight }}>
+          <div className="text-center mb-5">
+            <h2 className="text-lg sm:text-xl font-bold mb-1" style={{ color: colors.primary }}>הפלטפורמה שלנו - רכישה קבוצתית חכמה</h2>
+            <div className="w-20 h-1 mx-auto rounded-full mb-2" style={{ background: gradient }} />
+            <p className="text-xs sm:text-sm max-w-lg mx-auto" style={{ color: colors.textLight }}>
               בנוסף לשירותי היבוא והשינוע, פיתחנו פלטפורמה ייחודית לרכישה קבוצתית - שמאפשרת לכל אחד ליהנות ממחירי סיטונאות
             </p>
           </div>
           
           {/* Steps */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-5">
             {[
               { icon: Users, title: 'נצטרף לקבוצה' },
               { icon: TrendingDown, title: 'המחיר יורד' },
@@ -267,7 +267,7 @@ export default function AboutPage() {
             ].map((item, idx) => (
               <div 
                 key={idx}
-                className="text-center p-3 rounded-xl bg-white"
+                className="text-center p-4 rounded-xl bg-white"
                 style={{ 
                   border: '2px solid transparent',
                   backgroundImage: `linear-gradient(white, white), ${gradient}`,
@@ -276,26 +276,26 @@ export default function AboutPage() {
                 }}
               >
                 <div 
-                  className="w-9 h-9 mx-auto mb-2 rounded-lg flex items-center justify-center text-white"
+                  className="w-11 h-11 mx-auto mb-2 rounded-lg flex items-center justify-center text-white"
                   style={{ background: gradient }}
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className="w-6 h-6" />
                 </div>
-                <div className="text-[11px] sm:text-xs font-bold" style={{ color: colors.primary }}>{item.title}</div>
+                <div className="text-xs sm:text-sm font-bold" style={{ color: colors.primary }}>{item.title}</div>
               </div>
             ))}
           </div>
           
           {/* Benefits */}
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-4">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-5 mb-5">
             {[
               'אין התחייבות כספית עד סגירת הקבוצה',
               'אחריות מלאה על כל המוצרים',
               'משלוח עד הבית',
             ].map((benefit, idx) => (
-              <div key={idx} className="flex items-center gap-1.5">
-                <CheckCircle className="w-3.5 h-3.5" style={{ color: colors.secondary }} />
-                <span className="text-[10px] sm:text-xs" style={{ color: colors.text }}>{benefit}</span>
+              <div key={idx} className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4" style={{ color: colors.secondary }} />
+                <span className="text-xs sm:text-sm" style={{ color: colors.text }}>{benefit}</span>
               </div>
             ))}
           </div>
@@ -304,18 +304,18 @@ export default function AboutPage() {
           <div className="text-center">
             <Link
               href="/products"
-              className="inline-flex items-center gap-1.5 px-5 py-2 text-white font-bold rounded-lg text-xs transition-all hover:shadow-md hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-6 py-2.5 text-white font-bold rounded-lg text-sm transition-all hover:shadow-md hover:-translate-y-0.5"
               style={{ background: gradient }}
             >
               לצפייה במוצרים
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-5 h-5" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* Agents CTA - New Design with Waves */}
-      <section className="relative pt-12 pb-12 sm:pt-14 sm:pb-14 px-3 sm:px-4 w-full overflow-hidden" style={{ background: gradient }}>
+      <section className="relative pt-14 pb-14 sm:pt-16 sm:pb-16 px-4 sm:px-6 w-full overflow-hidden" style={{ background: gradient }}>
         {/* Top Wave SVG */}
         <div className="absolute top-0 left-0 right-0 rotate-180">
           <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
@@ -324,29 +324,29 @@ export default function AboutPage() {
         </div>
         
         {/* Decorative Graphics */}
-        <div className="absolute top-1/4 -right-10 w-32 h-32 rounded-full bg-white/10" />
-        <div className="absolute top-1/2 -left-6 w-20 h-20 rounded-full bg-white/10" />
-        <div className="absolute top-1/3 right-1/4 w-2 h-2 rounded-full bg-white/20" />
-        <div className="absolute top-1/2 left-1/3 w-1.5 h-1.5 rounded-full bg-white/15" />
+        <div className="absolute top-1/4 -right-10 w-36 h-36 rounded-full bg-white/10" />
+        <div className="absolute top-1/2 -left-6 w-24 h-24 rounded-full bg-white/10" />
+        <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-white/20" />
+        <div className="absolute top-1/2 left-1/3 w-2 h-2 rounded-full bg-white/15" />
         
         <div className="relative max-w-4xl mx-auto">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center justify-between gap-5 flex-wrap">
             {/* Left - Title & Benefits */}
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-                <Star className="w-6 h-6 text-white" />
+              <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
+                <Star className="w-7 h-7 text-white" />
               </div>
               <div className="text-white">
-                <h2 className="text-base sm:text-lg font-bold">הצטרפו כשותפים!</h2>
-                <div className="flex items-center gap-2 mt-1">
+                <h2 className="text-lg sm:text-xl font-bold">הצטרפו כשותפים!</h2>
+                <div className="flex items-center gap-3 mt-1">
                   {[
                     { icon: Wallet, title: '10% עמלה' },
                     { icon: Link2, title: 'קוד אישי' },
                     { icon: BarChart3, title: 'דשבורד' },
                   ].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-1 text-white/80">
-                      <item.icon className="w-3 h-3" />
-                      <span className="text-[10px]">{item.title}</span>
+                    <div key={idx} className="flex items-center gap-1.5 text-white/80">
+                      <item.icon className="w-4 h-4" />
+                      <span className="text-xs">{item.title}</span>
                     </div>
                   ))}
                 </div>
@@ -356,11 +356,11 @@ export default function AboutPage() {
             {/* Right - CTA */}
             <Link
               href="/register?role=agent"
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-white font-bold rounded-lg shadow text-xs transition-all hover:shadow-lg hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white font-bold rounded-lg shadow text-sm transition-all hover:shadow-lg hover:-translate-y-0.5"
               style={{ color: colors.primary }}
             >
               הצטרף עכשיו
-              <ChevronLeft className="w-3.5 h-3.5" />
+              <ChevronLeft className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -374,43 +374,43 @@ export default function AboutPage() {
       </section>
 
       {/* Contact - Compact Design */}
-      <section className="relative pt-5 pb-14 sm:pt-6 sm:pb-16 px-3 sm:px-4 bg-white w-full overflow-hidden">
+      <section className="relative pt-6 pb-16 sm:pt-8 sm:pb-18 px-4 sm:px-6 bg-white w-full overflow-hidden">
         {/* Background Graphics */}
-        <div className="absolute top-0 right-0 w-24 h-24 opacity-5" style={{ background: `radial-gradient(circle, ${colors.secondary} 0%, transparent 70%)` }} />
+        <div className="absolute top-0 right-0 w-28 h-28 opacity-5" style={{ background: `radial-gradient(circle, ${colors.secondary} 0%, transparent 70%)` }} />
         
-        <div className="relative max-w-md mx-auto">
+        <div className="relative max-w-lg mx-auto">
           {/* Header */}
-          <div className="text-center mb-4">
-            <h2 className="text-base sm:text-lg font-bold mb-1" style={{ color: colors.primary }}>צרו קשר</h2>
-            <div className="w-12 h-0.5 mx-auto rounded-full mb-2" style={{ background: gradient }} />
-            <p className="text-[10px] sm:text-xs" style={{ color: colors.textLight }}>אנחנו כאן לכל שאלה</p>
+          <div className="text-center mb-5">
+            <h2 className="text-lg sm:text-xl font-bold mb-1" style={{ color: colors.primary }}>צרו קשר</h2>
+            <div className="w-14 h-1 mx-auto rounded-full mb-2" style={{ background: gradient }} />
+            <p className="text-xs sm:text-sm" style={{ color: colors.textLight }}>אנחנו כאן לכל שאלה</p>
           </div>
           
           {/* Contact Methods - Horizontal */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            <a href="mailto:info@vipo.com" className="text-center p-2 transition-transform hover:scale-105">
-              <Mail className="w-6 h-6 mx-auto mb-1" style={{ color: colors.primary }} />
-              <div className="text-[10px] font-bold" style={{ color: colors.primary }}>אימייל</div>
-              <div className="text-[8px]" style={{ color: colors.textLight }}>info@vipo.com</div>
-              <div className="text-[7px]" style={{ color: colors.textLight }}>נענה תוך 24 שעות</div>
+          <div className="grid grid-cols-3 gap-3 mb-5">
+            <a href="mailto:info@vipo.com" className="text-center p-3 transition-transform hover:scale-105">
+              <Mail className="w-7 h-7 mx-auto mb-1" style={{ color: colors.primary }} />
+              <div className="text-xs font-bold" style={{ color: colors.primary }}>אימייל</div>
+              <div className="text-[10px]" style={{ color: colors.textLight }}>info@vipo.com</div>
+              <div className="text-[9px]" style={{ color: colors.textLight }}>נענה תוך 24 שעות</div>
             </a>
-            <a href="tel:050-1234567" className="text-center p-2 transition-transform hover:scale-105">
-              <Phone className="w-6 h-6 mx-auto mb-1" style={{ color: colors.primary }} />
-              <div className="text-[10px] font-bold" style={{ color: colors.primary }}>טלפון</div>
-              <div className="text-[8px]" style={{ color: colors.textLight }}>050-1234567</div>
-              <div className="text-[7px]" style={{ color: colors.textLight }}>א׳-ה׳ 09:00-18:00</div>
+            <a href="tel:050-1234567" className="text-center p-3 transition-transform hover:scale-105">
+              <Phone className="w-7 h-7 mx-auto mb-1" style={{ color: colors.primary }} />
+              <div className="text-xs font-bold" style={{ color: colors.primary }}>טלפון</div>
+              <div className="text-[10px]" style={{ color: colors.textLight }}>050-1234567</div>
+              <div className="text-[9px]" style={{ color: colors.textLight }}>א׳-ה׳ 09:00-18:00</div>
             </a>
-            <a href="https://wa.me/972587009938" target="_blank" rel="noopener noreferrer" className="text-center p-2 transition-transform hover:scale-105">
-              <MessageCircle className="w-6 h-6 mx-auto mb-1" style={{ color: colors.primary }} />
-              <div className="text-[10px] font-bold" style={{ color: colors.primary }}>וואטסאפ</div>
-              <div className="text-[8px]" style={{ color: colors.textLight }}>שלחו הודעה</div>
-              <div className="text-[7px]" style={{ color: colors.textLight }}>זמין 7 ימים בשבוע</div>
+            <a href="https://wa.me/972587009938" target="_blank" rel="noopener noreferrer" className="text-center p-3 transition-transform hover:scale-105">
+              <MessageCircle className="w-7 h-7 mx-auto mb-1" style={{ color: colors.primary }} />
+              <div className="text-xs font-bold" style={{ color: colors.primary }}>וואטסאפ</div>
+              <div className="text-[10px]" style={{ color: colors.textLight }}>שלחו הודעה</div>
+              <div className="text-[9px]" style={{ color: colors.textLight }}>זמין 7 ימים בשבוע</div>
             </a>
           </div>
           
           {/* Contact Form */}
           <div 
-            className="relative overflow-hidden rounded-xl p-4"
+            className="relative overflow-hidden rounded-xl p-5"
             style={{ 
               border: '2px solid transparent',
               backgroundImage: `linear-gradient(white, white), ${gradient}`,
@@ -418,41 +418,41 @@ export default function AboutPage() {
               backgroundClip: 'padding-box, border-box'
             }}
           >
-            <div className="absolute -top-4 -right-4 w-12 h-12 rounded-full opacity-10" style={{ background: colors.secondary }} />
+            <div className="absolute -top-4 -right-4 w-14 h-14 rounded-full opacity-10" style={{ background: colors.secondary }} />
             
             <div className="relative">
-              <h3 className="text-xs font-bold mb-2 text-center" style={{ color: colors.primary }}>השאירו פרטים ונחזור אליכם</h3>
+              <h3 className="text-sm font-bold mb-3 text-center" style={{ color: colors.primary }}>השאירו פרטים ונחזור אליכם</h3>
               
-              <form className="space-y-2">
-                <div className="grid grid-cols-2 gap-2">
+              <form className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
                   <input
                     type="text"
                     placeholder="שם מלא"
-                    className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500"
+                    className="w-full px-4 py-2.5 rounded-lg text-sm border focus:outline-none focus:border-cyan-500"
                     style={{ borderColor: `${colors.secondary}40` }}
                   />
                   <input
                     type="tel"
                     placeholder="טלפון"
-                    className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500"
+                    className="w-full px-4 py-2.5 rounded-lg text-sm border focus:outline-none focus:border-cyan-500"
                     style={{ borderColor: `${colors.secondary}40` }}
                   />
                 </div>
                 <input
                   type="email"
                   placeholder="אימייל"
-                  className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-2.5 rounded-lg text-sm border focus:outline-none focus:border-cyan-500"
                   style={{ borderColor: `${colors.secondary}40` }}
                 />
                 <textarea
                   placeholder="הודעה"
-                  rows={2}
-                  className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500 resize-none"
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-lg text-sm border focus:outline-none focus:border-cyan-500 resize-none"
                   style={{ borderColor: `${colors.secondary}40` }}
                 />
                 <button
                   type="submit"
-                  className="w-full py-2 text-white font-bold rounded-lg text-xs transition-all hover:shadow-md"
+                  className="w-full py-2.5 text-white font-bold rounded-lg text-sm transition-all hover:shadow-md"
                   style={{ background: gradient }}
                 >
                   שליחה
@@ -461,17 +461,6 @@ export default function AboutPage() {
             </div>
           </div>
           
-          {/* Info Bar */}
-          <div className="flex justify-center gap-4 mt-3 text-[9px]" style={{ color: colors.textLight }}>
-            <div className="flex items-center gap-1">
-              <MapPin className="w-3 h-3" style={{ color: colors.secondary }} />
-              <span>תל אביב</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock className="w-3 h-3" style={{ color: colors.secondary }} />
-              <span>א׳-ה׳ 09:00-18:00</span>
-            </div>
-          </div>
         </div>
         
         {/* Wave SVG to Footer */}
