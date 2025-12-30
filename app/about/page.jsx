@@ -393,18 +393,24 @@ export default function AboutPage() {
                 <Mail className="w-4 h-4" />
               </div>
               <div className="text-[10px] font-bold" style={{ color: colors.primary }}>אימייל</div>
+              <div className="text-[8px]" style={{ color: colors.textLight }}>info@vipo.com</div>
+              <div className="text-[7px]" style={{ color: colors.textLight }}>נענה תוך 24 שעות</div>
             </a>
             <a href="tel:050-1234567" className="text-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
               <div className="w-8 h-8 mx-auto mb-1 rounded-lg flex items-center justify-center text-white" style={{ background: gradient }}>
                 <Phone className="w-4 h-4" />
               </div>
               <div className="text-[10px] font-bold" style={{ color: colors.primary }}>טלפון</div>
+              <div className="text-[8px]" style={{ color: colors.textLight }}>050-1234567</div>
+              <div className="text-[7px]" style={{ color: colors.textLight }}>א׳-ה׳ 09:00-18:00</div>
             </a>
             <a href="https://wa.me/972587009938" target="_blank" rel="noopener noreferrer" className="text-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
               <div className="w-8 h-8 mx-auto mb-1 rounded-lg flex items-center justify-center bg-green-500 text-white">
                 <MessageCircle className="w-4 h-4" />
               </div>
               <div className="text-[10px] font-bold" style={{ color: colors.primary }}>וואטסאפ</div>
+              <div className="text-[8px]" style={{ color: colors.textLight }}>שלחו הודעה</div>
+              <div className="text-[7px]" style={{ color: colors.textLight }}>זמין 7 ימים בשבוע</div>
             </a>
           </div>
           
