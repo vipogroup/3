@@ -9,6 +9,7 @@ export default function OrdersList() {
   const [deletingId, setDeletingId] = useState('');
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     fetchOrders();
@@ -77,14 +78,26 @@ export default function OrdersList() {
     }
   }
 
+  // Helper to get customer info from order
+  const getCustomerInfo = (order) => ({
+    fullName: order.customer?.fullName || order.customerName || '-',
+    phone: order.customer?.phone || order.customerPhone || '-',
+    email: order.customer?.email || order.customerEmail || '-',
+    address: order.customer?.address || '-',
+    city: order.customer?.city || '-',
+    zipCode: order.customer?.zipCode || '-',
+  });
+
   // Filter and search
   const filteredOrders = orders.filter((order) => {
     const matchesFilter = filter === 'all' || order.status === filter;
+    const customer = getCustomerInfo(order);
     const matchesSearch =
       !searchTerm ||
       order._id.includes(searchTerm) ||
-      order.customerEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerPhone?.includes(searchTerm);
+      customer.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.phone?.includes(searchTerm) ||
+      customer.email?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -249,8 +262,8 @@ export default function OrdersList() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm">
-                      <div>{order.customerEmail || '-'}</div>
-                      <div className="text-gray-500">{order.customerPhone || '-'}</div>
+                      <div className="font-medium">{getCustomerInfo(order).fullName}</div>
+                      <div className="text-gray-500">{getCustomerInfo(order).phone}</div>
                     </div>
                   </td>
                   <td
@@ -283,6 +296,17 @@ export default function OrdersList() {
                         </option>
                       ))}
                     </select>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedOrder(order)}
+                      className="mt-2 w-full text-sm font-medium rounded-lg px-3 py-2 transition-all"
+                      style={{
+                        background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                        color: 'white',
+                      }}
+                    >
+                      פרטים מלאים
+                    </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(order._id)}
@@ -339,8 +363,8 @@ export default function OrdersList() {
               <div className="space-y-2 mb-3">
                 <div>
                   <p className="text-xs text-gray-500">לקוח</p>
-                  <p className="text-sm">{order.customerEmail || '-'}</p>
-                  <p className="text-sm text-gray-500">{order.customerPhone || '-'}</p>
+                  <p className="text-sm font-medium">{getCustomerInfo(order).fullName}</p>
+                  <p className="text-sm text-gray-500">{getCustomerInfo(order).phone}</p>
                 </div>
 
                 <div className="flex justify-between items-center">
@@ -379,9 +403,20 @@ export default function OrdersList() {
               </div>
               <button
                 type="button"
+                onClick={() => setSelectedOrder(order)}
+                className="mt-3 w-full text-sm font-medium rounded-lg px-3 py-2 transition-all"
+                style={{
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  color: 'white',
+                }}
+              >
+                פרטים מלאים
+              </button>
+              <button
+                type="button"
                 onClick={() => handleDelete(order._id)}
                 disabled={deletingId === order._id}
-                className="mt-3 w-full text-sm font-medium rounded-lg px-3 py-2 transition-all"
+                className="mt-2 w-full text-sm font-medium rounded-lg px-3 py-2 transition-all"
                 style={{ background: deletingId === order._id ? '#f87171' : '#dc2626', color: 'white' }}
               >
                 {deletingId === order._id ? 'מוחק...' : 'מחיקה'}
@@ -404,6 +439,147 @@ export default function OrdersList() {
           </div>
         )}
       </div>
+
+      {/* Order Details Modal */}
+      {selectedOrder && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedOrder(null)}
+        >
+          <div 
+            className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              border: '3px solid transparent',
+              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 
+                  className="text-xl font-bold"
+                  style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  פרטי הזמנה #{selectedOrder._id.slice(-8)}
+                </h3>
+                <button 
+                  onClick={() => setSelectedOrder(null)}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              {/* Customer Info */}
+              <div className="mb-6">
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                  </svg>
+                  פרטי לקוח
+                </h4>
+                <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">שם:</span>
+                    <span className="font-medium">{getCustomerInfo(selectedOrder).fullName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">טלפון:</span>
+                    <span className="font-medium" dir="ltr">{getCustomerInfo(selectedOrder).phone}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">אימייל:</span>
+                    <span className="font-medium text-sm" dir="ltr">{getCustomerInfo(selectedOrder).email}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Shipping Address */}
+              <div className="mb-6">
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                  </svg>
+                  כתובת למשלוח
+                </h4>
+                <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">כתובת:</span>
+                    <span className="font-medium">{getCustomerInfo(selectedOrder).address}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">עיר:</span>
+                    <span className="font-medium">{getCustomerInfo(selectedOrder).city}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">מיקוד:</span>
+                    <span className="font-medium">{getCustomerInfo(selectedOrder).zipCode}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Order Items */}
+              <div className="mb-6">
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z" />
+                  </svg>
+                  פריטים בהזמנה
+                </h4>
+                <div className="bg-gray-50 rounded-xl p-4">
+                  {selectedOrder.items?.length > 0 ? (
+                    <div className="space-y-2">
+                      {selectedOrder.items.map((item, idx) => (
+                        <div key={idx} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0">
+                          <div>
+                            <span className="font-medium">{item.name || 'מוצר'}</span>
+                            <span className="text-gray-500 text-sm mr-2">x{item.quantity || item.qty || 1}</span>
+                          </div>
+                          <span className="font-bold" style={{ color: '#1e3a8a' }}>
+                            ₪{((item.unitPrice || item.price || 0) * (item.quantity || item.qty || 1)).toFixed(2)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 text-center">אין פריטים</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Order Summary */}
+              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-4">
+                <div className="flex justify-between items-center text-lg">
+                  <span className="font-bold">סה״כ:</span>
+                  <span className="font-bold text-xl" style={{ color: '#1e3a8a' }}>
+                    ₪{selectedOrder?.totals?.totalAmount?.toFixed?.(2) ?? selectedOrder?.totalAmount?.toFixed?.(2) ?? '0.00'}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm text-gray-600 mt-2">
+                  <span>תאריך הזמנה:</span>
+                  <span>{new Date(selectedOrder.createdAt).toLocaleString('he-IL')}</span>
+                </div>
+              </div>
+
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="mt-6 w-full py-3 rounded-xl font-bold text-white transition-all"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                סגור
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
