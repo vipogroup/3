@@ -373,94 +373,58 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Contact - Full Section */}
-      <section className="relative pt-6 pb-16 sm:pt-8 sm:pb-20 px-3 sm:px-4 bg-white w-full overflow-hidden">
+      {/* Contact - Compact Design */}
+      <section className="relative pt-5 pb-14 sm:pt-6 sm:pb-16 px-3 sm:px-4 bg-white w-full overflow-hidden">
         {/* Background Graphics */}
-        <div className="absolute top-0 right-0 w-32 h-32 opacity-5" style={{ background: `radial-gradient(circle, ${colors.secondary} 0%, transparent 70%)` }} />
-        <div className="absolute bottom-1/4 left-0 w-24 h-24 opacity-5" style={{ background: `radial-gradient(circle, ${colors.primary} 0%, transparent 70%)` }} />
+        <div className="absolute top-0 right-0 w-24 h-24 opacity-5" style={{ background: `radial-gradient(circle, ${colors.secondary} 0%, transparent 70%)` }} />
         
-        <div className="relative max-w-4xl mx-auto">
+        <div className="relative max-w-md mx-auto">
           {/* Header */}
-          <div className="text-center mb-5">
-            <h2 className="text-lg sm:text-xl font-bold mb-1" style={{ color: colors.primary }}>צרו קשר</h2>
-            <div className="w-16 h-1 mx-auto rounded-full mb-2" style={{ background: gradient }} />
-            <p className="text-xs sm:text-sm mb-1" style={{ color: colors.text }}>אנחנו כאן לכל שאלה</p>
-            <p className="text-[10px] sm:text-xs max-w-md mx-auto" style={{ color: colors.textLight }}>
-              צוות VIPO זמין בשבילכם – שאלות לגבי מוצרים, בקשות תמיכה או שיתופי פעולה. מלאו את הפרטים ונחזור אליכם בהקדם.
-            </p>
+          <div className="text-center mb-4">
+            <h2 className="text-base sm:text-lg font-bold mb-1" style={{ color: colors.primary }}>צרו קשר</h2>
+            <div className="w-12 h-0.5 mx-auto rounded-full mb-2" style={{ background: gradient }} />
+            <p className="text-[10px] sm:text-xs" style={{ color: colors.textLight }}>אנחנו כאן לכל שאלה</p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-4">
-            {/* Contact Methods */}
-            <div className="space-y-3">
-              {/* Email */}
-              <a href="mailto:info@vipo.com" className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white" style={{ background: gradient }}>
-                  <Mail className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold" style={{ color: colors.primary }}>אימייל</div>
-                  <div className="text-[10px]" style={{ color: colors.textLight }}>info@vipo.com</div>
-                  <div className="text-[9px]" style={{ color: colors.textLight }}>נענה תוך 24 שעות בממוצע</div>
-                </div>
-              </a>
-              
-              {/* Phone */}
-              <a href="tel:050-1234567" className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white" style={{ background: gradient }}>
-                  <Phone className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold" style={{ color: colors.primary }}>טלפון</div>
-                  <div className="text-[10px]" style={{ color: colors.textLight }}>050-1234567</div>
-                  <div className="text-[9px]" style={{ color: colors.textLight }}>ימים א׳-ה׳, 09:00-18:00</div>
-                </div>
-              </a>
-              
-              {/* WhatsApp */}
-              <a href="https://wa.me/972587009938" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-green-500 text-white">
-                  <MessageCircle className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold" style={{ color: colors.primary }}>וואטסאפ</div>
-                  <div className="text-[10px]" style={{ color: colors.textLight }}>שלחו הודעה בוואטסאפ</div>
-                  <div className="text-[9px]" style={{ color: colors.textLight }}>זמין 7 ימים בשבוע</div>
-                </div>
-              </a>
-              
-              {/* Additional Info */}
-              <div className="p-3 rounded-xl bg-gray-50">
-                <div className="text-xs font-bold mb-2" style={{ color: colors.primary }}>פרטים נוספים</div>
-                <div className="space-y-1.5 text-[10px]" style={{ color: colors.textLight }}>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-3 h-3" style={{ color: colors.secondary }} />
-                    <span>תל אביב, ישראל</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-3 h-3" style={{ color: colors.secondary }} />
-                    <span>א׳-ה׳: 09:00-18:00 | ו׳: 09:00-13:00</span>
-                  </div>
-                </div>
+          {/* Contact Methods - Horizontal */}
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            <a href="mailto:info@vipo.com" className="text-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+              <div className="w-8 h-8 mx-auto mb-1 rounded-lg flex items-center justify-center text-white" style={{ background: gradient }}>
+                <Mail className="w-4 h-4" />
               </div>
-            </div>
+              <div className="text-[10px] font-bold" style={{ color: colors.primary }}>אימייל</div>
+            </a>
+            <a href="tel:050-1234567" className="text-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+              <div className="w-8 h-8 mx-auto mb-1 rounded-lg flex items-center justify-center text-white" style={{ background: gradient }}>
+                <Phone className="w-4 h-4" />
+              </div>
+              <div className="text-[10px] font-bold" style={{ color: colors.primary }}>טלפון</div>
+            </a>
+            <a href="https://wa.me/972587009938" target="_blank" rel="noopener noreferrer" className="text-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+              <div className="w-8 h-8 mx-auto mb-1 rounded-lg flex items-center justify-center bg-green-500 text-white">
+                <MessageCircle className="w-4 h-4" />
+              </div>
+              <div className="text-[10px] font-bold" style={{ color: colors.primary }}>וואטסאפ</div>
+            </a>
+          </div>
+          
+          {/* Contact Form */}
+          <div 
+            className="relative overflow-hidden rounded-xl p-4"
+            style={{ 
+              border: '2px solid transparent',
+              backgroundImage: `linear-gradient(white, white), ${gradient}`,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box'
+            }}
+          >
+            <div className="absolute -top-4 -right-4 w-12 h-12 rounded-full opacity-10" style={{ background: colors.secondary }} />
             
-            {/* Contact Form */}
-            <div 
-              className="relative overflow-hidden rounded-2xl p-4 sm:p-5"
-              style={{ 
-                border: '2px solid transparent',
-                backgroundImage: `linear-gradient(white, white), ${gradient}`,
-                backgroundOrigin: 'border-box',
-                backgroundClip: 'padding-box, border-box'
-              }}
-            >
-              <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full opacity-10" style={{ background: colors.secondary }} />
+            <div className="relative">
+              <h3 className="text-xs font-bold mb-2 text-center" style={{ color: colors.primary }}>השאירו פרטים ונחזור אליכם</h3>
               
-              <div className="relative">
-                <h3 className="text-sm font-bold mb-3" style={{ color: colors.primary }}>טופס יצירת קשר</h3>
-                
-                <form className="space-y-2">
+              <form className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
                   <input
                     type="text"
                     placeholder="שם מלא"
@@ -468,42 +432,44 @@ export default function AboutPage() {
                     style={{ borderColor: `${colors.secondary}40` }}
                   />
                   <input
-                    type="email"
-                    placeholder="אימייל"
+                    type="tel"
+                    placeholder="טלפון"
                     className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500"
                     style={{ borderColor: `${colors.secondary}40` }}
                   />
-                  <input
-                    type="text"
-                    placeholder="נושא"
-                    className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500"
-                    style={{ borderColor: `${colors.secondary}40` }}
-                  />
-                  <textarea
-                    placeholder="הודעה"
-                    rows={3}
-                    className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500 resize-none"
-                    style={{ borderColor: `${colors.secondary}40` }}
-                  />
-                  <button
-                    type="submit"
-                    className="w-full py-2.5 text-white font-bold rounded-lg text-xs transition-all hover:shadow-md"
-                    style={{ background: gradient }}
-                  >
-                    שליחה
-                  </button>
-                </form>
-                
-                {/* Services */}
-                <div className="mt-3 pt-3 border-t" style={{ borderColor: `${colors.secondary}20` }}>
-                  <div className="text-[10px] font-medium mb-1" style={{ color: colors.primary }}>שירותים נפוצים:</div>
-                  <div className="text-[9px] space-y-0.5" style={{ color: colors.textLight }}>
-                    <div>• שאלות על רכישות ומוצרים</div>
-                    <div>• סיוע טכני למערכת הסוכנים</div>
-                    <div>• מידע על הרשמה והצטרפות כסוכן</div>
-                  </div>
                 </div>
-              </div>
+                <input
+                  type="email"
+                  placeholder="אימייל"
+                  className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500"
+                  style={{ borderColor: `${colors.secondary}40` }}
+                />
+                <textarea
+                  placeholder="הודעה"
+                  rows={2}
+                  className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500 resize-none"
+                  style={{ borderColor: `${colors.secondary}40` }}
+                />
+                <button
+                  type="submit"
+                  className="w-full py-2 text-white font-bold rounded-lg text-xs transition-all hover:shadow-md"
+                  style={{ background: gradient }}
+                >
+                  שליחה
+                </button>
+              </form>
+            </div>
+          </div>
+          
+          {/* Info Bar */}
+          <div className="flex justify-center gap-4 mt-3 text-[9px]" style={{ color: colors.textLight }}>
+            <div className="flex items-center gap-1">
+              <MapPin className="w-3 h-3" style={{ color: colors.secondary }} />
+              <span>תל אביב</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="w-3 h-3" style={{ color: colors.secondary }} />
+              <span>א׳-ה׳ 09:00-18:00</span>
             </div>
           </div>
         </div>
