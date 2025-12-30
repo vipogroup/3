@@ -90,7 +90,10 @@ export default function AboutPage() {
           <h1 className="text-xl sm:text-2xl font-bold mb-2">מי אנחנו</h1>
           
           <p className="text-xs sm:text-sm leading-relaxed mb-3 opacity-95">
-            <span className="font-bold">VIPO Group</span> הוקמה ב-2018 - חברה ישראלית המתמחה באיתור מפעלים, ניהול שינוע וסגירת עסקאות מול ספקים גלובליים.
+            <span className="font-bold">VIPO Group</span> הוקמה בשנת 2018 מתוך הבנה פשוטה: הדרך לחיסכון אמיתי עוברת דרך קשר ישיר עם מקור הייצור.
+          </p>
+          <p className="text-[10px] sm:text-xs leading-relaxed mb-3 opacity-85">
+            אנחנו חברה ישראלית המתמחה באיתור מפעלים גלובליים, ניהול שינוע וסגירת עסקאות - הכל תחת קורת גג אחת. אנו מלווים עסקים ואנשים פרטיים לאורך כל הדרך: מרגע האיתור, דרך המשא ומתן, ועד לרגע שהסחורה מגיעה לפתח הבית.
           </p>
           
           {/* Stats row */}
@@ -110,7 +113,7 @@ export default function AboutPage() {
           {/* Vision - inline */}
           <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-4 py-2">
             <Heart className="w-4 h-4" style={{ color: colors.orange }} />
-            <span className="text-xs">להנגיש את עולם הייבוא לכל אחד בשקיפות מלאה</span>
+            <span className="text-xs">להנגיש את עולם הייבוא לכל אחד - בשקיפות מלאה, במחירים הוגנים, ובליווי מקצועי</span>
           </div>
         </div>
 
@@ -140,10 +143,10 @@ export default function AboutPage() {
           
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {[
-              { icon: Search, title: 'איתור מפעלים', desc: 'גישה למפעלי ייצור מובילים' },
-              { icon: Truck, title: 'ניהול שינוע', desc: 'שינוע ועמילות מכס' },
-              { icon: ShieldCheck, title: 'הסכמים ישירים', desc: 'משא ומתן מקצועי' },
-              { icon: Megaphone, title: 'שיווק ומכירה', desc: 'קמפיינים דיגיטליים' },
+              { icon: Search, title: 'איתור מפעלים גלובליים', desc: 'גישה למפעלי ייצור מובילים במגוון תחומים, עם הצעות מחיר מותאמות אישית' },
+              { icon: Truck, title: 'ניהול שינוע מתקדם', desc: 'שירותי שינוע ועמילות מכס מהמובילים בעולם, אנחנו מטפלים בכל הבירוקרטיה' },
+              { icon: ShieldCheck, title: 'הסכמים ישירים', desc: 'סגירת עסקאות ישירות מול המפעלים, משא ומתן מקצועי שחוסך לכם כסף' },
+              { icon: Megaphone, title: 'שיווק ומכירה', desc: 'ניהול קמפיינים בכל הרשתות החברתיות ובניית מערכת דיגיטלית' },
             ].map((service, idx) => (
               <div 
                 key={idx} 
@@ -198,11 +201,11 @@ export default function AboutPage() {
             
             <div className="flex items-start justify-center gap-1 sm:gap-2">
               {[
-                { num: '1', title: 'ייעוץ', icon: MessageCircle },
-                { num: '2', title: 'איתור', icon: Search },
-                { num: '3', title: 'משא ומתן', icon: ShieldCheck },
-                { num: '4', title: 'שינוע', icon: Truck },
-                { num: '5', title: 'קבלה', icon: Package },
+                { num: '1', title: 'פגישת ייעוץ', subtitle: 'הבנת הצרכים', icon: MessageCircle },
+                { num: '2', title: 'איתור מפעל', subtitle: 'חיפוש גלובלי', icon: Search },
+                { num: '3', title: 'משא ומתן', subtitle: 'הבטחת המחיר הטוב', icon: ShieldCheck },
+                { num: '4', title: 'שינוע ומכס', subtitle: 'ניהול הלוגיסטיקה', icon: Truck },
+                { num: '5', title: 'קבלת סחורה', subtitle: 'המוצר מגיע!', icon: Package },
               ].map((step, idx, arr) => (
                 <div key={idx} className="flex items-start">
                   {/* Step */}
