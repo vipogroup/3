@@ -31,59 +31,56 @@ export async function GET(req) {
     const since = searchParams.get('since'); // ISO optional
 
     const db = await getDb();
-    const transactions = db.collection('transactions');
+    const orders = db.collection('orders');
 
-    // Build query
+    // Build query - read from orders collection
     const query = {};
     if (status) query.status = status;
     if (since) query.createdAt = { $gte: new Date(since) };
 
-    // Get transactions
-    const items = await transactions.find(query).sort({ createdAt: -1 }).toArray();
+    // Get orders as transactions
+    const items = await orders.find(query).sort({ createdAt: -1 }).toArray();
 
-    // Get user and product details
-    const userIds = [...new Set(items.map((t) => t.userId).filter(Boolean))];
-    const productIds = [...new Set(items.map((t) => t.productId).filter(Boolean))];
+    // Get user details (createdBy and agentId)
+    const userIds = [...new Set([
+      ...items.map((t) => t.createdBy).filter(Boolean),
+      ...items.map((t) => t.agentId).filter(Boolean),
+    ])];
 
     const users = await db
       .collection('users')
       .find({ _id: { $in: userIds } })
-      .project({ fullName: 1, email: 1, role: 1 })
+      .project({ fullName: 1, email: 1, role: 1, phone: 1 })
       .toArray();
 
-    const products = await db
-      .collection('products')
-      .find({ _id: { $in: productIds } })
-      .project({ title: 1, price: 1, slug: 1 })
-      .toArray();
-
-    // Create maps
+    // Create user map
     const userMap = {};
     users.forEach((u) => {
       userMap[String(u._id)] = u;
     });
 
-    const productMap = {};
-    products.forEach((p) => {
-      productMap[String(p._id)] = p;
+    // Enrich orders as transactions
+    const enrichedItems = items.map((order) => {
+      const firstItem = order.items?.[0] || {};
+      return {
+        _id: String(order._id),
+        userId: order.createdBy ? String(order.createdBy) : null,
+        user: order.createdBy ? userMap[String(order.createdBy)] : null,
+        agentId: order.agentId ? String(order.agentId) : null,
+        agent: order.agentId ? userMap[String(order.agentId)] : null,
+        productId: firstItem.productId ? String(firstItem.productId) : null,
+        product: firstItem ? { title: firstItem.name, price: firstItem.unitPrice || firstItem.price } : null,
+        amount: order.totalAmount || 0,
+        status: order.status,
+        itemsCount: order.items?.length || 0,
+        customer: order.customer || { fullName: order.customerName, phone: order.customerPhone },
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+      };
     });
 
-    // Enrich transactions
-    const enrichedItems = items.map((t) => ({
-      _id: String(t._id),
-      userId: String(t.userId),
-      user: userMap[String(t.userId)] || null,
-      productId: String(t.productId),
-      product: productMap[String(t.productId)] || null,
-      amount: t.amount,
-      status: t.status,
-      referredBy: t.referredBy ? String(t.referredBy) : null,
-      createdAt: t.createdAt,
-      updatedAt: t.updatedAt,
-    }));
-
     // Calculate summary
-    const totalAmount = items.reduce((sum, t) => sum + (t.amount || 0), 0);
+    const totalAmount = items.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
 
     return NextResponse.json({
       ok: true,
