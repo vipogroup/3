@@ -65,6 +65,42 @@ export async function DELETE(req, { params }) {
   }
 }
 
+export async function PUT(req, { params }) {
+  try {
+    const user = await requireAuthApi(req);
+    if (user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = params || {};
+    if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+
+    const col = await ordersCollection();
+    const order = await col.findOne({ _id: new ObjectId(id) });
+    if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+    const body = await req.json();
+    const { status } = body;
+
+    const allowedStatuses = ['pending', 'paid', 'cancelled', 'completed', 'shipped'];
+    if (!status || !allowedStatuses.includes(status)) {
+      return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+    }
+
+    await col.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { status, updatedAt: new Date() } }
+    );
+
+    const updated = await col.findOne({ _id: new ObjectId(id) });
+    return NextResponse.json({ success: true, order: updated });
+  } catch (e) {
+    console.error(e);
+    const status = e?.status || 500;
+    return NextResponse.json({ error: status === 401 ? 'Unauthorized' : 'Server error' }, { status });
+  }
+}
+
 export async function PATCH(req, { params }) {
   try {
     const user = await requireAuthApi(req);
