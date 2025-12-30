@@ -243,48 +243,73 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Group Purchase - Card Style */}
-      <section className="py-4 sm:py-6 px-3 sm:px-4 w-full bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div 
-            className="relative overflow-hidden rounded-xl p-4 sm:p-5"
-            style={{ 
-              border: '2px solid transparent',
-              backgroundImage: `linear-gradient(white, white), ${gradient}`,
-              backgroundOrigin: 'border-box',
-              backgroundClip: 'padding-box, border-box'
-            }}
-          >
-            {/* Decorative */}
-            <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-10" style={{ background: colors.secondary }} />
-            <div className="absolute bottom-1 left-1 flex gap-0.5 opacity-20">
-              <div className="w-1 h-1 rounded-full" style={{ background: colors.secondary }} />
-              <div className="w-1 h-1 rounded-full" style={{ background: colors.primary }} />
-            </div>
-            
-            <div className="relative flex items-center justify-between gap-3 flex-wrap">
-              <div className="flex items-center gap-3">
+      {/* Group Purchase - Full Content */}
+      <section className="relative py-5 sm:py-6 px-3 sm:px-4 w-full bg-white overflow-hidden">
+        {/* Background Graphics */}
+        <div className="absolute top-0 right-0 w-24 h-24 opacity-5" style={{ background: `radial-gradient(circle, ${colors.secondary} 0%, transparent 70%)` }} />
+        <div className="absolute bottom-0 left-0 w-20 h-20 opacity-5" style={{ background: `radial-gradient(circle, ${colors.primary} 0%, transparent 70%)` }} />
+        
+        <div className="relative max-w-4xl mx-auto">
+          <div className="text-center mb-4">
+            <h2 className="text-base sm:text-lg font-bold mb-1" style={{ color: colors.primary }}>הפלטפורמה שלנו - רכישה קבוצתית חכמה</h2>
+            <div className="w-16 h-0.5 mx-auto rounded-full mb-2" style={{ background: gradient }} />
+            <p className="text-[10px] sm:text-xs max-w-lg mx-auto" style={{ color: colors.textLight }}>
+              בנוסף לשירותי היבוא והשינוע, פיתחנו פלטפורמה ייחודית לרכישה קבוצתית - שמאפשרת לכל אחד ליהנות ממחירי סיטונאות
+            </p>
+          </div>
+          
+          {/* Steps */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
+            {[
+              { icon: Users, title: 'נצטרף לקבוצה' },
+              { icon: TrendingDown, title: 'המחיר יורד' },
+              { icon: CheckCircle, title: 'כולם מרוויחים' },
+            ].map((item, idx) => (
+              <div 
+                key={idx}
+                className="text-center p-3 rounded-xl bg-white"
+                style={{ 
+                  border: '2px solid transparent',
+                  backgroundImage: `linear-gradient(white, white), ${gradient}`,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box'
+                }}
+              >
                 <div 
-                  className="w-10 h-10 rounded-lg flex items-center justify-center text-white"
+                  className="w-9 h-9 mx-auto mb-2 rounded-lg flex items-center justify-center text-white"
                   style={{ background: gradient }}
                 >
-                  <Users className="w-5 h-5" />
+                  <item.icon className="w-5 h-5" />
                 </div>
-                <div>
-                  <h2 className="text-sm sm:text-base font-bold" style={{ color: colors.primary }}>רכישה קבוצתית חכמה</h2>
-                  <p className="text-[10px] sm:text-xs" style={{ color: colors.textLight }}>הצטרפו לקבוצה וחסכו יחד</p>
-                </div>
+                <div className="text-[11px] sm:text-xs font-bold" style={{ color: colors.primary }}>{item.title}</div>
               </div>
-              
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-1 px-4 py-2 text-white font-bold rounded-lg text-xs transition-all hover:shadow-md"
-                style={{ background: gradient }}
-              >
-                לצפייה במוצרים
-                <ChevronLeft className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+            ))}
+          </div>
+          
+          {/* Benefits */}
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-4">
+            {[
+              'אין התחייבות כספית עד סגירת הקבוצה',
+              'אחריות מלאה על כל המוצרים',
+              'משלוח עד הבית',
+            ].map((benefit, idx) => (
+              <div key={idx} className="flex items-center gap-1.5">
+                <CheckCircle className="w-3.5 h-3.5" style={{ color: colors.secondary }} />
+                <span className="text-[10px] sm:text-xs" style={{ color: colors.text }}>{benefit}</span>
+              </div>
+            ))}
+          </div>
+          
+          {/* CTA */}
+          <div className="text-center">
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-1.5 px-5 py-2 text-white font-bold rounded-lg text-xs transition-all hover:shadow-md hover:-translate-y-0.5"
+              style={{ background: gradient }}
+            >
+              לצפייה במוצרים
+              <ChevronLeft className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
