@@ -48,7 +48,7 @@ const gradientReverse = `linear-gradient(135deg, ${colors.secondary} 0%, ${color
 
 export default function AboutPage() {
   useEffect(() => {
-    // Prevent horizontal scroll on mobile
+    // Prevent horizontal scroll on mobile + Add animations
     const style = document.createElement('style');
     style.textContent = `
       html, body { 
@@ -57,6 +57,55 @@ export default function AboutPage() {
         width: 100% !important;
       }
       * { box-sizing: border-box !important; }
+      
+      /* Animations */
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      @keyframes slideInRight {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+      
+      .animate-fadeInUp { animation: fadeInUp 0.6s ease-out forwards; }
+      .animate-fadeInDown { animation: fadeInDown 0.6s ease-out forwards; }
+      .animate-fadeIn { animation: fadeIn 0.6s ease-out forwards; }
+      .animate-scaleIn { animation: scaleIn 0.5s ease-out forwards; }
+      .animate-slideInRight { animation: slideInRight 0.6s ease-out forwards; }
+      .animate-pulse-slow { animation: pulse 3s ease-in-out infinite; }
+      .animate-float { animation: float 4s ease-in-out infinite; }
+      
+      .delay-100 { animation-delay: 0.1s; }
+      .delay-200 { animation-delay: 0.2s; }
+      .delay-300 { animation-delay: 0.3s; }
+      .delay-400 { animation-delay: 0.4s; }
+      .delay-500 { animation-delay: 0.5s; }
+      .delay-600 { animation-delay: 0.6s; }
+      .delay-700 { animation-delay: 0.7s; }
+      .delay-800 { animation-delay: 0.8s; }
+      
+      .opacity-0-start { opacity: 0; }
     `;
     document.head.appendChild(style);
     return () => {
@@ -79,20 +128,20 @@ export default function AboutPage() {
         style={{ background: gradient }}
       >
         {/* Decorative circles */}
-        <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-white/10" />
-        <div className="absolute top-1/2 -left-6 w-20 h-20 rounded-full bg-white/10" />
+        <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-white/10 animate-float" />
+        <div className="absolute top-1/2 -left-6 w-20 h-20 rounded-full bg-white/10 animate-float delay-500" />
 
         <div className="relative max-w-3xl mx-auto text-center text-white">
-          <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-white/20 flex items-center justify-center">
+          <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-white/20 flex items-center justify-center opacity-0-start animate-scaleIn">
             <Globe className="w-7 h-7" />
           </div>
           
-          <h1 className="text-2xl sm:text-3xl font-bold mb-3">מי אנחנו</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-3 opacity-0-start animate-fadeInDown delay-100">מי אנחנו</h1>
           
-          <p className="text-sm sm:text-base leading-relaxed mb-3 opacity-95">
+          <p className="text-sm sm:text-base leading-relaxed mb-3 opacity-0-start animate-fadeInUp delay-200">
             <span className="font-bold">VIPO Group</span> הוקמה בשנת 2018 מתוך הבנה פשוטה: הדרך לחיסכון אמיתי עוברת דרך קשר ישיר עם מקור הייצור.
           </p>
-          <p className="text-xs sm:text-sm leading-relaxed mb-4 opacity-85">
+          <p className="text-xs sm:text-sm leading-relaxed mb-4 opacity-0-start animate-fadeInUp delay-300">
             אנחנו חברה ישראלית המתמחה באיתור מפעלים גלובליים, ניהול שינוע וסגירת עסקאות - הכל תחת קורת גג אחת. אנו מלווים עסקים ואנשים פרטיים לאורך כל הדרך: מרגע האיתור, דרך המשא ומתן, ועד לרגע שהסחורה מגיעה לפתח הבית.
           </p>
           
@@ -103,7 +152,7 @@ export default function AboutPage() {
               { value: '5K+', label: 'לקוחות' },
               { value: '15+', label: 'מדינות' },
             ].map((stat, idx) => (
-              <div key={idx} className="text-center">
+              <div key={idx} className={`text-center opacity-0-start animate-scaleIn delay-${(idx + 4) * 100}`}>
                 <div className="text-xl sm:text-2xl font-bold">{stat.value}</div>
                 <div className="text-xs opacity-70">{stat.label}</div>
               </div>
@@ -111,8 +160,8 @@ export default function AboutPage() {
           </div>
           
           {/* Vision - inline */}
-          <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-5 py-2.5">
-            <Heart className="w-5 h-5" style={{ color: colors.orange }} />
+          <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-5 py-2.5 opacity-0-start animate-fadeInUp delay-700">
+            <Heart className="w-5 h-5 animate-pulse-slow" style={{ color: colors.orange }} />
             <span className="text-sm">להנגיש את עולם הייבוא לכל אחד - בשקיפות מלאה, במחירים הוגנים, ובליווי מקצועי</span>
           </div>
         </div>
@@ -135,10 +184,10 @@ export default function AboutPage() {
         
         <div className="relative max-w-4xl mx-auto">
           <div className="text-center mb-4">
-            <h2 className="text-lg sm:text-xl font-bold mb-1" style={{ color: colors.primary }}>
+            <h2 className="text-lg sm:text-xl font-bold mb-1 opacity-0-start animate-fadeInDown" style={{ color: colors.primary }}>
               השירותים שלנו
             </h2>
-            <div className="w-14 h-1 mx-auto rounded-full" style={{ background: gradient }} />
+            <div className="w-14 h-1 mx-auto rounded-full opacity-0-start animate-scaleIn delay-100" style={{ background: gradient }} />
           </div>
           
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -150,7 +199,7 @@ export default function AboutPage() {
             ].map((service, idx) => (
               <div 
                 key={idx} 
-                className="relative overflow-hidden group bg-white rounded-xl p-3 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 text-center"
+                className={`relative overflow-hidden group bg-white rounded-xl p-3 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] text-center opacity-0-start animate-fadeInUp delay-${(idx + 2) * 100}`}
                 style={{ 
                   border: '2px solid transparent',
                   backgroundImage: `linear-gradient(white, white), ${gradient}`,
@@ -170,8 +219,8 @@ export default function AboutPage() {
                 </div>
                 
                 {/* Icon */}
-                <div className="relative w-10 h-10 mx-auto rounded-md flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
-                  <service.icon className="w-6 h-6" style={{ color: colors.primary }} />
+                <div className="relative w-10 h-10 mx-auto rounded-md flex items-center justify-center mb-2 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                  <service.icon className="w-6 h-6 transition-colors" style={{ color: colors.primary }} />
                 </div>
                 
                 {/* Content */}
@@ -410,8 +459,13 @@ export default function AboutPage() {
           
           {/* Contact Form */}
           <div 
-            className="relative overflow-hidden rounded-xl p-5 border-2"
-            style={{ borderColor: `${colors.secondary}40` }}
+            className="relative overflow-hidden rounded-xl p-5"
+            style={{ 
+              border: '2px solid transparent',
+              backgroundImage: `linear-gradient(white, white), ${gradient}`,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box'
+            }}
           >
             <div className="absolute -top-4 -right-4 w-14 h-14 rounded-full opacity-10" style={{ background: colors.secondary }} />
             
