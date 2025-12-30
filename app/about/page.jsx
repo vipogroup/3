@@ -410,13 +410,8 @@ export default function AboutPage() {
           
           {/* Contact Form */}
           <div 
-            className="relative overflow-hidden rounded-xl p-5"
-            style={{ 
-              border: '2px solid transparent',
-              backgroundImage: `linear-gradient(white, white), ${gradient}`,
-              backgroundOrigin: 'border-box',
-              backgroundClip: 'padding-box, border-box'
-            }}
+            className="relative overflow-hidden rounded-xl p-5 border-2"
+            style={{ borderColor: `${colors.secondary}40` }}
           >
             <div className="absolute -top-4 -right-4 w-14 h-14 rounded-full opacity-10" style={{ background: colors.secondary }} />
             
