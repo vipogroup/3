@@ -348,6 +348,14 @@ export async function POST(req) {
     }
 
     // 6) Create order (Native Driver)
+    const now = new Date();
+    const orderType = rest?.orderType || 'regular';
+    
+    // Calculate commission available date based on order type
+    // Regular purchase: 30 days, Group purchase: 100 days
+    const daysUntilCommissionAvailable = orderType === 'group' ? 100 : 30;
+    const commissionAvailableAt = new Date(now.getTime() + daysUntilCommissionAvailable * 24 * 60 * 60 * 1000);
+    
     const orderDoc = {
       items,
       totals: {
@@ -360,7 +368,10 @@ export async function POST(req) {
       discountAmount,
       createdBy: me._id,
       status: 'pending',
+      orderType,
       commissionSettled: false,
+      commissionStatus: 'pending',
+      commissionAvailableAt: finalCommissionAmount > 0 ? commissionAvailableAt : null,
       refSource,
       refAgentId,
       commissionAmount: finalCommissionAmount,
@@ -368,8 +379,8 @@ export async function POST(req) {
       agentId: couponAgent?._id ?? refAgentId,
       couponCommissionPercent: commissionPercent,
       commissionPercent,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: now,
+      updatedAt: now,
       ...rest,
     };
 

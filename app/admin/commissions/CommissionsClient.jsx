@@ -9,6 +9,16 @@ const STATUS_LABELS = {
   cancelled: { label: 'בוטל', color: 'bg-red-100 text-red-800' },
 };
 
+// Calculate days until commission is available
+function getDaysUntilAvailable(availableAt) {
+  if (!availableAt) return null;
+  const now = new Date();
+  const available = new Date(availableAt);
+  const diffTime = available.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
+
 // Export to CSV (Excel compatible)
 function exportToExcel(agentsSummary, commissions) {
   // BOM for UTF-8 support in Excel
@@ -486,8 +496,20 @@ export default function CommissionsClient() {
                               {statusInfo.label}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600">
-                            {formatDate(c.commissionAvailableAt)}
+                          <td className="px-4 py-3 text-center text-sm">
+                            {c.commissionAvailableAt ? (
+                              <div>
+                                <div className="text-gray-600">{formatDate(c.commissionAvailableAt)}</div>
+                                {c.commissionStatus === 'pending' && getDaysUntilAvailable(c.commissionAvailableAt) > 0 && (
+                                  <div className="text-xs text-yellow-600">
+                                    עוד {getDaysUntilAvailable(c.commissionAvailableAt)} ימים
+                                  </div>
+                                )}
+                                {c.commissionStatus === 'pending' && getDaysUntilAvailable(c.commissionAvailableAt) <= 0 && (
+                                  <div className="text-xs text-green-600 font-medium">מוכן לשחרור!</div>
+                                )}
+                              </div>
+                            ) : '-'}
                           </td>
                         </tr>
                       );
