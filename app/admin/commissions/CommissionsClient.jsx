@@ -476,7 +476,12 @@ export default function CommissionsClient() {
                       const statusInfo = STATUS_LABELS[c.commissionStatus] || STATUS_LABELS.pending;
                       return (
                         <tr key={c.orderId} className="border-b border-gray-100 hover:bg-gray-50 transition-all">
-                          <td className="px-4 py-3 text-sm">{formatDateTime(c.orderDate)}</td>
+                          <td className="px-4 py-3 text-sm">
+                            <div>{formatDateTime(c.orderDate)}</div>
+                            {c.orderType === 'group' && (
+                              <span className="px-1.5 py-0.5 text-xs bg-purple-100 text-purple-700 rounded">קבוצתית</span>
+                            )}
+                          </td>
                           <td className="px-4 py-3">
                             <div className="text-sm font-medium">{c.agent?.fullName || 'לא ידוע'}</div>
                             <code className="text-xs bg-purple-50 text-purple-600 px-1 rounded">

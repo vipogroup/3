@@ -99,6 +99,7 @@ export async function GET(req) {
       return {
         orderId: order._id.toString(),
         orderDate: order.createdAt,
+        orderType: order.orderType || 'regular',
         orderTotal: order.totalAmount || 0,
         commissionAmount: amount,
         commissionStatus: status,
