@@ -52,12 +52,12 @@ export async function DELETE(req, { params }) {
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
     const col = await ordersCollection();
-    const result = await col.findOneAndDelete({ _id: new ObjectId(id) });
-    if (!result?.value) {
+    const result = await col.deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 0) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, deleted: true });
   } catch (e) {
     console.error(e);
     const status = e?.status || 500;
