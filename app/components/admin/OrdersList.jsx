@@ -335,30 +335,31 @@ export default function OrdersList() {
                         </option>
                       ))}
                     </select>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedOrder(order)}
-                      className="mt-2 w-full text-sm font-medium rounded-lg px-3 py-2 transition-all"
-                      style={{
-                        background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                        color: 'white',
-                      }}
-                    >
-                      פרטים מלאים
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(order._id)}
-                      disabled={deletingId === order._id}
-                      className="mt-2 w-full text-sm font-medium rounded-lg px-3 py-2 transition-all"
-                      style={{
-                        background: deletingId === order._id ? '#f87171' : '#dc2626',
-                        color: 'white',
-                        opacity: deletingId === order._id ? 0.8 : 1,
-                      }}
-                    >
-                      {deletingId === order._id ? 'מוחק...' : 'מחיקה'}
-                    </button>
+                    <div className="flex flex-col gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedOrder(order)}
+                        className="w-full text-sm font-medium rounded-lg px-3 py-2 transition-all"
+                        style={{
+                          background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                          color: 'white',
+                        }}
+                      >
+                        פרטים מלאים
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(order._id)}
+                        disabled={deletingId === order._id}
+                        className="w-full text-sm font-medium rounded-lg px-3 py-2 transition-all hover:opacity-90"
+                        style={{
+                          background: deletingId === order._id ? '#f87171' : '#dc2626',
+                          color: 'white',
+                        }}
+                      >
+                        {deletingId === order._id ? 'מוחק...' : 'מחק'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
