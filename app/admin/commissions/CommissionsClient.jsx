@@ -9,6 +9,42 @@ const STATUS_LABELS = {
   cancelled: { label: 'בוטל', color: 'bg-red-100 text-red-800' },
 };
 
+// Export to CSV (Excel compatible)
+function exportToExcel(agentsSummary, commissions) {
+  // BOM for UTF-8 support in Excel
+  const BOM = '\uFEFF';
+  
+  // Create agents summary CSV
+  let csv = BOM;
+  csv += 'סיכום עמלות לפי סוכן\n';
+  csv += 'שם סוכן,קופון,הזמנות,ממתין,זמין למשיכה,יתרה נוכחית,סה״כ הרוויח\n';
+  
+  agentsSummary?.forEach(agent => {
+    csv += `"${agent.fullName}","${agent.couponCode || ''}",${agent.ordersCount},${agent.pendingAmount || 0},${agent.availableAmount || 0},${agent.currentBalance || 0},${agent.totalEarned || 0}\n`;
+  });
+  
+  csv += '\n\nפירוט עמלות\n';
+  csv += 'תאריך,סוכן,קופון,לקוח,טלפון,סכום הזמנה,עמלה,סטטוס,תאריך שחרור\n';
+  
+  commissions?.forEach(c => {
+    const status = STATUS_LABELS[c.commissionStatus]?.label || c.commissionStatus;
+    const date = c.orderDate ? new Date(c.orderDate).toLocaleDateString('he-IL') : '';
+    const availableAt = c.commissionAvailableAt ? new Date(c.commissionAvailableAt).toLocaleDateString('he-IL') : '';
+    csv += `"${date}","${c.agent?.fullName || 'לא ידוע'}","${c.agent?.couponCode || ''}","${c.customerName}","${c.customerPhone}",${c.orderTotal || 0},${c.commissionAmount || 0},"${status}","${availableAt}"\n`;
+  });
+  
+  // Create and download file
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `commissions-report-${new Date().toISOString().split('T')[0]}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export default function CommissionsClient() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -115,13 +151,23 @@ export default function CommissionsClient() {
           >
             ניהול עמלות סוכנים
           </h1>
-          <button
-            onClick={fetchData}
-            className="px-4 py-2 rounded-lg text-white font-medium transition-all"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-          >
-            רענן נתונים
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => exportToExcel(data?.agentsSummary, data?.commissions)}
+              disabled={!data}
+              className="px-4 py-2 rounded-lg font-medium transition-all border-2 disabled:opacity-50"
+              style={{ borderColor: '#0891b2', color: '#1e3a8a' }}
+            >
+              📥 ייצוא Excel
+            </button>
+            <button
+              onClick={fetchData}
+              className="px-4 py-2 rounded-lg text-white font-medium transition-all"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              רענן נתונים
+            </button>
+          </div>
         </div>
 
         {/* KPI Cards */}
