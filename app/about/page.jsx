@@ -1,461 +1,539 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect } from 'react';
+import {
+  Search,
+  Truck,
+  ShieldCheck,
+  Megaphone,
+  Building2,
+  Home,
+  ShoppingCart,
+  Landmark,
+  Wallet,
+  Link2,
+  BarChart3,
+  Phone,
+  Mail,
+  MessageCircle,
+  Clock,
+  MapPin,
+  Facebook,
+  Instagram,
+  ChevronLeft,
+  Users,
+  Package,
+  Globe,
+  Star,
+  Heart,
+  CheckCircle,
+  TrendingDown,
+} from 'lucide-react';
+
+// צבעי האתר לפי מפרט העיצוב
+const colors = {
+  primary: '#1e3a8a',      // כחול נייבי
+  secondary: '#0891b2',    // טורקיז
+  accent: '#06b6d4',       // טורקיז בהיר
+  text: '#2c3e50',         // טקסט כהה
+  textLight: '#4b5563',    // טקסט משני
+  gold: '#d4af37',         // זהב
+  orange: '#f59e0b',       // כתום
+  light: '#f8f9fa',        // רקע בהיר
+};
+
+const gradient = `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`;
+const gradientReverse = `linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary} 100%)`;
 
 export default function AboutPage() {
-  const primaryColor = '#1e3a8a';
-  const secondaryColor = '#0891b2';
-  const gradientPrimary = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+  useEffect(() => {
+    // Prevent horizontal scroll on mobile
+    const style = document.createElement('style');
+    style.textContent = `
+      html, body { 
+        overflow-x: hidden !important; 
+        max-width: 100vw !important;
+        width: 100% !important;
+      }
+      * { box-sizing: border-box !important; }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section
-        className="relative py-20 px-4"
-        style={{ background: gradientPrimary }}
+    <div 
+      className="min-h-screen w-full"
+      style={{ 
+        backgroundColor: colors.light,
+        overflowX: 'hidden',
+        maxWidth: '100vw',
+      }}
+    >
+      {/* About Section - Compact with Wave */}
+      <section 
+        className="relative pt-6 pb-12 sm:pt-8 sm:pb-16 px-3 sm:px-4 w-full overflow-hidden"
+        style={{ background: gradient }}
       >
-        <div className="max-w-5xl mx-auto text-center text-white">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">VIPO Group</h1>
-          <p className="text-xl md:text-2xl font-light mb-6 opacity-90">
-            מובילים את מהפכת הסחר החכם בישראל
-          </p>
-          <p className="text-lg max-w-3xl mx-auto opacity-80 leading-relaxed">
-            אנחנו מחברים בין לקוחות למפעלים בעולם, מנהלים את כל התהליך - ומוודאים
-            שהמוצר מגיע אליכם במחיר הטוב ביותר
-          </p>
-          <Link
-            href="/contact"
-            className="inline-block mt-8 px-8 py-3 bg-white text-blue-900 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-          >
-            צרו קשר
-          </Link>
-        </div>
-      </section>
+        {/* Decorative circles */}
+        <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-white/10" />
+        <div className="absolute top-1/2 -left-6 w-16 h-16 rounded-full bg-white/10" />
 
-      {/* Who We Are Section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <h2
-            className="text-3xl font-bold text-center mb-8"
-            style={{ color: primaryColor }}
-          >
-            מי אנחנו
-          </h2>
-          <div className="text-gray-700 text-lg leading-relaxed space-y-4">
-            <p>
-              <strong style={{ color: primaryColor }}>VIPO Group</strong> הוקמה
-              בשנת 2018 מתוך הבנה פשוטה: הדרך לחיסכון אמיתי עוברת דרך קשר ישיר עם
-              מקור הייצור.
-            </p>
-            <p>
-              אנחנו חברה ישראלית המתמחה באיתור מפעלים גלובליים, ניהול שינוע
-              וסגירת עסקאות - הכל תחת קורת גג אחת. אנו מלווים עסקים ואנשים פרטיים
-              לאורך כל הדרך: מרגע האיתור, דרך המשא ומתן, ועד לרגע שהסחורה מגיעה
-              לפתח הבית.
-            </p>
-            <p>
-              החזון שלנו הוא להנגיש את עולם הייבוא לכל אחד - בשקיפות מלאה, במחירים
-              הוגנים, ובליווי מקצועי.
-            </p>
+        <div className="relative max-w-3xl mx-auto text-center text-white">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-white/20 flex items-center justify-center">
+            <Globe className="w-6 h-6" />
           </div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section className="py-16 px-4 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="max-w-6xl mx-auto">
-          <h2
-            className="text-3xl font-bold text-center mb-12"
-            style={{ color: primaryColor }}
-          >
-            השירותים שלנו
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Service 1 */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow border-t-4 border-blue-900">
-              <div
-                className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-                style={{ background: gradientPrimary }}
-              >
-                <svg
-                  className="w-7 h-7 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                איתור מפעלים גלובליים
-              </h3>
-              <p className="text-gray-600">
-                גישה למפעלי ייצור מובילים במגוון תחומים, עם הצעות מחיר מותאמות
-                אישית לכל לקוח. אנחנו מוצאים עבורכם את הספקים האיכותיים ביותר.
-              </p>
-            </div>
-
-            {/* Service 2 */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow border-t-4 border-cyan-600">
-              <div
-                className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-                style={{ background: gradientPrimary }}
-              >
-                <svg
-                  className="w-7 h-7 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                ניהול שינוע מתקדם
-              </h3>
-              <p className="text-gray-600">
-                שירותי שינוע ועמילות מכס מהמובילים בעולם, המבטיחים תהליכים יעילים
-                והפחתת עלויות. אנחנו מטפלים בכל הבירוקרטיה עבורכם.
-              </p>
-            </div>
-
-            {/* Service 3 */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow border-t-4 border-blue-900">
-              <div
-                className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-                style={{ background: gradientPrimary }}
-              >
-                <svg
-                  className="w-7 h-7 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                הסכמים ישירים
-              </h3>
-              <p className="text-gray-600">
-                סגירת עסקאות ישירות מול המפעלים להבטחת התנאים הטובים ביותר. משא
-                ומתן מקצועי שחוסך לכם כסף ומבטיח איכות.
-              </p>
-            </div>
-
-            {/* Service 4 */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow border-t-4 border-cyan-600">
-              <div
-                className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-                style={{ background: gradientPrimary }}
-              >
-                <svg
-                  className="w-7 h-7 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                שיווק ומכירה
-              </h3>
-              <p className="text-gray-600">
-                ניהול קמפיינים פרסומיים בכל הרשתות החברתיות, מכירה אפקטיבית
-                ובניית מערכת דיגיטלית מתקדמת לניהול העסק שלכם.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Process Section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <h2
-            className="text-3xl font-bold text-center mb-12"
-            style={{ color: primaryColor }}
-          >
-            התהליך שלנו
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          
+          <h1 className="text-xl sm:text-2xl font-bold mb-2">מי אנחנו</h1>
+          
+          <p className="text-xs sm:text-sm leading-relaxed mb-3 opacity-95">
+            <span className="font-bold">VIPO Group</span> הוקמה ב-2018 - חברה ישראלית המתמחה באיתור מפעלים, ניהול שינוע וסגירת עסקאות מול ספקים גלובליים.
+          </p>
+          
+          {/* Stats row */}
+          <div className="flex justify-center gap-5 sm:gap-8 mb-4">
             {[
-              { num: '1', title: 'פגישת ייעוץ', desc: 'הבנת הצרכים' },
-              { num: '2', title: 'איתור מפעל', desc: 'חיפוש גלובלי' },
-              { num: '3', title: 'משא ומתן', desc: 'הבטחת המחיר הטוב' },
-              { num: '4', title: 'שינוע ומכס', desc: 'ניהול הלוגיסטיקה' },
-              { num: '5', title: 'קבלת סחורה', desc: 'המוצר מגיע!' },
-            ].map((step, idx) => (
+              { value: '7+', label: 'שנים' },
+              { value: '5K+', label: 'לקוחות' },
+              { value: '15+', label: 'מדינות' },
+            ].map((stat, idx) => (
               <div key={idx} className="text-center">
-                <div
-                  className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 text-white font-bold text-xl"
-                  style={{ background: gradientPrimary }}
-                >
-                  {step.num}
-                </div>
-                <h4 className="font-bold text-gray-900 mb-1">{step.title}</h4>
-                <p className="text-sm text-gray-500">{step.desc}</p>
+                <div className="text-lg sm:text-xl font-bold">{stat.value}</div>
+                <div className="text-[10px] opacity-70">{stat.label}</div>
               </div>
             ))}
           </div>
-          <p className="text-center text-gray-500 mt-8">
-            משך התהליך: 4-8 שבועות בממוצע (תלוי במוצר)
-          </p>
+          
+          {/* Vision - inline */}
+          <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-4 py-2">
+            <Heart className="w-4 h-4" style={{ color: colors.orange }} />
+            <span className="text-xs">להנגיש את עולם הייבוא לכל אחד בשקיפות מלאה</span>
+          </div>
+        </div>
+
+        {/* Wave SVG */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+            <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="white"/>
+          </svg>
         </div>
       </section>
 
-      {/* Target Audience Section */}
-      <section className="py-16 px-4 bg-gradient-to-br from-blue-50 to-cyan-50">
-        <div className="max-w-5xl mx-auto">
-          <h2
-            className="text-3xl font-bold text-center mb-12"
-            style={{ color: primaryColor }}
-          >
-            למי אנחנו מתאימים
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Services - Compact */}
+      <section className="relative py-4 sm:py-6 px-3 sm:px-4 w-full bg-white overflow-hidden">
+        {/* Background Graphics */}
+        <div className="absolute top-0 left-0 w-32 h-32 opacity-5" style={{ background: `radial-gradient(circle, ${colors.primary} 0%, transparent 70%)` }} />
+        <div className="absolute bottom-0 right-0 w-28 h-28 opacity-5" style={{ background: `radial-gradient(circle, ${colors.secondary} 0%, transparent 70%)` }} />
+        <div className="absolute top-1/2 right-10 w-2 h-2 rounded-full opacity-20" style={{ background: colors.secondary }} />
+        <div className="absolute top-1/3 left-8 w-1.5 h-1.5 rounded-full opacity-15" style={{ background: colors.primary }} />
+        
+        <div className="relative max-w-4xl mx-auto">
+          <div className="text-center mb-3">
+            <h2 className="text-base sm:text-lg font-bold mb-1" style={{ color: colors.primary }}>
+              השירותים שלנו
+            </h2>
+            <div className="w-12 h-0.5 mx-auto rounded-full" style={{ background: gradient }} />
+          </div>
+          
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {[
-              {
-                icon: '🏢',
-                title: 'עסקים קטנים',
-                desc: 'יבוא ישיר למוצרי המותג שלכם',
-              },
-              {
-                icon: '🏠',
-                title: 'אנשים פרטיים',
-                desc: 'רכישה קבוצתית בהנחות משמעותיות',
-              },
-              {
-                icon: '🛒',
-                title: 'קמעונאים',
-                desc: 'מלאי במחירי מקור',
-              },
-              {
-                icon: '🏛️',
-                title: 'מוסדות וארגונים',
-                desc: 'רכישות מרוכזות בתנאים מיוחדים',
-              },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-white rounded-xl shadow-md p-5 text-center hover:shadow-lg transition-shadow"
+              { icon: Search, title: 'איתור מפעלים', desc: 'גישה למפעלי ייצור מובילים' },
+              { icon: Truck, title: 'ניהול שינוע', desc: 'שינוע ועמילות מכס' },
+              { icon: ShieldCheck, title: 'הסכמים ישירים', desc: 'משא ומתן מקצועי' },
+              { icon: Megaphone, title: 'שיווק ומכירה', desc: 'קמפיינים דיגיטליים' },
+            ].map((service, idx) => (
+              <div 
+                key={idx} 
+                className="relative overflow-hidden group bg-white rounded-lg p-2 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 text-center"
+                style={{ 
+                  border: '2px solid transparent',
+                  backgroundImage: `linear-gradient(white, white), ${gradient}`,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box'
+                }}
               >
-                <div className="text-4xl mb-3">{item.icon}</div>
-                <h4 className="font-bold text-gray-900 mb-1">{item.title}</h4>
-                <p className="text-sm text-gray-600">{item.desc}</p>
+                {/* Decorative corner */}
+                <div 
+                  className="absolute -top-3 -right-3 w-8 h-8 rounded-full opacity-20"
+                  style={{ background: colors.secondary }}
+                />
+                {/* Decorative dots */}
+                <div className="absolute bottom-1 left-1 flex gap-0.5 opacity-25">
+                  <div className="w-1 h-1 rounded-full" style={{ background: colors.secondary }} />
+                  <div className="w-1 h-1 rounded-full" style={{ background: colors.primary }} />
+                </div>
+                
+                {/* Icon */}
+                <div className="relative w-8 h-8 mx-auto rounded-md flex items-center justify-center mb-1.5 transition-transform group-hover:scale-110">
+                  <service.icon className="w-5 h-5" style={{ color: colors.primary }} />
+                </div>
+                
+                {/* Content */}
+                <h3 className="font-bold text-xs mb-0.5" style={{ color: colors.primary }}>{service.title}</h3>
+                <p className="text-[10px] leading-tight" style={{ color: colors.textLight }}>{service.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Group Purchase Section */}
-      <section className="py-16 px-4 bg-white">
+      {/* Process - New Design */}
+      <section className="py-5 sm:py-6 px-3 sm:px-4 w-full bg-white">
         <div className="max-w-4xl mx-auto">
-          <h2
-            className="text-3xl font-bold text-center mb-6"
-            style={{ color: primaryColor }}
-          >
-            הפלטפורמה שלנו - רכישה קבוצתית חכמה
-          </h2>
-          <p className="text-center text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
-            בנוסף לשירותי היבוא והשינוע, פיתחנו פלטפורמה ייחודית לרכישה קבוצתית -
-            שמאפשרת לכל אחד ליהנות ממחירי סיטונאות.
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            {['נצטרף לקבוצה', 'המחיר יורד', 'כולם מרוויחים'].map(
-              (text, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    style={{ color: secondaryColor }}
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="font-medium" style={{ color: primaryColor }}>
-                    {text}
-                  </span>
+          <div className="text-center mb-5">
+            <h2 className="text-lg sm:text-xl font-bold mb-2" style={{ color: colors.primary }}>התהליך שלנו</h2>
+            <div className="w-16 h-1 mx-auto rounded-full" style={{ background: gradient }} />
+          </div>
+          
+          {/* Process Steps */}
+          <div className="relative">
+            {/* Connection line */}
+            <div 
+              className="hidden sm:block absolute top-6 left-1/2 transform -translate-x-1/2 h-0.5 w-3/4 opacity-30"
+              style={{ background: gradient }}
+            />
+            
+            <div className="flex items-start justify-center gap-1 sm:gap-2">
+              {[
+                { num: '1', title: 'ייעוץ', icon: MessageCircle },
+                { num: '2', title: 'איתור', icon: Search },
+                { num: '3', title: 'משא ומתן', icon: ShieldCheck },
+                { num: '4', title: 'שינוע', icon: Truck },
+                { num: '5', title: 'קבלה', icon: Package },
+              ].map((step, idx, arr) => (
+                <div key={idx} className="flex items-start">
+                  {/* Step */}
+                  <div className="text-center w-12 sm:w-14">
+                    <div 
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl mx-auto mb-2 flex items-center justify-center text-white"
+                      style={{ background: gradient, boxShadow: '0 4px 12px rgba(30, 58, 138, 0.3)' }}
+                    >
+                      <step.icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                    </div>
+                    <div 
+                      className="text-[10px] sm:text-xs font-bold mb-0.5"
+                      style={{ color: colors.primary }}
+                    >
+                      {step.title}
+                    </div>
+                  </div>
+                  
+                  {/* Arrow (not after last item) */}
+                  {idx < arr.length - 1 && (
+                    <div className="flex items-center h-10 sm:h-12 px-0.5 sm:px-1">
+                      <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: colors.secondary }} />
+                    </div>
+                  )}
                 </div>
-              )
-            )}
+              ))}
+            </div>
           </div>
-
-          <div className="bg-gray-50 rounded-2xl p-6 mb-8">
-            <h4 className="font-bold text-gray-900 mb-4">יתרונות:</h4>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-center gap-2">
-                <span style={{ color: secondaryColor }}>✓</span>
-                אין התחייבות כספית עד סגירת הקבוצה
-              </li>
-              <li className="flex items-center gap-2">
-                <span style={{ color: secondaryColor }}>✓</span>
-                אחריות מלאה על כל המוצרים
-              </li>
-              <li className="flex items-center gap-2">
-                <span style={{ color: secondaryColor }}>✓</span>
-                משלוח עד הבית
-              </li>
-            </ul>
-          </div>
-
-          <div className="text-center">
-            <Link
-              href="/products"
-              className="inline-block px-8 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-              style={{ background: gradientPrimary }}
-            >
-              לצפייה במוצרים
-            </Link>
+          
+          {/* Time indicator */}
+          <div className="flex items-center justify-center gap-2 mt-4 bg-white rounded-full px-4 py-2 w-fit mx-auto border" style={{ borderColor: `${colors.secondary}30` }}>
+            <Clock className="w-4 h-4" style={{ color: colors.secondary }} />
+            <span className="text-xs" style={{ color: colors.textLight }}>4-8 שבועות בממוצע</span>
           </div>
         </div>
       </section>
 
-      {/* Partners/Agents Section */}
-      <section
-        className="py-16 px-4"
-        style={{
-          background:
-            'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.1) 100%)',
-        }}
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2
-            className="text-3xl font-bold mb-6"
-            style={{ color: primaryColor }}
+      {/* Group Purchase - Card Style */}
+      <section className="py-4 sm:py-6 px-3 sm:px-4 w-full bg-white">
+        <div className="max-w-4xl mx-auto">
+          <div 
+            className="relative overflow-hidden rounded-xl p-4 sm:p-5"
+            style={{ 
+              border: '2px solid transparent',
+              backgroundImage: `linear-gradient(white, white), ${gradient}`,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box'
+            }}
           >
-            הצטרפו כשותפים והרוויחו!
-          </h2>
-          <p className="text-gray-600 text-lg mb-8">
-            יש לך קהילה? רשת קשרים? הצטרף לתוכנית הסוכנים שלנו!
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            {[
-              { icon: '💰', title: '10% עמלה', desc: 'על כל מכירה' },
-              { icon: '🔗', title: 'קוד אישי', desc: 'ייחודי לך' },
-              { icon: '📊', title: 'דשבורד מתקדם', desc: 'מעקב בזמן אמת' },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-white rounded-xl shadow-md p-5 border-2 border-transparent hover:border-cyan-500 transition-colors"
-              >
-                <div className="text-3xl mb-2">{item.icon}</div>
-                <h4 className="font-bold text-gray-900">{item.title}</h4>
-                <p className="text-sm text-gray-500">{item.desc}</p>
+            {/* Decorative */}
+            <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-10" style={{ background: colors.secondary }} />
+            <div className="absolute bottom-1 left-1 flex gap-0.5 opacity-20">
+              <div className="w-1 h-1 rounded-full" style={{ background: colors.secondary }} />
+              <div className="w-1 h-1 rounded-full" style={{ background: colors.primary }} />
+            </div>
+            
+            <div className="relative flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex items-center gap-3">
+                <div 
+                  className="w-10 h-10 rounded-lg flex items-center justify-center text-white"
+                  style={{ background: gradient }}
+                >
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-sm sm:text-base font-bold" style={{ color: colors.primary }}>רכישה קבוצתית חכמה</h2>
+                  <p className="text-[10px] sm:text-xs" style={{ color: colors.textLight }}>הצטרפו לקבוצה וחסכו יחד</p>
+                </div>
               </div>
-            ))}
+              
+              <Link
+                href="/products"
+                className="inline-flex items-center gap-1 px-4 py-2 text-white font-bold rounded-lg text-xs transition-all hover:shadow-md"
+                style={{ background: gradient }}
+              >
+                לצפייה במוצרים
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div className="flex flex-wrap justify-center gap-4">
+      {/* Agents CTA - New Design with Waves */}
+      <section className="relative pt-12 pb-12 sm:pt-14 sm:pb-14 px-3 sm:px-4 w-full overflow-hidden" style={{ background: gradient }}>
+        {/* Top Wave SVG */}
+        <div className="absolute top-0 left-0 right-0 rotate-180">
+          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+            <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="white"/>
+          </svg>
+        </div>
+        
+        {/* Decorative Graphics */}
+        <div className="absolute top-1/4 -right-10 w-32 h-32 rounded-full bg-white/10" />
+        <div className="absolute top-1/2 -left-6 w-20 h-20 rounded-full bg-white/10" />
+        <div className="absolute top-1/3 right-1/4 w-2 h-2 rounded-full bg-white/20" />
+        <div className="absolute top-1/2 left-1/3 w-1.5 h-1.5 rounded-full bg-white/15" />
+        
+        <div className="relative max-w-4xl mx-auto">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            {/* Left - Title & Benefits */}
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                <Star className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-white">
+                <h2 className="text-base sm:text-lg font-bold">הצטרפו כשותפים!</h2>
+                <div className="flex items-center gap-2 mt-1">
+                  {[
+                    { icon: Wallet, title: '10% עמלה' },
+                    { icon: Link2, title: 'קוד אישי' },
+                    { icon: BarChart3, title: 'דשבורד' },
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-1 text-white/80">
+                      <item.icon className="w-3 h-3" />
+                      <span className="text-[10px]">{item.title}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            {/* Right - CTA */}
             <Link
               href="/register?role=agent"
-              className="px-8 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-              style={{ background: gradientPrimary }}
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-white font-bold rounded-lg shadow text-xs transition-all hover:shadow-lg hover:-translate-y-0.5"
+              style={{ color: colors.primary }}
             >
               הצטרף עכשיו
-            </Link>
-            <Link
-              href="/join"
-              className="px-8 py-3 bg-white text-blue-900 font-semibold rounded-xl shadow-md hover:shadow-lg transition-all border-2 border-blue-900"
-            >
-              למידע נוסף
+              <ChevronLeft className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
+        
+        {/* Wave SVG */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+            <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="white"/>
+          </svg>
+        </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-16 px-4" style={{ background: primaryColor }}>
-        <div className="max-w-4xl mx-auto text-center text-white">
-          <h2 className="text-3xl font-bold mb-6">בואו נדבר!</h2>
-          <p className="text-lg opacity-90 mb-8">
-            צוות VIPO כאן בשבילכם - לכל שאלה, בקשה או הצעה
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white/10 backdrop-blur rounded-xl p-5">
-              <div className="text-2xl mb-2">📞</div>
-              <a
-                href="tel:058-700-9938"
-                className="text-xl font-bold hover:underline"
-              >
-                058-700-9938
-              </a>
+      {/* Contact - Form with Wave to Footer */}
+      <section className="relative pt-5 pb-14 sm:pt-6 sm:pb-16 px-3 sm:px-4 bg-white w-full overflow-hidden">
+        {/* Background Graphics */}
+        <div className="absolute top-0 right-0 w-24 h-24 opacity-5" style={{ background: `radial-gradient(circle, ${colors.secondary} 0%, transparent 70%)` }} />
+        <div className="absolute bottom-1/3 left-0 w-20 h-20 opacity-5" style={{ background: `radial-gradient(circle, ${colors.primary} 0%, transparent 70%)` }} />
+        
+        <div className="relative max-w-sm mx-auto">
+          {/* Form Card with Gradient Border */}
+          <div 
+            className="relative overflow-hidden rounded-2xl p-4 sm:p-5 text-center"
+            style={{ 
+              border: '2px solid transparent',
+              backgroundImage: `linear-gradient(white, white), ${gradient}`,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box'
+            }}
+          >
+            {/* Decorative */}
+            <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full opacity-10" style={{ background: colors.secondary }} />
+            <div className="absolute bottom-1 left-1 flex gap-0.5 opacity-20">
+              <div className="w-1 h-1 rounded-full" style={{ background: colors.secondary }} />
+              <div className="w-1 h-1 rounded-full" style={{ background: colors.primary }} />
             </div>
-            <div className="bg-white/10 backdrop-blur rounded-xl p-5">
-              <div className="text-2xl mb-2">✉️</div>
-              <a
-                href="mailto:vipo.m1985@gmail.com"
-                className="text-xl font-bold hover:underline"
-              >
-                vipo.m1985@gmail.com
-              </a>
+            
+            <div className="relative">
+              <h2 className="text-base sm:text-lg font-bold mb-1" style={{ color: colors.primary }}>השאירו פרטים</h2>
+              <p className="text-[10px] sm:text-xs mb-3" style={{ color: colors.textLight }}>ונחזור אליכם בהקדם</p>
+              
+              {/* Contact Form */}
+              <form className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    placeholder="שם מלא"
+                    className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500"
+                    style={{ borderColor: `${colors.secondary}40` }}
+                  />
+                  <input
+                    type="tel"
+                    placeholder="טלפון"
+                    className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500"
+                    style={{ borderColor: `${colors.secondary}40` }}
+                  />
+                </div>
+                <input
+                  type="email"
+                  placeholder="אימייל"
+                  className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500"
+                  style={{ borderColor: `${colors.secondary}40` }}
+                />
+                <textarea
+                  placeholder="הודעה (אופציונלי)"
+                  rows={2}
+                  className="w-full px-3 py-2 rounded-lg text-xs border focus:outline-none focus:border-cyan-500 resize-none"
+                  style={{ borderColor: `${colors.secondary}40` }}
+                />
+                <button
+                  type="submit"
+                  className="w-full py-2 text-white font-bold rounded-lg text-xs transition-all hover:shadow-md"
+                  style={{ background: gradient }}
+                >
+                  שלח פרטים
+                </button>
+              </form>
+              
+              {/* Or WhatsApp */}
+              <div className="mt-3 flex items-center justify-center gap-2">
+                <span className="text-[10px]" style={{ color: colors.textLight }}>או דברו איתנו</span>
+                <a
+                  href="https://wa.me/972587009938"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-green-500 text-white font-bold rounded text-[10px]"
+                >
+                  <MessageCircle className="w-3 h-3" />
+                  וואטסאפ
+                </a>
+              </div>
             </div>
           </div>
+        </div>
+        
+        {/* Wave SVG to Footer */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+            <defs>
+              <linearGradient id="footerWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#1e3a8a" />
+                <stop offset="100%" stopColor="#0891b2" />
+              </linearGradient>
+            </defs>
+            <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="url(#footerWaveGradient)"/>
+          </svg>
+        </div>
+      </section>
 
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <a
-              href="https://wa.me/972587009938"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-colors flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-              </svg>
-              וואטסאפ
+      {/* Footer - New Design */}
+      <footer className="relative overflow-hidden w-full" style={{ background: gradient }}>
+        {/* Decorative Graphics */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-white/5" />
+          <div className="absolute top-1/3 -left-10 w-24 h-24 rounded-full bg-white/5" />
+          <div className="absolute bottom-1/4 right-1/4 w-3 h-3 rounded-full bg-white/10" />
+          <div className="absolute top-1/2 left-1/3 w-2 h-2 rounded-full bg-white/10" />
+          <div className="absolute bottom-1/3 right-1/2 w-1.5 h-1.5 rounded-full bg-white/15" />
+        </div>
+
+        <div className="relative max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
+          {/* Main Content */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-5">
+            {/* Logo & Description */}
+            <div className="text-center sm:text-right">
+              <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
+                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-lg font-bold text-white">VIPO Group</span>
+              </div>
+              <p className="text-white/70 text-[10px] sm:text-xs max-w-xs">
+                מובילים את מהפכת הסחר החכם בישראל
+              </p>
+            </div>
+            
+            {/* Quick Links */}
+            <div className="flex items-center gap-3 sm:gap-4">
+              {[
+                { href: '/products', label: 'מוצרים' },
+                { href: '/about', label: 'אודות' },
+                { href: '/join', label: 'סוכנים' },
+                { href: '/contact', label: 'קשר' },
+              ].map((link) => (
+                <Link 
+                  key={link.href}
+                  href={link.href} 
+                  className="text-white/70 hover:text-white text-[10px] sm:text-xs transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+            
+            {/* Social Icons */}
+            <div className="flex items-center gap-2">
+              {[
+                { href: 'https://facebook.com/vipogroup', icon: Facebook },
+                { href: 'https://instagram.com/vipogroup', icon: Instagram },
+                { href: 'https://wa.me/972587009938', icon: MessageCircle },
+              ].map((social, idx) => (
+                <a 
+                  key={idx}
+                  href={social.href} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center transition-all hover:bg-white/20 hover:scale-105"
+                >
+                  <social.icon className="w-4 h-4 text-white" />
+                </a>
+              ))}
+            </div>
+          </div>
+          
+          {/* Contact Info Bar */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 py-3 px-4 rounded-xl bg-white/5 mb-4">
+            <a href="tel:058-700-9938" className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
+              <Phone className="w-3.5 h-3.5" style={{ color: colors.accent }} />
+              <span className="text-xs">058-700-9938</span>
             </a>
-            <Link
-              href="/contact"
-              className="px-6 py-3 bg-white text-blue-900 font-semibold rounded-xl hover:bg-gray-100 transition-colors"
-            >
-              טופס יצירת קשר
-            </Link>
+            <div className="flex items-center gap-1.5 text-white/80">
+              <Clock className="w-3.5 h-3.5" style={{ color: colors.accent }} />
+              <span className="text-xs">א-ה 9:00-18:00</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-white/80">
+              <MapPin className="w-3.5 h-3.5" style={{ color: colors.accent }} />
+              <span className="text-xs">ישראל</span>
+            </div>
           </div>
 
-          <p className="text-sm opacity-70">א׳-ה׳: 09:00-18:00 | ו׳: 09:00-13:00</p>
-
-          <div className="mt-8 pt-8 border-t border-white/20 flex flex-wrap justify-center gap-6 text-sm opacity-70">
-            <Link href="/terms" className="hover:underline">
-              תנאי שימוש
-            </Link>
-            <Link href="/privacy" className="hover:underline">
-              מדיניות פרטיות
-            </Link>
+          {/* Bottom */}
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-[10px] sm:text-xs">
+            <p className="text-white/50">
+              © {new Date().getFullYear()} VIPO Group. כל הזכויות שמורות.
+            </p>
+            <div className="flex gap-3">
+              <Link href="/terms" className="text-white/50 hover:text-white transition-colors">תנאי שימוש</Link>
+              <Link href="/privacy" className="text-white/50 hover:text-white transition-colors">פרטיות</Link>
+            </div>
           </div>
         </div>
-      </section>
+      </footer>
     </div>
   );
 }
