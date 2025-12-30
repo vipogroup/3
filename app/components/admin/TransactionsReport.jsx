@@ -242,6 +242,12 @@ export default function TransactionsReport() {
                       className="px-4 py-3 text-right text-xs font-semibold"
                       style={{ color: '#1e3a8a' }}
                     >
+                      לקוח
+                    </th>
+                    <th
+                      className="px-4 py-3 text-right text-xs font-semibold"
+                      style={{ color: '#1e3a8a' }}
+                    >
                       סוכן
                     </th>
                     <th
@@ -283,12 +289,19 @@ export default function TransactionsReport() {
                     >
                       <td className="px-4 py-3">
                         <div className="text-sm">
-                          <div className="font-medium">{tx.user?.fullName || 'לא ידוע'}</div>
-                          <div className="text-gray-500">{tx.user?.email || ''}</div>
+                          <div className="font-medium">{tx.customer?.fullName || tx.user?.fullName || 'לא ידוע'}</div>
+                          <div className="text-gray-500">{tx.user?.phone || tx.customer?.phone || ''}</div>
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        {tx.product?.title || tx.product?.name || `מוצר ${tx.productId.slice(-6)}`}
+                        <div className="text-sm">
+                          <div className="font-medium" style={{ color: tx.agent ? '#1e3a8a' : '#9ca3af' }}>
+                            {tx.agent?.fullName || 'ללא סוכן'}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        {tx.product?.title || tx.product?.name || (tx.itemsCount > 0 ? `${tx.itemsCount} פריטים` : 'לא ידוע')}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">
                         {new Date(tx.createdAt).toLocaleDateString('he-IL', {
@@ -321,9 +334,9 @@ export default function TransactionsReport() {
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <p className="text-sm font-semibold text-gray-900">
-                        {tx.user?.fullName || 'לא ידוע'}
+                        {tx.customer?.fullName || tx.user?.fullName || 'לא ידוע'}
                       </p>
-                      <p className="text-xs text-gray-500">{tx.user?.email || ''}</p>
+                      <p className="text-xs text-gray-500">{tx.user?.phone || tx.customer?.phone || ''}</p>
                     </div>
                     <span
                       className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${statusLabels[tx.status]?.color || 'bg-gray-100 text-gray-800'}`}
@@ -331,9 +344,20 @@ export default function TransactionsReport() {
                       {statusLabels[tx.status]?.label || tx.status}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-600 mb-2">
-                    {tx.product?.title || tx.product?.name || `מוצר ${tx.productId.slice(-6)}`}
-                  </p>
+                  <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                    <div>
+                      <span className="text-gray-500">סוכן:</span>
+                      <span className="mr-1 font-medium" style={{ color: tx.agent ? '#1e3a8a' : '#9ca3af' }}>
+                        {tx.agent?.fullName || 'ללא סוכן'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">מוצר:</span>
+                      <span className="mr-1">
+                        {tx.product?.title || tx.product?.name || (tx.itemsCount > 0 ? `${tx.itemsCount} פריטים` : 'לא ידוע')}
+                      </span>
+                    </div>
+                  </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div>
                       <span className="text-gray-500">תאריך:</span>
@@ -344,7 +368,7 @@ export default function TransactionsReport() {
                     <div>
                       <span className="text-gray-500">סכום:</span>
                       <span className="mr-1 font-bold" style={{ color: '#1e3a8a' }}>
-                        ₪{tx.amount.toLocaleString()}
+                        ₪{tx.amount?.toLocaleString?.() || '0'}
                       </span>
                     </div>
                   </div>
