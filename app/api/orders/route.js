@@ -234,8 +234,12 @@ export async function POST(req) {
         image: product?.images?.[0] || null,
         sku: product?.sku || null,
         slug: product?.slug || null,
+        purchaseType: product?.purchaseType || product?.type || 'regular',
       };
     });
+
+    // Detect if any product is a group purchase
+    const hasGroupProduct = items.some(item => item?.purchaseType === 'group' || item?.type === 'group');
 
     if (missingProducts.length > 0) {
       return NextResponse.json({ error: 'product_not_found', products: missingProducts }, { status: 400 });
@@ -349,7 +353,8 @@ export async function POST(req) {
 
     // 6) Create order (Native Driver)
     const now = new Date();
-    const orderType = rest?.orderType || 'regular';
+    // Determine order type: 'group' if any product is a group purchase, otherwise 'regular'
+    const orderType = hasGroupProduct ? 'group' : (rest?.orderType || 'regular');
     
     // Calculate commission available date based on order type
     // Regular purchase: 30 days, Group purchase: 100 days
