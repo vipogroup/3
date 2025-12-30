@@ -30,8 +30,11 @@ export async function GET(req) {
     const from = searchParams.get('from');
     const to = searchParams.get('to');
 
-    // Build query for orders with commissions
-    const query = { commissionAmount: { $gt: 0 } };
+    // Build query for orders with commissions - only paid orders
+    const query = { 
+      commissionAmount: { $gt: 0 },
+      status: { $in: ['paid', 'completed', 'shipped'] }  // Only show commissions for paid orders
+    };
     
     if (agentId && ObjectId.isValid(agentId)) {
       query.$or = [
@@ -117,9 +120,12 @@ export async function GET(req) {
       };
     });
 
-    // Get agents summary (grouped by agent)
+    // Get agents summary (grouped by agent) - only paid orders
     const agentsSummary = await ordersCol.aggregate([
-      { $match: { commissionAmount: { $gt: 0 } } },
+      { $match: { 
+        commissionAmount: { $gt: 0 },
+        status: { $in: ['paid', 'completed', 'shipped'] }
+      } },
       {
         $group: {
           _id: { $ifNull: ['$agentId', '$refAgentId'] },

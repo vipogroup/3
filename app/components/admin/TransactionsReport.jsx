@@ -52,6 +52,8 @@ export default function TransactionsReport() {
     paid: { label: 'שולם', color: 'bg-green-100 text-green-800' },
     shipped: { label: 'נשלח', color: 'bg-blue-100 text-blue-800' },
     completed: { label: 'הושלם', color: 'bg-purple-100 text-purple-800' },
+    cancelled: { label: 'בוטל', color: 'bg-red-100 text-red-800' },
+    deleted: { label: 'נמחק', color: 'bg-gray-100 text-gray-800' },
   };
 
   return (
@@ -82,6 +84,8 @@ export default function TransactionsReport() {
               <option value="paid">שולם</option>
               <option value="shipped">נשלח</option>
               <option value="completed">הושלם</option>
+              <option value="cancelled">בוטל</option>
+              <option value="deleted">נמחק</option>
             </select>
           </div>
           <div>

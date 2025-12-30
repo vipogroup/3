@@ -65,7 +65,11 @@ export async function GET(req) {
         .limit(1)
         .toArray(),
       ordersCollection
-        .find({ $or: [{ agentId: userId }, { refAgentId: userId }], commissionAmount: { $gt: 0 } })
+        .find({ 
+          $or: [{ agentId: userId }, { refAgentId: userId }], 
+          commissionAmount: { $gt: 0 },
+          status: { $in: ['paid', 'completed', 'shipped'] }  // Only show commissions for paid orders
+        })
         .project({
           commissionAmount: 1,
           commissionStatus: 1,
