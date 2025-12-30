@@ -82,6 +82,14 @@ export async function POST(req) {
     }
 
     // Create order document
+    const now = new Date();
+    const orderType = 'regular'; // This route is for regular orders
+    
+    // Calculate commission available date (30 days for regular, 100 days for group)
+    const daysUntilCommissionAvailable = orderType === 'group' ? 100 : 30;
+    const commissionAvailableAt = new Date(now.getTime() + daysUntilCommissionAvailable * 24 * 60 * 60 * 1000);
+    const finalCommissionAmount = refAgentId ? commissionAmount : 0;
+    
     const orderDoc = {
       productId: new ObjectId(productId),
       productName: product.name,
@@ -94,11 +102,14 @@ export async function POST(req) {
       shippingAddress: shippingAddress || null,
       paymentMethod,
       status: 'pending',
+      orderType,
+      commissionStatus: 'pending',
+      commissionAvailableAt: finalCommissionAmount > 0 ? commissionAvailableAt : null,
       refSource: refSource || null,
       refAgentId: refAgentId || null,
-      commissionAmount: refAgentId ? commissionAmount : 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      commissionAmount: finalCommissionAmount,
+      createdAt: now,
+      updatedAt: now,
     };
 
     // Insert order
