@@ -272,6 +272,91 @@ export default function AgentDetailPage() {
         )}
       </div>
 
+      {/* Commission Summary */}
+      <div className="bg-white rounded-lg shadow p-6 mt-6">
+        <h3 className="text-xl font-bold mb-4" style={{ color: '#1e3a8a' }}>
+          💰 סיכום עמלות
+        </h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="p-4 rounded-lg" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}>
+            <p className="text-sm text-gray-600">יתרה זמינה</p>
+            <p className="text-2xl font-bold" style={{ color: '#16a34a' }}>
+              ₪{(agent?.commissionBalance || 0).toLocaleString()}
+            </p>
+          </div>
+          <div className="p-4 rounded-lg bg-yellow-50">
+            <p className="text-sm text-gray-600">ממתין לשחרור</p>
+            <p className="text-2xl font-bold text-yellow-600">
+              ₪{(stats?.pendingCommissions || 0).toLocaleString()}
+            </p>
+          </div>
+          <div className="p-4 rounded-lg bg-blue-50">
+            <p className="text-sm text-gray-600">נמשך</p>
+            <p className="text-2xl font-bold text-blue-600">
+              ₪{(stats?.claimedCommissions || 0).toLocaleString()}
+            </p>
+          </div>
+          <div className="p-4 rounded-lg" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}>
+            <p className="text-sm text-gray-600">סה״כ הרוויח</p>
+            <p className="text-2xl font-bold" style={{ color: '#0891b2' }}>
+              ₪{(stats?.totalCommissions || 0).toLocaleString()}
+            </p>
+          </div>
+        </div>
+
+        {/* Commission History Table */}
+        {sales.length > 0 && (
+          <div className="mt-6">
+            <h4 className="font-bold mb-3" style={{ color: '#1e3a8a' }}>היסטוריית עמלות</h4>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead style={{ borderBottom: '2px solid #0891b2' }}>
+                  <tr>
+                    <th className="px-3 py-2 text-right font-medium" style={{ color: '#1e3a8a' }}>תאריך</th>
+                    <th className="px-3 py-2 text-right font-medium" style={{ color: '#1e3a8a' }}>לקוח</th>
+                    <th className="px-3 py-2 text-center font-medium" style={{ color: '#1e3a8a' }}>סכום הזמנה</th>
+                    <th className="px-3 py-2 text-center font-medium" style={{ color: '#1e3a8a' }}>עמלה</th>
+                    <th className="px-3 py-2 text-center font-medium" style={{ color: '#1e3a8a' }}>סטטוס</th>
+                    <th className="px-3 py-2 text-center font-medium" style={{ color: '#1e3a8a' }}>תאריך שחרור</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sales.map((sale, idx) => (
+                    <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-3 py-2">
+                        {new Date(sale.createdAt || sale.date).toLocaleDateString('he-IL')}
+                      </td>
+                      <td className="px-3 py-2">{sale.customerName || 'לא ידוע'}</td>
+                      <td className="px-3 py-2 text-center">₪{(sale.totalAmount || sale.amount || 0).toLocaleString()}</td>
+                      <td className="px-3 py-2 text-center font-bold" style={{ color: '#16a34a' }}>
+                        ₪{(sale.commissionAmount || sale.commission || 0).toLocaleString()}
+                      </td>
+                      <td className="px-3 py-2 text-center">
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          sale.commissionStatus === 'available' ? 'bg-green-100 text-green-800' :
+                          sale.commissionStatus === 'claimed' ? 'bg-blue-100 text-blue-800' :
+                          sale.commissionStatus === 'cancelled' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {sale.commissionStatus === 'available' ? 'זמין' :
+                           sale.commissionStatus === 'claimed' ? 'נמשך' :
+                           sale.commissionStatus === 'cancelled' ? 'בוטל' : 'ממתין'}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2 text-center text-gray-500">
+                        {sale.commissionAvailableAt 
+                          ? new Date(sale.commissionAvailableAt).toLocaleDateString('he-IL')
+                          : '-'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Referrals List */}
       {referrals.length > 0 && (
         <div className="bg-white rounded-lg shadow p-6 mt-6">
