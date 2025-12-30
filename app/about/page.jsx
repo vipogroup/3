@@ -401,7 +401,7 @@ export default function AboutPage() {
               <div className="text-[7px]" style={{ color: colors.textLight }}>א׳-ה׳ 09:00-18:00</div>
             </a>
             <a href="https://wa.me/972587009938" target="_blank" rel="noopener noreferrer" className="text-center p-2 transition-transform hover:scale-105">
-              <MessageCircle className="w-6 h-6 mx-auto mb-1" style={{ color: colors.secondary }} />
+              <MessageCircle className="w-6 h-6 mx-auto mb-1" style={{ color: colors.primary }} />
               <div className="text-[10px] font-bold" style={{ color: colors.primary }}>וואטסאפ</div>
               <div className="text-[8px]" style={{ color: colors.textLight }}>שלחו הודעה</div>
               <div className="text-[7px]" style={{ color: colors.textLight }}>זמין 7 ימים בשבוע</div>
