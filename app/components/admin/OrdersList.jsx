@@ -221,6 +221,18 @@ export default function OrdersList() {
                 className="px-6 py-3 text-right text-xs font-medium uppercase"
                 style={{ color: '#1e3a8a' }}
               >
+                סוכן
+              </th>
+              <th
+                className="px-6 py-3 text-right text-xs font-medium uppercase"
+                style={{ color: '#1e3a8a' }}
+              >
+                עמלה
+              </th>
+              <th
+                className="px-6 py-3 text-right text-xs font-medium uppercase"
+                style={{ color: '#1e3a8a' }}
+              >
                 סכום
               </th>
               <th
@@ -265,6 +277,33 @@ export default function OrdersList() {
                       <div className="font-medium">{getCustomerInfo(order).fullName}</div>
                       <div className="text-gray-500">{getCustomerInfo(order).phone}</div>
                     </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm">
+                      {order.agent?.fullName || order.agentName ? (
+                        <>
+                          <div className="font-medium" style={{ color: '#1e3a8a' }}>
+                            {order.agent?.fullName || order.agentName}
+                          </div>
+                          {order.appliedCouponCode && (
+                            <code className="text-xs bg-purple-50 text-purple-600 px-1 rounded">
+                              {order.appliedCouponCode.toUpperCase()}
+                            </code>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-gray-400">ללא סוכן</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {order.commissionAmount > 0 ? (
+                      <span className="font-medium" style={{ color: '#16a34a' }}>
+                        ₪{order.commissionAmount?.toFixed?.(2) || '0'}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
                   </td>
                   <td
                     className="px-6 py-4 whitespace-nowrap font-bold"

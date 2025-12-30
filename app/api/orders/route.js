@@ -75,6 +75,32 @@ export async function GET(req) {
     const items = await col.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 }).toArray();
     const total = await col.countDocuments(filter);
 
+    // Enrich orders with agent info (for admin view)
+    if (user.role === 'admin' && items.length > 0) {
+      const db = await getDb();
+      const agentIds = [...new Set([
+        ...items.map(o => o.agentId?.toString()).filter(Boolean),
+        ...items.map(o => o.refAgentId?.toString()).filter(Boolean)
+      ])];
+      
+      if (agentIds.length > 0) {
+        const agents = await db.collection('users')
+          .find({ _id: { $in: agentIds.map(id => new ObjectId(id)) } })
+          .project({ fullName: 1, couponCode: 1 })
+          .toArray();
+        
+        const agentMap = new Map(agents.map(a => [a._id.toString(), a]));
+        
+        items.forEach(order => {
+          const agentId = (order.agentId || order.refAgentId)?.toString();
+          if (agentId && agentMap.has(agentId)) {
+            order.agent = agentMap.get(agentId);
+            order.agentName = order.agent.fullName;
+          }
+        });
+      }
+    }
+
     return NextResponse.json({ items, total, page, limit });
   } catch (e) {
     console.error(e);
