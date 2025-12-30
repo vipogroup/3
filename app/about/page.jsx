@@ -388,26 +388,20 @@ export default function AboutPage() {
           
           {/* Contact Methods - Horizontal */}
           <div className="grid grid-cols-3 gap-2 mb-4">
-            <a href="mailto:info@vipo.com" className="text-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-              <div className="w-8 h-8 mx-auto mb-1 rounded-lg flex items-center justify-center text-white" style={{ background: gradient }}>
-                <Mail className="w-4 h-4" />
-              </div>
+            <a href="mailto:info@vipo.com" className="text-center p-2 transition-transform hover:scale-105">
+              <Mail className="w-6 h-6 mx-auto mb-1" style={{ color: colors.primary }} />
               <div className="text-[10px] font-bold" style={{ color: colors.primary }}>אימייל</div>
               <div className="text-[8px]" style={{ color: colors.textLight }}>info@vipo.com</div>
               <div className="text-[7px]" style={{ color: colors.textLight }}>נענה תוך 24 שעות</div>
             </a>
-            <a href="tel:050-1234567" className="text-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-              <div className="w-8 h-8 mx-auto mb-1 rounded-lg flex items-center justify-center text-white" style={{ background: gradient }}>
-                <Phone className="w-4 h-4" />
-              </div>
+            <a href="tel:050-1234567" className="text-center p-2 transition-transform hover:scale-105">
+              <Phone className="w-6 h-6 mx-auto mb-1" style={{ color: colors.primary }} />
               <div className="text-[10px] font-bold" style={{ color: colors.primary }}>טלפון</div>
               <div className="text-[8px]" style={{ color: colors.textLight }}>050-1234567</div>
               <div className="text-[7px]" style={{ color: colors.textLight }}>א׳-ה׳ 09:00-18:00</div>
             </a>
-            <a href="https://wa.me/972587009938" target="_blank" rel="noopener noreferrer" className="text-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-              <div className="w-8 h-8 mx-auto mb-1 rounded-lg flex items-center justify-center bg-green-500 text-white">
-                <MessageCircle className="w-4 h-4" />
-              </div>
+            <a href="https://wa.me/972587009938" target="_blank" rel="noopener noreferrer" className="text-center p-2 transition-transform hover:scale-105">
+              <MessageCircle className="w-6 h-6 mx-auto mb-1" style={{ color: colors.secondary }} />
               <div className="text-[10px] font-bold" style={{ color: colors.primary }}>וואטסאפ</div>
               <div className="text-[8px]" style={{ color: colors.textLight }}>שלחו הודעה</div>
               <div className="text-[7px]" style={{ color: colors.textLight }}>זמין 7 ימים בשבוע</div>
