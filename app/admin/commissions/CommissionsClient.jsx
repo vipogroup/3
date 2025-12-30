@@ -456,6 +456,7 @@ export default function CommissionsClient() {
                 <thead style={{ borderBottom: '2px solid #0891b2' }}>
                   <tr>
                     <th className="px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>תאריך</th>
+                    <th className="px-4 py-3 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>סוג רכישה</th>
                     <th className="px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>סוכן</th>
                     <th className="px-4 py-3 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>לקוח</th>
                     <th className="px-4 py-3 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>סכום הזמנה</th>
@@ -467,7 +468,7 @@ export default function CommissionsClient() {
                 <tbody>
                   {commissions?.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                      <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
                         אין עמלות להצגה
                       </td>
                     </tr>
@@ -477,9 +478,13 @@ export default function CommissionsClient() {
                       return (
                         <tr key={c.orderId} className="border-b border-gray-100 hover:bg-gray-50 transition-all">
                           <td className="px-4 py-3 text-sm">
-                            <div>{formatDateTime(c.orderDate)}</div>
-                            {c.orderType === 'group' && (
-                              <span className="px-1.5 py-0.5 text-xs bg-purple-100 text-purple-700 rounded">קבוצתית</span>
+                            {formatDateTime(c.orderDate)}
+                          </td>
+                          <td className="px-4 py-3 text-center">
+                            {c.orderType === 'group' ? (
+                              <span className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-700">רכישה קבוצתית</span>
+                            ) : (
+                              <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">מכירה רגילה</span>
                             )}
                           </td>
                           <td className="px-4 py-3">
@@ -538,9 +543,16 @@ export default function CommissionsClient() {
                           <p className="text-xs text-gray-500">{formatDateTime(c.orderDate)}</p>
                           <p className="font-medium">{c.agent?.fullName || 'לא ידוע'}</p>
                         </div>
-                        <span className={`px-2 py-1 text-xs rounded-full ${statusInfo.color}`}>
-                          {statusInfo.label}
-                        </span>
+                        <div className="flex flex-col items-end gap-1">
+                          {c.orderType === 'group' ? (
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-700">קבוצתית</span>
+                          ) : (
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-700">רגילה</span>
+                          )}
+                          <span className={`px-2 py-0.5 text-xs rounded-full ${statusInfo.color}`}>
+                            {statusInfo.label}
+                          </span>
+                        </div>
                       </div>
                       <div className="text-sm">
                         <span className="text-gray-500">לקוח:</span>
