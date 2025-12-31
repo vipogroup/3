@@ -26,6 +26,10 @@ export default function ProductPage() {
   const [groupTimeLeft, setGroupTimeLeft] = useState(null);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const [showSpecs, setShowSpecs] = useState(false);
+  const [showDescription, setShowDescription] = useState(false);
+  const [showSuitableFor, setShowSuitableFor] = useState(false);
+  const [showWhyChooseUs, setShowWhyChooseUs] = useState(false);
+  const [showWarranty, setShowWarranty] = useState(false);
   const { addItem } = useCartContext();
   const { settings: themeSettings } = useTheme();
 
@@ -266,8 +270,8 @@ export default function ProductPage() {
       <div className="max-w-lg mx-auto">
         
         {/* Image Section - Compact with Swipe */}
-        <div className="relative bg-gray-50">
-          <div className={`relative ${selectedMedia.type === 'video' ? 'aspect-video' : 'aspect-[4/3] max-h-[280px]'}`}>
+        <div className="relative bg-white">
+          <div className={`relative ${selectedMedia.type === 'video' ? 'aspect-video' : 'aspect-[4/3]'}`}>
             {selectedMedia.type === 'video' ? (
               selectedMedia.src.includes('youtube') || selectedMedia.src.includes('youtu.be') ? (
                 <iframe src={selectedMedia.src} className="w-full h-full" allowFullScreen />
@@ -290,7 +294,7 @@ export default function ProductPage() {
                 src={selectedMedia.src || 'https://placehold.co/400x300?text=VIPO'}
                 alt={product?.name || 'תמונה של מוצר'}
                 fill
-                sizes="(max-width: 512px) 100vw, 512px"
+                sizes="100vw"
                 className="object-contain"
                 unoptimized
                 priority
@@ -347,26 +351,17 @@ export default function ProductPage() {
             {product.name}
           </h1>
           
-          {/* Rating Row */}
-          {product.rating > 0 && (
-            <div className="flex items-center gap-2 mb-3">
-              <div className="flex items-center gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-4 h-4" style={{ color: i < Math.floor(product.rating) ? '#fbbf24' : '#e5e7eb' }} fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-              <span className="text-sm text-gray-600">{product.rating}</span>
-              {product.reviews > 0 && (
-                <span className="text-sm text-gray-400">({product.reviews} ביקורות)</span>
-              )}
-            </div>
-          )}
 
           {/* Price Section */}
           <div className="flex items-end gap-3 mb-4">
-            <span className="text-3xl font-bold" style={{ color: '#1e3a8a' }}>
+            <span 
+              className="text-3xl font-bold"
+              style={{ 
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
               ₪{product.price.toLocaleString('he-IL')}
             </span>
             {hasDiscount && (
@@ -374,7 +369,13 @@ export default function ProductPage() {
                 <span className="text-lg text-gray-400 line-through">
                   ₪{product.originalPrice.toLocaleString('he-IL')}
                 </span>
-                <span className="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded">
+                <span 
+                  className="text-sm font-bold px-2 py-1 rounded"
+                  style={{ 
+                    background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
+                    color: '#0891b2',
+                  }}
+                >
                   חיסכון של ₪{(product.originalPrice - product.price).toLocaleString('he-IL')}
                 </span>
               </>
@@ -431,16 +432,19 @@ export default function ProductPage() {
             </div>
           )}
 
+          {/* Stock Status */}
+          {product.stockCount > 0 && (
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-sm font-medium text-green-600">במלאי</span>
+            </div>
+          )}
+
           {/* Action Buttons - Fixed Bottom Style */}
           <div className="bg-white border-t border-gray-200 pt-4 pb-2">
             {/* Quantity Selector */}
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <span className="text-gray-700 font-medium">כמות</span>
-                {product.stockCount > 0 && (
-                  <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">במלאי</span>
-                )}
-              </div>
+              <span className="text-gray-700 font-medium">כמות</span>
               <div className="flex items-center bg-gray-100 rounded-full">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))} 
@@ -463,7 +467,14 @@ export default function ProductPage() {
               {/* Add to Cart */}
               <button
                 onClick={() => addItem(product, quantity)}
-                className="flex-1 h-14 rounded-xl font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all flex items-center justify-center gap-2 border border-gray-200"
+                className="flex-1 h-14 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+                style={{
+                  border: '2px solid transparent',
+                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  color: '#1e3a8a',
+                }}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -494,8 +505,11 @@ export default function ProductPage() {
                 className="w-full px-4 py-4 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <div 
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
+                  >
+                    <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
@@ -511,15 +525,33 @@ export default function ProductPage() {
               
               {showAllFeatures && (
                 <div className="px-4 pb-4">
-                  <div className="bg-gray-50 rounded-xl p-4 space-y-3">
+                  <div 
+                    className="rounded-xl overflow-hidden"
+                    style={{
+                      border: '1px solid transparent',
+                      backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, rgba(30, 58, 138, 0.2), rgba(8, 145, 178, 0.2))',
+                      backgroundOrigin: 'border-box',
+                      backgroundClip: 'padding-box, border-box',
+                    }}
+                  >
                     {product.features.filter(f => f).map((feature, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <svg className="w-3.5 h-3.5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      <div 
+                        key={i} 
+                        className="flex items-center gap-3 px-4 py-3"
+                        style={{ 
+                          background: i % 2 === 0 ? 'rgba(30, 58, 138, 0.03)' : 'white',
+                          borderBottom: i < product.features.filter(f => f).length - 1 ? '1px solid rgba(30, 58, 138, 0.08)' : 'none',
+                        }}
+                      >
+                        <div 
+                          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                        >
+                          <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
-                        <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                        <span className="text-sm font-medium" style={{ color: '#374151' }}>{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -529,21 +561,23 @@ export default function ProductPage() {
           )}
 
           {/* Specs Section */}
-          {product.specs && Object.keys(product.specs).length > 0 && (
+          {product.specs && (
             <div className="bg-white mb-2">
               <button
                 onClick={() => setShowSpecs(!showSpecs)}
                 className="w-full px-4 py-4 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <div 
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
+                  >
+                    <svg className="w-5 h-5" style={{ color: '#1e3a8a' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                   </div>
                   <div className="text-right">
                     <div className="font-bold text-gray-900">מפרט טכני</div>
-                    <div className="text-xs text-gray-500">{Object.keys(product.specs).length} פריטים</div>
                   </div>
                 </div>
                 <svg className={`w-5 h-5 text-gray-400 transition-transform ${showSpecs ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -553,13 +587,153 @@ export default function ProductPage() {
               
               {showSpecs && (
                 <div className="px-4 pb-4">
-                  <div className="bg-gray-50 rounded-xl overflow-hidden">
-                    {Object.entries(product.specs).map(([key, value], i) => value && (
-                      <div key={key} className={`flex items-center justify-between px-4 py-3 ${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                        <span className="text-sm text-gray-500">{key}</span>
-                        <span className="text-sm font-medium text-gray-900 text-left max-w-[55%]">{value}</span>
-                      </div>
-                    ))}
+                  <div 
+                    className="rounded-xl p-4"
+                    style={{
+                      border: '1px solid transparent',
+                      backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, rgba(30, 58, 138, 0.2), rgba(8, 145, 178, 0.2))',
+                      backgroundOrigin: 'border-box',
+                      backgroundClip: 'padding-box, border-box',
+                    }}
+                  >
+                    <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#374151' }}>
+                      {product.specs}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Suitable For Section */}
+          {product.suitableFor && (
+            <div className="bg-white mb-2">
+              <button
+                onClick={() => setShowSuitableFor(!showSuitableFor)}
+                className="w-full px-4 py-4 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
+                  >
+                    <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold text-gray-900">למי זה מתאים?</div>
+                  </div>
+                </div>
+                <svg className={`w-5 h-5 text-gray-400 transition-transform ${showSuitableFor ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {showSuitableFor && (
+                <div className="px-4 pb-4">
+                  <div 
+                    className="rounded-xl p-4"
+                    style={{
+                      border: '1px solid transparent',
+                      backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, rgba(30, 58, 138, 0.2), rgba(8, 145, 178, 0.2))',
+                      backgroundOrigin: 'border-box',
+                      backgroundClip: 'padding-box, border-box',
+                    }}
+                  >
+                    <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#374151' }}>
+                      {product.suitableFor}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Why Choose Us Section */}
+          {product.whyChooseUs && (
+            <div className="bg-white mb-2">
+              <button
+                onClick={() => setShowWhyChooseUs(!showWhyChooseUs)}
+                className="w-full px-4 py-4 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
+                  >
+                    <svg className="w-5 h-5" style={{ color: '#1e3a8a' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold text-gray-900">למה לבחור בנו?</div>
+                  </div>
+                </div>
+                <svg className={`w-5 h-5 text-gray-400 transition-transform ${showWhyChooseUs ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {showWhyChooseUs && (
+                <div className="px-4 pb-4">
+                  <div 
+                    className="rounded-xl p-4"
+                    style={{
+                      border: '1px solid transparent',
+                      backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, rgba(30, 58, 138, 0.2), rgba(8, 145, 178, 0.2))',
+                      backgroundOrigin: 'border-box',
+                      backgroundClip: 'padding-box, border-box',
+                    }}
+                  >
+                    <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#374151' }}>
+                      {product.whyChooseUs}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Warranty Section */}
+          {product.warranty && (
+            <div className="bg-white mb-2">
+              <button
+                onClick={() => setShowWarranty(!showWarranty)}
+                className="w-full px-4 py-4 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
+                  >
+                    <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold text-gray-900">אחריות</div>
+                  </div>
+                </div>
+                <svg className={`w-5 h-5 text-gray-400 transition-transform ${showWarranty ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {showWarranty && (
+                <div className="px-4 pb-4">
+                  <div 
+                    className="rounded-xl p-4"
+                    style={{
+                      border: '1px solid transparent',
+                      backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, rgba(30, 58, 138, 0.2), rgba(8, 145, 178, 0.2))',
+                      backgroundOrigin: 'border-box',
+                      backgroundClip: 'padding-box, border-box',
+                    }}
+                  >
+                    <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#374151' }}>
+                      {product.warranty}
+                    </p>
                   </div>
                 </div>
               )}
@@ -568,24 +742,52 @@ export default function ProductPage() {
 
           {/* Description Section */}
           {product.fullDescription && (
-            <div className="bg-white mb-2 px-4 py-4">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h7" />
-                  </svg>
+            <div className="bg-white mb-2">
+              <button
+                onClick={() => setShowDescription(!showDescription)}
+                className="w-full px-4 py-4 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
+                  >
+                    <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h7" />
+                    </svg>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold text-gray-900">תיאור המוצר</div>
+                  </div>
                 </div>
-                <div className="font-bold text-gray-900">תיאור המוצר</div>
-              </div>
-              <p className="text-sm text-gray-600 leading-relaxed bg-gray-50 rounded-xl p-4">
-                {product.fullDescription}
-              </p>
+                <svg className={`w-5 h-5 text-gray-400 transition-transform ${showDescription ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {showDescription && (
+                <div className="px-4 pb-4">
+                  <div 
+                    className="rounded-xl p-4"
+                    style={{
+                      border: '1px solid transparent',
+                      backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, rgba(30, 58, 138, 0.2), rgba(8, 145, 178, 0.2))',
+                      backgroundOrigin: 'border-box',
+                      backgroundClip: 'padding-box, border-box',
+                    }}
+                  >
+                    <p className="text-sm leading-relaxed" style={{ color: '#374151' }}>
+                      {product.fullDescription}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
           {/* Back Link */}
           <div className="bg-white px-4 py-4">
-            <Link href="/products" className="inline-flex items-center gap-2 text-blue-600 font-medium text-sm hover:text-blue-700">
+            <Link href="/products" className="inline-flex items-center gap-2 font-medium text-sm" style={{ color: '#0891b2' }}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>

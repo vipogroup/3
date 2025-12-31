@@ -985,7 +985,7 @@ function ProductCard({
       <div className="p-3 flex-1 flex flex-col">
         {/* Product Title */}
         <Link href={`/products/${product._id}`}>
-          <h3 className="text-base font-medium text-gray-900 mb-2 line-clamp-2 hover:text-cyan-600 leading-snug">
+          <h3 className="text-base font-medium mb-2 line-clamp-2 hover:text-cyan-600 leading-snug" style={{ color: '#374151' }}>
             {product.name}
           </h3>
         </Link>
@@ -1009,7 +1009,7 @@ function ProductCard({
               </span>
             </div>
           ) : (
-            <span className="text-xl font-bold text-gray-900">
+            <span className="text-xl font-bold" style={{ color: '#374151' }}>
               ₪{product.price.toLocaleString('he-IL')}
             </span>
           )}
@@ -1065,6 +1065,7 @@ function ProductCard({
         )}
 
         {/* Add to Cart Button */}
+        <div className="mt-auto">
         {!addedToCart?.[product._id] ? (
           <button
             type="button"
@@ -1108,6 +1109,7 @@ function ProductCard({
             מעבר לסל
           </Link>
         )}
+        </div>
 
         {/* Admin Buttons */}
         {user?.role === 'admin' && (

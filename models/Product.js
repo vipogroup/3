@@ -73,8 +73,20 @@ const ProductSchema = new mongoose.Schema(
       default: {} 
     },
     specs: { 
-      type: mongoose.Schema.Types.Mixed, 
-      default: {} 
+      type: String, 
+      default: '' 
+    },
+    suitableFor: {
+      type: String,
+      default: ''
+    },
+    whyChooseUs: {
+      type: String,
+      default: ''
+    },
+    warranty: {
+      type: String,
+      default: ''
     },
 
     active: { 
