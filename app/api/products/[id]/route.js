@@ -99,8 +99,20 @@ export async function PUT(req, { params }) {
     if (body.features) {
       update.features = Array.isArray(body.features) ? body.features : [];
     }
-    if (body.specs) {
-      update.specs = typeof body.specs === 'object' && body.specs !== null ? body.specs : {};
+    if (body.specs !== undefined) {
+      update.specs = body.specs;
+    }
+    if (body.suitableFor !== undefined) {
+      update.suitableFor = body.suitableFor;
+    }
+    if (body.whyChooseUs !== undefined) {
+      update.whyChooseUs = body.whyChooseUs;
+    }
+    if (body.warranty !== undefined) {
+      update.warranty = body.warranty;
+    }
+    if (body.customFields !== undefined) {
+      update.customFields = Array.isArray(body.customFields) ? body.customFields : [];
     }
 
     if (body.catalogId || body.catalogSlug) {

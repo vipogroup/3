@@ -526,7 +526,11 @@ export async function POST(request) {
       rating: payload.rating !== undefined ? Number(payload.rating) : 0,
       reviews: payload.reviews !== undefined ? Number(payload.reviews) : 0,
       features: Array.isArray(payload.features) ? payload.features : [],
-      specs: payload.specs ?? {},
+      specs: payload.specs ?? '',
+      suitableFor: payload.suitableFor ?? '',
+      whyChooseUs: payload.whyChooseUs ?? '',
+      warranty: payload.warranty ?? '',
+      customFields: Array.isArray(payload.customFields) ? payload.customFields : [],
       active: payload.active !== undefined ? Boolean(payload.active) : true,
     });
 
