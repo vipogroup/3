@@ -67,6 +67,38 @@ export default function CommissionsClient() {
     to: '',
   });
   const [selectedAgent, setSelectedAgent] = useState(null);
+  const [editingDateId, setEditingDateId] = useState(null);
+  const [editingDateValue, setEditingDateValue] = useState('');
+  const [savingDate, setSavingDate] = useState(false);
+
+  // Update commission release date
+  const handleUpdateReleaseDate = async (orderId, newDate) => {
+    if (!newDate) return;
+    setSavingDate(true);
+    try {
+      const res = await fetch(`/api/admin/commissions/${orderId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ commissionAvailableAt: newDate }),
+      });
+      if (!res.ok) throw new Error('Failed to update');
+      
+      // Update local state
+      setData(prev => ({
+        ...prev,
+        commissions: prev.commissions.map(c => 
+          c.orderId === orderId 
+            ? { ...c, commissionAvailableAt: newDate }
+            : c
+        )
+      }));
+      setEditingDateId(null);
+    } catch (err) {
+      alert('שגיאה בעדכון התאריך');
+    } finally {
+      setSavingDate(false);
+    }
+  };
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -507,9 +539,46 @@ export default function CommissionsClient() {
                             </span>
                           </td>
                           <td className="px-4 py-3 text-center text-sm">
-                            {c.commissionAvailableAt ? (
-                              <div>
-                                <div className="text-gray-600">{formatDate(c.commissionAvailableAt)}</div>
+                            {editingDateId === c.orderId ? (
+                              <div className="flex flex-col gap-1">
+                                <input
+                                  type="date"
+                                  value={editingDateValue}
+                                  onChange={(e) => setEditingDateValue(e.target.value)}
+                                  className="px-2 py-1 border rounded text-sm"
+                                  disabled={savingDate}
+                                />
+                                <div className="flex gap-1 justify-center">
+                                  <button
+                                    onClick={() => handleUpdateReleaseDate(c.orderId, editingDateValue)}
+                                    disabled={savingDate}
+                                    className="px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600"
+                                  >
+                                    {savingDate ? '...' : 'שמור'}
+                                  </button>
+                                  <button
+                                    onClick={() => setEditingDateId(null)}
+                                    className="px-2 py-1 text-xs bg-gray-300 rounded hover:bg-gray-400"
+                                  >
+                                    ביטול
+                                  </button>
+                                </div>
+                              </div>
+                            ) : c.commissionAvailableAt ? (
+                              <div 
+                                className="cursor-pointer hover:bg-gray-100 rounded p-1 transition-all"
+                                onClick={() => {
+                                  setEditingDateId(c.orderId);
+                                  setEditingDateValue(new Date(c.commissionAvailableAt).toISOString().split('T')[0]);
+                                }}
+                                title="לחץ לעריכה"
+                              >
+                                <div className="text-gray-600 flex items-center justify-center gap-1">
+                                  {formatDate(c.commissionAvailableAt)}
+                                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                  </svg>
+                                </div>
                                 {c.commissionStatus === 'pending' && getDaysUntilAvailable(c.commissionAvailableAt) > 0 && (
                                   <div className="text-xs text-yellow-600">
                                     עוד {getDaysUntilAvailable(c.commissionAvailableAt)} ימים
