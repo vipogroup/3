@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -15,6 +16,9 @@ import {
 } from '@/app/lib/groupPurchase';
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  const typeFilter = searchParams.get('type'); // 'available', 'group', or null (all)
+  
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
@@ -25,6 +29,18 @@ export default function ProductsPage() {
   const [upgrading, setUpgrading] = useState(false);
   const [addedToCart, setAddedToCart] = useState({});
   const { addItem } = useCartContext();
+  
+  // Filter products by type
+  const filteredProducts = useMemo(() => {
+    if (!typeFilter) return products;
+    if (typeFilter === 'available') {
+      return products.filter(p => !isGroupPurchase(p));
+    }
+    if (typeFilter === 'group') {
+      return products.filter(p => isGroupPurchase(p));
+    }
+    return products;
+  }, [products, typeFilter]);
 
   const primaryColor = '#1e3a8a'; // כחול נייבי
   const secondaryColor = '#0891b2'; // טורקיז
@@ -74,7 +90,7 @@ export default function ProductsPage() {
     fetchUser();
   }, [loadProducts]);
 
-  const categoryGroups = useMemo(() => buildCategoryGroups(products), [products]);
+  const categoryGroups = useMemo(() => buildCategoryGroups(filteredProducts), [filteredProducts]);
 
   useEffect(() => {
     if (activeCategory === 'all') {
@@ -87,9 +103,16 @@ export default function ProductsPage() {
   }, [categoryGroups, activeCategory]);
 
   const visibleGroups = useMemo(
-    () => getVisibleGroups(categoryGroups, activeCategory, products),
-    [categoryGroups, activeCategory, products],
+    () => getVisibleGroups(categoryGroups, activeCategory, filteredProducts),
+    [categoryGroups, activeCategory, filteredProducts],
   );
+  
+  // Page title based on filter
+  const pageTitle = useMemo(() => {
+    if (typeFilter === 'available') return 'מוצרים זמינים עכשיו';
+    if (typeFilter === 'group') return 'רכישה קבוצתית';
+    return 'כל המוצרים';
+  }, [typeFilter]);
 
   const handleDeleteProduct = useCallback(
     async (productId) => {
@@ -142,7 +165,14 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-white">
+    <div 
+      className="min-h-[calc(100vh-64px)]"
+      style={{
+        background: typeFilter === 'group'
+          ? 'linear-gradient(180deg, #fffbeb 0%, #ffffff 100%)'
+          : 'linear-gradient(180deg, #f0f9ff 0%, #ffffff 100%)',
+      }}
+    >
       {/* Marquee Banner - For customers and guests */}
       {showMarquee && (!user || user?.role === 'customer') && (
         <div
@@ -152,41 +182,29 @@ export default function ProductsPage() {
         >
           <div className="marquee-container">
             <div className="marquee-content">
-              <div className="flex items-center gap-3 whitespace-nowrap">
-                <span className="flex items-center gap-2 text-white font-bold text-lg">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" />
-                  </svg>
+              <div className="flex items-center gap-4 whitespace-nowrap">
+                <span className="text-white font-bold text-lg">
                   רוצים להרוויח כסף?
                 </span>
-                <span className="text-white text-base">•</span>
                 <span className="text-white font-semibold text-lg">
                   הפכו לסוכן וקבלו 10% עמלה על כל מכירה!
                 </span>
-                <span className="text-white text-base">•</span>
                 <span className="bg-white text-blue-900 px-4 py-1 rounded-full font-bold text-sm">
                   לחצו כאן להצטרפות
                 </span>
-                <span className="text-white text-base">•</span>
               </div>
             </div>
             <div className="marquee-content" aria-hidden="true">
-              <div className="flex items-center gap-3 whitespace-nowrap">
-                <span className="flex items-center gap-2 text-white font-bold text-lg">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" />
-                  </svg>
+              <div className="flex items-center gap-4 whitespace-nowrap">
+                <span className="text-white font-bold text-lg">
                   רוצים להרוויח כסף?
                 </span>
-                <span className="text-white text-base">•</span>
                 <span className="text-white font-semibold text-lg">
                   הפכו לסוכן וקבלו 10% עמלה על כל מכירה!
                 </span>
-                <span className="text-white text-base">•</span>
                 <span className="bg-white text-blue-900 px-4 py-1 rounded-full font-bold text-sm">
                   לחצו כאן להצטרפות
                 </span>
-                <span className="text-white text-base">•</span>
               </div>
             </div>
           </div>
@@ -232,6 +250,51 @@ export default function ProductsPage() {
           animation-play-state: paused;
         }
       `}</style>
+
+      {/* Page Header with Back Button */}
+      {typeFilter && (
+        <div 
+          className="border-b"
+          style={{ 
+            background: typeFilter === 'group' 
+              ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(251, 191, 36, 0.05) 100%)'
+              : 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)',
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="flex items-center gap-4">
+              <Link 
+                href="/shop"
+                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>חזרה לחנות</span>
+              </Link>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <h1 
+                className="text-xl font-bold"
+                style={{ 
+                  color: typeFilter === 'group' ? '#f59e0b' : '#1e3a8a',
+                }}
+              >
+                {typeFilter === 'group' && (
+                  <svg className="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                )}
+                {typeFilter === 'available' && (
+                  <svg className="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                  </svg>
+                )}
+                {pageTitle}
+              </h1>
+            </div>
+          </div>
+        </div>
+      )}
 
       <CategoryFilters
         categories={categoryGroups}
@@ -474,7 +537,7 @@ function CategoryFilters({
   }
 
   return (
-    <div className="bg-white border-b border-gray-100 shadow-sm">
+    <div className="border-b border-gray-200/50" style={{ background: 'transparent' }}>
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium" style={{ color: '#1e3a8a' }}>
@@ -711,11 +774,6 @@ function CategoryHeader({ group }) {
         />
       </h2>
 
-      {hasGroupProducts && countdownLabel && (
-        <p className="text-sm font-semibold" style={{ color: '#0891b2' }}>
-          {countdownLabel}
-        </p>
-      )}
     </header>
   );
 }
@@ -725,13 +783,86 @@ function GroupBadge() {
     <span
       className="absolute right-2 bottom-2 text-xs font-semibold px-2 py-1 rounded-md shadow"
       style={{
-        background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(8, 145, 178, 0.95) 100%)',
+        background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
         color: 'white',
-        border: '1px solid rgba(255,255,255,0.35)',
       }}
     >
-      רכישה קבוצתית
+      קבוצתית
     </span>
+  );
+}
+
+function GroupTimer({ product }) {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const endDate = product.groupPurchaseDetails?.endDate;
+      if (!endDate) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      
+      const now = new Date().getTime();
+      const end = new Date(endDate).getTime();
+      const diff = end - now;
+      
+      if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      
+      return {
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((diff % (1000 * 60)) / 1000),
+      };
+    };
+
+    setTimeLeft(calculateTimeLeft());
+    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000);
+    return () => clearInterval(timer);
+  }, [product]);
+
+  return (
+    <div className="flex items-center justify-center gap-1">
+      <div className="flex items-center gap-0.5">
+        <div className="flex flex-col items-center">
+          <span 
+            className="text-sm font-bold text-white px-1.5 py-0.5 rounded"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+          >
+            {String(timeLeft.seconds).padStart(2, '0')}
+          </span>
+          <span className="text-[9px] text-gray-500">שניות</span>
+        </div>
+        <span className="text-gray-400 font-bold">:</span>
+        <div className="flex flex-col items-center">
+          <span 
+            className="text-sm font-bold text-white px-1.5 py-0.5 rounded"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+          >
+            {String(timeLeft.minutes).padStart(2, '0')}
+          </span>
+          <span className="text-[9px] text-gray-500">דקות</span>
+        </div>
+        <span className="text-gray-400 font-bold">:</span>
+        <div className="flex flex-col items-center">
+          <span 
+            className="text-sm font-bold text-white px-1.5 py-0.5 rounded"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+          >
+            {String(timeLeft.hours).padStart(2, '0')}
+          </span>
+          <span className="text-[9px] text-gray-500">שעות</span>
+        </div>
+        <span className="text-gray-400 font-bold">:</span>
+        <div className="flex flex-col items-center">
+          <span 
+            className="text-sm font-bold text-white px-1.5 py-0.5 rounded"
+            style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)' }}
+          >
+            {String(timeLeft.days).padStart(2, '0')}
+          </span>
+          <span className="text-[9px] text-gray-500">ימים</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -773,28 +904,30 @@ function ProductCard({
     return () => clearInterval(interval);
   }, [product]);
 
+  const [isFavorite, setIsFavorite] = useState(false);
+
   return (
     <div
-      className="bg-white rounded-lg overflow-hidden group h-full flex flex-col transition-all duration-300"
+      className="bg-white rounded-xl overflow-hidden group h-full flex flex-col transition-all duration-300"
       style={{
         border: '2px solid transparent',
         backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
-        boxShadow: '0 4px 15px rgba(8, 145, 178, 0.1)',
+        boxShadow: '0 4px 15px rgba(8, 145, 178, 0.15)',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-3px)';
-        e.currentTarget.style.boxShadow = '0 8px 25px rgba(8, 145, 178, 0.25)';
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 12px 24px rgba(8, 145, 178, 0.25)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 4px 15px rgba(8, 145, 178, 0.1)';
+        e.currentTarget.style.boxShadow = '0 4px 15px rgba(8, 145, 178, 0.15)';
       }}
     >
       {/* Image Container */}
       <Link href={`/products/${product._id}`} className="block relative">
-        <div className="relative aspect-square overflow-hidden bg-gray-50">
+        <div className="relative aspect-square overflow-hidden bg-gray-50 rounded-t-xl">
           <Image
             src={product.image || 'https://placehold.co/600x600?text=VIPO'}
             alt={product.name || 'מוצר'}
@@ -806,13 +939,38 @@ function ProductCard({
             unoptimized
           />
 
-          {/* Badges */}
+          {/* Heart/Favorites Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsFavorite(!isFavorite);
+            }}
+            className="absolute top-2 left-2 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200"
+            style={{
+              background: isFavorite ? 'rgba(239, 68, 68, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            }}
+            aria-label={isFavorite ? 'הסר ממועדפים' : 'הוסף למועדפים'}
+          >
+            <svg
+              className="w-4 h-4"
+              fill={isFavorite ? 'white' : 'none'}
+              stroke={isFavorite ? 'white' : '#6b7280'}
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </button>
+
+          {/* Discount Badge */}
           {discountPercent > 0 && (
             <div
-              className="absolute top-2 right-2 text-white px-3 py-1 rounded-lg text-sm font-bold shadow-lg"
+              className="absolute top-2 right-2 text-white px-2 py-1 rounded-md text-xs font-bold"
               style={{
-                background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)',
-                transform: 'rotate(-8deg)',
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
               }}
             >
               -{discountPercent}%
@@ -827,59 +985,81 @@ function ProductCard({
       <div className="p-3 flex-1 flex flex-col">
         {/* Product Title */}
         <Link href={`/products/${product._id}`}>
-          <h3 className="text-sm text-gray-800 mb-2 line-clamp-2 hover:text-blue-600 leading-tight min-h-[2.5rem]">
+          <h3 className="text-base font-medium text-gray-900 mb-2 line-clamp-2 hover:text-cyan-600 leading-snug">
             {product.name}
           </h3>
         </Link>
 
-        {/* Rating */}
-        <div className="flex items-center gap-1 mb-2">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <svg
-                key={i}
-                className="w-3 h-3"
-                style={{ color: i < Math.floor(product.rating || 4.5) ? '#f59e0b' : '#d1d5db' }}
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-            ))}
-          </div>
-          <span className="text-xs text-gray-500">
-            ({(product.reviews || Math.floor(Math.random() * 500) + 50).toLocaleString('he-IL')})
-          </span>
-        </div>
-
         {/* Price */}
-        <div className="mb-3 mt-auto">
+        <div className="mb-3">
           {product.originalPrice ? (
-            <div className="flex items-baseline gap-2 flex-wrap">
-              <span className="text-lg font-bold line-through text-gray-400">
-                ₪{product.originalPrice.toLocaleString('he-IL')}
-              </span>
-              <span className="text-2xl font-bold" style={{ color: '#16a34a' }}>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span 
+                className="text-2xl font-black"
+                style={{ 
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 ₪{product.price.toLocaleString('he-IL')}
+              </span>
+              <span className="text-sm line-through text-gray-400">
+                ₪{product.originalPrice.toLocaleString('he-IL')}
               </span>
             </div>
           ) : (
-            <span className="text-2xl font-bold text-gray-900">
+            <span className="text-xl font-bold text-gray-900">
               ₪{product.price.toLocaleString('he-IL')}
             </span>
           )}
         </div>
 
-        {/* Group Purchase Details */}
+        {/* Group Purchase - Combined Card */}
         {isGroupPurchase(product) && (
-          <div className="mb-2 p-2 rounded-lg text-xs" style={{ background: 'rgba(8, 145, 178, 0.1)' }}>
-            <div className="flex items-center justify-between mb-1">
-              <span className="font-semibold" style={{ color: '#1e3a8a' }}>🏭 רכישה קבוצתית</span>
+          <div 
+            className="mb-3 p-3 rounded-xl"
+            style={{
+              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(251, 191, 36, 0.1) 100%)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+            }}
+          >
+            {/* Title */}
+            <div className="flex items-center gap-1 mb-2">
+              <svg className="w-3.5 h-3.5" style={{ color: '#f59e0b' }} fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              <span className="text-xs font-bold" style={{ color: '#d97706' }}>מבצע נסגר בעוד:</span>
             </div>
-            <div className="text-gray-600 space-y-0.5">
-              <div>הזמנות: {product.groupPurchaseDetails?.currentQuantity || 0}/{product.groupPurchaseDetails?.minQuantity || 10}</div>
-              <div>אספקה: ~{product.groupPurchaseDetails?.totalDays || (product.groupPurchaseDetails?.closingDays || 0) + (product.groupPurchaseDetails?.shippingDays || 0) || 30} ימים</div>
-              {groupCountdown && <div style={{ color: '#0891b2' }}>{groupCountdown}</div>}
+            
+            {/* Timer */}
+            <GroupTimer product={product} />
+            
+            {/* Divider */}
+            <div className="h-px my-2" style={{ background: 'rgba(245, 158, 11, 0.3)' }} />
+            
+            {/* Progress */}
+            <div className="flex items-center gap-2 mb-1">
+              <svg className="w-3.5 h-3.5" style={{ color: '#f59e0b' }} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span className="text-xs font-bold" style={{ color: '#d97706' }}>
+                {product.groupPurchaseDetails?.currentQuantity || 0}/{product.groupPurchaseDetails?.minQuantity || 10} נרשמו
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-2.5 bg-white rounded-full overflow-hidden">
+                <div 
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${Math.min(100, ((product.groupPurchaseDetails?.currentQuantity || 0) / (product.groupPurchaseDetails?.minQuantity || 10)) * 100)}%`,
+                    background: 'linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)',
+                  }}
+                />
+              </div>
+              <span className="text-xs font-bold" style={{ color: '#d97706' }}>
+                {Math.round(((product.groupPurchaseDetails?.currentQuantity || 0) / (product.groupPurchaseDetails?.minQuantity || 10)) * 100)}%
+              </span>
             </div>
           </div>
         )}
@@ -892,48 +1072,40 @@ function ProductCard({
               addItem(product, 1);
               setAddedToCart((prev) => ({ ...prev, [product._id]: true }));
             }}
-            className="w-full text-white font-medium py-2 px-4 rounded-lg text-sm transition-all duration-300"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-bold transition-all duration-300 text-white"
             style={{
               background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)',
+              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.3)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background =
-                'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(8, 145, 178, 0.4)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background =
-                'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 2px 8px rgba(8, 145, 178, 0.2)';
+              e.currentTarget.style.boxShadow = '0 4px 15px rgba(8, 145, 178, 0.3)';
             }}
           >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
             הוסף לסל
           </button>
         ) : (
           <Link
             href="/cart"
-            className="w-full text-white font-medium py-2 px-4 rounded-lg text-sm transition-all duration-300 block text-center"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)',
-              boxShadow: '0 2px 8px rgba(34, 197, 94, 0.2)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background =
-                'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background =
-                'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 2px 8px rgba(34, 197, 94, 0.2)';
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              color: 'white',
             }}
           >
-            מעבר לסל ✓
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            מעבר לסל
           </Link>
         )}
 

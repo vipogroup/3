@@ -186,10 +186,19 @@ export default function OrdersPage() {
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
                         <h3 className="text-lg font-bold text-gray-900">
                           הזמנה #{order._id?.slice(-6)}
                         </h3>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            order.orderType === 'group'
+                              ? 'bg-orange-100 text-orange-700'
+                              : 'bg-blue-100 text-blue-700'
+                          }`}
+                        >
+                          {order.orderType === 'group' ? 'רכישה קבוצתית' : 'רכישה רגילה'}
+                        </span>
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}
                         >

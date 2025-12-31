@@ -173,6 +173,9 @@ export async function POST(req) {
       sku: 1,
       slug: 1,
       legacyId: 1,
+      purchaseType: 1,
+      type: 1,
+      stockCount: 1,
     };
 
     const [docsById, docsBySlug] = await Promise.all([
@@ -243,6 +246,34 @@ export async function POST(req) {
 
     if (missingProducts.length > 0) {
       return NextResponse.json({ error: 'product_not_found', products: missingProducts }, { status: 400 });
+    }
+
+    // Check stock availability for regular (non-group) products
+    const outOfStockItems = [];
+    for (const item of items) {
+      if (!item) continue;
+      // Skip stock check for group purchases
+      if (item.purchaseType === 'group') continue;
+      
+      const product = productMapById.get(item.productId?.toHexString?.() || item.productId?.toString());
+      if (product) {
+        const availableStock = product.stockCount ?? 0;
+        if (availableStock < item.quantity) {
+          outOfStockItems.push({
+            name: item.name,
+            requested: item.quantity,
+            available: availableStock,
+          });
+        }
+      }
+    }
+
+    if (outOfStockItems.length > 0) {
+      return NextResponse.json({ 
+        error: 'insufficient_stock', 
+        message: 'אין מספיק מלאי עבור חלק מהמוצרים',
+        items: outOfStockItems 
+      }, { status: 400 });
     }
 
     const { subtotal } = calcTotals(items.map((item) => ({ qty: item.quantity, price: item.unitPrice })));
@@ -391,6 +422,47 @@ export async function POST(req) {
 
     const result = await ordersCol.insertOne(orderDoc);
     const orderId = result.insertedId;
+
+    // Update stock for each product (decrease stockCount)
+    // If stock reaches 0, automatically hide product (active = false)
+    try {
+      for (const item of items) {
+        if (item.productId) {
+          const quantity = item.quantity || 1;
+          
+          // First, decrease stock
+          const updateResult = await productsCol.findOneAndUpdate(
+            { _id: new ObjectId(item.productId) },
+            {
+              $inc: { stockCount: -quantity },
+              $set: { updatedAt: now },
+            },
+            { returnDocument: 'after' }
+          );
+          
+          // If stock is now 0 or less, hide the product (skip for group purchases)
+          if (updateResult && item.purchaseType !== 'group') {
+            const newStockCount = updateResult.stockCount ?? 0;
+            if (newStockCount <= 0) {
+              await productsCol.updateOne(
+                { _id: new ObjectId(item.productId) },
+                {
+                  $set: { 
+                    active: false, 
+                    inStock: false,
+                    updatedAt: now 
+                  },
+                }
+              );
+              console.log(`STOCK_DEPLETED: Product ${item.name} (${item.productId}) is now hidden`);
+            }
+          }
+        }
+      }
+    } catch (stockErr) {
+      console.error('STOCK_UPDATE_ERROR:', stockErr);
+      // Continue even if stock update fails - order is already created
+    }
 
     // Send notifications
     try {

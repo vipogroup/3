@@ -60,13 +60,16 @@ function setProducts(list, { persist = true } = {}) {
   }
 }
 
-async function fetchProductsFromApi() {
+async function fetchProductsFromApi({ includeInactive = false } = {}) {
   if (typeof fetch === 'undefined') {
     return null;
   }
 
   try {
-    const response = await fetch(API_PRODUCTS_URL, { cache: 'no-store' });
+    const url = includeInactive 
+      ? `${API_PRODUCTS_URL}?includeInactive=true` 
+      : API_PRODUCTS_URL;
+    const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) {
       throw new Error(`Failed to fetch products: status ${response.status}`);
     }
@@ -103,7 +106,17 @@ function scheduleApiSync({ force = false } = {}) {
   })();
 }
 
-export async function refreshProductsFromApi() {
+export async function refreshProductsFromApi({ includeInactive = false } = {}) {
+  if (includeInactive) {
+    // For admin - fetch directly with includeInactive
+    const remoteProducts = await fetchProductsFromApi({ includeInactive: true });
+    if (Array.isArray(remoteProducts)) {
+      return remoteProducts.map((item) => normalizeProductShape(item)).filter(Boolean);
+    }
+    return [];
+  }
+  
+  // For customers - use cached sync
   scheduleApiSync({ force: true });
   if (apiSyncPromise) {
     await apiSyncPromise;

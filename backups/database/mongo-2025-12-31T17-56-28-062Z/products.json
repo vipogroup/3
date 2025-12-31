@@ -1,0 +1,134 @@
+[
+  {
+    "_id": {
+      "$oid": "695556f806ad66e3f223e913"
+    },
+    "name": "כורסת עיסוי",
+    "description": "כורסת עיסוי",
+    "fullDescription": "כורסת עיסוי",
+    "category": "עיסוי",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 20000,
+    "originalPrice": 0,
+    "commission": 2000,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767200488/vipo-products/Untitled_design_20250729_224819_0000_nbvcsm.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767200488/vipo-products/Untitled_design_20250729_224819_0000_nbvcsm.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767200488/vipo-products/Untitled_design_20250729_224819_0000_nbvcsm.png"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": false,
+    "stockCount": 0,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": false,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T17:01:44.550Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:51:04.992Z"
+    },
+    "__v": 0,
+    "sku": "5sds5d5sd5s",
+    "specs": {}
+  },
+  {
+    "_id": {
+      "$oid": "6955574e7dd9b5bef037a96c"
+    },
+    "name": "מכונת לייזר משולבת",
+    "description": "מכונת לייזר משולבת",
+    "fullDescription": "מכונת לייזר משולבת",
+    "category": "קוסמטיקה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 100000,
+    "originalPrice": 0,
+    "commission": 10000,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 11,
+    "rating": 4.5,
+    "reviews": 5,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T17:03:10.230Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:25:41.924Z"
+    },
+    "__v": 0,
+    "sku": "",
+    "specs": {}
+  },
+  {
+    "_id": {
+      "$oid": "69555954e294fea8f6b74a1f"
+    },
+    "sku": "z1x2c3v4",
+    "name": "שולחן נירוסטה",
+    "description": "שולחן נירוסטה",
+    "fullDescription": "שולחן נירוסטה",
+    "category": "נירוסטה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 1600,
+    "originalPrice": 0,
+    "commission": 160,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767201093/vipo-products/image_14_oigmia.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767201093/vipo-products/image_14_oigmia.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767201093/vipo-products/image_14_oigmia.png"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 49,
+    "rating": 4.5,
+    "reviews": 20,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T17:11:48.883Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:49:25.005Z"
+    },
+    "__v": 0
+  }
+]

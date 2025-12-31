@@ -89,10 +89,11 @@ export async function GET(req) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const commissionBalance = Number(userDoc[0].commissionBalance || 0);
     const commissionOnHold = Number(userDoc[0].commissionOnHold || 0);
 
     let pendingCommissions = 0;
+    let availableCommissions = 0;
+    let claimedCommissions = 0;
     let totalEarned = 0;
 
     const groupPurchaseIds = orders
@@ -131,6 +132,10 @@ export async function GET(req) {
 
       if (status === 'pending') {
         pendingCommissions += amount;
+      } else if (status === 'available') {
+        availableCommissions += amount;
+      } else if (status === 'claimed') {
+        claimedCommissions += amount;
       }
 
       const groupInfo = order.groupPurchaseId
@@ -167,10 +172,11 @@ export async function GET(req) {
     return NextResponse.json({
       ok: true,
       summary: {
-        availableBalance: commissionBalance,
+        availableBalance: availableCommissions,
         pendingCommissions,
         onHold: commissionOnHold,
         totalEarned,
+        claimedCommissions,
       },
       commissions,
     });

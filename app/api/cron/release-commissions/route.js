@@ -49,6 +49,7 @@ export async function POST(req) {
       .project({
         _id: 1,
         agentId: 1,
+        refAgentId: 1,
         commissionAmount: 1,
       })
       .toArray();
@@ -57,13 +58,14 @@ export async function POST(req) {
       return NextResponse.json({ ok: true, released: 0, agents: 0 });
     }
 
-    // סכומי עמלות לכל סוכן
+    // סכומי עמלות לכל סוכן (תומך גם ב-agentId וגם ב-refAgentId)
     const agentTotals = new Map();
     pendingOrders.forEach((order) => {
-      if (!order.agentId) {
+      const agentId = order.agentId || order.refAgentId;
+      if (!agentId) {
         return;
       }
-      const agentKey = order.agentId instanceof ObjectId ? order.agentId.toString() : String(order.agentId);
+      const agentKey = agentId instanceof ObjectId ? agentId.toString() : String(agentId);
       const current = agentTotals.get(agentKey) || { amount: 0, orderIds: [] };
       current.amount += Number(order.commissionAmount || 0);
       current.orderIds.push(order._id);

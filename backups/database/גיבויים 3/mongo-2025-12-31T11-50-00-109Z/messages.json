@@ -1,0 +1,421 @@
+[
+  {
+    "_id": {
+      "$oid": "694640dce3271c617edd7c01"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "direct",
+    "targetUserId": {
+      "$oid": "6946203363bd298a2d7fef7b"
+    },
+    "message": "תקין חחחחחחחחח",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-20T06:23:24.812Z"
+        },
+        "_id": {
+          "$oid": "694640dce3271c617edd7c02"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-20T06:23:24.823Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T06:23:24.823Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6946412ba34ac9efb26ec139"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "direct",
+    "targetUserId": {
+      "$oid": "694615ef5206153e775daa29"
+    },
+    "message": "תגובה 12345",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-20T06:24:43.759Z"
+        },
+        "_id": {
+          "$oid": "6946412ba34ac9efb26ec13a"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-20T06:24:43.760Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T06:24:43.760Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69465494ff62a64231f5e389"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "direct",
+    "targetUserId": {
+      "$oid": "6946516ffeb6e3c88b41c59e"
+    },
+    "message": "000000000000",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-20T07:47:32.901Z"
+        },
+        "_id": {
+          "$oid": "69465494ff62a64231f5e38a"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-20T07:47:32.902Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T07:47:32.902Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6946658ee20a90aa1a4e2a54"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "direct",
+    "targetUserId": {
+      "$oid": "69465bbf9a45034a1a6d0d91"
+    },
+    "message": "יחיחיחי",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-20T08:59:58.186Z"
+        },
+        "_id": {
+          "$oid": "6946658ee20a90aa1a4e2a55"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-20T08:59:58.189Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T08:59:58.189Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6951c1b8440e0e4b2b5d2346"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "all",
+    "targetUserId": null,
+    "message": "הייצ מנהמ",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-28T23:48:08.074Z"
+        },
+        "_id": {
+          "$oid": "6951c1b8440e0e4b2b5d2347"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951c10e440e0e4b2b5d232f"
+        },
+        "readAt": {
+          "$date": "2025-12-28T23:48:33.294Z"
+        },
+        "_id": {
+          "$oid": "6951c1d1440e0e4b2b5d234b"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951c3bb440e0e4b2b5d2358"
+        },
+        "readAt": {
+          "$date": "2025-12-28T23:57:14.294Z"
+        },
+        "_id": {
+          "$oid": "6951c3da9e9f6bfb16135a95"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951c6739e9f6bfb16135ad9"
+        },
+        "readAt": {
+          "$date": "2025-12-29T00:10:47.696Z"
+        },
+        "_id": {
+          "$oid": "6951c7079e9f6bfb16135ae6"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951d7c90bcee7586156c3fe"
+        },
+        "readAt": {
+          "$date": "2025-12-29T01:25:29.989Z"
+        },
+        "_id": {
+          "$oid": "6951d8890bcee7586156c41b"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951e66d76253b6ccfb4c1cb"
+        },
+        "readAt": {
+          "$date": "2025-12-29T03:31:15.680Z"
+        },
+        "_id": {
+          "$oid": "6951f603f1af1523dd7a2660"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6952858cbe5df4cd2b6ec5e9"
+        },
+        "readAt": {
+          "$date": "2025-12-29T13:48:29.986Z"
+        },
+        "_id": {
+          "$oid": "695286adbe5df4cd2b6ec5f5"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6953a2bf0e80c969cf31f3d8"
+        },
+        "readAt": {
+          "$date": "2025-12-30T10:02:21.538Z"
+        },
+        "_id": {
+          "$oid": "6953a32d09fcf13b0b045cb3"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69543c8f71541418cca8864b"
+        },
+        "readAt": {
+          "$date": "2025-12-30T20:57:30.467Z"
+        },
+        "_id": {
+          "$oid": "69543cba71541418cca88662"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69543dc171541418cca8867e"
+        },
+        "readAt": {
+          "$date": "2025-12-30T21:02:29.808Z"
+        },
+        "_id": {
+          "$oid": "69543de591668eafae055370"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-28T23:48:08.075Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T21:02:29.810Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6951c45af72c28e6fbc3a247"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "all",
+    "targetUserId": null,
+    "message": "ךלל",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-28T23:59:22.537Z"
+        },
+        "_id": {
+          "$oid": "6951c45af72c28e6fbc3a248"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951c3bb440e0e4b2b5d2358"
+        },
+        "readAt": {
+          "$date": "2025-12-29T00:00:02.286Z"
+        },
+        "_id": {
+          "$oid": "6951c482f72c28e6fbc3a24d"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951c6739e9f6bfb16135ad9"
+        },
+        "readAt": {
+          "$date": "2025-12-29T00:10:47.696Z"
+        },
+        "_id": {
+          "$oid": "6951c7079e9f6bfb16135ae5"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951d7c90bcee7586156c3fe"
+        },
+        "readAt": {
+          "$date": "2025-12-29T01:25:29.989Z"
+        },
+        "_id": {
+          "$oid": "6951d8890bcee7586156c41a"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951e66d76253b6ccfb4c1cb"
+        },
+        "readAt": {
+          "$date": "2025-12-29T03:31:15.680Z"
+        },
+        "_id": {
+          "$oid": "6951f603f1af1523dd7a265f"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6952858cbe5df4cd2b6ec5e9"
+        },
+        "readAt": {
+          "$date": "2025-12-29T13:48:29.986Z"
+        },
+        "_id": {
+          "$oid": "695286adbe5df4cd2b6ec5f4"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6953a2bf0e80c969cf31f3d8"
+        },
+        "readAt": {
+          "$date": "2025-12-30T10:02:21.538Z"
+        },
+        "_id": {
+          "$oid": "6953a32d09fcf13b0b045cb2"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69543c8f71541418cca8864b"
+        },
+        "readAt": {
+          "$date": "2025-12-30T20:57:30.467Z"
+        },
+        "_id": {
+          "$oid": "69543cba71541418cca88661"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69543dc171541418cca8867e"
+        },
+        "readAt": {
+          "$date": "2025-12-30T21:02:29.808Z"
+        },
+        "_id": {
+          "$oid": "69543de591668eafae05536f"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-28T23:59:22.543Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T21:02:29.810Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69543cd571541418cca88670"
+    },
+    "senderId": {
+      "$oid": "69543c8f71541418cca8864b"
+    },
+    "senderRole": "customer",
+    "targetRole": "admin",
+    "targetUserId": null,
+    "message": "בי",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69543c8f71541418cca8864b"
+        },
+        "readAt": {
+          "$date": "2025-12-30T20:57:57.805Z"
+        },
+        "_id": {
+          "$oid": "69543cd571541418cca88671"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-30T20:57:57.807Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T20:57:57.807Z"
+    },
+    "__v": 0
+  }
+]

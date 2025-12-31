@@ -239,6 +239,12 @@ export default function OrdersList() {
                 className="px-6 py-3 text-right text-xs font-medium uppercase"
                 style={{ color: '#1e3a8a' }}
               >
+                סוג מכירה
+              </th>
+              <th
+                className="px-6 py-3 text-right text-xs font-medium uppercase"
+                style={{ color: '#1e3a8a' }}
+              >
                 סטטוס
               </th>
               <th
@@ -313,6 +319,17 @@ export default function OrdersList() {
                     {order?.totals?.totalAmount?.toFixed?.(2) ??
                       order?.totalAmount?.toFixed?.(2) ??
                       '0.00'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        order.orderType === 'group'
+                          ? 'bg-orange-100 text-orange-700'
+                          : 'bg-blue-100 text-blue-700'
+                      }`}
+                    >
+                      {order.orderType === 'group' ? 'קבוצתית' : 'רגילה'}
+                    </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs rounded-full ${statusOption?.color}`}>
@@ -416,6 +433,18 @@ export default function OrdersList() {
                         order?.totalAmount?.toFixed?.(2) ??
                         '0.00'}
                     </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500">סוג מכירה</p>
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        order.orderType === 'group'
+                          ? 'bg-orange-100 text-orange-700'
+                          : 'bg-blue-100 text-blue-700'
+                      }`}
+                    >
+                      {order.orderType === 'group' ? 'קבוצתית' : 'רגילה'}
+                    </span>
                   </div>
                   <div className="text-left">
                     <p className="text-xs text-gray-500">תאריך</p>

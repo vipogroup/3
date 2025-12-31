@@ -196,11 +196,22 @@ export default function OrderDetailsPage() {
                   תאריך: {new Date(order?.createdAt).toLocaleDateString('he-IL')}
                 </p>
               </div>
-              <span
-                className={`inline-flex px-4 py-2 rounded-full text-sm font-semibold border ${getStatusColor(order?.status)}`}
-              >
-                {getStatusText(order?.status)}
-              </span>
+              <div className="flex flex-wrap gap-2">
+                <span
+                  className={`inline-flex px-4 py-2 rounded-full text-sm font-semibold ${
+                    order?.orderType === 'group'
+                      ? 'bg-orange-100 text-orange-700 border border-orange-200'
+                      : 'bg-blue-100 text-blue-700 border border-blue-200'
+                  }`}
+                >
+                  {order?.orderType === 'group' ? 'רכישה קבוצתית' : 'רכישה רגילה'}
+                </span>
+                <span
+                  className={`inline-flex px-4 py-2 rounded-full text-sm font-semibold border ${getStatusColor(order?.status)}`}
+                >
+                  {getStatusText(order?.status)}
+                </span>
+              </div>
             </div>
           </div>
 

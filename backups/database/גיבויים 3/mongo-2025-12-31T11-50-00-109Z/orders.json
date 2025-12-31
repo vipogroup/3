@@ -1,0 +1,418 @@
+[
+  {
+    "_id": {
+      "$oid": "69542c8590710489eb6aa16f"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6953ce492f7ee1c6a2de9d42"
+        },
+        "name": "כורסת עיסוי",
+        "quantity": 1,
+        "unitPrice": 19999.99,
+        "totalPrice": 19999.99,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767099958/vipo-products/Untitled_design_20250729_224819_0000_zj4ek4.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 19999.99,
+      "discountPercent": 50,
+      "discountAmount": 10000,
+      "totalAmount": 9999.990000000002
+    },
+    "totalAmount": 9999.990000000002,
+    "discountAmount": 10000,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-29T19:48:21.115Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 3000,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 30,
+    "commissionPercent": 30,
+    "createdAt": {
+      "$date": "2025-12-30T19:48:21.115Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T19:50:12.659Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69542d30f4d1adfbb2ff7a88"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6953e6d3ed6301200267a238"
+        },
+        "name": "שולחן נירוסטה",
+        "quantity": 1,
+        "unitPrice": 1800,
+        "totalPrice": 1800,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767106131/vipo-products/image_14_ykemu5.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1800,
+      "discountPercent": 50,
+      "discountAmount": 900,
+      "totalAmount": 900
+    },
+    "totalAmount": 900,
+    "discountAmount": 900,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-29T19:51:12.930Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 270,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 30,
+    "commissionPercent": 30,
+    "createdAt": {
+      "$date": "2025-12-30T19:51:12.930Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T19:51:46.767Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69542f8b90710489eb6aa198"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69542ec439283137236b94ea"
+        },
+        "name": "עיע",
+        "quantity": 1,
+        "unitPrice": 1999.99,
+        "totalPrice": 1999.99,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767124582/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_g149vl.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1999.99,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 1999.99
+    },
+    "totalAmount": 1999.99,
+    "discountAmount": 0,
+    "createdBy": "6953a2130c990eaded19c93b",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": null,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-30T20:01:15.139Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T20:23:57.928Z"
+    },
+    "customer": {
+      "fullName": "סוכן דניאל",
+      "email": "m0507123331@gmail.com",
+      "phone": "0507123331",
+      "address": "רמלה",
+      "city": "רמלה",
+      "zipCode": "123112"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69542f9690710489eb6aa19b"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69542ec439283137236b94ea"
+        },
+        "name": "עיע",
+        "quantity": 1,
+        "unitPrice": 1999.99,
+        "totalPrice": 1999.99,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767124582/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_g149vl.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1999.99,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 1999.99
+    },
+    "totalAmount": 1999.99,
+    "discountAmount": 0,
+    "createdBy": "6953a2130c990eaded19c93b",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": null,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-30T20:01:26.425Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T20:23:49.752Z"
+    },
+    "customer": {
+      "fullName": "סוכן דניאל",
+      "email": "m0507123331@gmail.com",
+      "phone": "0507123331",
+      "address": "רמלה",
+      "city": "רמלה",
+      "zipCode": "123112"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69542fac90710489eb6aa19d"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69542ec439283137236b94ea"
+        },
+        "name": "עיע",
+        "quantity": 1,
+        "unitPrice": 1999.99,
+        "totalPrice": 1999.99,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767124582/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_g149vl.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1999.99,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 1999.99
+    },
+    "totalAmount": 1999.99,
+    "discountAmount": 0,
+    "createdBy": "6953a2130c990eaded19c93b",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": null,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-30T20:01:48.441Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T20:23:47.011Z"
+    },
+    "customer": {
+      "fullName": "סוכן דניאל",
+      "email": "m0507123331@gmail.com",
+      "phone": "0507123331",
+      "address": "רמלה",
+      "city": "רמלה",
+      "zipCode": "123112"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6954f23749aa9928f3da9a12"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69542ec439283137236b94ea"
+        },
+        "name": "עיע",
+        "quantity": 1,
+        "unitPrice": 1999.99,
+        "totalPrice": 1999.99,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767124582/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_g149vl.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1999.99,
+      "discountPercent": 50,
+      "discountAmount": 1000,
+      "totalAmount": 999.99
+    },
+    "totalAmount": 999.99,
+    "discountAmount": 1000,
+    "createdBy": "6953a2130c990eaded19c93b",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T09:51:51.079Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 300,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 30,
+    "commissionPercent": 30,
+    "createdAt": {
+      "$date": "2025-12-31T09:51:51.079Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T09:57:22.545Z"
+    },
+    "customer": {
+      "fullName": "סוכן דניאל",
+      "email": "m0507123331@gmail.com",
+      "phone": "0507123331",
+      "address": "ת",
+      "city": "צ",
+      "zipCode": "12457"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6955017534dcf65fc0126811"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6953e6d3ed6301200267a238"
+        },
+        "name": "שולחן נירוסטה",
+        "quantity": 1,
+        "unitPrice": 1800,
+        "totalPrice": 1800,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767106131/vipo-products/image_14_ykemu5.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1800,
+      "discountPercent": 50,
+      "discountAmount": 900,
+      "totalAmount": 900
+    },
+    "totalAmount": 900,
+    "discountAmount": 900,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T10:56:53.604Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 270,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 30,
+    "commissionPercent": 30,
+    "createdAt": {
+      "$date": "2025-12-31T10:56:53.604Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T11:30:59.407Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  }
+]

@@ -32,7 +32,8 @@ export default function ProductsClient() {
   const loadProducts = async () => {
     setLoading(true);
     try {
-      const list = await refreshProductsFromApi();
+      // Admin panel - include inactive products
+      const list = await refreshProductsFromApi({ includeInactive: true });
       if (Array.isArray(list)) {
         setProducts(list);
       } else {
@@ -75,6 +76,38 @@ export default function ProductsClient() {
     } catch (error) {
       console.error('Delete error:', error);
       alert('שגיאה במחיקת המוצר');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleActive = async (productId, currentActive, productName) => {
+    const newStatus = !currentActive;
+    const actionText = newStatus ? 'להפעיל' : 'להשבית';
+    
+    if (!confirm(`האם אתה בטוח שברצונך ${actionText} את "${productName}"?`)) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/products/${productId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ active: newStatus }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data?.error || 'שגיאה בעדכון המוצר');
+        return;
+      }
+
+      alert(`המוצר ${newStatus ? 'הופעל' : 'הושבת'} בהצלחה!`);
+      await loadProducts();
+    } catch (error) {
+      console.error('Toggle active error:', error);
+      alert('שגיאה בעדכון המוצר');
     } finally {
       setLoading(false);
     }
@@ -337,6 +370,12 @@ export default function ProductsClient() {
                       className="px-6 py-4 text-right text-sm font-semibold"
                       style={{ color: '#1e3a8a' }}
                     >
+                      מק&#34;ט
+                    </th>
+                    <th
+                      className="px-6 py-4 text-right text-sm font-semibold"
+                      style={{ color: '#1e3a8a' }}
+                    >
                       שם המוצר
                     </th>
                     <th
@@ -350,6 +389,18 @@ export default function ProductsClient() {
                       style={{ color: '#1e3a8a' }}
                     >
                       קטגוריה
+                    </th>
+                    <th
+                      className="px-6 py-4 text-right text-sm font-semibold"
+                      style={{ color: '#1e3a8a' }}
+                    >
+                      מלאי
+                    </th>
+                    <th
+                      className="px-6 py-4 text-right text-sm font-semibold"
+                      style={{ color: '#1e3a8a' }}
+                    >
+                      סוג מכירה
                     </th>
                     <th
                       className="px-6 py-4 text-right text-sm font-semibold"
@@ -386,9 +437,34 @@ export default function ProductsClient() {
                           />
                         </td>
                       )}
+                      <td className="px-6 py-4 text-gray-600 text-sm font-mono">{product.sku || '—'}</td>
                       <td className="px-6 py-4 text-gray-900">{product.name}</td>
                       <td className="px-6 py-4 text-gray-900">₪{product.price}</td>
                       <td className="px-6 py-4 text-gray-600">{product.category}</td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            (product.stockCount ?? product.stock ?? 0) > 10
+                              ? 'bg-green-100 text-green-700'
+                              : (product.stockCount ?? product.stock ?? 0) > 0
+                              ? 'bg-amber-100 text-amber-700'
+                              : 'bg-red-100 text-red-700'
+                          }`}
+                        >
+                          {product.stockCount ?? product.stock ?? 0}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            product.purchaseType === 'group' || product.type === 'group'
+                              ? 'bg-orange-100 text-orange-700'
+                              : 'bg-blue-100 text-blue-700'
+                          }`}
+                        >
+                          {product.purchaseType === 'group' || product.type === 'group' ? 'קבוצתית' : 'רגילה'}
+                        </span>
+                      </td>
                       <td className="px-6 py-4">
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -411,6 +487,20 @@ export default function ProductsClient() {
                           >
                             ערוך
                           </Link>
+                          <button
+                            onClick={() => handleToggleActive(product._id, product.active, product.name)}
+                            disabled={loading}
+                            className="font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            style={{ color: loading ? '#9ca3af' : product.active ? '#f59e0b' : '#22c55e' }}
+                            onMouseEnter={(e) =>
+                              !loading && (e.currentTarget.style.color = product.active ? '#d97706' : '#16a34a')
+                            }
+                            onMouseLeave={(e) =>
+                              !loading && (e.currentTarget.style.color = product.active ? '#f59e0b' : '#22c55e')
+                            }
+                          >
+                            {product.active ? 'השבת' : 'הפעל'}
+                          </button>
                           <button
                             onClick={() => handleDelete(product._id, product.name)}
                             disabled={loading}
@@ -445,15 +535,40 @@ export default function ProductsClient() {
                       <p className="text-xs font-semibold text-gray-900 mb-1 line-clamp-2">
                         {product.name}
                       </p>
-                      <p className="text-xs text-gray-500">{product.category}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-gray-500">{product.category}</p>
+                        {product.sku && (
+                          <span className="text-xs text-gray-400 font-mono">#{product.sku}</span>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="mb-2">
+                    <div className="mb-2 flex flex-wrap items-center gap-1">
                       <span className="text-sm font-bold" style={{ color: '#1e3a8a' }}>
                         ₪{product.price}
                       </span>
                       <span
-                        className={`mr-2 text-xs px-2 py-0.5 rounded-full ${
+                        className={`text-xs px-2 py-0.5 rounded-full ${
+                          (product.stockCount ?? product.stock ?? 0) > 10
+                            ? 'bg-green-100 text-green-700'
+                            : (product.stockCount ?? product.stock ?? 0) > 0
+                            ? 'bg-amber-100 text-amber-700'
+                            : 'bg-red-100 text-red-700'
+                        }`}
+                      >
+                        מלאי: {product.stockCount ?? product.stock ?? 0}
+                      </span>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full ${
+                          product.purchaseType === 'group' || product.type === 'group'
+                            ? 'bg-orange-100 text-orange-700'
+                            : 'bg-blue-100 text-blue-700'
+                        }`}
+                      >
+                        {product.purchaseType === 'group' || product.type === 'group' ? 'קבוצתית' : 'רגילה'}
+                      </span>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full ${
                           product.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                         }`}
                       >
@@ -479,6 +594,18 @@ export default function ProductsClient() {
                         >
                           ערוך
                         </Link>
+                        <button
+                          onClick={() => handleToggleActive(product._id, product.active, product.name)}
+                          disabled={loading}
+                          className="flex-1 font-medium px-2 py-1.5 rounded text-xs"
+                          style={{
+                            background: loading ? '#e5e7eb' : 'white',
+                            border: `2px solid ${product.active ? '#f59e0b' : '#22c55e'}`,
+                            color: loading ? '#6b7280' : product.active ? '#f59e0b' : '#22c55e',
+                          }}
+                        >
+                          {product.active ? 'השבת' : 'הפעל'}
+                        </button>
                         <button
                           onClick={() => handleDelete(product._id, product.name)}
                           disabled={loading}
