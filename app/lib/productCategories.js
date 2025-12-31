@@ -1,6 +1,3 @@
-const STORAGE_KEY = 'vipo_product_categories';
-const DELETED_KEY = 'vipo_deleted_categories';
-
 export const DEFAULT_PRODUCT_CATEGORIES = [
   'אביזרי מחשב',
   'אודיו',
@@ -9,55 +6,10 @@ export const DEFAULT_PRODUCT_CATEGORIES = [
   'רכישה קבוצתית',
 ];
 
-// Track permanently deleted categories
-function getDeletedCategories() {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = window.localStorage.getItem(DELETED_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function addToDeleted(category) {
-  if (typeof window === 'undefined') return;
-  try {
-    const deleted = getDeletedCategories();
-    if (!deleted.includes(category)) {
-      deleted.push(category);
-      window.localStorage.setItem(DELETED_KEY, JSON.stringify(deleted));
-    }
-  } catch (error) {
-    console.error('Failed to save deleted category', error);
-  }
-}
-
-function removeFromDeleted(category) {
-  if (typeof window === 'undefined') return;
-  try {
-    const deleted = getDeletedCategories();
-    const updated = deleted.filter(c => c !== category);
-    window.localStorage.setItem(DELETED_KEY, JSON.stringify(updated));
-  } catch (error) {
-    console.error('Failed to update deleted categories', error);
-  }
-}
-
-function normalizeCategories(list = []) {
-  const seen = new Set();
-  const normalized = [];
-
-  list.forEach((item) => {
-    const value = typeof item === 'string' ? item.trim() : '';
-    if (value && !seen.has(value)) {
-      seen.add(value);
-      normalized.push(value);
-    }
-  });
-
-  return normalized;
-}
+// Cache for categories (to avoid too many API calls)
+let cachedCategories = null;
+let cacheTimestamp = 0;
+const CACHE_TTL = 30000; // 30 seconds
 
 function broadcastCategories(categories) {
   if (typeof window === 'undefined') {
@@ -71,71 +23,93 @@ function broadcastCategories(categories) {
   );
 }
 
-export function loadProductCategories() {
-  if (typeof window === 'undefined') {
-    return [...DEFAULT_PRODUCT_CATEGORIES];
-  }
-
+// Fetch categories from API
+export async function fetchCategoriesFromAPI() {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    const deleted = getDeletedCategories();
-    
-    if (!raw) {
-      // Return defaults minus deleted ones
-      return DEFAULT_PRODUCT_CATEGORIES.filter(c => !deleted.includes(c));
-    }
-
-    const parsed = JSON.parse(raw);
-    const normalized = normalizeCategories(parsed);
-    const merged = [...normalized];
-    
-    // Only add default categories that weren't deliberately deleted
-    DEFAULT_PRODUCT_CATEGORIES.forEach((category) => {
-      if (!merged.some((item) => item.toLowerCase() === category.toLowerCase()) && !deleted.includes(category)) {
-        merged.push(category);
-      }
-    });
-
-    const result = merged.length > 0 ? merged : DEFAULT_PRODUCT_CATEGORIES.filter(c => !deleted.includes(c));
-    return result.length > 0 ? result : ['כללי']; // Always have at least one category
+    const res = await fetch('/api/categories');
+    if (!res.ok) throw new Error('Failed to fetch');
+    const data = await res.json();
+    cachedCategories = data.categories || DEFAULT_PRODUCT_CATEGORIES;
+    cacheTimestamp = Date.now();
+    return cachedCategories;
   } catch (error) {
-    console.error('Failed to load product categories', error);
-    return [...DEFAULT_PRODUCT_CATEGORIES];
+    console.error('Failed to fetch categories from API:', error);
+    return cachedCategories || [...DEFAULT_PRODUCT_CATEGORIES];
   }
 }
 
-// Delete a category permanently (won't come back from defaults)
-export function deleteCategory(category, currentCategories) {
-  // Add to deleted list
-  addToDeleted(category);
+// Sync load (returns cached or defaults, triggers async fetch)
+export function loadProductCategories() {
+  // Return cached if fresh
+  if (cachedCategories && Date.now() - cacheTimestamp < CACHE_TTL) {
+    return [...cachedCategories];
+  }
   
-  // Remove from current categories and save
-  const updated = currentCategories.filter(c => c !== category);
-  return saveProductCategories(updated);
-}
-
-// Add a new category (and remove from deleted list if it was there)
-export function addCategory(category, currentCategories) {
-  removeFromDeleted(category);
-  const updated = [...currentCategories, category];
-  return saveProductCategories(updated);
-}
-
-export function saveProductCategories(categories) {
-  const normalized = normalizeCategories(categories);
-
+  // Trigger async fetch for next time
   if (typeof window !== 'undefined') {
-    try {
-      if (normalized.length > 0) {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
-      } else {
-        window.localStorage.removeItem(STORAGE_KEY);
-      }
-    } catch (error) {
-      console.error('Failed to save product categories', error);
-    }
+    fetchCategoriesFromAPI().then(cats => {
+      broadcastCategories(cats);
+    });
   }
+  
+  return cachedCategories ? [...cachedCategories] : [...DEFAULT_PRODUCT_CATEGORIES];
+}
 
-  broadcastCategories(normalized.length > 0 ? normalized : DEFAULT_PRODUCT_CATEGORIES);
-  return normalized.length > 0 ? normalized : [...DEFAULT_PRODUCT_CATEGORIES];
+// Delete a category via API
+export async function deleteCategory(category, currentCategories) {
+  try {
+    const res = await fetch(`/api/categories?name=${encodeURIComponent(category)}`, {
+      method: 'DELETE',
+    });
+    
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || 'Failed to delete');
+    }
+    
+    // Update cache
+    const updated = currentCategories.filter(c => c !== category);
+    cachedCategories = updated;
+    broadcastCategories(updated);
+    return updated;
+  } catch (error) {
+    console.error('Failed to delete category:', error);
+    // Fallback: remove locally
+    const updated = currentCategories.filter(c => c !== category);
+    return updated;
+  }
+}
+
+// Add a new category via API
+export async function addCategory(category, currentCategories) {
+  try {
+    const res = await fetch('/api/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: category }),
+    });
+    
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || 'Failed to add');
+    }
+    
+    // Update cache
+    const updated = [...currentCategories, category];
+    cachedCategories = updated;
+    broadcastCategories(updated);
+    return updated;
+  } catch (error) {
+    console.error('Failed to add category:', error);
+    // Fallback: add locally
+    const updated = [...currentCategories, category];
+    return updated;
+  }
+}
+
+// Save categories (for compatibility - now just broadcasts)
+export function saveProductCategories(categories) {
+  cachedCategories = categories;
+  broadcastCategories(categories);
+  return categories;
 }

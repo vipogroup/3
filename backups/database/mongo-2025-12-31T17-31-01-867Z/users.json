@@ -1,0 +1,163 @@
+[
+  {
+    "_id": {
+      "$oid": "690f366dc3841a52e00e5d63"
+    },
+    "fullName": "מנהל ראשי",
+    "email": "admin@vipo.local",
+    "phone": "0501234567",
+    "passwordHash": "$2a$10$aGMpU3gZdp9Neeyg0FOsQOKS5fZtZyREGhgCXjzWe7RebwLvwWJqi",
+    "role": "admin",
+    "isActive": false,
+    "isAgent": false,
+    "agentId": null,
+    "referralsCount": 0,
+    "referralCount": 0,
+    "commissionBalance": 0,
+    "totalSales": 0,
+    "createdAt": {
+      "$date": "2025-11-08T12:24:13.376Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-01T01:43:58.763Z"
+    },
+    "password": "$2a$10$N6bTS91A6uK8V7h2xZe8Luub2SQKVLG5yMLCR3nocGTxjcVRpENSG"
+  },
+  {
+    "_id": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "email": "m0587009938@gmail.com",
+    "phone": "0587009938",
+    "fullName": "System Admin",
+    "passwordHash": "$2a$10$6wc1L54jbVkaTiD5PMg84uqSvuONB/y7mh5XRlmWWHQWw0K3rprlO",
+    "role": "admin",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-15T14:51:21.929Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T03:29:57.204Z"
+    },
+    "referralsCount": 0,
+    "commissionBalance": 0,
+    "totalSales": 0,
+    "commissionOnHold": 0,
+    "image": "https://lh3.googleusercontent.com/a/ACg8ocKlEEr9IghCHms0u85l_TpnFhmxb0OfvSccjrNtfdlFusI--w=s96-c",
+    "provider": "google",
+    "providerAccountId": "107129372780600575444"
+  },
+  {
+    "_id": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "fullName": "סוכן דניאל",
+    "phone": "0507123331",
+    "email": "m0507123331@gmail.com",
+    "passwordHash": "$2a$10$YmWOs23pPfnzAIdCCu4Y5upGqx6YkUHTpQsYEm91qxodF5wAWc9.W",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-30T09:57:39.519Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:18:20.310Z"
+    },
+    "commissionPercent": 10,
+    "couponCode": "svkn-dnyal-001",
+    "couponSequence": 1,
+    "couponSlug": "svkn-dnyal",
+    "couponStatus": "active",
+    "discountPercent": 50,
+    "commissionBalance": 59812,
+    "totalSales": 14
+  },
+  {
+    "_id": {
+      "$oid": "6953a2bf0e80c969cf31f3d8"
+    },
+    "fullName": "מרים חדש",
+    "phone": "0533858881",
+    "email": "m0533858881@gmail.com",
+    "passwordHash": "$2a$10$qMtSOD0DGFZwwcELT68QCOpJHWv9d8Xn7jkGdU.OO0ZuJF/rc7fCe",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-30T10:00:31.884Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T10:00:31.884Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69543c8f71541418cca8864b"
+    },
+    "fullName": "ישראל אלקיים",
+    "phone": "0556693802",
+    "email": "israelelkayam20@gmail.com",
+    "passwordHash": "$2a$10$She1UhicV7S8Miq40gQ3teLUhjEnef09Kx2TCV4rEPGWEZGXCWVhO",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-30T20:56:47.069Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T20:58:43.465Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "yshral-alkyym-001",
+    "couponSequence": 1,
+    "couponSlug": "yshral-alkyym",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "69543dc171541418cca8867e"
+    },
+    "fullName": "רחל מ",
+    "phone": "0502226848",
+    "email": "rachelmaimoni4791@gmail.com",
+    "passwordHash": "$2a$10$UwUONGL9CLte9d6LsBHyGeDEKxM9Cu9Acrmh5tPIBXbKGCbepUnQW",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-30T21:01:53.265Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T21:02:43.927Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "rchl-m-001",
+    "couponSequence": 1,
+    "couponSlug": "rchl-m",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "69551f84310d08ff29cd0e72"
+    },
+    "fullName": "מיכאל מדר",
+    "phone": "0584151451",
+    "email": "mmm88697@gmail.com",
+    "passwordHash": "$2a$10$8.oGqV5W6gkvbBzFFj/wpuotcC1drVurl2MNrQ3T7JI8Yh.pojJZ2",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-31T13:05:08.711Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T16:08:52.613Z"
+    },
+    "commissionPercent": 30,
+    "couponCode": "mykal-mdr-001",
+    "couponSequence": 1,
+    "couponSlug": "mykal-mdr",
+    "couponStatus": "active",
+    "discountPercent": 50,
+    "commissionBalance": 23280,
+    "totalSales": 4
+  }
+]

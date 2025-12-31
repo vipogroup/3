@@ -53,6 +53,7 @@ const ProductSchema = new mongoose.Schema(
 
     // Stock management
     inStock: { type: Boolean, default: true },
+    stockCount: { type: Number, default: 0 },
 
     // UX metadata
     rating: { 

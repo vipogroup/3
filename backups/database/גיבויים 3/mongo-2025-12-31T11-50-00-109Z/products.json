@@ -1,0 +1,178 @@
+[
+  {
+    "_id": {
+      "$oid": "6952ab5e886edc0a8cf3718b"
+    },
+    "name": "חיחיחי",
+    "description": "חיחיח",
+    "fullDescription": "חיחליח",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767025470/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_jep2nq.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767025470/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_jep2nq.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767025470/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_jep2nq.png"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767025486/vipo-products/Sweet_Hanukkah_Joy_ixgton.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-29T16:25:02.773Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-29T16:25:02.773Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6953ce492f7ee1c6a2de9d42"
+    },
+    "name": "כורסת עיסוי",
+    "description": "עכיכ",
+    "fullDescription": "כעיכע",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 19999.99,
+    "originalPrice": 0,
+    "commission": 1999.9990000000003,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767099958/vipo-products/Untitled_design_20250729_224819_0000_zj4ek4.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767099958/vipo-products/Untitled_design_20250729_224819_0000_zj4ek4.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767099958/vipo-products/Untitled_design_20250729_224819_0000_zj4ek4.png"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 10,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-30T13:06:17.481Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T13:06:17.481Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6953e6d3ed6301200267a238"
+    },
+    "name": "שולחן נירוסטה",
+    "description": "עי",
+    "fullDescription": "כייכ",
+    "category": "נירוסטה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 1800,
+    "originalPrice": 0,
+    "commission": 180,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": {
+      "$date": "2026-01-29T14:50:59.091Z"
+    },
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 35,
+    "groupCurrentQuantity": 60,
+    "groupPurchaseDetails": {
+      "closingDays": 30,
+      "shippingDays": 60,
+      "minQuantity": 35,
+      "currentQuantity": 60,
+      "totalDays": 90
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767106131/vipo-products/image_14_ykemu5.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767106131/vipo-products/image_14_ykemu5.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767106131/vipo-products/image_14_ykemu5.png"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767106237/vipo-products/Sweet_Hanukkah_Joy_v4ivye.mp4",
+    "imagePath": "",
+    "inStock": false,
+    "rating": 4.5,
+    "reviews": 20,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-30T14:50:59.257Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T14:50:59.257Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69542ec439283137236b94ea"
+    },
+    "name": "עיע",
+    "description": "יעחיעיע",
+    "fullDescription": "יעחיח",
+    "category": "אודיו",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 1999.99,
+    "originalPrice": 0,
+    "commission": 199.99900000000002,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767124582/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_g149vl.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767124582/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_g149vl.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767124582/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_g149vl.png"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767124644/vipo-products/Sweet_Hanukkah_Joy_yxgj39.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "rating": 4.5,
+    "reviews": 20,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-30T19:57:56.600Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-30T19:57:56.600Z"
+    },
+    "__v": 0
+  }
+]

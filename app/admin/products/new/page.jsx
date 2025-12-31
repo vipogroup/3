@@ -9,6 +9,7 @@ import {
   saveProductCategories,
   deleteCategory,
   addCategory,
+  fetchCategoriesFromAPI,
   DEFAULT_PRODUCT_CATEGORIES,
 } from '@/app/lib/productCategories';
 import MultiMediaUpload from '@/app/components/MultiMediaUpload';
@@ -19,6 +20,7 @@ export default function NewProductPage() {
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
+    sku: '',
     name: '',
     description: '',
     fullDescription: '',
@@ -55,8 +57,10 @@ export default function NewProductPage() {
   const [editingCategories, setEditingCategories] = useState(false);
 
   useEffect(() => {
-    const initial = loadProductCategories();
-    setCategories(initial);
+    // Load categories from API
+    fetchCategoriesFromAPI().then(cats => {
+      setCategories(cats);
+    });
 
     const handler = (event) => {
       const incoming = event?.detail?.categories;
@@ -101,29 +105,29 @@ export default function NewProductPage() {
     },
     []);
 
-  const addCategory = () => {
+  const handleAddCategory = async () => {
     const trimmed = newCategory.trim();
     if (!trimmed) {
       alert('נא להזין שם קטגוריה');
       return;
     }
 
-    setCategories((prev) => {
-      if (prev.some((cat) => cat.toLowerCase() === trimmed.toLowerCase())) {
-        setFormData((prevForm) => ({ ...prevForm, category: trimmed }));
-        persistCategories(prev);
-        return prev;
-      }
-      const updated = [...prev, trimmed];
-      persistCategories(updated);
-      setFormData((prevForm) => ({ ...prevForm, category: trimmed }));
-      return updated;
-    });
+    if (categories.some((cat) => cat.toLowerCase() === trimmed.toLowerCase())) {
+      setFormData((prev) => ({ ...prev, category: trimmed }));
+      setNewCategory('');
+      setShowAddCategory(false);
+      return;
+    }
+
+    // Add category via API
+    const updated = await addCategory(trimmed, categories);
+    setCategories(updated);
+    setFormData((prev) => ({ ...prev, category: trimmed }));
     setNewCategory('');
     setShowAddCategory(false);
   };
 
-  const removeCategory = (name) => {
+  const removeCategory = async (name) => {
     if (!name) {
       return;
     }
@@ -136,8 +140,8 @@ export default function NewProductPage() {
       return;
     }
 
-    // Use deleteCategory for permanent deletion
-    const updated = deleteCategory(name, categories);
+    // Delete category via API
+    const updated = await deleteCategory(name, categories);
     setCategories(updated);
     setFormData((prevForm) => ({
       ...prevForm,
@@ -192,6 +196,7 @@ export default function NewProductPage() {
           : null;
 
       const productData = {
+        sku: formData.sku.trim(),
         name: formData.name.trim(),
         description: formData.description.trim(),
         fullDescription: formData.fullDescription.trim(),
@@ -297,7 +302,19 @@ export default function NewProductPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">מידע בסיסי</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
+                <div>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">מק״ט (SKU)</label>
+                  <input
+                    type="text"
+                    name="sku"
+                    value={formData.sku}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-cyan-500 transition-all font-mono"
+                    placeholder="לדוגמה: PRD-001"
+                  />
+                </div>
+
+                <div>
                   <label className="block text-sm font-bold text-gray-900 mb-2">שם המוצר *</label>
                   <input
                     type="text"
@@ -425,7 +442,7 @@ export default function NewProductPage() {
                         />
                         <button
                           type="button"
-                          onClick={addCategory}
+                          onClick={handleAddCategory}
                           className="px-4 py-2 text-white rounded-lg transition-all"
                           style={{
                             background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',

@@ -182,7 +182,7 @@ export default function UserHeader() {
   }, [showAccountMenu]);
 
   const navItems = useMemo(() => {
-    return [{ href: '/products', label: 'מוצרים', icon: 'products' }];
+    return [{ href: '/shop', label: 'מוצרים', icon: 'products' }];
   }, []);
 
   return (

@@ -410,10 +410,18 @@ export async function GET(request) {
     await connectMongo();
     const { searchParams } = new URL(request.url);
     const catalogSlug = searchParams.get('catalog');
+    const includeInactive = searchParams.get('includeInactive') === 'true';
     const query = {};
 
     if (catalogSlug) {
       query.catalogSlug = catalogSlug;
+    }
+
+    // By default, only return active products with stock (for customers)
+    // Admin panel can pass includeInactive=true to see all products
+    if (!includeInactive) {
+      query.active = true;
+      query.stockCount = { $gt: 0 };
     }
 
     const products = await Product.find(query)
@@ -478,6 +486,7 @@ export async function POST(request) {
 
     const product = await Product.create({
       legacyId: legacyId ?? undefined,
+      sku: typeof payload.sku === 'string' ? payload.sku.trim() : '',
       name: payload.name.trim(),
       description: payload.description,
       fullDescription: payload.fullDescription ?? payload.description ?? '',

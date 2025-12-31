@@ -35,6 +35,7 @@ export async function PUT(req, { params }) {
     const body = await req.json();
     const update = {};
 
+    if (typeof body.sku === 'string') update.sku = body.sku.trim();
     if (typeof body.name === 'string') update.name = body.name.trim();
     if (typeof body.description === 'string') update.description = body.description.trim();
     if (typeof body.fullDescription === 'string')
@@ -57,6 +58,12 @@ export async function PUT(req, { params }) {
     if (body.stockCount !== undefined) {
       const stock = Number(body.stockCount);
       update.stockCount = Number.isNaN(stock) ? 0 : stock;
+      
+      // If stock is updated to > 0, automatically show product and mark as in stock
+      if (update.stockCount > 0) {
+        update.active = true;
+        update.inStock = true;
+      }
     }
     if (body.rating !== undefined) {
       const rating = Number(body.rating);

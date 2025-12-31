@@ -1,0 +1,64 @@
+[
+  {
+    "_id": {
+      "$oid": "695511185b739c1d746e4206"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69550f48dedc5e2120cfe30e"
+        },
+        "name": "מכונת לייזר משולבת",
+        "quantity": 1,
+        "unitPrice": 140000,
+        "totalPrice": 140000,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767182076/vipo-products/Untitled_design_20250729_224819_0000_qyszxq.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "group"
+      }
+    ],
+    "totals": {
+      "subtotal": 140000,
+      "discountPercent": 50,
+      "discountAmount": 70000,
+      "totalAmount": 70000
+    },
+    "totalAmount": 70000,
+    "discountAmount": 70000,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "group",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-04-10T12:03:36.458Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 7000,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2025-12-31T12:03:36.458Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T12:05:30.798Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  }
+]

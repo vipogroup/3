@@ -1,0 +1,250 @@
+[
+  {
+    "_id": {
+      "$oid": "695511185b739c1d746e4206"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69550f48dedc5e2120cfe30e"
+        },
+        "name": "מכונת לייזר משולבת",
+        "quantity": 1,
+        "unitPrice": 140000,
+        "totalPrice": 140000,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767182076/vipo-products/Untitled_design_20250729_224819_0000_qyszxq.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "group"
+      }
+    ],
+    "totals": {
+      "subtotal": 140000,
+      "discountPercent": 50,
+      "discountAmount": 70000,
+      "totalAmount": 70000
+    },
+    "totalAmount": 70000,
+    "discountAmount": 70000,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "group",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-04-10T12:03:36.458Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 7000,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2025-12-31T12:03:36.458Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T12:05:30.798Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "695523ac310d08ff29cd0ea3"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6953ce492f7ee1c6a2de9d42"
+        },
+        "name": "כורסת עיסוי",
+        "quantity": 1,
+        "unitPrice": 19999.99,
+        "totalPrice": 19999.99,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767099958/vipo-products/Untitled_design_20250729_224819_0000_zj4ek4.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 19999.99,
+      "discountPercent": 10,
+      "discountAmount": 2000,
+      "totalAmount": 17999.99
+    },
+    "totalAmount": 17999.99,
+    "discountAmount": 2000,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T13:22:52.552Z"
+    },
+    "refSource": "mykal-mdr-001",
+    "refAgentId": {
+      "$oid": "69551f84310d08ff29cd0e72"
+    },
+    "commissionAmount": 2160,
+    "appliedCouponCode": "mykal-mdr-001",
+    "agentId": {
+      "$oid": "69551f84310d08ff29cd0e72"
+    },
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": {
+      "$date": "2025-12-31T13:22:52.552Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T13:43:29.343Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6955251f53b41f7e4f6f7059"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69550f48dedc5e2120cfe30e"
+        },
+        "name": "מכונת לייזר משולבת",
+        "quantity": 1,
+        "unitPrice": 140000,
+        "totalPrice": 140000,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767182076/vipo-products/Untitled_design_20250729_224819_0000_qyszxq.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "group"
+      }
+    ],
+    "totals": {
+      "subtotal": 140000,
+      "discountPercent": 10,
+      "discountAmount": 14000,
+      "totalAmount": 126000
+    },
+    "totalAmount": 126000,
+    "discountAmount": 14000,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "group",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-04-10T13:29:03.450Z"
+    },
+    "refSource": "mykal-mdr-001",
+    "refAgentId": {
+      "$oid": "69551f84310d08ff29cd0e72"
+    },
+    "commissionAmount": 15120,
+    "appliedCouponCode": "mykal-mdr-001",
+    "agentId": {
+      "$oid": "69551f84310d08ff29cd0e72"
+    },
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": {
+      "$date": "2025-12-31T13:29:03.450Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T13:43:26.899Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6955281b990f34d9f5ce21fd"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6953ce492f7ee1c6a2de9d42"
+        },
+        "name": "כורסת עיסוי",
+        "quantity": 1,
+        "unitPrice": 19999.99,
+        "totalPrice": 19999.99,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767099958/vipo-products/Untitled_design_20250729_224819_0000_zj4ek4.png",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 19999.99,
+      "discountPercent": 50,
+      "discountAmount": 10000,
+      "totalAmount": 9999.990000000002
+    },
+    "totalAmount": 9999.990000000002,
+    "discountAmount": 10000,
+    "createdBy": "69551f84310d08ff29cd0e72",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T13:41:47.378Z"
+    },
+    "refSource": "mykal-mdr-001",
+    "refAgentId": {
+      "$oid": "69551f84310d08ff29cd0e72"
+    },
+    "commissionAmount": 3000,
+    "appliedCouponCode": "mykal-mdr-001",
+    "agentId": {
+      "$oid": "69551f84310d08ff29cd0e72"
+    },
+    "couponCommissionPercent": 30,
+    "commissionPercent": 30,
+    "createdAt": {
+      "$date": "2025-12-31T13:41:47.378Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T13:43:24.595Z"
+    },
+    "customer": {
+      "fullName": "מיכאל מדר",
+      "email": "mmm88697@gmail.com",
+      "phone": "0584151451",
+      "address": "ממממ",
+      "city": "ממממ",
+      "zipCode": "192929"
+    },
+    "paymentMethod": "credit_card"
+  }
+]
