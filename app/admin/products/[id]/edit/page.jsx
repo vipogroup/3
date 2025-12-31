@@ -43,14 +43,17 @@ export default function EditProductPage() {
       currentQuantity: '0',
     },
     features: ['', '', '', ''],
-    specs: {
-      'מפרט 1': '',
-      'מפרט 2': '',
-      'מפרט 3': '',
-      'מפרט 4': '',
-      'מפרט 5': '',
-      'מפרט 6': '',
-    },
+    specs: '',
+    suitableFor: `מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.
+מושלם לשימוש יומיומי בבית או במשרד.
+מתאים גם כמתנה מקורית ושימושית.`,
+    whyChooseUs: `איכות מעולה במחיר הוגן
+משלוח מהיר ואמין לכל הארץ
+שירות לקוחות זמין ומקצועי
+אחריות מלאה על כל המוצרים`,
+    warranty: `אחריות יצרן מלאה
+החלפה או החזר כספי תוך 14 יום
+תמיכה טכנית זמינה בטלפון ובמייל`,
   });
   const [categories, setCategories] = useState(DEFAULT_PRODUCT_CATEGORIES);
   const [showAddCategory, setShowAddCategory] = useState(false);
@@ -151,17 +154,17 @@ export default function EditProductPage() {
             Array.isArray(loadedProduct.features) && loadedProduct.features.length
               ? loadedProduct.features
               : ['', '', '', ''],
-          specs:
-            loadedProduct.specs && Object.keys(loadedProduct.specs).length
-              ? loadedProduct.specs
-              : {
-                  'מפרט 1': '',
-                  'מפרט 2': '',
-                  'מפרט 3': '',
-                  'מפרט 4': '',
-                  'מפרט 5': '',
-                  'מפרט 6': '',
-                },
+          specs: loadedProduct.specs || '',
+          suitableFor: loadedProduct.suitableFor || `מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.
+מושלם לשימוש יומיומי בבית או במשרד.
+מתאים גם כמתנה מקורית ושימושית.`,
+          whyChooseUs: loadedProduct.whyChooseUs || `איכות מעולה במחיר הוגן
+משלוח מהיר ואמין לכל הארץ
+שירות לקוחות זמין ומקצועי
+אחריות מלאה על כל המוצרים`,
+          warranty: loadedProduct.warranty || `אחריות יצרן מלאה
+החלפה או החזר כספי תוך 14 יום
+תמיכה טכנית זמינה בטלפון ובמייל`,
         });
       } catch (err) {
         console.error('Failed to load product', err);
@@ -198,12 +201,6 @@ export default function EditProductPage() {
     setFormData((prev) => ({ ...prev, features: newFeatures }));
   };
 
-  const handleSpecChange = (key, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      specs: { ...prev.specs, [key]: value },
-    }));
-  };
 
   const handleAddCategory = async () => {
     const trimmed = newCategory.trim();
@@ -290,9 +287,10 @@ export default function EditProductPage() {
               })()
             : null,
         features: formData.features.filter((f) => f.trim() !== ''),
-        specs: Object.fromEntries(
-          Object.entries(formData.specs).filter(([_, v]) => (v ?? '').toString().trim() !== ''),
-        ),
+        specs: formData.specs || '',
+        suitableFor: formData.suitableFor || '',
+        whyChooseUs: formData.whyChooseUs || '',
+        warranty: formData.warranty || '',
       };
 
       if (payload.purchaseType === 'group' && payload.groupPurchaseDetails?.closingDays) {
@@ -776,20 +774,53 @@ export default function EditProductPage() {
             {/* Specs */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">מפרט טכני</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.entries(formData.specs).map(([key, value]) => (
-                  <div key={key}>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">{key}</label>
-                    <input
-                      type="text"
-                      value={value}
-                      onChange={(e) => handleSpecChange(key, e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
-                      placeholder={`ערך עבור ${key}`}
-                    />
-                  </div>
-                ))}
-              </div>
+              <textarea
+                name="specs"
+                value={formData.specs}
+                onChange={handleChange}
+                rows={4}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
+                placeholder="הזן מפרט טכני מפורט..."
+              />
+            </div>
+
+            {/* Suitable For */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">למי זה מתאים?</h2>
+              <textarea
+                name="suitableFor"
+                value={formData.suitableFor}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
+                placeholder="תאר למי המוצר מתאים..."
+              />
+            </div>
+
+            {/* Why Choose Us */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">למה לבחור בנו?</h2>
+              <textarea
+                name="whyChooseUs"
+                value={formData.whyChooseUs}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
+                placeholder="הסבר למה לבחור במוצר שלנו..."
+              />
+            </div>
+
+            {/* Warranty */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">אחריות</h2>
+              <textarea
+                name="warranty"
+                value={formData.warranty}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
+                placeholder="פרטי אחריות..."
+              />
             </div>
 
             {/* Rating & Reviews */}

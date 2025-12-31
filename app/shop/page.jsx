@@ -64,8 +64,8 @@ export default function ShopPage() {
             <div 
               className="h-1 w-24 mx-auto mt-1.5 rounded-full"
               style={{ 
-                background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)',
-                boxShadow: '0 6px 18px rgba(8, 145, 178, 0.25)',
+                background: 'linear-gradient(90deg, rgba(255,255,255,0.4) 0%, #ffffff 50%, rgba(255,255,255,0.4) 100%)',
+                boxShadow: '0 0 15px rgba(255, 255, 255, 0.5)',
               }}
             />
           </div>
