@@ -561,7 +561,7 @@ export default function ProductPage() {
           )}
 
           {/* Specs Section */}
-          {product.specs && (
+          {product.specs && (typeof product.specs === 'string' ? product.specs.trim() : Object.values(product.specs).some(v => v && v.trim())) && (
             <div className="bg-white mb-2">
               <button
                 onClick={() => setShowSpecs(!showSpecs)}
@@ -596,9 +596,20 @@ export default function ProductPage() {
                       backgroundClip: 'padding-box, border-box',
                     }}
                   >
-                    <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#374151' }}>
-                      {product.specs}
-                    </p>
+                    {typeof product.specs === 'string' ? (
+                      <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#374151' }}>
+                        {product.specs}
+                      </p>
+                    ) : (
+                      <div className="space-y-2">
+                        {Object.entries(product.specs).filter(([_, value]) => value && value.trim()).map(([key, value]) => (
+                          <div key={key} className="flex justify-between text-sm" style={{ color: '#374151' }}>
+                            <span className="font-medium">{key.replace('spec', 'מפרט ')}</span>
+                            <span>{value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
