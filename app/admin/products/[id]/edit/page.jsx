@@ -54,6 +54,7 @@ export default function EditProductPage() {
     warranty: `אחריות יצרן מלאה
 החלפה או החזר כספי תוך 14 יום
 תמיכה טכנית זמינה בטלפון ובמייל`,
+    customFields: [],
   });
   const [categories, setCategories] = useState(DEFAULT_PRODUCT_CATEGORIES);
   const [showAddCategory, setShowAddCategory] = useState(false);
@@ -165,6 +166,7 @@ export default function EditProductPage() {
           warranty: loadedProduct.warranty || `אחריות יצרן מלאה
 החלפה או החזר כספי תוך 14 יום
 תמיכה טכנית זמינה בטלפון ובמייל`,
+          customFields: loadedProduct.customFields || [],
         });
       } catch (err) {
         console.error('Failed to load product', err);
@@ -291,6 +293,7 @@ export default function EditProductPage() {
         suitableFor: formData.suitableFor || '',
         whyChooseUs: formData.whyChooseUs || '',
         warranty: formData.warranty || '',
+        customFields: formData.customFields.filter(f => f.title.trim() || f.content.trim()),
       };
 
       if (payload.purchaseType === 'group' && payload.groupPurchaseDetails?.closingDays) {
@@ -821,6 +824,76 @@ export default function EditProductPage() {
                 className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
                 placeholder="פרטי אחריות..."
               />
+            </div>
+
+            {/* Custom Fields */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-gray-900">שדות מותאמים אישית</h2>
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({
+                    ...prev,
+                    customFields: [...prev.customFields, { title: '', content: '' }]
+                  }))}
+                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl hover:opacity-90 transition-all flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                  הוסף שדה חדש
+                </button>
+              </div>
+              
+              {formData.customFields.length === 0 ? (
+                <p className="text-gray-500 text-center py-4 border-2 border-dashed border-gray-300 rounded-xl">
+                  אין שדות מותאמים אישית. לחץ על הכפתור כדי להוסיף.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {formData.customFields.map((field, index) => (
+                    <div key={index} className="p-4 border-2 border-gray-200 rounded-xl bg-gray-50">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-sm font-bold text-gray-600">שדה #{index + 1}</span>
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({
+                            ...prev,
+                            customFields: prev.customFields.filter((_, i) => i !== index)
+                          }))}
+                          className="text-red-500 hover:text-red-700 transition-colors"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={field.title}
+                        onChange={(e) => {
+                          const newFields = [...formData.customFields];
+                          newFields[index].title = e.target.value;
+                          setFormData(prev => ({ ...prev, customFields: newFields }));
+                        }}
+                        placeholder="כותרת השדה (לדוגמה: הוראות שימוש)"
+                        className="w-full px-4 py-2 mb-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
+                      />
+                      <textarea
+                        value={field.content}
+                        onChange={(e) => {
+                          const newFields = [...formData.customFields];
+                          newFields[index].content = e.target.value;
+                          setFormData(prev => ({ ...prev, customFields: newFields }));
+                        }}
+                        rows={3}
+                        placeholder="תוכן השדה..."
+                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Rating & Reviews */}

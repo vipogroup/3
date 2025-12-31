@@ -30,6 +30,7 @@ export default function ProductPage() {
   const [showSuitableFor, setShowSuitableFor] = useState(false);
   const [showWhyChooseUs, setShowWhyChooseUs] = useState(false);
   const [showWarranty, setShowWarranty] = useState(false);
+  const [customFieldsOpen, setCustomFieldsOpen] = useState({});
   const { addItem } = useCartContext();
   const { settings: themeSettings } = useTheme();
 
@@ -750,6 +751,57 @@ export default function ProductPage() {
               )}
             </div>
           )}
+
+          {/* Custom Fields Sections */}
+          {product.customFields && product.customFields.length > 0 && product.customFields.map((field, index) => (
+            field.title && field.content && (
+              <div key={index} className="bg-white mb-2">
+                <button
+                  onClick={() => {
+                    const newState = { ...customFieldsOpen };
+                    newState[index] = !newState[index];
+                    setCustomFieldsOpen(newState);
+                  }}
+                  className="w-full px-4 py-4 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="w-10 h-10 rounded-xl flex items-center justify-center"
+                      style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
+                    >
+                      <svg className="w-5 h-5" style={{ color: '#1e3a8a' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-gray-900">{field.title}</div>
+                    </div>
+                  </div>
+                  <svg className={`w-5 h-5 text-gray-400 transition-transform ${customFieldsOpen[index] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                {customFieldsOpen[index] && (
+                  <div className="px-4 pb-4">
+                    <div 
+                      className="rounded-xl p-4"
+                      style={{
+                        border: '1px solid transparent',
+                        backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, rgba(30, 58, 138, 0.2), rgba(8, 145, 178, 0.2))',
+                        backgroundOrigin: 'border-box',
+                        backgroundClip: 'padding-box, border-box',
+                      }}
+                    >
+                      <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#374151' }}>
+                        {field.content}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          ))}
 
           {/* Description Section */}
           {product.fullDescription && (
