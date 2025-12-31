@@ -88,6 +88,10 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    customFields: [{
+      title: { type: String, default: '' },
+      content: { type: String, default: '' }
+    }],
 
     active: { 
       type: Boolean, 
