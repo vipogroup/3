@@ -31,6 +31,9 @@ export default function ProductPage() {
   const [showWhyChooseUs, setShowWhyChooseUs] = useState(false);
   const [showWarranty, setShowWarranty] = useState(false);
   const [customFieldsOpen, setCustomFieldsOpen] = useState({});
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const [liveNotification, setLiveNotification] = useState(null);
+  const [viewersCount, setViewersCount] = useState(0);
   const { addItem } = useCartContext();
   const { settings: themeSettings } = useTheme();
 
@@ -155,6 +158,64 @@ export default function ProductPage() {
     return () => clearInterval(interval);
   }, [product]);
 
+  // Sticky Bar - show when scrolling past action buttons
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setShowStickyBar(scrollY > 600);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Social Proof - Simulated viewers count
+  useEffect(() => {
+    if (!product || product.purchaseType !== 'group') return;
+    
+    // Initial viewers (random between 5-15)
+    setViewersCount(Math.floor(Math.random() * 11) + 5);
+    
+    // Update viewers every 30-60 seconds
+    const interval = setInterval(() => {
+      setViewersCount(prev => {
+        const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+        return Math.max(3, Math.min(20, prev + change));
+      });
+    }, 30000 + Math.random() * 30000);
+    
+    return () => clearInterval(interval);
+  }, [product]);
+
+  // Social Proof - Live notifications
+  useEffect(() => {
+    if (!product || product.purchaseType !== 'group') return;
+    
+    const names = ['דוד', 'שרה', 'משה', 'רחל', 'יוסי', 'מיכל', 'אבי', 'נועה', 'עומר', 'תמר'];
+    const cities = ['תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'רמת גן', 'פתח תקווה', 'ראשון לציון', 'נתניה'];
+    
+    const showNotification = () => {
+      const name = names[Math.floor(Math.random() * names.length)];
+      const city = cities[Math.floor(Math.random() * cities.length)];
+      const minutes = Math.floor(Math.random() * 10) + 1;
+      
+      setLiveNotification({ name, city, minutes });
+      
+      // Hide after 4 seconds
+      setTimeout(() => setLiveNotification(null), 4000);
+    };
+    
+    // First notification after 5-10 seconds
+    const firstTimeout = setTimeout(showNotification, 5000 + Math.random() * 5000);
+    
+    // Then every 20-40 seconds
+    const interval = setInterval(showNotification, 20000 + Math.random() * 20000);
+    
+    return () => {
+      clearTimeout(firstTimeout);
+      clearInterval(interval);
+    };
+  }, [product]);
+
   if (loadingProduct) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
@@ -247,7 +308,7 @@ export default function ProductPage() {
       
       {/* Urgency Banner for Group Purchase - TOP OF PAGE */}
       {product.purchaseType === 'group' && product.groupPurchaseDetails && groupTimeLeft && !groupTimeLeft.expired && (
-        <div className="sticky top-0 z-40" style={{ background: 'linear-gradient(90deg, #dc2626 0%, #ea580c 50%, #f97316 100%)' }}>
+        <div className="sticky top-0 z-40" style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}>
           <div className="max-w-lg mx-auto px-4 py-2">
             <div className="flex items-center justify-between text-white">
               <div className="flex items-center gap-2">
@@ -304,7 +365,7 @@ export default function ProductPage() {
             
             {/* Discount Badge */}
             {hasDiscount && (
-              <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg">
+              <div className="absolute top-3 left-3 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #f97316 100%)' }}>
                 {discountPercent}% הנחה
               </div>
             )}
@@ -348,7 +409,7 @@ export default function ProductPage() {
           )}
           
           {/* Product Name */}
-          <h1 className="text-xl font-bold text-gray-900 leading-snug mb-2">
+          <h1 className="text-xl font-bold leading-snug mb-2" style={{ color: '#1e3a8a' }}>
             {product.name}
           </h1>
           
@@ -385,49 +446,150 @@ export default function ProductPage() {
 
           {/* Group Purchase Card */}
           {product.purchaseType === 'group' && product.groupPurchaseDetails && (
-            <div className="bg-gradient-to-br from-orange-50 to-red-50 border border-orange-200 rounded-xl p-4 mb-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" /></svg>
-                  </div>
-                  <span className="font-bold text-gray-800">רכישה קבוצתית</span>
+            <div 
+              className="rounded-xl p-4 mb-4"
+              style={{
+                background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(251, 191, 36, 0.1) 100%)',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+              }}
+            >
+              {/* Header */}
+              <div className="flex items-center gap-2 mb-4">
+                <div 
+                  className="w-10 h-10 rounded-full text-white flex items-center justify-center shadow-md"
+                  style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)' }}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" /></svg>
                 </div>
-                <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-full font-bold">
-                  {Math.max(0, product.groupPurchaseDetails.minQuantity - (product.groupPurchaseDetails.currentQuantity || 0))} מקומות נותרו
-                </span>
-              </div>
-              
-              {/* Progress */}
-              <div className="mb-3">
-                <div className="flex justify-between text-sm mb-1.5">
-                  <span className="text-gray-600">התקדמות הקבוצה</span>
-                  <span className="font-bold text-orange-600">
-                    {product.groupPurchaseDetails.currentQuantity || 0} / {product.groupPurchaseDetails.minQuantity}
-                  </span>
-                </div>
-                <div className="h-2.5 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-500"
-                    style={{ 
-                      width: `${Math.min(100, ((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) * 100)}%`,
-                      background: 'linear-gradient(90deg, #f97316, #ea580c)'
-                    }}
-                  />
+                <div>
+                  <span className="font-bold text-lg" style={{ color: '#d97706' }}>רכישה קבוצתית</span>
+                  <p className="text-xs text-gray-500">הצטרפו לקבוצה וחסכו!</p>
                 </div>
               </div>
 
-              {/* Info Grid */}
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="bg-white rounded-lg p-2.5 text-center">
-                  <div className="text-gray-500 text-xs mb-0.5">זמן אספקה</div>
+              {/* Stats Grid - 3 columns */}
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {/* נרשמו - משתנה לכחול כשעוברים 50% */}
+                <div 
+                  className="bg-white rounded-xl p-3 text-center shadow-sm" 
+                  style={{ 
+                    border: `1px solid ${((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) >= 0.5 
+                      ? 'rgba(8, 145, 178, 0.3)' 
+                      : 'rgba(245, 158, 11, 0.2)'}` 
+                  }}
+                >
+                  <div 
+                    className="w-8 h-8 mx-auto mb-1.5 rounded-full flex items-center justify-center" 
+                    style={{ 
+                      background: ((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) >= 0.5 
+                        ? 'rgba(8, 145, 178, 0.15)' 
+                        : 'rgba(245, 158, 11, 0.15)' 
+                    }}
+                  >
+                    <svg 
+                      className="w-4 h-4" 
+                      style={{ color: ((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) >= 0.5 ? '#0891b2' : '#f59e0b' }} 
+                      fill="currentColor" 
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                    </svg>
+                  </div>
+                  <div 
+                    className="text-2xl font-bold" 
+                    style={{ color: ((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) >= 0.5 ? '#1e3a8a' : '#d97706' }}
+                  >
+                    {product.groupPurchaseDetails.currentQuantity || 0}
+                  </div>
+                  <div className="text-xs text-gray-500 font-medium">נרשמו</div>
+                </div>
+
+                {/* נותרו */}
+                <div className="bg-white rounded-xl p-3 text-center shadow-sm" style={{ border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                  <div className="w-8 h-8 mx-auto mb-1.5 rounded-full flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 0.15)' }}>
+                    <svg className="w-4 h-4" style={{ color: '#f59e0b' }} fill="currentColor" viewBox="0 0 20 24">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 11.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="text-2xl font-bold" style={{ color: '#d97706' }}>
+                    {Math.max(0, product.groupPurchaseDetails.minQuantity - (product.groupPurchaseDetails.currentQuantity || 0))}
+                  </div>
+                  <div className="text-xs text-gray-500 font-medium">נותרו</div>
+                </div>
+
+                {/* זמן נותר */}
+                <div className="bg-white rounded-xl p-3 text-center shadow-sm" style={{ border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                  <div className="w-8 h-8 mx-auto mb-1.5 rounded-full flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 0.15)' }}>
+                    <svg className="w-4 h-4" style={{ color: '#f59e0b' }} fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="text-2xl font-bold" style={{ color: '#d97706' }}>
+                    {groupTimeLeft && !groupTimeLeft.expired ? (groupTimeLeft.days || 0) : 0}
+                  </div>
+                  <div className="text-xs text-gray-500 font-medium">ימים נותרו</div>
+                </div>
+              </div>
+              
+              {/* Progress Bar - גרדיאנט כתום-ירוק */}
+              <div className="mb-4">
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-gray-600 font-medium">התקדמות הקבוצה</span>
+                  <span 
+                    className="font-bold" 
+                    style={{ 
+                      color: ((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) >= 0.5 
+                        ? '#1e3a8a' 
+                        : '#d97706' 
+                    }}
+                  >
+                    {Math.round(((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) * 100)}%
+                  </span>
+                </div>
+                <div className="h-2.5 bg-white rounded-full overflow-hidden relative" dir="rtl">
+                  {/* חלק כתום - עד 50% */}
+                  <div
+                    className="absolute top-0 right-0 h-full rounded-r-full transition-all duration-500"
+                    style={{ 
+                      width: `${Math.min(50, ((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) * 100)}%`,
+                      background: 'linear-gradient(270deg, #f59e0b 0%, #fbbf24 100%)'
+                    }}
+                  />
+                  {/* חלק ירוק - מ-50% ומעלה */}
+                  {((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) > 0.5 && (
+                    <div
+                      className="absolute top-0 h-full rounded-l-full transition-all duration-500"
+                      style={{ 
+                        right: '50%',
+                        width: `${Math.min(50, (((product.groupPurchaseDetails.currentQuantity || 0) / product.groupPurchaseDetails.minQuantity) - 0.5) * 100)}%`,
+                        background: 'linear-gradient(270deg, #1e3a8a 0%, #0891b2 100%)'
+                      }}
+                    />
+                  )}
+                </div>
+                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <span>{product.groupPurchaseDetails.currentQuantity || 0} נרשמו</span>
+                  <span>יעד: {product.groupPurchaseDetails.minQuantity} משתתפים</span>
+                </div>
+              </div>
+
+              
+              {/* Info Grid - Delivery */}
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="bg-white rounded-lg p-2.5 text-center" style={{ border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                  <div className="text-gray-500 text-xs mb-0.5">זמן אספקה משוער</div>
                   <div className="font-bold text-gray-800">
                     ~{product.groupPurchaseDetails.totalDays || (product.groupPurchaseDetails.closingDays || 0) + (product.groupPurchaseDetails.shippingDays || 0)} ימים
                   </div>
                 </div>
-                <div className="bg-white rounded-lg p-2.5 text-center">
+                <div className="bg-white rounded-lg p-2.5 text-center" style={{ border: '1px solid rgba(245, 158, 11, 0.2)' }}>
                   <div className="text-gray-500 text-xs mb-0.5">משלוח</div>
-                  <div className="font-bold text-green-600">חינם</div>
+                  <div className="font-bold flex items-center justify-center gap-1" style={{ color: '#0891b2' }}>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5 2a2 2 0 00-2 2v14l3.5-2 3.5 2 3.5-2 3.5 2V4a2 2 0 00-2-2H5zm2.5 3a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm6.207.293a1 1 0 00-1.414 0l-6 6a1 1 0 101.414 1.414l6-6a1 1 0 000-1.414zM12.5 10a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" clipRule="evenodd" />
+                    </svg>
+                    חינם!
+                  </div>
                 </div>
               </div>
             </div>
@@ -436,8 +598,8 @@ export default function ProductPage() {
           {/* Stock Status */}
           {product.stockCount > 0 && (
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-green-600">במלאי</span>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#0891b2' }} />
+              <span className="text-sm font-medium" style={{ color: '#0891b2' }}>במלאי</span>
             </div>
           )}
 
@@ -489,7 +651,7 @@ export default function ProductPage() {
                 className="flex-[2] h-14 rounded-xl font-bold text-white transition-all flex items-center justify-center"
                 style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
               >
-                קנה עכשיו
+                {product.purchaseType === 'group' ? 'הצטרף עכשיו' : 'קנה עכשיו'}
               </button>
             </div>
           </div>
@@ -849,16 +1011,141 @@ export default function ProductPage() {
           )}
 
           {/* Back Link */}
-          <div className="bg-white px-4 py-4">
-            <Link href="/products" className="inline-flex items-center gap-2 font-medium text-sm" style={{ color: '#0891b2' }}>
+          <div className="bg-white px-4 py-4 pb-32">
+            <Link href="/shop" className="inline-flex items-center gap-2 font-medium text-sm" style={{ color: '#0891b2' }}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
-              חזרה לכל המוצרים
+              חזרה לבחירת קטגוריה
             </Link>
           </div>
         </div>
       </div>
+
+      {/* Live Notification - Social Proof */}
+      {product.purchaseType === 'group' && liveNotification && (
+        <div 
+          className="fixed bottom-24 right-4 z-50 animate-slide-in-right"
+          style={{
+            animation: 'slideInRight 0.5s ease-out',
+          }}
+        >
+          <div 
+            className="bg-white rounded-xl shadow-2xl p-3 flex items-center gap-3 max-w-[280px]"
+            style={{ border: '1px solid rgba(245, 158, 11, 0.3)' }}
+          >
+            <div 
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+              style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)' }}
+            >
+              {liveNotification.name.charAt(0)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {liveNotification.name} מ{liveNotification.city}
+              </p>
+              <p className="text-xs text-gray-500">
+                הצטרף/ה לפני {liveNotification.minutes} דקות
+              </p>
+            </div>
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0" />
+          </div>
+        </div>
+      )}
+
+      {/* Viewers Count - Social Proof */}
+      {product.purchaseType === 'group' && viewersCount > 0 && (
+        <div className="fixed bottom-24 left-4 z-50">
+          <div 
+            className="bg-white/95 backdrop-blur rounded-full shadow-lg px-3 py-2 flex items-center gap-2"
+            style={{ border: '1px solid rgba(245, 158, 11, 0.2)' }}
+          >
+            <div className="flex -space-x-1.5">
+              {[...Array(Math.min(3, viewersCount))].map((_, i) => (
+                <div 
+                  key={i}
+                  className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-white text-[10px] font-bold"
+                  style={{ 
+                    background: `linear-gradient(135deg, ${['#f59e0b', '#f59e0b', '#fbbf24'][i]} 0%, ${['#fbbf24', '#fbbf24', '#fcd34d'][i]} 100%)`,
+                  }}
+                >
+                  {String.fromCharCode(65 + i)}
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-xs font-medium text-gray-700">{viewersCount} צופים עכשיו</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sticky Bottom Bar */}
+      {product.purchaseType === 'group' && showStickyBar && (
+        <div 
+          className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t shadow-2xl"
+          style={{ 
+            borderColor: 'rgba(245, 158, 11, 0.3)',
+            boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
+          }}
+        >
+          <div className="max-w-lg mx-auto px-4 py-3">
+            <div className="flex items-center gap-3">
+              {/* Price & Timer */}
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl font-bold" style={{ color: '#d97706' }}>
+                    ₪{(product.salePrice || product.price || 0).toLocaleString()}
+                  </span>
+                  {product.salePrice && product.price > product.salePrice && (
+                    <span className="text-sm text-gray-400 line-through">
+                      ₪{product.price.toLocaleString()}
+                    </span>
+                  )}
+                </div>
+                {groupTimeLeft && !groupTimeLeft.expired && (
+                  <div className="flex items-center gap-1 text-xs" style={{ color: '#dc2626' }}>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                    </svg>
+                    <span>נותרו {groupTimeLeft.days}:{String(groupTimeLeft.hours).padStart(2,'0')}:{String(groupTimeLeft.minutes).padStart(2,'0')}</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* CTA Button */}
+              <button
+                onClick={handleBuyNow}
+                className="px-6 py-3 rounded-xl font-bold text-white transition-all flex items-center gap-2"
+                style={{ 
+                  background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+                  boxShadow: '0 4px 15px rgba(245, 158, 11, 0.4)',
+                }}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                הצטרף עכשיו
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CSS Animation */}
+      <style jsx>{`
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(100px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
