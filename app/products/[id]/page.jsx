@@ -34,6 +34,7 @@ export default function ProductPage() {
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [liveNotification, setLiveNotification] = useState(null);
   const [viewersCount, setViewersCount] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
   const { addItem } = useCartContext();
   const { settings: themeSettings } = useTheme();
 
@@ -145,6 +146,46 @@ export default function ProductPage() {
   }, [params.id, loadProduct]);
 
   useEffect(() => setSelectedMediaIndex(0), [product?._id]);
+
+  // Check if product is in favorites
+  useEffect(() => {
+    if (!product?._id) return;
+    try {
+      const saved = localStorage.getItem('vipo_favorites');
+      if (saved) {
+        const favorites = JSON.parse(saved);
+        setIsFavorite(favorites.some((item) => item._id === product._id));
+      }
+    } catch (e) {
+      console.error('Error loading favorites:', e);
+    }
+  }, [product?._id]);
+
+  // Toggle favorite status
+  const toggleFavorite = useCallback(() => {
+    if (!product) return;
+    try {
+      const saved = localStorage.getItem('vipo_favorites');
+      let favorites = saved ? JSON.parse(saved) : [];
+      
+      if (isFavorite) {
+        favorites = favorites.filter((item) => item._id !== product._id);
+      } else {
+        favorites.push({
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          imageUrl: product.imageUrl,
+        });
+      }
+      
+      localStorage.setItem('vipo_favorites', JSON.stringify(favorites));
+      setIsFavorite(!isFavorite);
+    } catch (e) {
+      console.error('Error saving favorites:', e);
+    }
+  }, [product, isFavorite]);
 
   useEffect(() => {
     if (!product || !isGroupPurchase(product)) {
@@ -363,6 +404,27 @@ export default function ProductPage() {
               />
             )}
             
+            {/* Favorite Button */}
+            <button
+              onClick={toggleFavorite}
+              className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 z-10"
+              style={{
+                background: isFavorite ? 'rgba(239, 68, 68, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+              }}
+              aria-label={isFavorite ? 'הסר ממועדפים' : 'הוסף למועדפים'}
+            >
+              <svg
+                className="w-5 h-5"
+                fill={isFavorite ? 'white' : 'none'}
+                stroke={isFavorite ? 'white' : '#6b7280'}
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+
             {/* Discount Badge */}
             {hasDiscount && (
               <div className="absolute top-3 left-3 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #f97316 100%)' }}>

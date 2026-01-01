@@ -906,6 +906,49 @@ function ProductCard({
 
   const [isFavorite, setIsFavorite] = useState(false);
 
+  // Check if product is in favorites on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('vipo_favorites');
+      if (saved) {
+        const favorites = JSON.parse(saved);
+        setIsFavorite(favorites.some((item) => item._id === product._id));
+      }
+    } catch (e) {
+      console.error('Error loading favorites:', e);
+    }
+  }, [product._id]);
+
+  // Toggle favorite status
+  const toggleFavorite = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+      const saved = localStorage.getItem('vipo_favorites');
+      let favorites = saved ? JSON.parse(saved) : [];
+      
+      if (isFavorite) {
+        // Remove from favorites
+        favorites = favorites.filter((item) => item._id !== product._id);
+      } else {
+        // Add to favorites
+        favorites.push({
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          imageUrl: product.imageUrl,
+        });
+      }
+      
+      localStorage.setItem('vipo_favorites', JSON.stringify(favorites));
+      setIsFavorite(!isFavorite);
+    } catch (e) {
+      console.error('Error saving favorites:', e);
+    }
+  };
+
   return (
     <div
       className="bg-white rounded-xl overflow-hidden group h-full flex flex-col transition-all duration-300"
@@ -942,11 +985,7 @@ function ProductCard({
           {/* Heart/Favorites Button */}
           <button
             type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsFavorite(!isFavorite);
-            }}
+            onClick={toggleFavorite}
             className="absolute top-2 left-2 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200"
             style={{
               background: isFavorite ? 'rgba(239, 68, 68, 0.9)' : 'rgba(255, 255, 255, 0.9)',
