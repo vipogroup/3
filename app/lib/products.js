@@ -13,6 +13,12 @@ let lastSavedSignature = null;
 function normalizeProductShape(product) {
   if (!product) return null;
 
+  // Handle specs - keep as string or object
+  let normalizedSpecs = product.specs;
+  if (normalizedSpecs === undefined || normalizedSpecs === null) {
+    normalizedSpecs = '';
+  }
+
   const normalized = {
     ...product,
     _id: String(product._id ?? product.legacyId ?? product.id ?? ''),
@@ -25,10 +31,15 @@ function normalizeProductShape(product) {
         : [product.image || PLACEHOLDER_IMAGE],
     fullDescription: product.fullDescription || product.description || '',
     description: product.description || product.fullDescription || '',
-    specs: typeof product.specs === 'object' && product.specs !== null ? product.specs : {},
+    specs: normalizedSpecs,
     features: Array.isArray(product.features) ? product.features : [],
     catalogId: product.catalogId ?? product.catalog?._id ?? null,
     catalogSlug: product.catalogSlug ?? product.catalog?.slug ?? '',
+    // Preserve additional fields
+    suitableFor: product.suitableFor || '',
+    whyChooseUs: product.whyChooseUs || '',
+    warranty: product.warranty || '',
+    customFields: Array.isArray(product.customFields) ? product.customFields : [],
   };
 
   if (!normalized.description) {
