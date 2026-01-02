@@ -284,7 +284,8 @@ export default function AdminDashboardClient() {
     sendgrid: 'שירות שליחת אימיילים. משמש לאימות אימייל בהרשמה, הודעות מערכת ועוד.',
     twilio: 'שירות SMS/WhatsApp לשליחת קודי OTP לאימות משתמשים.',
     resend: 'שירות שליחת אימיילים. משמש לאימות אימייל, הודעות מערכת ועוד.',
-    npm: 'מנהל החבילות של Node.js - ספריות הקוד של הפרויקט.'
+    npm: 'מנהל החבילות של Node.js - ספריות הקוד של הפרויקט.',
+    payplus: 'מערכת סליקת כרטיסי אשראי. משמשת לחיוב לקוחות ועיבוד תשלומים בחנות.'
   };
 
   const loadData = useCallback(async () => {
@@ -594,6 +595,15 @@ export default function AdminDashboardClient() {
                 <span className="text-sm font-medium text-gray-900">בקשות משיכה</span>
               </Link>
               )}
+              {canAccess(ADMIN_PERMISSIONS.VIEW_REPORTS) && (
+              <a href="https://www.payplus.co.il" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.payplus?.status === 'connected' ? 'bg-green-500' : systemStatus.payplus?.status === 'warning' ? 'bg-amber-500' : systemStatus.payplus?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                <svg className="w-5 h-5" style={{ color: '#00A651' }} fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                </svg>
+                <span className="text-sm font-medium text-gray-900">PayPlus סליקה</span>
+              </a>
+              )}
             </div>
             )}
           </div>
@@ -793,6 +803,16 @@ export default function AdminDashboardClient() {
                   <span className="text-sm font-medium text-gray-900">NPM</span>
                 </a>
                 <button onClick={() => setInfoTooltip('npm')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href="https://www.payplus.co.il" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.payplus?.status === 'connected' ? 'bg-green-500' : systemStatus.payplus?.status === 'warning' ? 'bg-amber-500' : systemStatus.payplus?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#00A651' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">PayPlus</span>
+                </a>
+                <button onClick={() => setInfoTooltip('payplus')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
               </div>
               </div>
             </div>
