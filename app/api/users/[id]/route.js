@@ -46,7 +46,7 @@ function parseObjectId(id) {
 
 export async function GET(req, { params }) {
   try {
-    if (!ensureAdmin(req)) {
+    if (!(await ensureAdmin(req))) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -176,7 +176,7 @@ export async function PATCH(req, { params }) {
 
 export async function DELETE(req, { params }) {
   try {
-    const decoded = ensureAdmin(req);
+    const decoded = await ensureAdmin(req);
     if (!decoded) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
