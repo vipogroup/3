@@ -102,6 +102,12 @@ function BackupsContent() {
           msg = `✅ ${data.message} - הקובץ הורד למחשב!`;
         }
         
+        // If redirect to Vercel needed, open in new tab
+        if (data.redirectToVercel && data.vercelUrl) {
+          window.open(data.vercelUrl, '_blank');
+          msg = '✅ נפתח דף Vercel בטאב חדש - בצע Redeploy משם';
+        }
+        
         // Show commands if provided
         if (data.commands) {
           msg += '\n\n📋 פקודות:\n' + data.commands.join('\n');
