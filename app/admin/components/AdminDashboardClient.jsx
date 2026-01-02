@@ -262,6 +262,8 @@ export default function AdminDashboardClient() {
   const [systemStatus, setSystemStatus] = useState({});
   const [statusLoading, setStatusLoading] = useState(false);
   const [alertCount, setAlertCount] = useState(0);
+  const [securityData, setSecurityData] = useState(null);
+  const [securityLoading, setSecurityLoading] = useState(false);
 
   const backupInfoTexts = {
     backup: 'יוצר גיבוי חדש של כל הקבצים והנתונים במערכת. מומלץ לבצע לפני כל עדכון גדול.',
@@ -360,6 +362,28 @@ export default function AdminDashboardClient() {
       return () => clearInterval(interval);
     }
   }, [user]);
+
+  // Fetch security data when security category is opened
+  const checkSecurity = useCallback(async () => {
+    setSecurityLoading(true);
+    try {
+      const res = await fetch('/api/admin/security-scan');
+      if (res.ok) {
+        const data = await res.json();
+        setSecurityData(data);
+      }
+    } catch (e) {
+      console.error('Failed to fetch security data:', e);
+    } finally {
+      setSecurityLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (openCategory === 'security' && !securityData) {
+      checkSecurity();
+    }
+  }, [openCategory, securityData, checkSecurity]);
 
   if (loading) {
     return (
@@ -912,6 +936,108 @@ export default function AdminDashboardClient() {
                 </svg>
                 <span className="text-sm font-medium text-gray-900">פיצרים חדשים</span>
               </Link>
+            </div>
+            )}
+          </div>
+          )}
+
+          {/* 8. אבטחת מערכת - רק למנהלים ראשיים */}
+          {isSuperAdmin && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+            <button onClick={() => toggleCategory('security')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #f59e0b 100%)' }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>אבטחת מערכת</span>
+                  {securityData && (
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${securityData.overallScore >= 85 ? 'bg-green-100 text-green-700' : securityData.overallScore >= 70 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
+                      {securityData.overallScore}%
+                    </span>
+                  )}
+                </div>
+              </div>
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'security' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openCategory === 'security' && (
+            <div className="p-4 pt-0">
+              {securityLoading ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '3px solid rgba(8, 145, 178, 0.2)', borderTopColor: '#0891b2' }}></div>
+                  <span className="mr-3 text-gray-600">סורק אבטחה...</span>
+                </div>
+              ) : securityData ? (
+                <div className="space-y-4">
+                  {/* Overall Score */}
+                  <div className={`p-4 rounded-lg ${securityData.overallScore >= 85 ? 'bg-green-50 border border-green-200' : securityData.overallScore >= 70 ? 'bg-amber-50 border border-amber-200' : 'bg-red-50 border border-red-200'}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-bold text-gray-900">ציון אבטחה כללי</span>
+                      <span className={`text-2xl font-bold ${securityData.overallScore >= 85 ? 'text-green-600' : securityData.overallScore >= 70 ? 'text-amber-600' : 'text-red-600'}`}>
+                        {securityData.overallScore}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className={`h-2 rounded-full ${securityData.overallScore >= 85 ? 'bg-green-500' : securityData.overallScore >= 70 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${securityData.overallScore}%` }}></div>
+                    </div>
+                  </div>
+
+                  {/* Category Scores */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {securityData.categories && Object.entries(securityData.categories).map(([key, cat]) => (
+                      <div key={key} className="p-3 rounded-lg bg-gray-50 border border-gray-200">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs text-gray-600">{cat.name}</span>
+                          <span className={`text-sm font-bold ${cat.score >= 80 ? 'text-green-600' : cat.score >= 60 ? 'text-amber-600' : 'text-red-600'}`}>{cat.score}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1.5">
+                          <div className={`h-1.5 rounded-full ${cat.score >= 80 ? 'bg-green-500' : cat.score >= 60 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${cat.score}%` }}></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Quick Recommendations */}
+                  {securityData.recommendations && securityData.recommendations.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="font-bold text-gray-900 text-sm">המלצות לשיפור:</h4>
+                      {securityData.recommendations.slice(0, 3).map((rec, i) => (
+                        <div key={i} className={`p-3 rounded-lg ${rec.priority === 'critical' ? 'bg-red-50 border border-red-200' : rec.priority === 'high' ? 'bg-amber-50 border border-amber-200' : 'bg-blue-50 border border-blue-200'}`}>
+                          <div className="flex items-start gap-2">
+                            <span className={`mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${rec.priority === 'critical' ? 'bg-red-500' : rec.priority === 'high' ? 'bg-amber-500' : 'bg-blue-500'}`}></span>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{rec.title}</p>
+                              <p className="text-xs text-gray-600">{rec.description}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-2">
+                    <button onClick={checkSecurity} className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      סרוק שוב
+                    </button>
+                    <Link href="/admin/security" className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                      דוח מלא
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center p-4 text-gray-500">לחץ לסריקת אבטחה</div>
+              )}
             </div>
             )}
           </div>
