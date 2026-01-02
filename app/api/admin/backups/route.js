@@ -243,27 +243,22 @@ export async function POST(req) {
           }, { status: 500 });
         }
       } else {
-        // No deploy hook configured - show instructions
+        // No deploy hook configured - redirect to Vercel
         await logAdminActivity({
           action: 'deploy',
           entity: 'system',
           userId: user.userId,
           userEmail: user.email,
-          description: 'בקשת Deploy - לא הוגדר Deploy Hook',
-          metadata: { platform: 'vercel', method: 'manual' }
+          description: 'בקשת Deploy - הפניה ל-Vercel',
+          metadata: { platform: 'vercel', method: 'redirect' }
         });
 
         return NextResponse.json({ 
           success: true, 
-          message: 'לא הוגדר Deploy Hook. לביצוע Deploy ידני:',
-          commands: [
-            'cd vipo-agents-test',
-            'git add .',
-            'git commit -m "Update"',
-            'git push'
-          ],
-          info: 'להגדרת Deploy אוטומטי, הוסף VERCEL_DEPLOY_HOOK_URL ל-.env.local',
-          needsSetup: true
+          message: 'לביצוע Deploy, לחץ על הכפתור למטה:',
+          vercelUrl: 'https://vercel.com/vipos-projects-0154d019/vipo-agents-test/deployments',
+          info: 'בדף Vercel: לחץ על הפריסה האחרונה → ⋮ → Redeploy',
+          redirectToVercel: true
         });
       }
     }
