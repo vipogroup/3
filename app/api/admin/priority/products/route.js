@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth/server';
+import { escapeRegex } from '@/lib/utils/sanitize';
 import dbConnect from '@/lib/dbConnect';
 import PriorityProduct from '@/models/PriorityProduct';
 import Product from '@/models/Product';
@@ -32,9 +33,10 @@ export async function GET(req) {
       
       const query = { _id: { $nin: mappedProductIds }, active: true };
       if (search) {
+        const safeSearch = escapeRegex(search);
         query.$or = [
-          { name: { $regex: search, $options: 'i' } },
-          { sku: { $regex: search, $options: 'i' } },
+          { name: { $regex: safeSearch, $options: 'i' } },
+          { sku: { $regex: safeSearch, $options: 'i' } },
         ];
       }
 
@@ -53,9 +55,10 @@ export async function GET(req) {
     // Get mapped products
     const query = { isActive: true };
     if (search) {
+      const safeSearch = escapeRegex(search);
       query.$or = [
-        { priorityItemCode: { $regex: search, $options: 'i' } },
-        { priorityItemName: { $regex: search, $options: 'i' } },
+        { priorityItemCode: { $regex: safeSearch, $options: 'i' } },
+        { priorityItemName: { $regex: safeSearch, $options: 'i' } },
       ];
     }
 
