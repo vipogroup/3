@@ -52,10 +52,6 @@ function checkVercel() {
   return { status: 'connected', message: 'Vercel זמין - Deploy דרך הדשבורד' };
 }
 
-// Check Render (not used in this project)
-function checkRender() {
-  return { status: 'warning', message: 'לא בשימוש בפרויקט זה' };
-}
 
 // Check Cloudinary - actual connection test
 async function checkCloudinary() {
@@ -86,15 +82,6 @@ async function checkCloudinary() {
   }
 }
 
-// Check Firebase (not used in this project)
-function checkFirebase() {
-  return { status: 'warning', message: 'לא בשימוש בפרויקט זה' };
-}
-
-// Check SendGrid (not used - using Resend instead)
-function checkSendGrid() {
-  return { status: 'warning', message: 'לא בשימוש - המערכת משתמשת ב-Resend' };
-}
 
 // Check Twilio - for SMS/WhatsApp OTP
 function checkTwilio() {
@@ -153,15 +140,12 @@ export async function GET(req) {
     ]);
 
     const results = {
-      github: checkGitHub(),
       mongodb: mongoResult,
       vercel: checkVercel(),
-      render: checkRender(),
+      github: checkGitHub(),
       cloudinary: await checkCloudinary(),
-      firebase: checkFirebase(),
-      sendgrid: checkSendGrid(),
-      twilio: checkTwilio(),
       resend: checkResend(),
+      twilio: checkTwilio(),
       npm: checkNPM()
     };
 
