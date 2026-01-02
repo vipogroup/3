@@ -17,6 +17,8 @@ export default function UsersList() {
   const [isSuperAdminUser, setIsSuperAdminUser] = useState(false);
   const [permissionsModalUser, setPermissionsModalUser] = useState(null);
   const [roleFilter, setRoleFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchInput, setSearchInput] = useState('');
 
   const getCurrentUser = useCallback(async () => {
     try {
@@ -34,10 +36,14 @@ export default function UsersList() {
     }
   }, []);
 
-  const fetchUsers = useCallback(async () => {
+  const fetchUsers = useCallback(async (search = '', role = '') => {
     try {
       setLoading(true);
-      const res = await fetch('/api/users');
+      const params = new URLSearchParams();
+      if (search) params.append('q', search);
+      if (role && role !== 'all') params.append('role', role);
+      const url = `/api/users${params.toString() ? '?' + params.toString() : ''}`;
+      const res = await fetch(url);
       if (!res.ok) throw new Error('Failed to fetch users');
       const data = await res.json();
       // API returns 'items' not 'users'
@@ -57,9 +63,19 @@ export default function UsersList() {
   }, []);
 
   useEffect(() => {
-    fetchUsers();
+    fetchUsers(searchQuery, roleFilter);
     getCurrentUser();
-  }, [fetchUsers, getCurrentUser]);
+  }, [fetchUsers, getCurrentUser, searchQuery, roleFilter]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearchQuery(searchInput);
+  };
+
+  const clearSearch = () => {
+    setSearchInput('');
+    setSearchQuery('');
+  };
 
   async function fetchAgents(agentIds) {
     try {
@@ -245,38 +261,75 @@ export default function UsersList() {
     <div>
       {/* Header */}
       <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-3 sm:p-4 mb-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2
-              className="text-base sm:text-lg font-bold"
-              style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              רשימת משתמשים
-            </h2>
-            <p className="text-sm text-gray-600 mt-1">סה״כ {filteredUsers.length} משתמשים</p>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-3 sm:mt-0">
-            {filterOptions.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setRoleFilter(option.value)}
-                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
-                  roleFilter === option.value
-                    ? 'text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-                style={roleFilter === option.value ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2
+                className="text-base sm:text-lg font-bold"
+                style={{
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
               >
-                {option.label} ({option.count})
-              </button>
-            ))}
+                רשימת משתמשים
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">סה״כ {filteredUsers.length} משתמשים</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {filterOptions.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setRoleFilter(option.value)}
+                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                    roleFilter === option.value
+                      ? 'text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  style={roleFilter === option.value ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+                >
+                  {option.label} ({option.count})
+                </button>
+              ))}
+            </div>
           </div>
+          
+          {/* שדה חיפוש */}
+          <form onSubmit={handleSearch} className="flex gap-2">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="חפש לפי שם, טלפון או מייל..."
+                className="w-full px-4 py-2.5 pr-10 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none transition-colors text-sm"
+              />
+              <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <button
+              type="submit"
+              className="px-4 py-2.5 rounded-xl text-white font-medium transition-all"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              חפש
+            </button>
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-all"
+              >
+                נקה
+              </button>
+            )}
+          </form>
+          {searchQuery && (
+            <p className="text-sm text-cyan-600">תוצאות חיפוש: &quot;{searchQuery}&quot;</p>
+          )}
         </div>
       </div>
 

@@ -73,18 +73,38 @@ export async function GET(req) {
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
     const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '20', 10)));
     const skip = (page - 1) * limit;
+    const search = (searchParams.get('q') || searchParams.get('search') || '').trim();
+    const roleFilter = (searchParams.get('role') || '').trim();
 
     const db = await getDb();
     const col = db.collection('users');
     const projection = { passwordHash: 0, password: 0 };
-    const cursor = await col.find({}, { projection });
+
+    // בניית פילטר חיפוש
+    const filter = {};
+    
+    // חיפוש לפי טלפון, מייל או שם
+    if (search) {
+      filter.$or = [
+        { fullName: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } },
+      ];
+    }
+    
+    // פילטר לפי תפקיד
+    if (roleFilter && ['admin', 'agent', 'customer'].includes(roleFilter)) {
+      filter.role = roleFilter;
+    }
+
+    const cursor = await col.find(filter, { projection });
 
     let items;
     let total;
 
     if (typeof cursor.sort === 'function') {
       items = await cursor.sort({ createdAt: -1 }).skip(skip).limit(limit).toArray();
-      total = await col.countDocuments();
+      total = await col.countDocuments(filter);
     } else {
       const all = await cursor.toArray();
       total = all.length;
