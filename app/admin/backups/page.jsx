@@ -85,9 +85,24 @@ function BackupsContent() {
       
       if (res.ok) {
         setMessage(`✅ ${data.message || actionName + ' הושלם בהצלחה!'}`);
+        
+        // If backup, download the backup file
+        if (actionType === 'backup' && data.downloadReady && data.backup) {
+          const blob = new Blob([JSON.stringify(data.backup, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `backup-${data.backup.timestamp.replace(/[:.]/g, '-')}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          setMessage(`✅ ${data.message} - הקובץ הורד למחשב!`);
+        }
+        
         if (actionType === 'backup') await loadBackups();
       } else {
-        setMessage('❌ שגיאה: ' + (data.error || 'הפעולה נכשלה'));
+        setMessage('❌ שגיאה: ' + (data.error || data.details || 'הפעולה נכשלה'));
       }
     } catch (error) {
       clearInterval(progressInterval);
