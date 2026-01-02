@@ -37,7 +37,6 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    console.log('[LOGIN BODY]', body);
     const identifier = body.email || body.identifier;
     const password = body.password;
     const rememberMe = Boolean(body.rememberMe);
@@ -53,8 +52,6 @@ export async function POST(req) {
     if ((!normalizedEmail && !normalizedPhone) || !normalizedPassword) {
       return failureResponse('Missing identifier or password', 400);
     }
-
-    console.log('LOGIN BODY:', { email: normalizedEmail, phone: normalizedPhone });
 
     const db = await getDb();
     const users = db.collection('users');
@@ -78,12 +75,6 @@ export async function POST(req) {
       return failureResponse('Invalid email or password', 401);
     }
 
-    console.log('LOGIN_DEBUG_USER', {
-      _id: String(user._id),
-      hasPasswordHash: Boolean(user.passwordHash),
-      role: user.role,
-    });
-
     const passwordMatches = await bcrypt.compare(normalizedPassword, user.passwordHash);
     if (!passwordMatches) {
       return failureResponse('Invalid email or password', 401);
@@ -99,8 +90,6 @@ export async function POST(req) {
       secure: process.env.NODE_ENV === 'production',
       maxAge,
     });
-
-    console.log('[LOGIN_DEBUG] set auth_token cookie for user', String(user._id));
 
     // Log successful login
     await logAdminActivity({
