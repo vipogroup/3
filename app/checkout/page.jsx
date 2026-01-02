@@ -55,11 +55,7 @@ function CheckoutClient() {
   });
   const [fieldErrors, setFieldErrors] = useState({});
   const [touchedFields, setTouchedFields] = useState({});
-  const [paymentDemoMode, setPaymentDemoMode] = useState(false);
-  const [orderCompleted, setOrderCompleted] = useState(false);
   const [autoCouponChecked, setAutoCouponChecked] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [completedOrderId, setCompletedOrderId] = useState(null);
   const markFieldTouched = useCallback((fieldName) => {
     setTouchedFields((prev) => (prev[fieldName] ? prev : { ...prev, [fieldName]: true }));
   }, []);
@@ -328,7 +324,7 @@ function CheckoutClient() {
 
   useEffect(() => {
     if (!hydrated) return;
-    if (isEmpty && !orderCompleted) {
+    if (isEmpty) {
       router.replace('/cart');
       return;
     }
@@ -361,7 +357,7 @@ function CheckoutClient() {
     }
 
     loadUser();
-  }, [hydrated, isEmpty, router, orderCompleted]);
+  }, [hydrated, isEmpty, router]);
 
   const handleApplyCoupon = useCallback(
     async (codeOverride) => {
@@ -552,11 +548,9 @@ function CheckoutClient() {
           console.warn('Failed to mark demo payment complete', demoErr);
         }
 
-        setPaymentDemoMode(true);
-        setOrderCompleted(true);
-        setCompletedOrderId(data.orderId);
         clearCart();
-        setShowSuccessModal(true);
+        // מעבר אוטומטי לדף אישור הזמנה
+        window.location.href = `/checkout/success?orderId=${data.orderId}`;
         return;
       }
 
@@ -598,80 +592,8 @@ function CheckoutClient() {
     );
   }
 
-  // חלון אישור רכישה
-  const handleSuccessClose = () => {
-    setShowSuccessModal(false);
-    router.push('/products');
-  };
-
-  // אם הסל ריק אבל יש modal להציג - תציג רק את ה-modal
-  if (isEmpty && !showSuccessModal) return null;
-
-  // אם יש modal - תציג רק אותו
-  if (showSuccessModal) {
-    return (
-      <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-        <div 
-          className="bg-white rounded-2xl p-8 max-w-md w-full text-center shadow-2xl"
-          style={{
-            border: '2px solid transparent',
-            backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-            backgroundOrigin: 'border-box',
-            backgroundClip: 'padding-box, border-box',
-          }}
-        >
-          {/* Success Icon */}
-          <div 
-            className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
-          >
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          
-          {/* Title */}
-          <h2 
-            className="text-2xl font-bold mb-3"
-            style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            הרכישה בוצעה בהצלחה!
-          </h2>
-          
-          {/* Description */}
-          <p className="text-gray-600 mb-2">תודה על הרכישה שלך</p>
-          {completedOrderId && (
-            <p className="text-sm text-gray-500 mb-6">
-              מספר הזמנה: <span className="font-semibold">#{completedOrderId.slice(-6)}</span>
-            </p>
-          )}
-          
-          {/* Button */}
-          <button
-            onClick={handleSuccessClose}
-            className="w-full py-4 rounded-xl font-bold text-white text-lg transition-all"
-            style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
-          >
-            המשך לחנות
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // אם הסל ריק - חזור לסל
+  if (isEmpty) return null;
 
   return (
     <div className="min-h-screen bg-white py-6">
