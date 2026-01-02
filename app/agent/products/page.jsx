@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { getProducts, refreshProductsFromApi } from '@/app/lib/products';
 
 function buildCouponCode(user) {
@@ -224,7 +225,14 @@ export default function AgentProductsPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">המוצרים שלי</h1>
+          <div className="flex items-center gap-3 mb-2">
+            <Link href="/agent" className="p-2 rounded-lg bg-white/80 hover:bg-white transition-colors shadow" title="חזרה לדשבורד">
+              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+            <h1 className="text-4xl font-bold text-gray-900">המוצרים שלי</h1>
+          </div>
           <p className="text-gray-600">
             בחר מוצר וקבל קוד קופון אישי לשיתוף. כל רכישה עם הקוד שלך תזכה אותך בעמלה!
           </p>

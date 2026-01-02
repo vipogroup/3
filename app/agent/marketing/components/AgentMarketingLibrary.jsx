@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 
 const DEFAULT_TEMPLATE = `🔥 הזדמנות מיוחדת! 🔥
 
@@ -143,17 +144,24 @@ export default function AgentMarketingLibrary({
     <div className="min-h-[calc(100vh-64px)] bg-white">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <header className="mb-6">
-          <h1
-            className="text-3xl font-bold mb-1"
-            style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            תוכן שיווקי מוכן לשיתוף
-          </h1>
+          <div className="flex items-center gap-3 mb-1">
+            <Link href="/agent" className="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="חזרה לדשבורד">
+              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+            <h1
+              className="text-3xl font-bold"
+              style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              תוכן שיווקי מוכן לשיתוף
+            </h1>
+          </div>
           <p className="text-gray-600 text-sm">
             שלום {agentName || 'סוכן'}! כאן תמצא ספריית תוכן להעלאה לרשתות החברתיות. כל שיתוף משתמש באופן
             אוטומטי בלינק ובקופון שלך.

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 const metrics = [
   { k: 'newCustomers', t: 'לקוחות חדשים' },
@@ -80,17 +81,24 @@ export default function ReportsClient() {
   return (
     <main className="min-h-screen bg-white p-3 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
-        <h1
-          className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6"
-          style={{
-            background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
-        >
-          דוחות וביצועים
-        </h1>
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
+          <Link href="/admin" className="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="חזרה לדשבורד">
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+          <h1
+            className="text-xl sm:text-2xl md:text-3xl font-bold"
+            style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            דוחות וביצועים
+          </h1>
+        </div>
 
         <section className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {metrics.map((c) => (

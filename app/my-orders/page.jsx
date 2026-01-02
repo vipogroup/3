@@ -66,17 +66,24 @@ export default function MyOrdersPage() {
       <div className="px-4 sm:px-0 pb-20">
         {/* Header */}
         <div className="mb-4">
-          <h1
-            className="text-xl sm:text-2xl font-bold"
-            style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            ההזמנות שלי
-          </h1>
+          <div className="flex items-center gap-3">
+            <button onClick={() => router.back()} className="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="חזרה">
+              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            <h1
+              className="text-xl sm:text-2xl font-bold"
+              style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              ההזמנות שלי
+            </h1>
+          </div>
           <div
             className="h-1 w-20 rounded-full mt-2"
             style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}

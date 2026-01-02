@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Link from 'next/link';
 
 const STATUS_LABELS = {
   pending: { label: 'ממתין לשחרור', color: 'bg-yellow-100 text-yellow-800' },
@@ -182,17 +183,24 @@ export default function CommissionsClient() {
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1
-            className="text-xl sm:text-2xl md:text-3xl font-bold"
-            style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            ניהול עמלות סוכנים
-          </h1>
+          <div className="flex items-center gap-3">
+            <Link href="/admin" className="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="חזרה לדשבורד">
+              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+            <h1
+              className="text-xl sm:text-2xl md:text-3xl font-bold"
+              style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              ניהול עמלות סוכנים
+            </h1>
+          </div>
           <div className="flex gap-2">
             <button
               onClick={() => exportToExcel(data?.agentsSummary, data?.commissions)}
