@@ -88,18 +88,9 @@ function BackupsContent() {
       if (res.ok) {
         let msg = `✅ ${data.message || actionName + ' הושלם בהצלחה!'}`;
         
-        // If backup, download the backup file
-        if (actionType === 'backup' && data.downloadReady && data.backup) {
-          const blob = new Blob([JSON.stringify(data.backup, null, 2)], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `backup-${data.backup.timestamp.replace(/[:.]/g, '-')}.json`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          msg = `✅ ${data.message} - הקובץ הורד למחשב!`;
+        // If backup saved to folder, show folder info
+        if (actionType === 'backup' && data.backupFolder) {
+          msg = `✅ ${data.message}\n\n📁 תיקייה: backups/database/${data.backupFolder}\n📊 אוספים: ${data.collectionsCount}\n📄 מסמכים: ${data.totalDocs}`;
         }
         
         // If redirect to Vercel needed, open in new tab

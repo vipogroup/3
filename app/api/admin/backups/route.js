@@ -127,24 +127,28 @@ export async function POST(req) {
         }
       }
       
-      // Direct MongoDB backup - works in Vercel serverless (fallback)
+      // Direct MongoDB backup - save to backups/database folder
       const { getDb } = await import('@/lib/db');
       const db = await getDb();
       
+      // Create backup directory with timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const backupDir = path.join(process.cwd(), 'backups', 'database', `mongo-${timestamp}`);
+      
+      if (!fs.existsSync(backupDir)) {
+        fs.mkdirSync(backupDir, { recursive: true });
+      }
+      
       // Get all collections
       const collections = await db.listCollections().toArray();
-      const backupData = {
-        timestamp: new Date().toISOString(),
-        collections: {}
-      };
+      let totalDocs = 0;
       
-      // Export each collection
+      // Export each collection to separate JSON file
       for (const col of collections) {
         const docs = await db.collection(col.name).find({}).toArray();
-        backupData.collections[col.name] = {
-          count: docs.length,
-          data: docs
-        };
+        totalDocs += docs.length;
+        const filePath = path.join(backupDir, `${col.name}.json`);
+        fs.writeFileSync(filePath, JSON.stringify(docs, null, 2), 'utf8');
       }
       
       // Log backup action
@@ -153,20 +157,21 @@ export async function POST(req) {
         entity: 'system',
         userId: user.userId,
         userEmail: user.email,
-        description: 'גיבוי מסד נתונים',
+        description: 'גיבוי מסד נתונים לתיקייה',
         metadata: { 
           type: 'database',
           collectionsCount: collections.length,
-          timestamp: backupData.timestamp
+          totalDocs,
+          backupDir: `mongo-${timestamp}`
         }
       });
 
-      // Return backup data for download
       return NextResponse.json({ 
         success: true, 
-        message: 'גיבוי הושלם בהצלחה',
-        backup: backupData,
-        downloadReady: true
+        message: `גיבוי הושלם בהצלחה! נשמר בתיקייה: mongo-${timestamp}`,
+        backupFolder: `mongo-${timestamp}`,
+        collectionsCount: collections.length,
+        totalDocs
       });
     }
 
