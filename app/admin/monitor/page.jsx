@@ -16,6 +16,7 @@ export default function MonitorPage() {
   const [errorStats, setErrorStats] = useState({});
   const [activityLogs, setActivityLogs] = useState([]);
   const [activityStats, setActivityStats] = useState({});
+  const [devToolsOutput, setDevToolsOutput] = useState(null);
 
   const checkAuth = useCallback(async () => {
     try {
@@ -414,28 +415,30 @@ export default function MonitorPage() {
             <h2 className="text-lg font-bold text-gray-900">כלי מפתחים (DevTools)</h2>
             <button
               type="button"
-              onClick={() => {
-                // Log helpful info to console
-                console.log('%c╔══════════════════════════════════════╗', 'color: #0891b2; font-weight: bold;');
-                console.log('%c║     VIPO DevTools - כלי מפתחים      ║', 'font-size: 16px; color: #0891b2; font-weight: bold;');
-                console.log('%c╚══════════════════════════════════════╝', 'color: #0891b2; font-weight: bold;');
-                console.log('%c[Network] לצפייה בבקשות רשת - לחץ על טאב Network', 'font-size: 14px; color: #059669;');
-                console.log('%c[Application] לצפייה ב-LocalStorage/Cookies - לחץ על טאב Application', 'font-size: 14px; color: #7c3aed;');
-                console.log('%c[Console] לצפייה בשגיאות והודעות - אתה כאן!', 'font-size: 14px; color: #dc2626;');
-                console.log('%c[Elements] לבדיקת HTML/CSS - לחץ על טאב Elements', 'font-size: 14px; color: #ea580c;');
-                alert('פתח את כלי המפתחים עם F12 או Ctrl+Shift+I\n\nהודעות נרשמו בקונסול!');
-              }}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)' }}
+              onClick={() => setDevToolsOutput(null)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${devToolsOutput ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' : 'text-white hover:opacity-90'}`}
+              style={!devToolsOutput ? { background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)' } : {}}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
               </svg>
-              פתח DevTools
+              {devToolsOutput ? 'סגור תצוגה' : 'כלי מפתחים'}
             </button>
           </div>
+          
+          {/* DevTools Output Display */}
+          {devToolsOutput && (
+            <div className="p-4 bg-gray-900 text-green-400 font-mono text-sm max-h-64 overflow-y-auto border-b border-gray-200">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-cyan-400 font-bold">{devToolsOutput.title}</span>
+                <button onClick={() => setDevToolsOutput(null)} className="text-gray-500 hover:text-white">✕</button>
+              </div>
+              <pre className="whitespace-pre-wrap">{devToolsOutput.content}</pre>
+            </div>
+          )}
+          
           <div className="p-4">
-            <p className="text-gray-600 mb-4">לחץ על הכפתור למעלה או השתמש בקיצורי המקלדת:</p>
+            <p className="text-gray-600 mb-4">לחץ על הכפתורים למטה לצפייה במידע:</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="p-4 bg-gray-50 rounded-lg text-center">
                 <p className="text-2xl font-mono font-bold text-gray-900 mb-2">F12</p>
@@ -461,67 +464,62 @@ export default function MonitorPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    console.clear();
-                    console.log('%c[Console] הקונסול נוקה בהצלחה', 'font-size: 16px; color: #059669;');
+                    setDevToolsOutput({
+                      title: '🧹 Console',
+                      content: 'הקונסול נוקה בהצלחה!\n\nלצפייה בלוגים אמיתיים:\n1. לחץ F12\n2. עבור לטאב Console'
+                    });
                   }}
                   className="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200 transition-all flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
-                  נקה Console
+                  Console
                 </button>
                 <button
                   type="button"
                   onClick={() => {
-                    console.log('%c[Storage] מידע אחסון:', 'font-size: 14px; font-weight: bold; color: #7c3aed;');
-                    console.table({
-                      'LocalStorage Items': localStorage.length,
-                      'SessionStorage Items': sessionStorage.length,
-                      'Cookies': document.cookie.split(';').filter(c => c.trim()).length,
+                    const lsItems = Object.keys(localStorage).map(k => `  ${k}: ${localStorage.getItem(k)?.substring(0, 50)}...`);
+                    const ssItems = Object.keys(sessionStorage).map(k => `  ${k}: ${sessionStorage.getItem(k)?.substring(0, 50)}...`);
+                    const cookies = document.cookie.split(';').filter(c => c.trim()).map(c => `  ${c.trim().substring(0, 50)}`);
+                    
+                    setDevToolsOutput({
+                      title: '💾 Storage Info',
+                      content: `📦 LocalStorage (${localStorage.length} פריטים):\n${lsItems.join('\n') || '  (ריק)'}\n\n📦 SessionStorage (${sessionStorage.length} פריטים):\n${ssItems.join('\n') || '  (ריק)'}\n\n🍪 Cookies (${cookies.length} פריטים):\n${cookies.join('\n') || '  (ריק)'}`
                     });
-                    console.log('LocalStorage:', { ...localStorage });
-                    console.log('SessionStorage:', { ...sessionStorage });
                   }}
                   className="px-3 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-200 transition-all flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
                   </svg>
-                  הצג Storage
+                  Storage
                 </button>
                 <button
                   type="button"
                   onClick={() => {
-                    console.log('%c[Network] מידע רשת:', 'font-size: 14px; font-weight: bold; color: #0891b2;');
-                    console.log('Online:', navigator.onLine ? 'כן' : 'לא');
-                    console.log('Connection:', navigator.connection || 'לא זמין');
-                    console.log('User Agent:', navigator.userAgent);
-                    console.log('Language:', navigator.language);
-                    console.log('Platform:', navigator.platform);
+                    const conn = navigator.connection;
+                    setDevToolsOutput({
+                      title: '🌐 Network Info',
+                      content: `📡 סטטוס: ${navigator.onLine ? '✅ מחובר' : '❌ לא מחובר'}\n\n🖥️ פרטי מערכת:\n  Platform: ${navigator.platform}\n  Language: ${navigator.language}\n  Cores: ${navigator.hardwareConcurrency || 'N/A'}\n\n📱 חיבור:\n  Type: ${conn?.effectiveType || 'N/A'}\n  Downlink: ${conn?.downlink ? conn.downlink + ' Mbps' : 'N/A'}\n  RTT: ${conn?.rtt ? conn.rtt + 'ms' : 'N/A'}\n\n🔍 User Agent:\n  ${navigator.userAgent}`
+                    });
                   }}
                   className="px-3 py-2 bg-cyan-100 text-cyan-700 rounded-lg text-sm font-medium hover:bg-cyan-200 transition-all flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                   </svg>
-                  מידע רשת
+                  רשת
                 </button>
                 <button
                   type="button"
                   onClick={() => {
                     const perfData = performance.getEntriesByType('navigation')[0];
-                    console.log('%c[Performance] מידע ביצועים:', 'font-size: 14px; font-weight: bold; color: #ea580c;');
-                    const perfInfo = {
-                      'DOM Load': Math.round(perfData?.domContentLoadedEventEnd || 0) + 'ms',
-                      'Full Load': Math.round(perfData?.loadEventEnd || 0) + 'ms',
-                      'Time Since Load': Math.round(performance.now()) + 'ms',
-                    };
-                    // Check if memory API is available (Chrome only)
-                    if (performance.memory) {
-                      perfInfo['Memory (MB)'] = Math.round(performance.memory.usedJSHeapSize / 1048576);
-                    }
-                    console.table(perfInfo);
+                    const memory = performance.memory;
+                    setDevToolsOutput({
+                      title: '⚡ Performance',
+                      content: `⏱️ זמני טעינה:\n  DOM Load: ${Math.round(perfData?.domContentLoadedEventEnd || 0)}ms\n  Full Load: ${Math.round(perfData?.loadEventEnd || 0)}ms\n  Time on Page: ${Math.round(performance.now())}ms\n\n💾 זיכרון:${memory ? `\n  Used: ${Math.round(memory.usedJSHeapSize / 1048576)}MB\n  Total: ${Math.round(memory.totalJSHeapSize / 1048576)}MB\n  Limit: ${Math.round(memory.jsHeapSizeLimit / 1048576)}MB` : '\n  (לא זמין בדפדפן זה)'}\n\n📊 Navigation:\n  Type: ${perfData?.type || 'N/A'}\n  Redirect Count: ${perfData?.redirectCount || 0}`
+                    });
                   }}
                   className="px-3 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-200 transition-all flex items-center gap-2"
                 >
