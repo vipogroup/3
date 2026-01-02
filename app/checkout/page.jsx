@@ -345,6 +345,10 @@ function CheckoutClient() {
             fullName: data.user.fullName || '',
             email: data.user.email || '',
             phone: data.user.phone || '',
+            // טעינת פרטי משלוח שמורים (אם קיימים)
+            address: data.user.shippingAddress || prev.address || '',
+            city: data.user.shippingCity || prev.city || '',
+            zipCode: data.user.shippingZipCode || prev.zipCode || '',
           }));
         } else if (res.status === 401) {
           router.replace('/login?redirect=/checkout');

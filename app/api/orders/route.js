@@ -423,6 +423,24 @@ export async function POST(req) {
     const result = await ordersCol.insertOne(orderDoc);
     const orderId = result.insertedId;
 
+    // שמירת פרטי משלוח בפרופיל המשתמש (לרכישות עתידיות)
+    try {
+      const customerData = rest?.customer || {};
+      if (customerData.address || customerData.city || customerData.zipCode) {
+        const shippingUpdate = {};
+        if (customerData.address) shippingUpdate.shippingAddress = customerData.address;
+        if (customerData.city) shippingUpdate.shippingCity = customerData.city;
+        if (customerData.zipCode) shippingUpdate.shippingZipCode = customerData.zipCode;
+        
+        await usersCol.updateOne(
+          { _id: me._id },
+          { $set: { ...shippingUpdate, updatedAt: now } }
+        );
+      }
+    } catch (shippingErr) {
+      console.warn('Failed to save shipping details to user profile:', shippingErr?.message);
+    }
+
     // Update stock for each product (decrease stockCount)
     // If stock reaches 0, automatically hide product (active = false)
     try {
