@@ -3,6 +3,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
+import { logAdminActivity } from '@/lib/auditMiddleware';
 
 const execAsync = promisify(exec);
 
@@ -87,6 +88,16 @@ export async function POST(req) {
         timeout: 60000 // 1 minute timeout
       });
       
+      // Log backup action
+      await logAdminActivity({
+        action: 'backup',
+        entity: 'system',
+        userId: user.userId,
+        userEmail: user.email,
+        description: 'גיבוי מסד נתונים',
+        metadata: { type: 'database' }
+      });
+
       return NextResponse.json({ 
         success: true, 
         message: 'גיבוי הושלם בהצלחה',
@@ -101,6 +112,16 @@ export async function POST(req) {
         timeout: 300000 // 5 minutes timeout for deploy
       });
       
+      // Log deploy action
+      await logAdminActivity({
+        action: 'deploy',
+        entity: 'system',
+        userId: user.userId,
+        userEmail: user.email,
+        description: 'Deploy לפרודקשן',
+        metadata: { platform: 'vercel' }
+      });
+
       return NextResponse.json({ 
         success: true, 
         message: 'Deploy ל-Vercel הושלם בהצלחה!',
@@ -119,6 +140,16 @@ export async function POST(req) {
         timeout: 120000
       });
       
+      // Log update action
+      await logAdminActivity({
+        action: 'update',
+        entity: 'system',
+        userId: user.userId,
+        userEmail: user.email,
+        description: 'עדכון מערכת (git pull + npm install)',
+        metadata: { type: 'system_update' }
+      });
+
       return NextResponse.json({ 
         success: true, 
         message: 'עדכון המערכת הושלם בהצלחה!',
