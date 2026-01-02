@@ -21,7 +21,8 @@ async function checkAdmin(req) {
   
   try {
     const { jwtVerify } = await import('jose');
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret');
+    if (!process.env.JWT_SECRET) return null;
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const { payload } = await jwtVerify(decodeURIComponent(tokenValue), secret);
     if (payload.role !== 'admin') return null;
     return payload;
