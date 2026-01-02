@@ -179,10 +179,7 @@ function RegisterPageContent() {
 
     setLoading(true);
 
-    // EMAIL VERIFICATION TEMPORARILY DISABLED - Direct registration
-    // To re-enable email verification, uncomment the code below and remove the direct registration code
-    /*
-    // Send verification code
+    // Send verification code to email
     try {
       const res = await fetch('/api/auth/send-email-code', {
         method: 'POST',
@@ -197,43 +194,6 @@ function RegisterPageContent() {
       setShowVerifyModal(true);
     } catch (e) {
       setErr(e.message || 'שגיאה בשליחת קוד אימות');
-    } finally {
-      setLoading(false);
-    }
-    */
-
-    // Direct registration without email verification
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, phone, email, password }),
-      });
-      const j = await res.json().catch(() => ({}));
-      
-      if (!res.ok || !j?.ok) {
-        let errorMsg = j?.message || j?.error || 'הרשמה נכשלה';
-        if (j?.error === 'phone exists') errorMsg = 'מספר הטלפון כבר רשום';
-        else if (j?.error === 'email exists') errorMsg = 'האימייל כבר רשום';
-        throw new Error(errorMsg);
-      }
-
-      // Auto-login
-      const loginRes = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier: email, password }),
-      });
-
-      setMsg('נרשמת בהצלחה!');
-
-      if (loginRes.ok) {
-        setTimeout(() => router.push('/products'), 500);
-      } else {
-        setTimeout(() => router.push('/login'), 1500);
-      }
-    } catch (e) {
-      setErr(e.message || 'שגיאה בהרשמה');
     } finally {
       setLoading(false);
     }

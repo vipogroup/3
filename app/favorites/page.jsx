@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCartContext } from '@/app/context/CartContext';
 
@@ -114,9 +115,11 @@ export default function FavoritesPage() {
               >
                 <div className="relative">
                   <Link href={`/products/${product._id}`}>
-                    <img
+                    <Image
                       src={product.image || product.imageUrl || '/placeholder.png'}
                       alt={product.name}
+                      width={400}
+                      height={192}
                       className="w-full h-48 object-cover"
                     />
                   </Link>
