@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { THEMES, getTheme } from '@/app/themes/themes';
+import { requireAdminApi } from '@/lib/auth/server';
 
 /**
  * GET /api/theme
@@ -39,6 +40,9 @@ export async function GET() {
  */
 export async function POST(req) {
   try {
+    // Admin only
+    await requireAdminApi(req);
+
     const body = await req.json();
     const { themeId } = body;
 
