@@ -108,13 +108,13 @@ function checkTwilio() {
   return { status: 'connected', message: 'Twilio מוגדר - SMS/WhatsApp פעיל' };
 }
 
-// Check SendGrid - for email sending
-function checkSendGrid() {
-  const hasApiKey = checkEnvVar('SENDGRID_API_KEY');
+// Check Resend - for email sending
+function checkResend() {
+  const hasApiKey = checkEnvVar('RESEND_API_KEY');
   if (!hasApiKey) {
-    return { status: 'error', message: 'SENDGRID_API_KEY לא מוגדר - שליחת אימיילים לא תעבוד' };
+    return { status: 'error', message: 'RESEND_API_KEY לא מוגדר - שליחת אימיילים לא תעבוד' };
   }
-  return { status: 'connected', message: 'SendGrid מוגדר - שליחת אימיילים פעילה' };
+  return { status: 'connected', message: 'Resend מוגדר - שליחת אימיילים פעילה' };
 }
 
 // Check NPM (always available)
@@ -144,7 +144,7 @@ export async function GET(req) {
       vercel: checkVercel(),
       github: checkGitHub(),
       cloudinary: await checkCloudinary(),
-      sendgrid: checkSendGrid(),
+      resend: checkResend(),
       twilio: checkTwilio(),
       npm: checkNPM()
     };
