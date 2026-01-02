@@ -3,13 +3,17 @@ import { NextResponse } from 'next/server';
 // Helper to check if user is admin
 async function checkAdmin(req) {
   const cookieHeader = req.headers.get('cookie') || '';
-  const tokenMatch = cookieHeader.match(/token=([^;]+)/);
-  if (!tokenMatch) return null;
+  // Check both auth_token and legacy token cookies
+  const authTokenMatch = cookieHeader.match(/auth_token=([^;]+)/);
+  const legacyTokenMatch = cookieHeader.match(/token=([^;]+)/);
+  const tokenValue = authTokenMatch?.[1] || legacyTokenMatch?.[1];
+  
+  if (!tokenValue) return null;
   
   try {
     const { jwtVerify } = await import('jose');
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret');
-    const { payload } = await jwtVerify(tokenMatch[1], secret);
+    const { payload } = await jwtVerify(decodeURIComponent(tokenValue), secret);
     if (payload.role !== 'admin') return null;
     return payload;
   } catch {
