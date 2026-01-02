@@ -55,5 +55,61 @@
     "createdAt": {
       "$date": "2026-01-02T16:52:57.451Z"
     }
+  },
+  {
+    "_id": {
+      "$oid": "69580895b49e03d206c95747"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים",
+    "metadata": {
+      "type": "database",
+      "timestamp": "2026-01-02T18:04:05.956Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T18:04:05.956Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695813ef2566d1780a07541b"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695813ee2566d1780a07540c",
+    "userId": "695813ee2566d1780a07540c",
+    "userEmail": "m0507123331@gmail.com",
+    "description": "התחברות למערכת: m0507123331@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-02T18:52:31.049Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T18:52:31.049Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695816e1d953b81ac2f095c4"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695813ee2566d1780a07540c",
+    "userId": "695813ee2566d1780a07540c",
+    "userEmail": "m0507123331@gmail.com",
+    "description": "התחברות למערכת: m0507123331@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-02T19:05:05.542Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T19:05:05.542Z"
+    }
   }
 ]
