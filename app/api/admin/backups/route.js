@@ -130,81 +130,50 @@ export async function POST(req) {
     }
 
     if (action === 'deploy') {
-      // Run the deploy script
-      const { stdout, stderr } = await execAsync('npx vercel --prod', {
-        cwd: process.cwd(),
-        timeout: 300000 // 5 minutes timeout for deploy
-      });
-      
-      // Log deploy action
+      // In Vercel serverless, we can't run deploy commands
+      // Deploy happens automatically when pushing to GitHub
       await logAdminActivity({
         action: 'deploy',
         entity: 'system',
         userId: user.userId,
         userEmail: user.email,
-        description: 'Deploy לפרודקשן',
-        metadata: { platform: 'vercel' }
+        description: 'בקשת Deploy - מתבצע אוטומטית דרך GitHub',
+        metadata: { platform: 'vercel', method: 'git_push' }
       });
 
       return NextResponse.json({ 
         success: true, 
-        message: 'Deploy ל-Vercel הושלם בהצלחה!',
-        output: stdout 
+        message: 'Deploy ל-Vercel מתבצע אוטומטית! כשאתה דוחף קוד ל-GitHub, Vercel מעדכן את האתר תוך 1-2 דקות.',
+        info: 'לצפייה בסטטוס: https://vercel.com/vipos-projects-0154d019'
       });
     }
 
     if (action === 'update') {
-      // Run git pull and npm install
-      const { stdout: gitOut } = await execAsync('git pull', {
-        cwd: process.cwd(),
-        timeout: 60000
-      });
-      const { stdout: npmOut } = await execAsync('npm install', {
-        cwd: process.cwd(),
-        timeout: 120000
-      });
-      
-      // Log update action
-      await logAdminActivity({
-        action: 'update',
-        entity: 'system',
-        userId: user.userId,
-        userEmail: user.email,
-        description: 'עדכון מערכת (git pull + npm install)',
-        metadata: { type: 'system_update' }
-      });
-
+      // In Vercel serverless, we can't run git/npm commands
+      // Provide instructions for local update
       return NextResponse.json({ 
         success: true, 
-        message: 'עדכון המערכת הושלם בהצלחה!',
-        output: gitOut + '\n' + npmOut 
+        message: 'עדכון מערכת זמין רק בסביבה מקומית. הרץ את הפקודות הבאות בטרמינל:',
+        commands: [
+          'cd vipo-agents-test',
+          'git pull',
+          'npm install',
+          'git push'
+        ],
+        info: 'לאחר ה-push, Vercel יעדכן את האתר אוטומטית.'
       });
     }
 
     if (action === 'server') {
-      // Kill existing node processes and start dev server
-      try {
-        // Try to kill existing processes on port 3001
-        await execAsync('npx kill-port 3001', {
-          cwd: process.cwd(),
-          timeout: 10000
-        }).catch(() => {}); // Ignore errors if no process to kill
-      } catch {
-        // Ignore errors
-      }
-      
-      // Start the dev server in background (detached)
-      const { spawn } = require('child_process');
-      const child = spawn('npm', ['run', 'dev'], {
-        cwd: process.cwd(),
-        detached: true,
-        stdio: 'ignore'
-      });
-      child.unref();
-      
+      // Local server - not applicable in Vercel
       return NextResponse.json({ 
         success: true, 
-        message: 'השרת המקומי הופעל! http://localhost:3001'
+        message: 'הפעלת שרת מקומי זמינה רק במחשב שלך. הרץ בטרמינל:',
+        commands: [
+          'cd vipo-agents-test',
+          'npm run dev'
+        ],
+        info: 'השרת יפעל בכתובת: http://localhost:3001'
       });
     }
 
