@@ -6,8 +6,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { requireAdminApi } from '@/lib/auth/server';
 import { isPriorityConfigured } from '@/lib/priority/client';
 import { createPriorityDocuments } from '@/lib/priority/syncService';
 import dbConnect from '@/lib/dbConnect';
@@ -17,10 +16,7 @@ import IntegrationSyncMap from '@/models/IntegrationSyncMap';
 
 export async function POST(req, { params }) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user?.role !== 'admin') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    await requireAdminApi(req);
 
     if (!isPriorityConfigured()) {
       return NextResponse.json({ 
@@ -74,10 +70,7 @@ export async function POST(req, { params }) {
 
 export async function GET(req, { params }) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user?.role !== 'admin') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    await requireAdminApi(req);
 
     await dbConnect();
 

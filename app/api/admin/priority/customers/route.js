@@ -6,18 +6,14 @@
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { requireAdminApi } from '@/lib/auth/server';
 import dbConnect from '@/lib/dbConnect';
 import User from '@/models/User';
 import IntegrationSyncMap from '@/models/IntegrationSyncMap';
 
 export async function GET(req) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user?.role !== 'admin') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    await requireAdminApi(req);
 
     await dbConnect();
 
