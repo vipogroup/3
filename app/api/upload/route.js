@@ -7,6 +7,8 @@ export const maxDuration = 60; // 60 seconds timeout
 
 import { NextResponse } from 'next/server';
 import { getCloudinary } from '@/lib/cloudinary';
+import { requireAuthApi } from '@/lib/auth/server';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 function uploadBufferToCloudinary(buffer, options = {}) {
   const cloudinary = getCloudinary();
@@ -24,6 +26,20 @@ function uploadBufferToCloudinary(buffer, options = {}) {
 
 export async function POST(req) {
   try {
+    // Authentication required
+    let user;
+    try {
+      user = await requireAuthApi(req);
+    } catch (authErr) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Rate limiting: 10 uploads per 5 minutes
+    const rateLimit = checkRateLimit(req, 'upload', { maxRequests: 10, windowMs: 5 * 60 * 1000 });
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: rateLimit.message }, { status: 429 });
+    }
+
     // Check Cloudinary credentials
     if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
       console.error('Missing Cloudinary credentials');
