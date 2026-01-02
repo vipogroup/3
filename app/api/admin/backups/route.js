@@ -201,19 +201,81 @@ export async function POST(req) {
     }
 
     if (action === 'update') {
-      // In Vercel serverless, we can't run git/npm commands
-      // Provide instructions for local update
-      return NextResponse.json({ 
-        success: true, 
-        message: 'עדכון מערכת זמין רק בסביבה מקומית. הרץ את הפקודות הבאות בטרמינל:',
-        commands: [
-          'cd vipo-agents-test',
-          'git pull',
-          'npm install',
-          'git push'
-        ],
-        info: 'לאחר ה-push, Vercel יעדכן את האתר אוטומטית.'
-      });
+      // Check if running locally (not on Vercel)
+      const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+      
+      if (isLocal) {
+        try {
+          // Run git pull in local environment
+          const cwd = process.cwd();
+          console.log('[Update] Running git pull in:', cwd);
+          
+          const { stdout: pullOutput, stderr: pullError } = await execAsync('git pull origin main', { cwd });
+          
+          let updateResult = pullOutput || '';
+          let hasChanges = !updateResult.includes('Already up to date');
+          
+          // Log the activity
+          await logAdminActivity({
+            action: 'update',
+            entity: 'system',
+            userId: user.userId,
+            userEmail: user.email,
+            description: hasChanges ? 'עדכון מערכת בוצע - נמשכו שינויים חדשים' : 'עדכון מערכת - אין שינויים חדשים',
+            metadata: { type: 'git_pull', hasChanges, output: updateResult.substring(0, 500) }
+          });
+
+          if (hasChanges) {
+            // Run npm install if there are changes
+            console.log('[Update] Running npm install...');
+            try {
+              await execAsync('npm install', { cwd, timeout: 120000 });
+            } catch (npmErr) {
+              console.log('[Update] npm install warning:', npmErr.message);
+            }
+            
+            return NextResponse.json({ 
+              success: true, 
+              message: 'עדכון מערכת הושלם בהצלחה! נמשכו שינויים חדשים.',
+              details: updateResult,
+              info: 'מומלץ להפעיל מחדש את השרת המקומי לטעינת השינויים.',
+              hasChanges: true
+            });
+          } else {
+            return NextResponse.json({ 
+              success: true, 
+              message: 'המערכת מעודכנת! אין שינויים חדשים.',
+              details: updateResult,
+              hasChanges: false
+            });
+          }
+        } catch (error) {
+          console.error('[Update] Error:', error);
+          return NextResponse.json({ 
+            success: false, 
+            error: 'שגיאה בעדכון המערכת',
+            details: error.message,
+            commands: [
+              'git pull origin main',
+              'npm install'
+            ],
+            info: 'נסה להריץ את הפקודות ידנית בטרמינל.'
+          }, { status: 500 });
+        }
+      } else {
+        // In Vercel serverless, provide instructions
+        return NextResponse.json({ 
+          success: true, 
+          message: 'בסביבת Vercel, העדכון מתבצע אוטומטית עם git push.',
+          commands: [
+            'git pull origin main',
+            'git add .',
+            'git commit -m "Update"',
+            'git push origin main'
+          ],
+          info: 'לאחר ה-push, Vercel יעדכן את האתר אוטומטית.'
+        });
+      }
     }
 
     if (action === 'server') {
