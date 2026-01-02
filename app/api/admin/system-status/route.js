@@ -108,20 +108,13 @@ function checkTwilio() {
   return { status: 'connected', message: 'Twilio מוגדר - SMS/WhatsApp פעיל' };
 }
 
-// Check SMTP - for email sending
-function checkSMTP() {
-  const hasHost = checkEnvVar('SMTP_HOST') || checkEnvVar('SMTP_SERVER');
-  const hasUser = checkEnvVar('SMTP_USER') || checkEnvVar('SMTP_USERNAME');
-  const hasPass = checkEnvVar('SMTP_PASS') || checkEnvVar('SMTP_PASSWORD');
-  
-  if (!hasHost || !hasUser || !hasPass) {
-    const missing = [];
-    if (!hasHost) missing.push('SMTP_HOST');
-    if (!hasUser) missing.push('SMTP_USER');
-    if (!hasPass) missing.push('SMTP_PASS');
-    return { status: 'error', message: `חסרים משתני SMTP: ${missing.join(', ')} - שליחת אימיילים לא תעבוד` };
+// Check SendGrid - for email sending
+function checkSendGrid() {
+  const hasApiKey = checkEnvVar('SENDGRID_API_KEY');
+  if (!hasApiKey) {
+    return { status: 'error', message: 'SENDGRID_API_KEY לא מוגדר - שליחת אימיילים לא תעבוד' };
   }
-  return { status: 'connected', message: 'SMTP מוגדר - שליחת אימיילים פעילה' };
+  return { status: 'connected', message: 'SendGrid מוגדר - שליחת אימיילים פעילה' };
 }
 
 // Check NPM (always available)
@@ -151,7 +144,7 @@ export async function GET(req) {
       vercel: checkVercel(),
       github: checkGitHub(),
       cloudinary: await checkCloudinary(),
-      smtp: checkSMTP(),
+      sendgrid: checkSendGrid(),
       twilio: checkTwilio(),
       npm: checkNPM()
     };
