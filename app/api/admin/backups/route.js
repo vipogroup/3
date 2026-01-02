@@ -137,22 +137,67 @@ export async function POST(req) {
     }
 
     if (action === 'deploy') {
-      // In Vercel serverless, we can't run deploy commands
-      // Deploy happens automatically when pushing to GitHub
-      await logAdminActivity({
-        action: 'deploy',
-        entity: 'system',
-        userId: user.userId,
-        userEmail: user.email,
-        description: 'בקשת Deploy - מתבצע אוטומטית דרך GitHub',
-        metadata: { platform: 'vercel', method: 'git_push' }
-      });
+      // Use Vercel Deploy Hook if available
+      const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL;
+      
+      if (deployHookUrl) {
+        try {
+          // Trigger Vercel deploy via webhook
+          const deployRes = await fetch(deployHookUrl, { method: 'POST' });
+          
+          if (deployRes.ok) {
+            const deployData = await deployRes.json().catch(() => ({}));
+            
+            await logAdminActivity({
+              action: 'deploy',
+              entity: 'system',
+              userId: user.userId,
+              userEmail: user.email,
+              description: 'Deploy ל-Vercel הופעל בהצלחה',
+              metadata: { platform: 'vercel', method: 'deploy_hook', jobId: deployData.job?.id }
+            });
 
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Deploy ל-Vercel מתבצע אוטומטית! כשאתה דוחף קוד ל-GitHub, Vercel מעדכן את האתר תוך 1-2 דקות.',
-        info: 'לצפייה בסטטוס: https://vercel.com/vipos-projects-0154d019'
-      });
+            return NextResponse.json({ 
+              success: true, 
+              message: 'Deploy ל-Vercel הופעל בהצלחה! הבנייה תתחיל תוך מספר שניות.',
+              info: 'לצפייה בסטטוס: https://vercel.com/vipos-projects-0154d019/vipo-agents-test/deployments',
+              deployTriggered: true
+            });
+          } else {
+            throw new Error('Deploy hook failed');
+          }
+        } catch (err) {
+          console.error('Deploy hook error:', err);
+          return NextResponse.json({ 
+            success: false, 
+            error: 'Deploy נכשל. נסה שוב או בצע git push ידנית.',
+            details: err.message
+          }, { status: 500 });
+        }
+      } else {
+        // No deploy hook configured - show instructions
+        await logAdminActivity({
+          action: 'deploy',
+          entity: 'system',
+          userId: user.userId,
+          userEmail: user.email,
+          description: 'בקשת Deploy - לא הוגדר Deploy Hook',
+          metadata: { platform: 'vercel', method: 'manual' }
+        });
+
+        return NextResponse.json({ 
+          success: true, 
+          message: 'לא הוגדר Deploy Hook. לביצוע Deploy ידני:',
+          commands: [
+            'cd vipo-agents-test',
+            'git add .',
+            'git commit -m "Update"',
+            'git push'
+          ],
+          info: 'להגדרת Deploy אוטומטי, הוסף VERCEL_DEPLOY_HOOK_URL ל-.env.local',
+          needsSetup: true
+        });
+      }
     }
 
     if (action === 'update') {
@@ -175,12 +220,91 @@ export async function POST(req) {
       // Local server - not applicable in Vercel
       return NextResponse.json({ 
         success: true, 
-        message: 'הפעלת שרת מקומי זמינה רק במחשב שלך. הרץ בטרמינל:',
+        message: 'להפעלה מחדש של השרת (יסגור שרת קיים ויפתח חדש):',
         commands: [
-          'cd vipo-agents-test',
-          'npm run dev'
+          'backups\\database\\restart-server.cmd'
         ],
-        info: 'השרת יפעל בכתובת: http://localhost:3001'
+        info: 'הסקריפט יבדוק אם יש שרת פעיל על פורט 3001, יסגור אותו ויפעיל שרת חדש.\n\nאו ידנית:\n1. netstat -aon | findstr :3001\n2. taskkill /PID <מספר> /F\n3. npm run dev'
+      });
+    }
+
+    if (action === 'restore') {
+      // Restore from uploaded backup JSON
+      const { backupData } = body;
+      
+      if (!backupData || !backupData.collections) {
+        return NextResponse.json({ 
+          error: 'קובץ גיבוי לא תקין. חסר מידע על collections.' 
+        }, { status: 400 });
+      }
+
+      const { getDb } = await import('@/lib/db');
+      const db = await getDb();
+      
+      const restoredCollections = [];
+      const errors = [];
+      
+      for (const [collectionName, collectionData] of Object.entries(backupData.collections)) {
+        try {
+          const collection = db.collection(collectionName);
+          
+          // Delete existing data
+          await collection.deleteMany({});
+          
+          // Insert backup data
+          if (collectionData.data && collectionData.data.length > 0) {
+            // Convert string dates back to Date objects and handle ObjectIds
+            const docs = collectionData.data.map(doc => {
+              const processedDoc = { ...doc };
+              // Handle _id if it's an object with $oid
+              if (processedDoc._id && typeof processedDoc._id === 'object' && processedDoc._id.$oid) {
+                const { ObjectId } = require('mongodb');
+                processedDoc._id = new ObjectId(processedDoc._id.$oid);
+              }
+              return processedDoc;
+            });
+            
+            await collection.insertMany(docs);
+          }
+          
+          restoredCollections.push({
+            name: collectionName,
+            count: collectionData.data?.length || 0
+          });
+        } catch (err) {
+          console.error(`Error restoring ${collectionName}:`, err);
+          errors.push({ collection: collectionName, error: err.message });
+        }
+      }
+      
+      // Log restore action
+      await logAdminActivity({
+        action: 'restore',
+        entity: 'system',
+        userId: user.userId,
+        userEmail: user.email,
+        description: 'שחזור מסד נתונים מגיבוי',
+        metadata: { 
+          type: 'database',
+          backupTimestamp: backupData.timestamp,
+          collectionsRestored: restoredCollections.length,
+          errors: errors.length
+        }
+      });
+
+      if (errors.length > 0) {
+        return NextResponse.json({ 
+          success: true,
+          message: `שחזור הושלם עם ${errors.length} שגיאות`,
+          restored: restoredCollections,
+          errors
+        });
+      }
+
+      return NextResponse.json({ 
+        success: true, 
+        message: `שחזור הושלם בהצלחה! שוחזרו ${restoredCollections.length} קולקציות.`,
+        restored: restoredCollections
       });
     }
 
