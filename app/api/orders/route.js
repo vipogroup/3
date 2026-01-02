@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb';
 import { cookies } from 'next/headers';
 
 import { getDb } from '@/lib/db';
+import { escapeRegex } from '@/lib/utils/sanitize';
 import { calcTotals } from '@/lib/orders/calc.js';
 import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
@@ -60,10 +61,11 @@ export async function GET(req) {
     }
     if (status) criteria.push({ status });
     if (q) {
+      const safeQ = escapeRegex(q);
       criteria.push({
         $or: [
-        { 'customer.phone': { $regex: q, $options: 'i' } },
-        { 'items.sku': { $regex: q, $options: 'i' } },
+        { 'customer.phone': { $regex: safeQ, $options: 'i' } },
+        { 'items.sku': { $regex: safeQ, $options: 'i' } },
         ],
       });
     }

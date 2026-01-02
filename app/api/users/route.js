@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 
 import { getDb } from '@/lib/db';
+import { escapeRegex } from '@/lib/utils/sanitize';
 import { hashPassword } from '@/lib/auth/hash';
 import { verify as verifyJwt } from '@/lib/auth/createToken';
 import { getToken as getNextAuthToken } from 'next-auth/jwt';
@@ -85,10 +86,11 @@ export async function GET(req) {
     
     // חיפוש לפי טלפון, מייל או שם
     if (search) {
+      const safeSearch = escapeRegex(search);
       filter.$or = [
-        { fullName: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { phone: { $regex: search, $options: 'i' } },
+        { fullName: { $regex: safeSearch, $options: 'i' } },
+        { email: { $regex: safeSearch, $options: 'i' } },
+        { phone: { $regex: safeSearch, $options: 'i' } },
       ];
     }
     

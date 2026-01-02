@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth/server';
+import { escapeRegex } from '@/lib/utils/sanitize';
 import dbConnect from '@/lib/dbConnect';
 import User from '@/models/User';
 import IntegrationSyncMap from '@/models/IntegrationSyncMap';
@@ -33,11 +34,12 @@ export async function GET(req) {
     }
     
     if (search) {
+      const safeSearch = escapeRegex(search);
       query.$or = [
-        { fullName: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { phone: { $regex: search, $options: 'i' } },
-        { priorityCustomerId: { $regex: search, $options: 'i' } },
+        { fullName: { $regex: safeSearch, $options: 'i' } },
+        { email: { $regex: safeSearch, $options: 'i' } },
+        { phone: { $regex: safeSearch, $options: 'i' } },
+        { priorityCustomerId: { $regex: safeSearch, $options: 'i' } },
       ];
     }
 
