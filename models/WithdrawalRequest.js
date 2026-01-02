@@ -18,9 +18,14 @@ const WithdrawalRequestSchema = new mongoose.Schema(
       required: true,
       min: 1,
     },
+    currency: {
+      type: String,
+      default: 'ILS',
+      uppercase: true,
+    },
     status: {
       type: String,
-      enum: ['pending', 'approved', 'rejected', 'completed'],
+      enum: ['pending', 'under_review', 'approved', 'processing', 'completed', 'rejected'],
       default: 'pending',
       index: true,
     },
@@ -32,6 +37,21 @@ const WithdrawalRequestSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+
+    // === Review Process ===
+    reviewedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    reviewedAt: {
+      type: Date,
+    },
+    reviewNotes: {
+      type: String,
+      default: '',
+    },
+
+    // === Payment Process ===
     processedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -39,11 +59,53 @@ const WithdrawalRequestSchema = new mongoose.Schema(
     processedAt: {
       type: Date,
     },
+    paidBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    paidAt: {
+      type: Date,
+    },
+
+    // === Bank Details (snapshot at request time) ===
+    bankDetails: {
+      bankName: { type: String, default: null },
+      branchNumber: { type: String, default: null },
+      accountNumber: { type: String, default: null },
+      accountName: { type: String, default: null },
+    },
+    paymentMethod: {
+      type: String,
+      enum: ['bank_transfer', 'paypal', 'check', 'bit', null],
+      default: null,
+    },
+    paypalEmail: {
+      type: String,
+      default: null,
+    },
+
+    // === Payment Confirmation ===
+    paymentReference: {
+      type: String,
+      default: null,
+    },
+    paymentProof: {
+      type: String, // URL to uploaded proof image
+      default: null,
+    },
+    priorityPaymentDocId: {
+      type: String,
+      default: null,
+    },
+
+    // === Transaction Reference ===
     payoutTransactionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Transaction',
       index: true,
     },
+
+    // === Snapshot Data ===
     snapshotBalance: {
       type: Number,
       default: 0,
@@ -52,9 +114,21 @@ const WithdrawalRequestSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    snapshotAvailable: {
+      type: Number,
+      default: 0,
+    },
+
+    // === Auto Settlement ===
     autoSettled: {
       type: Boolean,
       default: false,
+    },
+
+    // === Rejection ===
+    rejectionReason: {
+      type: String,
+      default: null,
     },
   },
   {

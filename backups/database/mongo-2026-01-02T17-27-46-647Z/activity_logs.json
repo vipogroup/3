@@ -1,0 +1,59 @@
+[
+  {
+    "_id": {
+      "$oid": "6957f6e06f63ff91b7482ec9"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "692deea497ce1a2ba6d4e151",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": "m0587009938@gmail.com",
+    "description": "התחברות למערכת: m0587009938@gmail.com (admin)",
+    "metadata": {
+      "role": "admin",
+      "rememberMe": true,
+      "timestamp": "2026-01-02T16:48:32.695Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T16:48:32.695Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957f7076f63ff91b7482ece"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\nOn branch main\nYour branch is up to date with 'origin/main'.\n\nnothing to commit, working tree clean\n[WARNING] Nothing to commit or commit failed\r\n[SUCCESS] Git push completed\r\n",
+      "timestamp": "2026-01-02T16:49:11.637Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T16:49:11.638Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957f7e96f63ff91b7482ed6"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-iihz16gve-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-02T16:52:57.451Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T16:52:57.451Z"
+    }
+  }
+]

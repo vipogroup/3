@@ -66,6 +66,31 @@ const UserSchema = new mongoose.Schema(
     shippingCity: { type: String, default: '', trim: true },
     shippingZipCode: { type: String, default: '', trim: true },
 
+    // === Priority Integration ===
+    priorityCustomerId: { type: String, default: null, sparse: true, index: true },
+    vatId: { type: String, default: null, trim: true }, // מספר עוסק/ח.פ. לחשבוניות
+    companyName: { type: String, default: null, trim: true }, // שם חברה (אם רלוונטי)
+    prioritySyncStatus: {
+      type: String,
+      enum: ['pending', 'synced', 'failed', 'not_required'],
+      default: 'pending',
+    },
+    lastPrioritySyncAt: { type: Date, default: null },
+
+    // === Bank Details for Withdrawals ===
+    bankDetails: {
+      bankName: { type: String, default: null, trim: true },
+      branchNumber: { type: String, default: null, trim: true },
+      accountNumber: { type: String, default: null, trim: true },
+      accountName: { type: String, default: null, trim: true },
+    },
+    preferredPayoutMethod: {
+      type: String,
+      enum: ['bank_transfer', 'paypal', 'check', null],
+      default: null,
+    },
+    paypalEmail: { type: String, default: null, trim: true },
+
     // תאימות למודל הקודם
     createdAt: { type: Date, default: Date.now },
     isActive: { type: Boolean, default: true },
