@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { logAdminActivity } from '@/lib/auditMiddleware';
+import { rateLimiters } from '@/lib/rateLimit';
 
 // Helper to get tasks collection
 async function getTasksCollection() {
@@ -31,6 +32,11 @@ async function checkAdmin(req) {
 
 // GET - List all tasks
 export async function GET(req) {
+  const rateLimit = rateLimiters.admin(req);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
+  }
+
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

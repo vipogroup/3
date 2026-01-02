@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
+import { rateLimiters } from '@/lib/rateLimit';
 
 const HEALTH_HISTORY_COLLECTION = 'health_history';
 
@@ -25,6 +26,11 @@ async function checkAdmin(req) {
 
 // GET - Fetch health history
 export async function GET(req) {
+  const rateLimit = rateLimiters.admin(req);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
+  }
+
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

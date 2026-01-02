@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { rateLimiters } from '@/lib/rateLimit';
 
 // Helper to check if user is admin
 async function checkAdmin(req) {
@@ -254,6 +255,11 @@ function getOverallRecommendations(envScore, authScore, apiScore, dbScore, heade
 }
 
 export async function GET(req) {
+  const rateLimit = rateLimiters.admin(req);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
+  }
+
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
