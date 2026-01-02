@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
+import { rateLimiters } from '@/lib/rateLimit';
 
 const ALERTS_COLLECTION = 'system_alerts';
 
@@ -25,6 +26,12 @@ async function checkAdmin(req) {
 
 // GET - Fetch active alerts
 export async function GET(req) {
+  // Rate limiting
+  const rateLimit = rateLimiters.admin(req);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
+  }
+
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

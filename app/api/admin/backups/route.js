@@ -4,6 +4,7 @@ import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
 import { logAdminActivity } from '@/lib/auditMiddleware';
+import { rateLimiters } from '@/lib/rateLimit';
 
 const execAsync = promisify(exec);
 
@@ -30,6 +31,11 @@ async function checkAdmin(req) {
 
 // GET - List backups
 export async function GET(req) {
+  const rateLimit = rateLimiters.admin(req);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
+  }
+
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

@@ -25,7 +25,10 @@ export async function middleware(request) {
 
   const isAuthenticated = !!(legacyToken || nextAuthToken);
 
-  console.log('[MW]', pathname, 'legacy?', !!legacyToken, 'nextauth?', !!nextAuthToken);
+  // Debug logging only in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[MW]', pathname, 'legacy?', !!legacyToken, 'nextauth?', !!nextAuthToken);
+  }
 
   // Redirect authenticated users away from login page
   if (pathname === '/login') {
