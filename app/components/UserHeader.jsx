@@ -224,7 +224,7 @@ export default function UserHeader() {
 
   return (
     <header
-      className="sticky top-0 z-50 w-full bg-white shadow-md"
+      className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow-md"
       style={{
         borderBottom: '2px solid transparent',
         backgroundImage:
@@ -235,8 +235,9 @@ export default function UserHeader() {
     >
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
-          <span
-            className="font-bold text-3xl cursor-default"
+          <Link
+            href="/"
+            className="font-bold text-3xl cursor-pointer hover:opacity-80 transition-opacity"
             style={{
               background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
               WebkitBackgroundClip: 'text',
@@ -245,10 +246,10 @@ export default function UserHeader() {
             }}
           >
             VIPO
-          </span>
+          </Link>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-4 justify-end w-full">
+        <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
           {/* Install App Button */}
           <button
             onClick={() => {
@@ -262,7 +263,7 @@ export default function UserHeader() {
                 }
               }
             }}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300"
+            className="flex items-center gap-1 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all duration-300"
             style={{
               background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
               color: '#1e3a8a',
@@ -461,11 +462,34 @@ export default function UserHeader() {
             </Link>
           )}
 
+          {/* Admin Dashboard Icon - Only for admins */}
+          {user && role === 'admin' && (
+            <Link
+              href="/admin"
+              className="relative p-2 rounded-full transition-all duration-300"
+              style={{ color: pathname === '/admin' ? '#1e3a8a' : '#4b5563' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#0891b2';
+                e.currentTarget.style.background = 'rgba(8, 145, 178, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = pathname === '/admin' ? '#1e3a8a' : '#4b5563';
+                e.currentTarget.style.background = 'transparent';
+              }}
+              title="דשבורד מנהל"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </Link>
+          )}
+
           {user ? (
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setShowAccountMenu(!showAccountMenu)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300"
+                className="flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300"
                 style={{ color: pushEnabled ? '#16a34a' : '#ef4444' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.opacity = '0.8';
@@ -717,21 +741,6 @@ export default function UserHeader() {
                       </>
                     )}
 
-                    {role === 'admin' && (
-                      <Link
-                        href="/admin"
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium"
-                        style={{ color: '#1e3a8a' }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(30, 58, 138, 0.1)')}
-                        onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                        דשבורד מנהל
-                      </Link>
-                    )}
-
                     {role === 'customer' && (
                       <Link
                         href="/orders"
@@ -825,7 +834,7 @@ export default function UserHeader() {
           ) : (
             <Link
               href="/login"
-              className="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300"
               style={{
                 background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
                 boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)',

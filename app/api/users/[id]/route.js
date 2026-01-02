@@ -93,14 +93,20 @@ export async function PATCH(req, { params }) {
     if (Object.prototype.hasOwnProperty.call(body, 'isActive')) {
       updates.isActive = Boolean(body.isActive);
     }
+    const col = await usersCollection();
+    const existing = await col.findOne({ _id: objectId });
+    if (!existing) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
     if (body.role) {
       if (!['admin', 'agent', 'customer'].includes(body.role)) {
         return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
       }
       
-      // Only super admins can promote users to admin
-      if (body.role === 'admin' && !isSuperAdminUser(currentUser)) {
-        return NextResponse.json({ error: 'רק מנהלים ראשיים יכולים להעניק הרשאות מנהל' }, { status: 403 });
+      // Only super admins can change any role
+      if (!isSuperAdminUser(currentUser)) {
+        return NextResponse.json({ error: 'רק מנהלים ראשיים יכולים לשנות תפקידים' }, { status: 403 });
       }
       
       updates.role = body.role;
@@ -121,12 +127,6 @@ export async function PATCH(req, { params }) {
 
     if (!Object.keys(updates).length) {
       return NextResponse.json({ error: 'Nothing to update' }, { status: 400 });
-    }
-
-    const col = await usersCollection();
-    const existing = await col.findOne({ _id: objectId });
-    if (!existing) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     if (updates.phone) {

@@ -1,0 +1,80 @@
+import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
+
+// Helper to get tasks collection
+async function getTasksCollection() {
+  const { getDb } = await import('@/lib/db');
+  const db = await getDb();
+  return db.collection('admin_tasks');
+}
+
+// Helper to check if user is admin
+async function checkAdmin(req) {
+  const cookieHeader = req.headers.get('cookie') || '';
+  const tokenMatch = cookieHeader.match(/token=([^;]+)/);
+  if (!tokenMatch) return null;
+  
+  try {
+    const { jwtVerify } = await import('jose');
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret');
+    const { payload } = await jwtVerify(tokenMatch[1], secret);
+    if (payload.role !== 'admin') return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+// GET - List all tasks
+export async function GET(req) {
+  const user = await checkAdmin(req);
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const col = await getTasksCollection();
+    const tasks = await col.find({}).sort({ createdAt: -1 }).toArray();
+    return NextResponse.json({ tasks });
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    return NextResponse.json({ error: 'Failed to fetch tasks' }, { status: 500 });
+  }
+}
+
+// POST - Create new task
+export async function POST(req) {
+  const user = await checkAdmin(req);
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const body = await req.json();
+    const { title, description, type, priority } = body;
+
+    if (!title) {
+      return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+    }
+
+    const col = await getTasksCollection();
+    const newTask = {
+      title,
+      description: description || '',
+      type: type || 'task',
+      priority: priority || 'medium',
+      completed: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy: user.email || user.userId
+    };
+
+    const result = await col.insertOne(newTask);
+    newTask._id = result.insertedId;
+
+    return NextResponse.json({ success: true, task: newTask });
+  } catch (error) {
+    console.error('Error creating task:', error);
+    return NextResponse.json({ error: 'Failed to create task' }, { status: 500 });
+  }
+}

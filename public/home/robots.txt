@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://konim-hacham.co.il/sitemap.xml

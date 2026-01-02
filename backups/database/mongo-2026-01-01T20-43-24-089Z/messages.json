@@ -1,0 +1,1195 @@
+[
+  {
+    "_id": {
+      "$oid": "694640dce3271c617edd7c01"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "direct",
+    "targetUserId": {
+      "$oid": "6946203363bd298a2d7fef7b"
+    },
+    "message": "תקין חחחחחחחחח",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-20T06:23:24.812Z"
+        },
+        "_id": {
+          "$oid": "694640dce3271c617edd7c02"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-20T06:23:24.823Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T06:23:24.823Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6946412ba34ac9efb26ec139"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "direct",
+    "targetUserId": {
+      "$oid": "694615ef5206153e775daa29"
+    },
+    "message": "תגובה 12345",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-20T06:24:43.759Z"
+        },
+        "_id": {
+          "$oid": "6946412ba34ac9efb26ec13a"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-20T06:24:43.760Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T06:24:43.760Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69465494ff62a64231f5e389"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "direct",
+    "targetUserId": {
+      "$oid": "6946516ffeb6e3c88b41c59e"
+    },
+    "message": "000000000000",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-20T07:47:32.901Z"
+        },
+        "_id": {
+          "$oid": "69465494ff62a64231f5e38a"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-20T07:47:32.902Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T07:47:32.902Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6946658ee20a90aa1a4e2a54"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "direct",
+    "targetUserId": {
+      "$oid": "69465bbf9a45034a1a6d0d91"
+    },
+    "message": "יחיחיחי",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-20T08:59:58.186Z"
+        },
+        "_id": {
+          "$oid": "6946658ee20a90aa1a4e2a55"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-20T08:59:58.189Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-20T08:59:58.189Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6951c1b8440e0e4b2b5d2346"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "all",
+    "targetUserId": null,
+    "message": "הייצ מנהמ",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-28T23:48:08.074Z"
+        },
+        "_id": {
+          "$oid": "6951c1b8440e0e4b2b5d2347"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951c10e440e0e4b2b5d232f"
+        },
+        "readAt": {
+          "$date": "2025-12-28T23:48:33.294Z"
+        },
+        "_id": {
+          "$oid": "6951c1d1440e0e4b2b5d234b"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951c3bb440e0e4b2b5d2358"
+        },
+        "readAt": {
+          "$date": "2025-12-28T23:57:14.294Z"
+        },
+        "_id": {
+          "$oid": "6951c3da9e9f6bfb16135a95"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951c6739e9f6bfb16135ad9"
+        },
+        "readAt": {
+          "$date": "2025-12-29T00:10:47.696Z"
+        },
+        "_id": {
+          "$oid": "6951c7079e9f6bfb16135ae6"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951d7c90bcee7586156c3fe"
+        },
+        "readAt": {
+          "$date": "2025-12-29T01:25:29.989Z"
+        },
+        "_id": {
+          "$oid": "6951d8890bcee7586156c41b"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951e66d76253b6ccfb4c1cb"
+        },
+        "readAt": {
+          "$date": "2025-12-29T03:31:15.680Z"
+        },
+        "_id": {
+          "$oid": "6951f603f1af1523dd7a2660"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6952858cbe5df4cd2b6ec5e9"
+        },
+        "readAt": {
+          "$date": "2025-12-29T13:48:29.986Z"
+        },
+        "_id": {
+          "$oid": "695286adbe5df4cd2b6ec5f5"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6953a2bf0e80c969cf31f3d8"
+        },
+        "readAt": {
+          "$date": "2025-12-30T10:02:21.538Z"
+        },
+        "_id": {
+          "$oid": "6953a32d09fcf13b0b045cb3"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69543c8f71541418cca8864b"
+        },
+        "readAt": {
+          "$date": "2025-12-30T20:57:30.467Z"
+        },
+        "_id": {
+          "$oid": "69543cba71541418cca88662"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69543dc171541418cca8867e"
+        },
+        "readAt": {
+          "$date": "2025-12-30T21:02:29.808Z"
+        },
+        "_id": {
+          "$oid": "69543de591668eafae055370"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69551f84310d08ff29cd0e72"
+        },
+        "readAt": {
+          "$date": "2025-12-31T13:22:33.060Z"
+        },
+        "_id": {
+          "$oid": "69552399310d08ff29cd0e9d"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6953a2130c990eaded19c93b"
+        },
+        "readAt": {
+          "$date": "2025-12-31T17:16:57.387Z"
+        },
+        "_id": {
+          "$oid": "69555a89af96d68dd522d55f"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2025-12-31T17:46:39.200Z"
+        },
+        "_id": {
+          "$oid": "6955617f19e8d80f0b84d638"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-28T23:48:08.075Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:46:39.201Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6951c45af72c28e6fbc3a247"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "all",
+    "targetUserId": null,
+    "message": "ךלל",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-28T23:59:22.537Z"
+        },
+        "_id": {
+          "$oid": "6951c45af72c28e6fbc3a248"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951c3bb440e0e4b2b5d2358"
+        },
+        "readAt": {
+          "$date": "2025-12-29T00:00:02.286Z"
+        },
+        "_id": {
+          "$oid": "6951c482f72c28e6fbc3a24d"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951c6739e9f6bfb16135ad9"
+        },
+        "readAt": {
+          "$date": "2025-12-29T00:10:47.696Z"
+        },
+        "_id": {
+          "$oid": "6951c7079e9f6bfb16135ae5"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951d7c90bcee7586156c3fe"
+        },
+        "readAt": {
+          "$date": "2025-12-29T01:25:29.989Z"
+        },
+        "_id": {
+          "$oid": "6951d8890bcee7586156c41a"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6951e66d76253b6ccfb4c1cb"
+        },
+        "readAt": {
+          "$date": "2025-12-29T03:31:15.680Z"
+        },
+        "_id": {
+          "$oid": "6951f603f1af1523dd7a265f"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6952858cbe5df4cd2b6ec5e9"
+        },
+        "readAt": {
+          "$date": "2025-12-29T13:48:29.986Z"
+        },
+        "_id": {
+          "$oid": "695286adbe5df4cd2b6ec5f4"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6953a2bf0e80c969cf31f3d8"
+        },
+        "readAt": {
+          "$date": "2025-12-30T10:02:21.538Z"
+        },
+        "_id": {
+          "$oid": "6953a32d09fcf13b0b045cb2"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69543c8f71541418cca8864b"
+        },
+        "readAt": {
+          "$date": "2025-12-30T20:57:30.467Z"
+        },
+        "_id": {
+          "$oid": "69543cba71541418cca88661"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69543dc171541418cca8867e"
+        },
+        "readAt": {
+          "$date": "2025-12-30T21:02:29.808Z"
+        },
+        "_id": {
+          "$oid": "69543de591668eafae05536f"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69551f84310d08ff29cd0e72"
+        },
+        "readAt": {
+          "$date": "2025-12-31T13:22:33.060Z"
+        },
+        "_id": {
+          "$oid": "69552399310d08ff29cd0e9c"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "6953a2130c990eaded19c93b"
+        },
+        "readAt": {
+          "$date": "2025-12-31T17:16:57.387Z"
+        },
+        "_id": {
+          "$oid": "69555a89af96d68dd522d55e"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2025-12-31T17:46:39.200Z"
+        },
+        "_id": {
+          "$oid": "6955617f19e8d80f0b84d637"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-28T23:59:22.543Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:46:39.201Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69556acc3938b4e65230d81d"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: חיחיעח",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T18:26:20.472Z"
+        },
+        "_id": {
+          "$oid": "69556acc3938b4e65230d81e"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69551f84310d08ff29cd0e72"
+        },
+        "readAt": {
+          "$date": "2025-12-31T18:45:43.686Z"
+        },
+        "_id": {
+          "$oid": "69556f57d08383aef4f00281"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2026-01-01T00:42:18.937Z"
+        },
+        "_id": {
+          "$oid": "6955c2eac00bfc0b2afdf9bf"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T18:26:20.478Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T00:42:18.938Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69556ad53938b4e65230d824"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: חיחיעח",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T18:26:29.478Z"
+        },
+        "_id": {
+          "$oid": "69556ad53938b4e65230d825"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T18:26:29.479Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T18:26:29.479Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69556cefd08383aef4f00255"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: חליח",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T18:35:27.575Z"
+        },
+        "_id": {
+          "$oid": "69556cefd08383aef4f00256"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "69551f84310d08ff29cd0e72"
+        },
+        "readAt": {
+          "$date": "2025-12-31T18:45:43.686Z"
+        },
+        "_id": {
+          "$oid": "69556f57d08383aef4f00280"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2026-01-01T00:42:18.937Z"
+        },
+        "_id": {
+          "$oid": "6955c2eac00bfc0b2afdf9be"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T18:35:27.580Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T00:42:18.938Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69556d05d08383aef4f0025c"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: חליח",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T18:35:49.810Z"
+        },
+        "_id": {
+          "$oid": "69556d05d08383aef4f0025d"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T18:35:49.811Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T18:35:49.811Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695570e2d08383aef4f002a4"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: כורסת עיסוי חכמה",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T18:52:18.776Z"
+        },
+        "_id": {
+          "$oid": "695570e2d08383aef4f002a5"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2026-01-01T00:42:18.937Z"
+        },
+        "_id": {
+          "$oid": "6955c2eac00bfc0b2afdf9bd"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T18:52:18.779Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T00:42:18.938Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69557206e5e9812f3fb2f91a"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: כורסת עיסוי חכמה – חוויית ספא ​​יוקרתית אצלך בבית",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T18:57:10.650Z"
+        },
+        "_id": {
+          "$oid": "69557206e5e9812f3fb2f91b"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2026-01-01T00:42:18.937Z"
+        },
+        "_id": {
+          "$oid": "6955c2eac00bfc0b2afdf9bc"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T18:57:10.656Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T00:42:18.938Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695572e4e5e9812f3fb2f920"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: כורסת עיסוי חכמה – חוויית ספא ​​יוקרתית אצלך בבית",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T19:00:52.687Z"
+        },
+        "_id": {
+          "$oid": "695572e4e5e9812f3fb2f921"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T19:00:52.689Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T19:00:52.689Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69557a94485a6d1ebcd37b06"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: מכונת לייזר משולבת אנגלית",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T19:33:40.006Z"
+        },
+        "_id": {
+          "$oid": "69557a94485a6d1ebcd37b07"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2026-01-01T00:42:18.937Z"
+        },
+        "_id": {
+          "$oid": "6955c2eac00bfc0b2afdf9bb"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T19:33:40.011Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T00:42:18.938Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69557a95485a6d1ebcd37b0c"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: מכונת לייזר משולבת אנגלית",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T19:33:41.268Z"
+        },
+        "_id": {
+          "$oid": "69557a95485a6d1ebcd37b0d"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T19:33:41.269Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T19:33:41.269Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695592f50794181e6cefc88c"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: כורסת עיסוי",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T21:17:41.321Z"
+        },
+        "_id": {
+          "$oid": "695592f50794181e6cefc88d"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2026-01-01T00:42:18.937Z"
+        },
+        "_id": {
+          "$oid": "6955c2eac00bfc0b2afdf9ba"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T21:17:41.326Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T00:42:18.938Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955933e0794181e6cefc893"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: כורסת עיסוי",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T21:18:54.017Z"
+        },
+        "_id": {
+          "$oid": "6955933e0794181e6cefc894"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T21:18:54.018Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T21:18:54.018Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955aa6f777f5f9f33bd7d25"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: ניסוי מנחם",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T22:57:51.933Z"
+        },
+        "_id": {
+          "$oid": "6955aa6f777f5f9f33bd7d26"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2026-01-01T00:42:18.937Z"
+        },
+        "_id": {
+          "$oid": "6955c2eac00bfc0b2afdf9b9"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T22:57:51.938Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T00:42:18.938Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955aa84777f5f9f33bd7d2b"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: ניסוי מנחם",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T22:58:12.218Z"
+        },
+        "_id": {
+          "$oid": "6955aa84777f5f9f33bd7d2c"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T22:58:12.219Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T22:58:12.219Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955af8f40dbedfdf9bafdd0"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: חשמל",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T23:19:43.023Z"
+        },
+        "_id": {
+          "$oid": "6955af8f40dbedfdf9bafdd1"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2026-01-01T00:42:18.937Z"
+        },
+        "_id": {
+          "$oid": "6955c2eac00bfc0b2afdf9b8"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T23:19:43.034Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T00:42:18.938Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955af9140dbedfdf9bafdd4"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: חשמל",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T23:19:45.368Z"
+        },
+        "_id": {
+          "$oid": "6955af9140dbedfdf9bafdd5"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T23:19:45.370Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:19:45.370Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955b22340dbedfdf9bafe2f"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: מרים ניסוי",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T23:30:43.513Z"
+        },
+        "_id": {
+          "$oid": "6955b22340dbedfdf9bafe30"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2026-01-01T00:42:18.937Z"
+        },
+        "_id": {
+          "$oid": "6955c2eac00bfc0b2afdf9b7"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T23:30:43.525Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T00:42:18.938Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955b22440dbedfdf9bafe35"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: מרים ניסוי",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T23:30:44.308Z"
+        },
+        "_id": {
+          "$oid": "6955b22440dbedfdf9bafe36"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T23:30:44.310Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:30:44.310Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955b4c0be3f7d585f458c08"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: מכונת לייזר משולבת אנגלית",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T23:41:52.950Z"
+        },
+        "_id": {
+          "$oid": "6955b4c0be3f7d585f458c09"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695561540fbdfb9cb4ca3348"
+        },
+        "readAt": {
+          "$date": "2026-01-01T00:42:18.937Z"
+        },
+        "_id": {
+          "$oid": "6955c2eac00bfc0b2afdf9b6"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T23:41:52.955Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T00:42:18.938Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955b4f6be3f7d585f458c0c"
+    },
+    "senderId": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: מכונת לייזר משולבת אנגלית",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "69402069f10dd22ad6e73efc"
+        },
+        "readAt": {
+          "$date": "2025-12-31T23:42:46.682Z"
+        },
+        "_id": {
+          "$oid": "6955b4f6be3f7d585f458c0d"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2025-12-31T23:42:46.683Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:42:46.683Z"
+    },
+    "__v": 0
+  }
+]

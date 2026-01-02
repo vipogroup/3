@@ -113,6 +113,30 @@ export default function ProductsClient() {
     }
   };
 
+  const handleToggleFeatured = async (productId, currentFeatured) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/products/${productId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isFeatured: !currentFeatured }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data?.error || 'שגיאה בעדכון המוצר');
+        return;
+      }
+
+      await loadProducts();
+    } catch (error) {
+      console.error('Toggle featured error:', error);
+      alert('שגיאה בעדכון המוצר');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const toggleSelectionMode = () => {
     setSelectionMode((prev) => {
       const next = !prev;
@@ -409,6 +433,13 @@ export default function ProductsClient() {
                       סטטוס
                     </th>
                     <th
+                      className="px-6 py-4 text-center text-sm font-semibold"
+                      style={{ color: '#1e3a8a' }}
+                      title="מוצרים מומלצים יופיעו בדף הבית"
+                    >
+                      מומלץ
+                    </th>
+                    <th
                       className="px-6 py-4 text-right text-sm font-semibold"
                       style={{ color: '#1e3a8a' }}
                     >
@@ -475,6 +506,28 @@ export default function ProductsClient() {
                         >
                           {product.active ? 'פעיל' : 'לא פעיל'}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <button
+                          onClick={() => handleToggleFeatured(product._id, product.isFeatured)}
+                          disabled={loading}
+                          className="p-1.5 rounded-lg transition-all disabled:opacity-50"
+                          style={{
+                            background: product.isFeatured
+                              ? 'linear-gradient(135deg, #10b981 0%, #34d399 100%)'
+                              : '#e5e7eb',
+                            boxShadow: product.isFeatured ? '0 2px 8px rgba(16, 185, 129, 0.4)' : 'none',
+                          }}
+                          title={product.isFeatured ? 'הסר מדף הבית' : 'הצג בדף הבית'}
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill={product.isFeatured ? '#ffffff' : '#9ca3af'}
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                          </svg>
+                        </button>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">

@@ -1,0 +1,459 @@
+[
+  {
+    "_id": {
+      "$oid": "69556cefd08383aef4f00253"
+    },
+    "sku": "עכ6טו6יט",
+    "name": "חליח",
+    "description": "יחליחל",
+    "fullDescription": "יחליח",
+    "category": "עיסוי",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 999.99,
+    "originalPrice": 0,
+    "commission": 99.99900000000001,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 2,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T18:35:27.397Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:28:07.093Z"
+    },
+    "__v": 0,
+    "specs": {}
+  },
+  {
+    "_id": {
+      "$oid": "695570e2d08383aef4f002a2"
+    },
+    "sku": "r0010103",
+    "name": "כורסת עיסוי חכמה",
+    "description": "💆‍♀️ עיסוי עמוק. רוגע אמיתי. איכות חיים חדשה.\n\nכורסת העיסוי שלנו משלבת טכנולוגית עיסוי מתקדמת עם עיצוב יוקרתי ונוחות מקסימלית – כדי להעניק לך חוויית עיסוי מקצועית, בכל יום, בלי לצאת מהבית.",
+    "fullDescription": "🌟 יתרונות מרכזיים\n\n✔ עיסוי גוף מלא – מהצוואר ועד כפות הרגליים\n\n✔ הקלה בכאבי גב, כתפיים וצוואר\n\n✔ שיפור זרימת הדם והפחת מתחים\n\n✔ אידיאלי שימוש יומיומי – בבית או במשרד\n\n✔ תפעול קל ונוח גם למשתמשים מבוגרים",
+    "category": "עיסוי",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 20000,
+    "originalPrice": 0,
+    "commission": 2000,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": {
+      "$date": "2026-01-30T18:52:18.773Z"
+    },
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 50,
+    "groupCurrentQuantity": 25,
+    "groupPurchaseDetails": {
+      "closingDays": 30,
+      "shippingDays": 60,
+      "minQuantity": 50,
+      "currentQuantity": 25,
+      "totalDays": 90
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767206915/vipo-products/%D7%A9%D7%95%D7%90%D7%91_%D7%90%D7%91%D7%A7_xnaodj.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767206915/vipo-products/%D7%A9%D7%95%D7%90%D7%91_%D7%90%D7%91%D7%A7_xnaodj.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767206915/vipo-products/%D7%A9%D7%95%D7%90%D7%91_%D7%90%D7%91%D7%A7_xnaodj.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767206922/vipo-products/%D7%9E%D7%99%D7%A7%D7%A1%D7%A8_qcdcbv.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767206925/vipo-products/%D7%92%D7%9C%D7%A9%D7%9F_%D7%97%D7%A9%D7%9E%D7%9C%D7%99_yib6on.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767206934/vipo-products/mixer_bgbmmu.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767206937/vipo-products/massage_o1ogf4.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 50,
+    "rating": 4.5,
+    "reviews": 10,
+    "features": [
+      "🧠 טכנולוגית עיסוי חכמה  הכורסת מצוידת מערכת עיסוי מתקדמת המדמה ידיים אנושיות, עם שילוב של:  עיסוי לישה (לישה)  עיסואי הקשה (Tapping)  עיסואי שוודי  עיסואי מתיחה  עיסוי שיאצו עמוק  כמות התוכניות מתאימות לעצמן לגוף משתמש ולנקודות הלחץ – לחוויית עיסוי מותאמת אישית.",
+      "🪑 נוחות ועיצוב  תנוחת אפס כבידה (Zero Gravity) להפחתת עומס מהגב  ריפוד איכותי, עמיד ונעים למגע  מבנה ארגונומי מתאים לכל מבנה גוף  עיצוב יוקרתי המשתלב בכל סלון או חדר עבודה",
+      "🎛 שליטה חכמה  שלט דיגיטלי / מסך תצוגה ברור  בחירת תוכניות מוכנות מראש  שליטה בעוצמה, מהירות ואזורי עיסוי  אפשרות להפעלת חימום והרפיה עמוקה",
+      "👣 עיסוי רגליים וכפות רגליים  גלגלות עיסוי לכפות הרגליים  כריות אוויר ללחיצה עדינה על השוקיים  חימום באזור הרגליים (בדגמים תומכים)"
+    ],
+    "specs": {
+      "מפרט 3": "🔌מפרט טכני (כללי)  מתח עבודה: ‎110–240V  הספק: חסכוני ויעיל  חומר שלדת מתכת + ריפוד איכותי  מנגנוני בטיחות: הגנת עומס וכיבוי אוטומטי"
+    },
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T18:52:18.593Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T21:18:21.506Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69557206e5e9812f3fb2f918"
+    },
+    "sku": "7u8i9ouy",
+    "name": "כורסת עיסוי חכמה – חוויית ספא ​​יוקרתית אצלך בבית",
+    "description": "💆‍♀️ עיסוי עמוק. רוגע אמיתי. איכות חיים חדשה.\n\nכורסת העיסוי שלנו משלבת טכנולוגית עיסוי מתקדמת עם עיצוב יוקרתי ונוחות מקסימלית – כדי להעניק לך חוויית עיסוי מקצועית, בכל יום, בלי לצאת מהבית.",
+    "fullDescription": "🌟 יתרונות מרכזיים\n\n✔ עיסוי גוף מלא – מהצוואר ועד כפות הרגליים\n\n✔ הקלה בכאבי גב, כתפיים וצוואר\n\n✔ שיפור זרימת הדם והפחת מתחים\n\n✔ אידיאלי שימוש יומיומי – בבית או במשרד\n\n✔ תפעול קל ונוח גם למשתמשים מבוגרים",
+    "category": "עיסוי",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 25000,
+    "originalPrice": 0,
+    "commission": 2500,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767207281/vipo-products/massage_cqo9od.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767207281/vipo-products/massage_cqo9od.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767207281/vipo-products/massage_cqo9od.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767207291/vipo-products/mixer_kbohn0.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767207296/vipo-products/%D7%9E%D7%99%D7%A7%D7%A1%D7%A8_qa0xq3.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 50,
+    "rating": 4.5,
+    "reviews": 15,
+    "features": [
+      "🧠 טכנולוגית עיסוי חכמה  הכורסת מצוידת מערכת עיסוי מתקדמת המדמה ידיים אנושיות, עם שילוב של:  עיסוי לישה (לישה)  עיסואי הקשה (Tapping)  עיסואי שוודי  עיסואי מתיחה  עיסוי שיאצו עמוק  כמות התוכניות מתאימות לעצמן לגוף משתמש ולנקודות הלחץ – לחוויית עיסוי מותאמת אישית.",
+      "🪑 נוחות ועיצוב  תנוחת אפס כבידה (Zero Gravity) להפחתת עומס מהגב  ריפוד איכותי, עמיד ונעים למגע  מבנה ארגונומי מתאים לכל מבנה גוף  עיצוב יוקרתי המשתלב בכל סלון או חדר עבודה",
+      "👣 עיסוי רגליים וכפות רגליים  גלגלות עיסוי לכפות הרגליים  כריות אוויר ללחיצה עדינה על השוקיים  חימום באזור הרגליים (בדגמים תומכים)",
+      "🎛 שליטה חכמה  שלט דיגיטלי / מסך תצוגה ברור  בחירת תוכניות מוכנות מראש  שליטה בעוצמה, מהירות ואזורי עיסוי  אפשרות להפעלת חימום והרפיה עמוקה"
+    ],
+    "specs": {},
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T18:57:10.461Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T22:52:16.516Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69557a92485a6d1ebcd37afb"
+    },
+    "sku": "5sds5d5sd5s",
+    "name": "מכונת לייזר משולבת אנגלית",
+    "description": "ינינ",
+    "fullDescription": "ככ",
+    "category": "קוסמטיקה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 3500,
+    "originalPrice": 5900,
+    "commission": 350,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767209612/vipo-products/massage_yvgmbt.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767209612/vipo-products/massage_yvgmbt.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767209612/vipo-products/massage_yvgmbt.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 90,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T19:33:38.803Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T19:33:38.803Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695592f50794181e6cefc88a"
+    },
+    "sku": "עכ6טו6יט",
+    "name": "כורסת עיסוי",
+    "description": "תיוא ר",
+    "fullDescription": "כב טיח",
+    "category": "עיסוי",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 3500,
+    "originalPrice": 5000,
+    "commission": 350,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": {
+      "$date": "2026-02-09T21:17:41.516Z"
+    },
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 10,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": {
+      "closingDays": 40,
+      "shippingDays": 60,
+      "minQuantity": 10,
+      "currentQuantity": 0,
+      "totalDays": 100
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767215845/vipo-products/massage_envqre.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767215845/vipo-products/massage_envqre.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767215845/vipo-products/massage_envqre.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": false,
+    "stockCount": 59,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T21:17:41.147Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T21:17:41.147Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955aa6f777f5f9f33bd7d23"
+    },
+    "sku": "5sds5d5sd5s",
+    "name": "ניסוי מנחם",
+    "description": "תיאור קצר של מוצר",
+    "fullDescription": "עיסוי עמוק. רוגע אמיתי. איכות חיים חדשה.\n\nכורסת העיסוי שלנו משלבת טכנולוגית עיסוי מתקדמת עם עיצוב יוקרתי ונוחות מקסימלית – כדי להעניק לך חוויית עיסוי מקצועית, בכל יום, בלי לצאת מהבית.",
+    "category": "עיסוי",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 1900,
+    "originalPrice": 4000,
+    "commission": 190,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767221750/vipo-products/mixer_qbu2wm.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767221750/vipo-products/mixer_qbu2wm.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767221750/vipo-products/mixer_qbu2wm.jpg",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767221756/vipo-products/%D7%92%D7%9C%D7%A9%D7%9F_%D7%97%D7%A9%D7%9E%D7%9C%D7%99_fzbyh9.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 59,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [
+      "יתרונות מרכזיים  ✔ עיסוי גוף מלא – מהצוואר ועד כפות הרגליים  ✔ הקלה בכאבי גב, כתפיים וצוואר  ✔ שיפור זרימת הדם והפחת מתחים  ✔ אידיאלי שימוש יומיומי – בבית או במשרד  ✔ תפעול קל ונוח גם למשתמשים מבוגרים",
+      "🧠 טכנולוגית עיסוי חכמה  הכורסת מצוידת מערכת עיסוי מתקדמת המדמה ידיים אנושיות, עם שילוב של:  עיסוי לישה (לישה)  עיסואי הקשה (Tapping)  עיסואי שוודי  עיסואי מתיחה  עיסוי שיאצו עמוק  כמות התוכניות מתאימות לעצמן לגוף משתמש ולנקודות הלחץ – לחוויית עיסוי מותאמת אישית.",
+      "🪑 נוחות ועיצוב  תנוחת אפס כבידה (Zero Gravity) להפחתת עומס מהגב  ריפוד איכותי, עמיד ונעים למגע  מבנה ארגונומי מתאים לכל מבנה גוף  עיצוב יוקרתי המשתלב בכל סלון או חדר עבודה",
+      "עיסוי רגליים וכפות רגליים  גלגלות עיסוי לכפות הרגליים  כריות אוויר ללחיצה עדינה על השוקיים  חימום באזור הרגליים (בדגמים תומכים)"
+    ],
+    "specs": {},
+    "suitableFor": "",
+    "whyChooseUs": "",
+    "warranty": "",
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T22:57:51.744Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:06:19.333Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955af8e40dbedfdf9bafdcd"
+    },
+    "sku": "",
+    "name": "חשמל",
+    "description": "חש",
+    "fullDescription": "חשידי",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 1700,
+    "originalPrice": 2000,
+    "commission": 170,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767223179/vipo-products/IMG_6590_xsefjm.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767223179/vipo-products/IMG_6590_xsefjm.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767223179/vipo-products/IMG_6590_xsefjm.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 70,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [
+      "מושחם",
+      "כל הכבוד",
+      "יופי"
+    ],
+    "specs": "דגם: Premium Massage Chair X\nסוג: כורסת עיסוי חשמלית רב־תוכנית\nייעוד: עיסוי גוף מלא – ביתי / קליניקות / משרדים\n\nמערכת עיסוי\n\t•\tטכנולוגיית עיסוי: 4D מתקדמת (תנועה קדימה/אחורה, למעלה/למטה, עומק משתנה)\n\t•\tמסילות עיסוי: SL-Track – מהצוואר ועד הירכיים\n\t•\tמספר ראשי עיסוי: 6–8 ראשים עצמאיים\n\t•\tהתאמת עוצמה: 5–10 דרגות עיסוי\n\t•\tהתאמה אוטומטית למבנה הגוף: סריקת גוף חכמה (Body Scan)\n\nאזורי עיסוי\n\t•\tצוואר וכתפיים\n\t•\tגב עליון, אמצעי ותחתון\n\t•\tמותניים ועמוד שדרה\n\t•\tישבן וירכיים\n\t•\tשוקיים וכפות רגליים\n\nתוכניות עיסוי\n\t•\tתוכניות אוטומטיות:\n\t•\tרגיעה\n\t•\tעיסוי עמוק\n\t•\tשחרור מתחים\n\t•\tעיסוי שוודי\n\t•\tעיסוי רפואי / טיפולי\n\t•\tעיסוי אנרגטי\n\t•\tתוכניות ידניות בהתאמה אישית מלאה\n\nמערכת רגליים וכפות רגליים\n\t•\tעיסוי כפות רגליים בשילוב גלילים\n\t•\tלחץ אוויר (Airbags) רב־נקודתי\n\t•\tהתאמת אורך רגלית אוטומטית\n\t•\tחימום לכפות הרגליים (בדגמים תומכים)\n\nפונקציות מתקדמות\n\t•\tמצב Zero Gravity – חלוקת משקל אופטימלית\n\t•\tחימום אינפרא־אדום לגב התחתון\n\t•\tרמקולים Bluetooth מובנים\n\t•\tשליטה:\n\t•\tמסך מגע צבעוני\n\t•\tשלט חכם\n\t•\t(אופציונלי) שליטה קולית\n\t•\tטיימר: 5–30 דקות\n\t•\tזיכרון משתמשים: עד 3–5 פרופילים\n\nמפרט טכני\n\t•\tמתח חשמלי: ‎220–240V\n\t•\tהספק: ‎180–300W\n\t•\tרמת רעש: שקטה במיוחד (<55dB)\n\t•\tחומר ריפוד: עור סינתטי איכותי / PU Premium\n\t•\tשלדת כורסה: פלדה מחוזקת\n\nמידות ומשקל\n\t•\tמידות במצב רגיל:\nרוחב: ~75 ס”מ | עומק: ~140 ס”מ | גובה: ~120 ס”מ\n\t•\tמידות במצב שכיבה:\nעומק: עד ~185 ס”מ\n\t•\tמשקל כורסה: 90–130 ק”ג\n\t•\tמשקל משתמש מקסימלי: עד 150 ק”ג\n",
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T23:19:42.884Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:37:14.432Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955b22340dbedfdf9bafe2d"
+    },
+    "sku": "189",
+    "name": "מרים ניסוי",
+    "description": "תיאור חדש",
+    "fullDescription": "תיאור",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 610,
+    "originalPrice": 700,
+    "commission": 61,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767223810/vipo-products/IMG_6589_s34twf.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767223810/vipo-products/IMG_6589_s34twf.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767223810/vipo-products/IMG_6589_s34twf.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 60,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [
+      "מוש",
+      "יופי"
+    ],
+    "specs": "מתח עבודה: ‎110–240V\n\t•\tהספק: חסכוני ויעיל\n\t•\tחומרים: שלדת מתכת + ריפוד איכותי\n\t•\tמנגנוני בטיחות: הגנת עומס וכיבוי אוטומטי\n",
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T23:30:43.381Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:30:43.381Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955b4c0be3f7d585f458c06"
+    },
+    "sku": "5sds5d5sd5s",
+    "name": "מכונת לייזר משולבת",
+    "description": "עט",
+    "fullDescription": "אטמע",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 3500,
+    "originalPrice": 9000,
+    "commission": 350,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767224494/vipo-products/%D7%9E%D7%99%D7%A7%D7%A1%D7%A8_pvpfnw.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767224494/vipo-products/%D7%9E%D7%99%D7%A7%D7%A1%D7%A8_pvpfnw.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767224494/vipo-products/%D7%9E%D7%99%D7%A7%D7%A1%D7%A8_pvpfnw.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 60,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [
+      "ימ"
+    ],
+    "specs": "6אטו",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "archivedAt": null,
+    "createdAt": {
+      "$date": "2025-12-31T23:41:52.776Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:52:44.483Z"
+    },
+    "__v": 0
+  }
+]

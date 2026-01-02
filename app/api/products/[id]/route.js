@@ -114,6 +114,12 @@ export async function PUT(req, { params }) {
     if (body.customFields !== undefined) {
       update.customFields = Array.isArray(body.customFields) ? body.customFields : [];
     }
+    if (typeof body.active === 'boolean') {
+      update.active = body.active;
+    }
+    if (typeof body.isFeatured === 'boolean') {
+      update.isFeatured = body.isFeatured;
+    }
 
     if (body.catalogId || body.catalogSlug) {
       let catalogDoc = null;

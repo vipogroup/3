@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { hasPermission, ADMIN_PERMISSIONS, isSuperAdminUser } from '@/lib/superAdmins';
 
 function DashboardIcon({ className = 'w-6 h-6' }) {
   return (
@@ -256,6 +257,33 @@ export default function AdminDashboardClient() {
   const [user, setUser] = useState(null);
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [openCategory, setOpenCategory] = useState(null);
+  const [infoTooltip, setInfoTooltip] = useState(null);
+  const [systemStatus, setSystemStatus] = useState({});
+  const [statusLoading, setStatusLoading] = useState(false);
+  const [alertCount, setAlertCount] = useState(0);
+
+  const backupInfoTexts = {
+    backup: 'יוצר גיבוי חדש של כל הקבצים והנתונים במערכת. מומלץ לבצע לפני כל עדכון גדול.',
+    update: 'מושך את הקוד העדכני מהשרת (git pull) ומתקין תלויות חדשות (npm install). השתמש כשיש עדכונים בקוד.',
+    server: 'מפעיל את השרת המקומי לפיתוח בפורט 3001. סוגר שרת קיים אם יש ומפעיל חדש.',
+    manual: 'מציג את כל הפקודות הידניות שניתן להריץ בטרמינל. לשימוש מתקדם בלבד.',
+    deploy: 'מעלה את הגרסה העדכנית לשרת Vercel בפרודקשן. האתר יתעדכן תוך כ-2 דקות.',
+    restore: 'משחזר גיבוי קודם. שים לב: פעולה זו תדרוס את הנתונים הנוכחיים!'
+  };
+
+  const systemsInfoTexts = {
+    github: 'מאגר הקוד של הפרויקט. כאן נשמר כל הקוד והיסטוריית השינויים. לחץ לפתיחת GitHub.',
+    mongodb: 'מסד הנתונים הראשי של המערכת. כאן נשמרים משתמשים, הזמנות, מוצרים וכל הנתונים.',
+    vercel: 'פלטפורמת האחסון של האתר בפרודקשן. Deploy אוטומטי מ-GitHub.',
+    render: 'לא בשימוש בפרויקט זה. ניתן להסיר מהרשימה.',
+    cloudinary: 'שירות אחסון תמונות ומדיה בענן. משמש להעלאת תמונות מוצרים ותוכן.',
+    firebase: 'לא בשימוש בפרויקט זה. ניתן להסיר מהרשימה.',
+    sendgrid: 'לא בשימוש - המערכת משתמשת ב-Resend לשליחת אימיילים.',
+    twilio: 'שירות SMS/WhatsApp לשליחת קודי OTP לאימות משתמשים.',
+    resend: 'שירות שליחת אימיילים. משמש לאימות אימייל, הודעות מערכת ועוד.',
+    npm: 'מנהל החבילות של Node.js - ספריות הקוד של הפרויקט.'
+  };
 
   const loadData = useCallback(async () => {
     try {
@@ -287,9 +315,51 @@ export default function AdminDashboardClient() {
     }
   }, [router]);
 
+  const checkSystemStatus = useCallback(async () => {
+    setStatusLoading(true);
+    try {
+      const res = await fetch('/api/admin/system-status');
+      if (res.ok) {
+        const data = await res.json();
+        setSystemStatus(data.results || {});
+      }
+    } catch (error) {
+      console.error('Failed to check system status:', error);
+    } finally {
+      setStatusLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // Check system status when systems category is opened
+  useEffect(() => {
+    if (openCategory === 'systems' && Object.keys(systemStatus).length === 0) {
+      checkSystemStatus();
+    }
+  }, [openCategory, systemStatus, checkSystemStatus]);
+
+  // Fetch alert count
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        const res = await fetch('/api/admin/alerts?unread=true');
+        if (res.ok) {
+          const data = await res.json();
+          setAlertCount(data.unreadCount || 0);
+        }
+      } catch (e) {
+        console.error('Failed to fetch alerts:', e);
+      }
+    };
+    if (user) {
+      fetchAlerts();
+      const interval = setInterval(fetchAlerts, 60000); // Refresh every minute
+      return () => clearInterval(interval);
+    }
+  }, [user]);
 
   if (loading) {
     return (
@@ -320,11 +390,19 @@ export default function AdminDashboardClient() {
 
   const stats = dashboardData?.stats || {};
 
+  // Helper function to check permissions
+  const canAccess = (permission) => hasPermission(user, permission);
+  const isSuperAdmin = isSuperAdminUser(user);
+
+  const toggleCategory = (category) => {
+    setOpenCategory(openCategory === category ? null : category);
+  };
+
   return (
     <main className="min-h-screen bg-white p-3 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-4 sm:mb-6">
+        <div className="mb-4 sm:mb-6 flex items-center justify-between">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
             <span
               className="flex items-center gap-2 sm:gap-3"
@@ -342,190 +420,503 @@ export default function AdminDashboardClient() {
               דשבורד מנהל
             </span>
           </h1>
+          {isSuperAdmin && (
+            <div className="flex items-center gap-2">
+              <Link
+                href="/admin/monitor"
+                className="relative flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                {alertCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                    {alertCount > 9 ? '9+' : alertCount}
+                  </span>
+                )}
+              </Link>
+              <Link
+                href="/admin/monitor"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                מוניטור
+              </Link>
+            </div>
+          )}
         </div>
 
-        {/* ניהול משתמשים */}
-        <section className="mb-4 sm:mb-6">
-          <h2 className="text-sm sm:text-base font-bold mb-3 flex items-center gap-2" style={{ color: '#1e3a8a' }}>
-            <UsersIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
-            ניהול משתמשים
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            <Link href="/admin/users" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+        {/* Accordion Categories */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          {/* 1. ניהול משתמשים */}
+          {(canAccess(ADMIN_PERMISSIONS.VIEW_USERS) || canAccess(ADMIN_PERMISSIONS.VIEW_AGENTS)) && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+            <button onClick={() => toggleCategory('users')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                   <UsersIcon className="w-5 h-5" />
                 </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">ניהול משתמשים</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">ניהול כל המשתמשים</p>
-                </div>
+                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>ניהול משתמשים</span>
               </div>
-            </Link>
-            <Link href="/admin/agents" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
-                  <AgentIcon className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">ניהול סוכנים</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">ניהול סוכנים ועמלות</p>
-                </div>
-              </div>
-            </Link>
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'users' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openCategory === 'users' && (
+            <div className="p-4 pt-0 grid grid-cols-2 gap-3">
+              {canAccess(ADMIN_PERMISSIONS.VIEW_USERS) && (
+              <Link href="/admin/users" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <UsersIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">ניהול משתמשים</span>
+              </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.VIEW_AGENTS) && (
+              <Link href="/admin/agents" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <AgentIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">ניהול סוכנים</span>
+              </Link>
+              )}
+            </div>
+            )}
           </div>
-        </section>
+          )}
 
-        {/* קטלוג ומכירות */}
-        <section className="mb-4 sm:mb-6">
-          <h2 className="text-sm sm:text-base font-bold mb-3 flex items-center gap-2" style={{ color: '#1e3a8a' }}>
-            <CubeIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
-            קטלוג ומכירות
-          </h2>
-          <div className="grid grid-cols-3 gap-3">
-            <Link href="/admin/products" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+          {/* 2. קטלוג ומכירות */}
+          {(canAccess(ADMIN_PERMISSIONS.VIEW_PRODUCTS) || canAccess(ADMIN_PERMISSIONS.VIEW_ORDERS)) && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+            <button onClick={() => toggleCategory('catalog')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                   <CubeIcon className="w-5 h-5" />
                 </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">ניהול מוצרים</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">ניהול קטלוג</p>
-                </div>
+                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>קטלוג ומכירות</span>
               </div>
-            </Link>
-            <Link href="/admin/orders" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
-                  <CartIcon className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">ניהול הזמנות</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">מעקב הזמנות</p>
-                </div>
-              </div>
-            </Link>
-            <Link href="/admin/products/new" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #16a34a, #22c55e)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(22, 163, 74, 0.1)' }}>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)' }}>
-                  <PlusCircleIcon className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">הוסף מוצר</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">מוצר חדש</p>
-                </div>
-              </div>
-            </Link>
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'catalog' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openCategory === 'catalog' && (
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {canAccess(ADMIN_PERMISSIONS.VIEW_PRODUCTS) && (
+              <Link href="/admin/products" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <CubeIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">ניהול מוצרים</span>
+              </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.VIEW_ORDERS) && (
+              <Link href="/admin/orders" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <CartIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">ניהול הזמנות</span>
+              </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.EDIT_PRODUCTS) && (
+              <Link href="/admin/products/new" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <PlusCircleIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">הוסף מוצר</span>
+              </Link>
+              )}
+            </div>
+            )}
           </div>
-        </section>
+          )}
 
-        {/* כספים ודוחות */}
-        <section className="mb-4 sm:mb-6">
-          <h2 className="text-sm sm:text-base font-bold mb-3 flex items-center gap-2" style={{ color: '#1e3a8a' }}>
-            <CoinStackIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
-            כספים ודוחות
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <Link href="/admin/reports" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
-                  <ChartBarIcon className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">דוחות</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">סטטיסטיקות</p>
-                </div>
-              </div>
-            </Link>
-            <Link href="/admin/analytics" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">ניתוח נתונים</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">מתקדם</p>
-                </div>
-              </div>
-            </Link>
-            <Link href="/admin/transactions" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+          {/* 3. כספים ודוחות */}
+          {(canAccess(ADMIN_PERMISSIONS.VIEW_REPORTS) || canAccess(ADMIN_PERMISSIONS.VIEW_COMMISSIONS)) && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+            <button onClick={() => toggleCategory('finance')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                   <CoinStackIcon className="w-5 h-5" />
                 </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">ניהול עסקאות</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">תשלומים</p>
-                </div>
+                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>כספים ודוחות</span>
               </div>
-            </Link>
-            <Link href="/admin/commissions" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #16a34a, #22c55e)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(22, 163, 74, 0.1)' }}>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)' }}>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">ניהול עמלות</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">עמלות סוכנים</p>
-                </div>
-              </div>
-            </Link>
-            <Link href="/dashboard/admin/withdrawals" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #b91c1c, #ef4444)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(239, 68, 68, 0.1)' }}>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #b91c1c 0%, #ef4444 100%)' }}>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">בקשות משיכה</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">אישור תשלומים</p>
-                </div>
-              </div>
-            </Link>
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'finance' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openCategory === 'finance' && (
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {canAccess(ADMIN_PERMISSIONS.VIEW_REPORTS) && (
+              <Link href="/admin/reports" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <ChartBarIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">דוחות</span>
+              </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.VIEW_ANALYTICS) && (
+              <Link href="/admin/analytics" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <ChartBarIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">ניתוח נתונים</span>
+              </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.VIEW_REPORTS) && (
+              <Link href="/admin/transactions" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <CoinStackIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">עסקאות</span>
+              </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.VIEW_COMMISSIONS) && (
+              <Link href="/admin/commissions" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <CoinStackIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">עמלות</span>
+              </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.VIEW_COMMISSIONS) && (
+              <Link href="/dashboard/admin/withdrawals" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <CoinStackIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">בקשות משיכה</span>
+              </Link>
+              )}
+            </div>
+            )}
           </div>
-        </section>
+          )}
 
-        {/* הגדרות ושיווק */}
-        <section className="mb-4 sm:mb-6">
-          <h2 className="text-sm sm:text-base font-bold mb-3 flex items-center gap-2" style={{ color: '#1e3a8a' }}>
-            <SettingsIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
-            הגדרות ושיווק
-          </h2>
-          <div className="grid grid-cols-3 gap-3">
-            <Link href="/admin/notifications" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">ניהול התראות</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">שליחת Push</p>
-                </div>
-              </div>
-            </Link>
-            <Link href="/admin/marketing-assets" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
-                  <SparkIcon className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">ניהול שיווק</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">חומרי שיווק</p>
-                </div>
-              </div>
-            </Link>
-            <Link href="/admin/settings" className="group relative overflow-hidden rounded-lg p-3 sm:p-4 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+          {/* 4. הגדרות ושיווק */}
+          {(canAccess(ADMIN_PERMISSIONS.MANAGE_NOTIFICATIONS) || canAccess(ADMIN_PERMISSIONS.VIEW_SETTINGS)) && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+            <button onClick={() => toggleCategory('settings')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                   <SettingsIcon className="w-5 h-5" />
                 </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">ניהול הגדרות</p>
-                  <p className="text-xs text-gray-500 hidden sm:block">הגדרות מערכת</p>
-                </div>
+                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>הגדרות ושיווק</span>
               </div>
-            </Link>
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'settings' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openCategory === 'settings' && (
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {canAccess(ADMIN_PERMISSIONS.MANAGE_NOTIFICATIONS) && (
+              <Link href="/admin/notifications" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <SettingsIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">התראות</span>
+              </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.MANAGE_NOTIFICATIONS) && (
+              <Link href="/admin/marketing-assets" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <SparkIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">שיווק</span>
+              </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.VIEW_SETTINGS) && (
+              <Link href="/admin/settings" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <SettingsIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">הגדרות</span>
+              </Link>
+              )}
+            </div>
+            )}
           </div>
-        </section>
+          )}
+
+          {/* 5. מערכות וחיבורים - רק למנהלים ראשיים */}
+          {isSuperAdmin && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+            <button onClick={() => toggleCategory('systems')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                </span>
+                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>מערכות וחיבורים</span>
+              </div>
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'systems' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openCategory === 'systems' && (
+            <div className="p-4 pt-0 relative">
+              {/* Refresh Button */}
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs text-gray-500">{statusLoading ? 'בודק חיבורים...' : 'סטטוס מערכות'}</span>
+                <button 
+                  onClick={checkSystemStatus} 
+                  disabled={statusLoading}
+                  className="text-xs text-cyan-600 hover:text-cyan-700 flex items-center gap-1"
+                >
+                  <svg className={`w-3 h-3 ${statusLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  רענן
+                </button>
+              </div>
+              
+              {/* Info Tooltip Modal for Systems */}
+              {infoTooltip && systemsInfoTexts[infoTooltip] && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" onClick={() => setInfoTooltip(null)}>
+                  <div className="bg-white rounded-xl p-4 max-w-sm mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-bold text-gray-900">מידע</h4>
+                      <button onClick={() => setInfoTooltip(null)} className="p-1 hover:bg-gray-100 rounded-full">
+                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-600 leading-relaxed">{systemsInfoTexts[infoTooltip]}</p>
+                    {systemStatus[infoTooltip] && (
+                      <div className={`mt-3 p-2 rounded-lg text-xs ${systemStatus[infoTooltip].status === 'connected' ? 'bg-green-50 text-green-700' : systemStatus[infoTooltip].status === 'warning' ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700'}`}>
+                        {systemStatus[infoTooltip].message}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="flex items-center gap-2">
+                <a href="https://github.com/vipogroup" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.github?.status === 'connected' ? 'bg-green-500' : systemStatus.github?.status === 'warning' ? 'bg-amber-500' : systemStatus.github?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#333' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">GitHub</span>
+                </a>
+                <button onClick={() => setInfoTooltip('github')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href="https://cloud.mongodb.com" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.mongodb?.status === 'connected' ? 'bg-green-500' : systemStatus.mongodb?.status === 'warning' ? 'bg-amber-500' : systemStatus.mongodb?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#47A248' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.193 9.555c-1.264-5.58-4.252-7.414-4.573-8.115-.28-.394-.53-.954-.735-1.44-.036.495-.055.685-.523 1.184-.723.566-4.438 3.682-4.74 10.02-.282 5.912 4.27 9.435 4.888 9.884l.07.05A73.49 73.49 0 0111.91 24h.481c.114-1.032.284-2.056.51-3.07.417-.296.604-.463.85-.693a11.342 11.342 0 003.639-8.464c.01-.814-.103-1.662-.197-2.218zm-5.336 8.195s0-8.291.275-8.29c.213 0 .49 10.695.49 10.695-.381-.045-.765-1.76-.765-2.405z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">MongoDB</span>
+                </a>
+                <button onClick={() => setInfoTooltip('mongodb')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.vercel?.status === 'connected' ? 'bg-green-500' : systemStatus.vercel?.status === 'warning' ? 'bg-amber-500' : systemStatus.vercel?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#000' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 22.525H0l12-21.05 12 21.05z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">Vercel</span>
+                </a>
+                <button onClick={() => setInfoTooltip('vercel')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href="https://render.com" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.render?.status === 'connected' ? 'bg-green-500' : systemStatus.render?.status === 'warning' ? 'bg-amber-500' : systemStatus.render?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#46E3B7' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 19.5a7.5 7.5 0 110-15 7.5 7.5 0 010 15z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">Render</span>
+                </a>
+                <button onClick={() => setInfoTooltip('render')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href="https://cloudinary.com" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.cloudinary?.status === 'connected' ? 'bg-green-500' : systemStatus.cloudinary?.status === 'warning' ? 'bg-amber-500' : systemStatus.cloudinary?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#3448C5' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.5 16.5h-9v-3h9v3zm0-4.5h-9V9h9v3z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">Cloudinary</span>
+                </a>
+                <button onClick={() => setInfoTooltip('cloudinary')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href="https://console.firebase.google.com" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.firebase?.status === 'connected' ? 'bg-green-500' : systemStatus.firebase?.status === 'warning' ? 'bg-amber-500' : systemStatus.firebase?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#FFCA28' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3.89 15.673L6.255.461A.542.542 0 017.27.289l2.543 4.771zm16.794 3.692l-2.25-14a.54.54 0 00-.919-.295L3.316 19.365l7.856 4.427a1.621 1.621 0 001.588 0l8.92-4.427zM14.3 7.148l-1.82-3.482a.542.542 0 00-.96 0L3.53 17.984z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">Firebase</span>
+                </a>
+                <button onClick={() => setInfoTooltip('firebase')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href="https://app.sendgrid.com" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.sendgrid?.status === 'connected' ? 'bg-green-500' : systemStatus.sendgrid?.status === 'warning' ? 'bg-amber-500' : systemStatus.sendgrid?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#1A82E2' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-1 17H7v-4h4v4zm0-6H7V7h4v4zm6 6h-4v-4h4v4zm0-6h-4V7h4v4z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">SendGrid</span>
+                </a>
+                <button onClick={() => setInfoTooltip('sendgrid')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href="https://console.twilio.com" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.twilio?.status === 'connected' ? 'bg-green-500' : systemStatus.twilio?.status === 'warning' ? 'bg-amber-500' : systemStatus.twilio?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#F22F46' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.381 0 0 5.381 0 12s5.381 12 12 12 12-5.381 12-12S18.619 0 12 0zm0 20.5c-4.687 0-8.5-3.813-8.5-8.5S7.313 3.5 12 3.5s8.5 3.813 8.5 8.5-3.813 8.5-8.5 8.5zm3.5-11a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm-5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm5 5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm-5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">Twilio</span>
+                </a>
+                <button onClick={() => setInfoTooltip('twilio')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href="https://resend.com" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.resend?.status === 'connected' ? 'bg-green-500' : systemStatus.resend?.status === 'warning' ? 'bg-amber-500' : systemStatus.resend?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#000' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M2 6a2 2 0 012-2h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm2 0l8 5 8-5H4zm0 2v10h16V8l-8 5-8-5z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">Resend</span>
+                </a>
+                <button onClick={() => setInfoTooltip('resend')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href="https://www.npmjs.com/package/web-push" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
+                  <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.npm?.status === 'connected' ? 'bg-green-500' : systemStatus.npm?.status === 'warning' ? 'bg-amber-500' : systemStatus.npm?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                  <svg className="w-5 h-5" style={{ color: '#CB3837' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-900">NPM</span>
+                </a>
+                <button onClick={() => setInfoTooltip('npm')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              </div>
+            </div>
+            )}
+          </div>
+          )}
+
+          {/* 6. גיבוי ועדכון מערכת - רק למנהלים ראשיים */}
+          {isSuperAdmin && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+            <button onClick={() => toggleCategory('backup')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                  </svg>
+                </span>
+                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>גיבוי ועדכון מערכת</span>
+              </div>
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'backup' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openCategory === 'backup' && (
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3 relative">
+              {/* Info Tooltip Modal */}
+              {infoTooltip && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" onClick={() => setInfoTooltip(null)}>
+                  <div className="bg-white rounded-xl p-4 max-w-sm mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-bold text-gray-900">מידע</h4>
+                      <button onClick={() => setInfoTooltip(null)} className="p-1 hover:bg-gray-100 rounded-full">
+                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-600 leading-relaxed">{backupInfoTexts[infoTooltip]}</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2">
+                <Link href="/admin/backups?action=backup" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-green-50 hover:bg-green-100 transition-all">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#16a34a' }}>1</span>
+                  <span className="text-sm font-medium text-gray-900">גיבוי חדש</span>
+                </Link>
+                <button onClick={() => setInfoTooltip('backup')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link href="/admin/backups?action=update" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-all">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#2563eb' }}>2</span>
+                  <span className="text-sm font-medium text-gray-900">עדכון מערכת</span>
+                </Link>
+                <button onClick={() => setInfoTooltip('update')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link href="/admin/backups?action=server" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-cyan-50 hover:bg-cyan-100 transition-all">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#0891b2' }}>3</span>
+                  <span className="text-sm font-medium text-gray-900">הפעל שרת פנימי</span>
+                </Link>
+                <button onClick={() => setInfoTooltip('server')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link href="/admin/backups" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#6b7280' }}>4</span>
+                  <span className="text-sm font-medium text-gray-900">בדיקה ידנית</span>
+                </Link>
+                <button onClick={() => setInfoTooltip('manual')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link href="/admin/backups?action=deploy" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 transition-all">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#7c3aed' }}>5</span>
+                  <span className="text-sm font-medium text-gray-900">Deploy לVercel</span>
+                </Link>
+                <button onClick={() => setInfoTooltip('deploy')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link href="/admin/backups?action=restore" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-amber-50 hover:bg-amber-100 transition-all">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#d97706' }}>!</span>
+                  <span className="text-sm font-medium text-gray-900">שחזור גיבוי</span>
+                </Link>
+                <button onClick={() => setInfoTooltip('restore')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
+              </div>
+            </div>
+            )}
+          </div>
+          )}
+
+          {/* 7. משימות ותיקונים - רק למנהלים ראשיים */}
+          {isSuperAdmin && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+            <button onClick={() => toggleCategory('tasks')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  </svg>
+                </span>
+                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>משימות ותיקונים</span>
+              </div>
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'tasks' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openCategory === 'tasks' && (
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <Link href="/admin/tasks" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <span className="text-sm font-medium text-gray-900">כל המשימות</span>
+              </Link>
+              <Link href="/admin/tasks?filter=pending" className="flex items-center gap-3 p-3 rounded-lg bg-amber-50 hover:bg-amber-100 transition-all">
+                <svg className="w-5 h-5" style={{ color: '#d97706' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-sm font-medium text-gray-900">ממתינות</span>
+              </Link>
+              <Link href="/admin/tasks?filter=completed" className="flex items-center gap-3 p-3 rounded-lg bg-green-50 hover:bg-green-100 transition-all">
+                <svg className="w-5 h-5" style={{ color: '#16a34a' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-sm font-medium text-gray-900">הושלמו</span>
+              </Link>
+              <Link href="/admin/tasks?action=new" className="flex items-center gap-3 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-all">
+                <svg className="w-5 h-5" style={{ color: '#2563eb' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <span className="text-sm font-medium text-gray-900">הוסף משימה</span>
+              </Link>
+              <Link href="/admin/tasks?filter=bugs" className="flex items-center gap-3 p-3 rounded-lg bg-red-50 hover:bg-red-100 transition-all">
+                <svg className="w-5 h-5" style={{ color: '#dc2626' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span className="text-sm font-medium text-gray-900">באגים</span>
+              </Link>
+              <Link href="/admin/tasks?filter=features" className="flex items-center gap-3 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 transition-all">
+                <svg className="w-5 h-5" style={{ color: '#7c3aed' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                <span className="text-sm font-medium text-gray-900">פיצרים חדשים</span>
+              </Link>
+            </div>
+            )}
+          </div>
+          )}
+        </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
