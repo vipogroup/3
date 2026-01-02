@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCartContext } from '@/app/context/CartContext';
 
 export default function FavoritesPage() {
+  const router = useRouter();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCartContext();
@@ -49,17 +51,24 @@ export default function FavoritesPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4" dir="rtl">
       <div className="max-w-6xl mx-auto">
-        <h1
-          className="text-3xl font-bold mb-8 text-center"
-          style={{
-            background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
-        >
-          המועדפים שלי
-        </h1>
+        <div className="flex items-center gap-3 mb-8 justify-center">
+          <button onClick={() => router.back()} className="p-2 rounded-lg hover:bg-gray-200 transition-colors" title="חזרה">
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          <h1
+            className="text-3xl font-bold text-center"
+            style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            המועדפים שלי
+          </h1>
+        </div>
 
         {favorites.length === 0 ? (
           <div className="text-center py-16">

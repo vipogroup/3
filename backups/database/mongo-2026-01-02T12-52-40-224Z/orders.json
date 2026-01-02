@@ -1,0 +1,877 @@
+[
+  {
+    "_id": {
+      "$oid": "69555ed3feeb0382fb7a07de"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69555954e294fea8f6b74a1f"
+        },
+        "name": "שולחן נירוסטה",
+        "quantity": 1,
+        "unitPrice": 1600,
+        "totalPrice": 1600,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767201093/vipo-products/image_14_oigmia.png",
+        "sku": "z1x2c3v4",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1600,
+      "discountPercent": 50,
+      "discountAmount": 800,
+      "totalAmount": 800
+    },
+    "totalAmount": 800,
+    "discountAmount": 800,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T17:35:15.665Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 80,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2025-12-31T17:35:15.665Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:37:57.342Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69555f1fb9a88dbe91ea2468"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "695556f806ad66e3f223e913"
+        },
+        "name": "כורסת עיסוי",
+        "quantity": 1,
+        "unitPrice": 20000,
+        "totalPrice": 20000,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767200488/vipo-products/Untitled_design_20250729_224819_0000_nbvcsm.png",
+        "sku": "5sds5d5sd5s",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 20000,
+      "discountPercent": 50,
+      "discountAmount": 10000,
+      "totalAmount": 10000
+    },
+    "totalAmount": 10000,
+    "discountAmount": 10000,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T17:36:31.218Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 1000,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2025-12-31T17:36:31.218Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:37:54.547Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "695561da18fc5f80bf888116"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "695556f806ad66e3f223e913"
+        },
+        "name": "כורסת עיסוי",
+        "quantity": 1,
+        "unitPrice": 20000,
+        "totalPrice": 20000,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767200488/vipo-products/Untitled_design_20250729_224819_0000_nbvcsm.png",
+        "sku": "5sds5d5sd5s",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 20000,
+      "discountPercent": 50,
+      "discountAmount": 10000,
+      "totalAmount": 10000
+    },
+    "totalAmount": 10000,
+    "discountAmount": 10000,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T17:48:10.703Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 1000,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2025-12-31T17:48:10.703Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:37:52.281Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6955699695a7e5326ba9d4bc"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "695556f806ad66e3f223e913"
+        },
+        "name": "כורסת עיסוי",
+        "quantity": 1,
+        "unitPrice": 20000,
+        "totalPrice": 20000,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767200488/vipo-products/Untitled_design_20250729_224819_0000_nbvcsm.png",
+        "sku": "5sds5d5sd5s",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 20000,
+      "discountPercent": 50,
+      "discountAmount": 10000,
+      "totalAmount": 10000
+    },
+    "totalAmount": 10000,
+    "discountAmount": 10000,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T18:21:10.524Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 1000,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2025-12-31T18:21:10.524Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:37:50.519Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "695569c33938b4e65230d7f8"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69555954e294fea8f6b74a1f"
+        },
+        "name": "שולחן נירוסטה",
+        "quantity": 1,
+        "unitPrice": 1600,
+        "totalPrice": 1600,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767201093/vipo-products/image_14_oigmia.png",
+        "sku": "z1x2c3v4",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1600,
+      "discountPercent": 50,
+      "discountAmount": 800,
+      "totalAmount": 800
+    },
+    "totalAmount": 800,
+    "discountAmount": 800,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T18:21:55.008Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 80,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2025-12-31T18:21:55.008Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:37:48.081Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "695569f53938b4e65230d7ff"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69555954e294fea8f6b74a1f"
+        },
+        "name": "שולחן נירוסטה",
+        "quantity": 1,
+        "unitPrice": 1600,
+        "totalPrice": 1600,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767201093/vipo-products/image_14_oigmia.png",
+        "sku": "z1x2c3v4",
+        "slug": null,
+        "purchaseType": "regular"
+      },
+      {
+        "productId": {
+          "$oid": "695556f806ad66e3f223e913"
+        },
+        "name": "כורסת עיסוי",
+        "quantity": 1,
+        "unitPrice": 20000,
+        "totalPrice": 20000,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767200488/vipo-products/Untitled_design_20250729_224819_0000_nbvcsm.png",
+        "sku": "5sds5d5sd5s",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 21600,
+      "discountPercent": 50,
+      "discountAmount": 10800,
+      "totalAmount": 10800
+    },
+    "totalAmount": 10800,
+    "discountAmount": 10800,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T18:22:45.901Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 1080,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2025-12-31T18:22:45.901Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:37:45.613Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69556a8b2c46d6592b2ccdcd"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69555954e294fea8f6b74a1f"
+        },
+        "name": "שולחן נירוסטה",
+        "quantity": 1,
+        "unitPrice": 1600,
+        "totalPrice": 1600,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767201093/vipo-products/image_14_oigmia.png",
+        "sku": "z1x2c3v4",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1600,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 1600
+    },
+    "totalAmount": 1600,
+    "discountAmount": 0,
+    "createdBy": "6953a2130c990eaded19c93b",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": null,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2025-12-31T18:25:15.065Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:37:42.058Z"
+    },
+    "customer": {
+      "fullName": "סוכן דניאל",
+      "email": "m0507123331@gmail.com",
+      "phone": "0507123331",
+      "address": "ת",
+      "city": "צ",
+      "zipCode": "12457"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69556d2b0c6de3237ce7c53f"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "69556cefd08383aef4f00253"
+        },
+        "name": "חליח",
+        "quantity": 1,
+        "unitPrice": 999.99,
+        "totalPrice": 999.99,
+        "image": null,
+        "sku": "עכ6טו6יט",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 999.99,
+      "discountPercent": 50,
+      "discountAmount": 500,
+      "totalAmount": 499.99
+    },
+    "totalAmount": 499.99,
+    "discountAmount": 500,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-30T18:36:27.845Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 50,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2025-12-31T18:36:27.845Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T23:37:39.521Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69560f4ccf5dd216a739bfda"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6955b4c0be3f7d585f458c06"
+        },
+        "name": "מכונת לייזר משולבת",
+        "quantity": 1,
+        "unitPrice": 3500,
+        "totalPrice": 3500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767224494/vipo-products/%D7%9E%D7%99%D7%A7%D7%A1%D7%A8_pvpfnw.jpg",
+        "sku": "5sds5d5sd5s",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 3500,
+      "discountPercent": 50,
+      "discountAmount": 1750,
+      "totalAmount": 1750
+    },
+    "totalAmount": 1750,
+    "discountAmount": 1750,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-31T06:08:12.987Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 175,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2026-01-01T06:08:12.987Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T06:09:32.329Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6956dd73e1828f2c404e5566"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6955b4c0be3f7d585f458c06"
+        },
+        "name": "מכונת לייזר משולבת",
+        "quantity": 1,
+        "unitPrice": 3500,
+        "totalPrice": 3500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767224494/vipo-products/%D7%9E%D7%99%D7%A7%D7%A1%D7%A8_pvpfnw.jpg",
+        "sku": "5sds5d5sd5s",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 3500,
+      "discountPercent": 50,
+      "discountAmount": 1750,
+      "totalAmount": 1750
+    },
+    "totalAmount": 1750,
+    "discountAmount": 1750,
+    "createdBy": "6953a2bf0e80c969cf31f3d8",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-31T20:47:47.222Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 175,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2026-01-01T20:47:47.222Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T20:49:44.263Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6956de89c19b24c36a04c9ee"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6955b4c0be3f7d585f458c06"
+        },
+        "name": "מכונת לייזר משולבת",
+        "quantity": 2,
+        "unitPrice": 3500,
+        "totalPrice": 7000,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767224494/vipo-products/%D7%9E%D7%99%D7%A7%D7%A1%D7%A8_pvpfnw.jpg",
+        "sku": "5sds5d5sd5s",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 7000,
+      "discountPercent": 50,
+      "discountAmount": 3500,
+      "totalAmount": 3500
+    },
+    "totalAmount": 3500,
+    "discountAmount": 3500,
+    "createdBy": "6956de54e1828f2c404e5581",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-31T20:52:25.437Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 350,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2026-01-01T20:52:25.437Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T21:02:29.150Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6956e0c0376a83d456066d14"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6955b4c0be3f7d585f458c06"
+        },
+        "name": "מכונת לייזר משולבת",
+        "quantity": 1,
+        "unitPrice": 3500,
+        "totalPrice": 3500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767224494/vipo-products/%D7%9E%D7%99%D7%A7%D7%A1%D7%A8_pvpfnw.jpg",
+        "sku": "5sds5d5sd5s",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 3500,
+      "discountPercent": 50,
+      "discountAmount": 1750,
+      "totalAmount": 1750
+    },
+    "totalAmount": 1750,
+    "discountAmount": 1750,
+    "createdBy": "6956de54e1828f2c404e5581",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-01-31T21:01:52.977Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 175,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2026-01-01T21:01:52.977Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T21:02:25.878Z"
+    },
+    "customer": {
+      "fullName": "מרים ח",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "6956e12b376a83d456066d23"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "695570e2d08383aef4f002a2"
+        },
+        "name": "כורסת עיסוי חכמה",
+        "quantity": 1,
+        "unitPrice": 20000,
+        "totalPrice": 20000,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767206915/vipo-products/%D7%A9%D7%95%D7%90%D7%91_%D7%90%D7%91%D7%A7_xnaodj.jpg",
+        "sku": "r0010103",
+        "slug": null,
+        "purchaseType": "group"
+      }
+    ],
+    "totals": {
+      "subtotal": 20000,
+      "discountPercent": 50,
+      "discountAmount": 10000,
+      "totalAmount": 10000
+    },
+    "totalAmount": 10000,
+    "discountAmount": 10000,
+    "createdBy": "6956de54e1828f2c404e5581",
+    "status": "paid",
+    "orderType": "group",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-04-11T21:03:39.532Z"
+    },
+    "refSource": "svkn-dnyal-001",
+    "refAgentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "commissionAmount": 1000,
+    "appliedCouponCode": "svkn-dnyal-001",
+    "agentId": {
+      "$oid": "6953a2130c990eaded19c93b"
+    },
+    "couponCommissionPercent": 10,
+    "commissionPercent": 10,
+    "createdAt": {
+      "$date": "2026-01-01T21:03:39.532Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-01T21:03:59.686Z"
+    },
+    "customer": {
+      "fullName": "מרים ח",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  },
+  {
+    "_id": {
+      "$oid": "69578e94f26d19c2dfa3b6bf"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "6955af8e40dbedfdf9bafdcd"
+        },
+        "name": "חשמל",
+        "quantity": 1,
+        "unitPrice": 1700,
+        "totalPrice": 1700,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767223179/vipo-products/IMG_6590_xsefjm.jpg",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1700,
+      "discountPercent": 10,
+      "discountAmount": 170,
+      "totalAmount": 1530
+    },
+    "totalAmount": 1530,
+    "discountAmount": 170,
+    "createdBy": "69578e80af97d367aaaa7b35",
+    "status": "pending",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": {
+      "$date": "2026-02-01T09:23:32.441Z"
+    },
+    "refSource": "dnyal-001",
+    "refAgentId": {
+      "$oid": "69578dc0c5566f20f398adcf"
+    },
+    "commissionAmount": 183.6,
+    "appliedCouponCode": "dnyal-001",
+    "agentId": {
+      "$oid": "69578dc0c5566f20f398adcf"
+    },
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": {
+      "$date": "2026-01-02T09:23:32.441Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-02T09:23:32.441Z"
+    },
+    "customer": {
+      "fullName": "מרים חדש",
+      "email": "m0533858881@gmail.com",
+      "phone": "0533858881",
+      "address": "ז'בוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card"
+  }
+]
