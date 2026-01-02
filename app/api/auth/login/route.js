@@ -8,6 +8,7 @@ import { getDb } from '@/lib/db';
 import { rateLimiters } from '@/lib/rateLimit';
 import { sign as signJwt } from '@/lib/auth/createToken';
 import { setAuthCookie } from '@/lib/auth/requireAuth';
+import { logAdminActivity } from '@/lib/auditMiddleware';
 
 function failureResponse(message, status = 400, extraBody = {}) {
   return NextResponse.json({ success: false, message, ...extraBody }, { status });
@@ -100,6 +101,17 @@ export async function POST(req) {
     });
 
     console.log('[LOGIN_DEBUG] set auth_token cookie for user', String(user._id));
+
+    // Log successful login
+    await logAdminActivity({
+      action: 'login',
+      entity: 'auth',
+      entityId: String(user._id),
+      userId: String(user._id),
+      userEmail: user.email,
+      description: `התחברות למערכת: ${user.email} (${userRole})`,
+      metadata: { role: userRole, rememberMe }
+    });
 
     return response;
   } catch (err) {
