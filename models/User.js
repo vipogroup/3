@@ -61,6 +61,11 @@ const UserSchema = new mongoose.Schema(
       default: 'active',
     },
 
+    // פרטי משלוח (נשמרים אחרי רכישה ראשונה)
+    shippingAddress: { type: String, default: '', trim: true },
+    shippingCity: { type: String, default: '', trim: true },
+    shippingZipCode: { type: String, default: '', trim: true },
+
     // תאימות למודל הקודם
     createdAt: { type: Date, default: Date.now },
     isActive: { type: Boolean, default: true },
@@ -100,6 +105,9 @@ UserSchema.methods.toPublicUser = function () {
     referralsCount: this.referralsCount ?? 0,
     referralCount: this.referralCount ?? 0,
     commissionBalance: this.commissionBalance ?? 0,
+    shippingAddress: this.shippingAddress ?? '',
+    shippingCity: this.shippingCity ?? '',
+    shippingZipCode: this.shippingZipCode ?? '',
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
   };
