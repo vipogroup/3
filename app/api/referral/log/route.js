@@ -4,6 +4,8 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { headers } from 'next/headers';
+import { requireAuthApi } from '@/lib/auth/server';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 /**
  * POST /api/referral/log
@@ -12,6 +14,12 @@ import { headers } from 'next/headers';
  */
 export async function POST(req) {
   try {
+    // Rate limiting: 30 per minute (public endpoint for tracking)
+    const rateLimit = checkRateLimit(req, 'referral-log', { maxRequests: 30, windowMs: 60 * 1000 });
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ ok: false, error: rateLimit.message }, { status: 429 });
+    }
+
     const body = await req.json();
     const { agentId, productId, action = 'click', url } = body;
 
@@ -54,10 +62,13 @@ export async function POST(req) {
 
 /**
  * GET /api/referral/log?agentId=xxx&productId=xxx&action=xxx
- * Get referral logs with filters
+ * Get referral logs with filters (requires auth)
  */
 export async function GET(req) {
   try {
+    // Require authentication to view logs
+    await requireAuthApi(req);
+
     const { searchParams } = new URL(req.url);
     const agentId = searchParams.get('agentId');
     const productId = searchParams.get('productId');
