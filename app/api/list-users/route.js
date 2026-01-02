@@ -22,7 +22,8 @@ export async function GET(request) {
             role: 1,
             fullName: 1,
             createdAt: 1,
-            passwordHash: 1, // Just to check if it exists
+            isActive: 1,
+            // Security: Never expose passwordHash
           },
         },
       )
@@ -37,8 +38,7 @@ export async function GET(request) {
         phone: u.phone,
         role: u.role,
         fullName: u.fullName,
-        hasPassword: !!u.passwordHash,
-        passwordLength: u.passwordHash ? u.passwordHash.length : 0,
+        isActive: u.isActive,
         createdAt: u.createdAt,
       })),
     });
