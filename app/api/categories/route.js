@@ -62,8 +62,10 @@ export async function POST(req) {
     }
     
     // Check if category already exists
+    // Escape regex special characters to prevent ReDoS
+    const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const existing = await Category.findOne({ 
-      name: { $regex: new RegExp(`^${name}$`, 'i') },
+      name: { $regex: new RegExp(`^${escapedName}$`, 'i') },
       type: 'product' 
     });
     

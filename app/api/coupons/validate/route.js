@@ -16,8 +16,10 @@ export async function POST(request) {
     await connectMongo();
 
     const code = rawCode.toLowerCase();
+    // Escape regex special characters to prevent ReDoS
+    const escapedCode = code.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const agent = await User.findOne({
-      couponCode: { $regex: new RegExp(`^${code}$`, 'i') },
+      couponCode: { $regex: new RegExp(`^${escapedCode}$`, 'i') },
       role: 'agent',
     })
       .lean()
