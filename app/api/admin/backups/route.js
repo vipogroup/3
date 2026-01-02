@@ -86,11 +86,25 @@ export async function POST(req) {
     const { action } = body;
 
     if (action === 'backup') {
-      // Run the backup script using npm script
-      const { stdout, stderr } = await execAsync('npm run backup:db', {
-        cwd: process.cwd(),
-        timeout: 60000 // 1 minute timeout
-      });
+      // Direct MongoDB backup - works in Vercel serverless
+      const { getDb } = await import('@/lib/db');
+      const db = await getDb();
+      
+      // Get all collections
+      const collections = await db.listCollections().toArray();
+      const backupData = {
+        timestamp: new Date().toISOString(),
+        collections: {}
+      };
+      
+      // Export each collection
+      for (const col of collections) {
+        const docs = await db.collection(col.name).find({}).toArray();
+        backupData.collections[col.name] = {
+          count: docs.length,
+          data: docs
+        };
+      }
       
       // Log backup action
       await logAdminActivity({
@@ -99,13 +113,19 @@ export async function POST(req) {
         userId: user.userId,
         userEmail: user.email,
         description: 'גיבוי מסד נתונים',
-        metadata: { type: 'database' }
+        metadata: { 
+          type: 'database',
+          collectionsCount: collections.length,
+          timestamp: backupData.timestamp
+        }
       });
 
+      // Return backup data for download
       return NextResponse.json({ 
         success: true, 
         message: 'גיבוי הושלם בהצלחה',
-        output: stdout 
+        backup: backupData,
+        downloadReady: true
       });
     }
 
