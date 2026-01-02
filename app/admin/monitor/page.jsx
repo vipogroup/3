@@ -249,7 +249,7 @@ export default function MonitorPage() {
               </div>
               <div>
                 <p className="text-gray-500">סביבה</p>
-                <p className="font-semibold text-gray-900">{process.env.NODE_ENV || 'development'}</p>
+                <p className="font-semibold text-gray-900">production</p>
               </div>
               <div>
                 <p className="text-gray-500">גרסה</p>
@@ -416,13 +416,14 @@ export default function MonitorPage() {
               type="button"
               onClick={() => {
                 // Log helpful info to console
-                console.log('%c[DevTools] כלי מפתחים נפתחו!', 'font-size: 20px; color: #0891b2; font-weight: bold;');
-                console.log('%c[Network] לצפייה בבקשות רשת', 'font-size: 14px; color: #059669;');
-                console.log('%c[Application] לצפייה ב-LocalStorage/Cookies', 'font-size: 14px; color: #7c3aed;');
-                console.log('%c[Console] לצפייה בשגיאות והודעות', 'font-size: 14px; color: #dc2626;');
-                // This triggers the debugger which opens DevTools automatically
-                // eslint-disable-next-line no-debugger
-                debugger;
+                console.log('%c╔══════════════════════════════════════╗', 'color: #0891b2; font-weight: bold;');
+                console.log('%c║     VIPO DevTools - כלי מפתחים      ║', 'font-size: 16px; color: #0891b2; font-weight: bold;');
+                console.log('%c╚══════════════════════════════════════╝', 'color: #0891b2; font-weight: bold;');
+                console.log('%c[Network] לצפייה בבקשות רשת - לחץ על טאב Network', 'font-size: 14px; color: #059669;');
+                console.log('%c[Application] לצפייה ב-LocalStorage/Cookies - לחץ על טאב Application', 'font-size: 14px; color: #7c3aed;');
+                console.log('%c[Console] לצפייה בשגיאות והודעות - אתה כאן!', 'font-size: 14px; color: #dc2626;');
+                console.log('%c[Elements] לבדיקת HTML/CSS - לחץ על טאב Elements', 'font-size: 14px; color: #ea580c;');
+                alert('פתח את כלי המפתחים עם F12 או Ctrl+Shift+I\n\nהודעות נרשמו בקונסול!');
               }}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
               style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)' }}
@@ -511,12 +512,16 @@ export default function MonitorPage() {
                   onClick={() => {
                     const perfData = performance.getEntriesByType('navigation')[0];
                     console.log('%c[Performance] מידע ביצועים:', 'font-size: 14px; font-weight: bold; color: #ea580c;');
-                    console.table({
+                    const perfInfo = {
                       'DOM Load': Math.round(perfData?.domContentLoadedEventEnd || 0) + 'ms',
                       'Full Load': Math.round(perfData?.loadEventEnd || 0) + 'ms',
-                      'Memory (MB)': Math.round((performance.memory?.usedJSHeapSize || 0) / 1048576),
                       'Time Since Load': Math.round(performance.now()) + 'ms',
-                    });
+                    };
+                    // Check if memory API is available (Chrome only)
+                    if (performance.memory) {
+                      perfInfo['Memory (MB)'] = Math.round(performance.memory.usedJSHeapSize / 1048576);
+                    }
+                    console.table(perfInfo);
                   }}
                   className="px-3 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-200 transition-all flex items-center gap-2"
                 >
