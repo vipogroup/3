@@ -416,13 +416,13 @@ export default function MonitorPage() {
               type="button"
               onClick={() => {
                 // Log helpful info to console
-                console.log('%c[DevTools] כלי מפתחים', 'font-size: 20px; color: #0891b2; font-weight: bold;');
+                console.log('%c[DevTools] כלי מפתחים נפתחו!', 'font-size: 20px; color: #0891b2; font-weight: bold;');
                 console.log('%c[Network] לצפייה בבקשות רשת', 'font-size: 14px; color: #059669;');
                 console.log('%c[Application] לצפייה ב-LocalStorage/Cookies', 'font-size: 14px; color: #7c3aed;');
                 console.log('%c[Console] לצפייה בשגיאות והודעות', 'font-size: 14px; color: #dc2626;');
-                console.log('\n--- לחץ F12 או Ctrl+Shift+I לפתיחת DevTools ---');
-                // Alert user to open DevTools manually
-                alert('לפתיחת DevTools:\n\nWindows/Linux: F12 או Ctrl+Shift+I\nMac: Cmd+Option+I\n\nאו לחץ ימני על הדף ובחר "בדוק"');
+                // This triggers the debugger which opens DevTools automatically
+                // eslint-disable-next-line no-debugger
+                debugger;
               }}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
               style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)' }}
