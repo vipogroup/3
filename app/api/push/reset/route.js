@@ -19,7 +19,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('PUSH_RESET: Error:', error);
     return NextResponse.json(
-      { ok: false, error: error.message || 'Unknown error' },
+      { ok: false, error: 'Server error' },
       { status: 500 }
     );
   }
