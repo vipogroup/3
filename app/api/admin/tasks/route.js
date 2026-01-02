@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
+import { logAdminActivity } from '@/lib/auditMiddleware';
 
 // Helper to get tasks collection
 async function getTasksCollection() {
@@ -71,6 +72,17 @@ export async function POST(req) {
 
     const result = await col.insertOne(newTask);
     newTask._id = result.insertedId;
+
+    // Log task creation
+    await logAdminActivity({
+      action: 'create',
+      entity: 'task',
+      entityId: String(result.insertedId),
+      userId: user.userId,
+      userEmail: user.email,
+      description: `יצירת משימה: ${title}`,
+      metadata: { type, priority }
+    });
 
     return NextResponse.json({ success: true, task: newTask });
   } catch (error) {
