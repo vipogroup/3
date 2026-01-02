@@ -106,6 +106,20 @@ const ProductSchema = new mongoose.Schema(
       type: Date, 
       default: null 
     },
+
+    // === Priority Integration ===
+    priorityItemCode: { type: String, default: null, sparse: true, index: true },
+    prioritySyncStatus: {
+      type: String,
+      enum: ['pending', 'synced', 'failed', 'not_required'],
+      default: 'pending',
+    },
+    lastPrioritySyncAt: { type: Date, default: null },
+    vatType: {
+      type: String,
+      enum: ['standard', 'exempt', 'reduced', 'zero'],
+      default: 'standard',
+    },
   },
   { timestamps: true },
 );

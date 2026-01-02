@@ -1,0 +1,12 @@
+[
+  {
+    "_id": {
+      "$oid": "692df8933a64c7c8757a2710"
+    },
+    "key": "activeTheme",
+    "updatedAt": {
+      "$date": "2025-12-01T20:20:35.840Z"
+    },
+    "value": "amazon"
+  }
+]

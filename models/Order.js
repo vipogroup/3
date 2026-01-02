@@ -41,6 +41,52 @@ const OrderSchema = new mongoose.Schema(
     // Minimal placeholders (extend as needed)
     customerName: { type: String, default: null },
     customerPhone: { type: String, default: null },
+
+    // === PayPlus Integration ===
+    payplusSessionId: { type: String, default: null, index: true },
+    payplusTransactionId: { type: String, default: null, index: true },
+    paymentStatus: {
+      type: String,
+      enum: ['pending', 'processing', 'success', 'failed', 'refunded', 'partial_refund', 'chargeback'],
+      default: 'pending',
+    },
+    paymentMethod: { type: String, default: null },
+    paidAt: { type: Date, default: null },
+
+    // === Priority Integration ===
+    priorityDocId: { type: String, default: null, index: true },
+    prioritySalesOrderId: { type: String, default: null },
+    invoiceNumber: { type: String, default: null },
+    receiptNumber: { type: String, default: null },
+    prioritySyncStatus: {
+      type: String,
+      enum: ['pending', 'synced', 'failed', 'not_required'],
+      default: 'pending',
+    },
+
+    // === Refund tracking ===
+    refundAmount: { type: Number, default: 0 },
+    refundReason: { type: String, default: null },
+    refundedAt: { type: Date, default: null },
+    refundedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+
+    // === Customer details for Priority ===
+    customer: {
+      email: { type: String, default: null },
+      address: { type: String, default: null },
+      city: { type: String, default: null },
+      zipCode: { type: String, default: null },
+      vatId: { type: String, default: null },
+    },
+
+    // === Totals breakdown ===
+    totals: {
+      subtotal: { type: Number, default: 0 },
+      discountAmount: { type: Number, default: 0 },
+      discountPercent: { type: Number, default: 0 },
+      vatAmount: { type: Number, default: 0 },
+      shippingAmount: { type: Number, default: 0 },
+    },
   },
   {
     timestamps: true,

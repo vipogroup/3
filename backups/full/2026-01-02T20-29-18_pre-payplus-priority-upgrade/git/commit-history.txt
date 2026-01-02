@@ -1,0 +1,20 @@
+3b3a5deb3c088ec1564d445a3596d764caf800b1|2026-01-02 21:27:57 +0200|vipogroup|feat: Add PayPlus to system integrations and finance sections with status check
+0fe8810659f520dace1044460bd1a5e4d110ca0c|2026-01-02 21:20:11 +0200|vipogroup|fix: Add missing await to ensureAdmin in DELETE and GET user endpoints
+26bda62686cb0f01db5062dc47fa2ced8de8fe79|2026-01-02 21:13:39 +0200|vipogroup|feat: Add user search by name, phone or email in admin panel
+c6993cf5ca7b68d1e3faccdbcc0d86b1e349321e|2026-01-02 21:02:32 +0200|vipogroup|feat: Save and load shipping details from user profile for returning customers
+5b5e127300d5882996c09731c42fe9889558d6cd|2026-01-02 20:57:24 +0200|vipogroup|feat: Improved validation feedback - shows missing fields and auto-navigates to error step
+b600b9a8ef4e7d8be8b6f3fae138373cabd62915|2026-01-02 20:48:53 +0200|vipogroup|fix: Success modal now displays correctly after purchase
+76ffe6bf78785f16e0b02501d364f178df4108a0|2026-01-02 20:38:57 +0200|vipogroup|feat: Add purchase success modal with redirect to products page
+b102f789219e87d36772851503a6ba8b999d18a8|2026-01-02 20:25:17 +0200|vipogroup|feat: Disable email verification on registration (temporary)
+a3c4fe2cf848322b318fdb34b22c078415d34798|2026-01-02 20:17:52 +0200|vipogroup|fix: Security and QA improvements - remove password from localStorage, add API timeout, remove console.logs, add aria-labels, backup system upgrades
+838795656659c415976b9f71bb348c8227ce62e8|2026-01-02 19:04:38 +0200|vipogroup|fix: Save backup to folder instead of download
+34edc50514b15986102da349f2ddb96ba2f63b64|2026-01-02 18:32:50 +0200|vipogroup|feat: Add Push to GitHub button in admin backups page
+dce43794b984379174a9d8670fa65867d814d963|2026-01-02 18:00:01 +0200|vipogroup|fix: Deploy button runs deploy-vercel.cmd with --auto flag
+50ea715563d321f843b0fe84424443c2987fb0e3|2026-01-02 17:51:04 +0200|vipogroup|fix: Add mobile-web-app-capable meta tag
+066c5beaf60395c96570764e199c2dcb6b81394c|2026-01-02 17:43:02 +0200|vipogroup|fix: DevTools buttons now display info visually in the page
+3703583f8e52ac0736d0873713b9562b6b999787|2026-01-02 17:35:21 +0200|vipogroup|fix: Improve DevTools section in monitor page
+4b58f2473dbf97c145188a9925229562580803e0|2026-01-02 17:12:55 +0200|vipogroup|fix: Remove orphaned submodule and ignore home folder
+2eb7e23bb0193c8410f2242884acf976fad78903|2026-01-02 17:07:01 +0200|vipogroup|fix: Deploy button opens Vercel directly when no hook configured
+fef303ebec4b896b557d61f3238fd85003aab5e8|2026-01-02 16:42:01 +0200|vipogroup|feat: Add email error logging to admin monitor
+976108ee9192f63cf1940d12e7a098501e6ce24c|2026-01-02 16:10:43 +0200|vipogroup|fix: Use Resend API (already configured in Vercel)
+7618bb7f9813b289c1e4fc0652aa2d227a462458|2026-01-02 16:07:49 +0200|vipogroup|fix: Switch to SendGrid API for email (Vercel blocks SMTP)
