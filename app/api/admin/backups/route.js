@@ -263,6 +263,51 @@ export async function POST(req) {
       }
     }
 
+    if (action === 'gitpush') {
+      const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+      
+      if (isLocal) {
+        try {
+          const scriptPath = path.join(process.cwd(), 'backups', 'database', 'git-push.cmd');
+          console.log('[GitPush] Running script:', scriptPath);
+          
+          const { stdout } = await execAsync(`"${scriptPath}" --auto`, { 
+            cwd: process.cwd(),
+            timeout: 120000 
+          });
+          
+          await logAdminActivity({
+            action: 'gitpush',
+            entity: 'system',
+            userId: user.userId,
+            userEmail: user.email,
+            description: 'Push ל-GitHub באמצעות git-push.cmd',
+            metadata: { type: 'script', output: (stdout || '').substring(0, 500) }
+          });
+
+          return NextResponse.json({ 
+            success: true, 
+            message: 'Push ל-GitHub הושלם בהצלחה!',
+            details: stdout,
+            scriptUsed: 'git-push.cmd'
+          });
+        } catch (error) {
+          console.error('[GitPush] Script error:', error);
+          return NextResponse.json({ 
+            success: false, 
+            error: 'Push ל-GitHub נכשל',
+            details: error.message
+          }, { status: 500 });
+        }
+      } else {
+        return NextResponse.json({ 
+          success: false, 
+          error: 'Push ל-GitHub זמין רק בסביבה מקומית',
+          info: 'בסביבת Production, בצע git push מהטרמינל'
+        }, { status: 400 });
+      }
+    }
+
     if (action === 'update') {
       // Check if running locally (not on Vercel)
       const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
