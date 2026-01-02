@@ -122,6 +122,28 @@ function checkNPM() {
   return { status: 'connected', message: 'NPM זמין' };
 }
 
+// Check PayPlus - payment gateway
+function checkPayPlus() {
+  const hasApiKey = checkEnvVar('PAYPLUS_API_KEY');
+  const hasSecret = checkEnvVar('PAYPLUS_SECRET');
+  const hasBaseUrl = checkEnvVar('PAYPLUS_BASE_URL');
+  const isMockEnabled = process.env.PAYPLUS_MOCK_ENABLED === 'true';
+  
+  if (isMockEnabled) {
+    return { status: 'warning', message: 'PayPlus במצב דמו - תשלומים לא אמיתיים' };
+  }
+  
+  if (!hasApiKey || !hasSecret) {
+    return { status: 'error', message: 'PayPlus לא מוגדר - סליקה לא תעבוד' };
+  }
+  
+  if (!hasBaseUrl) {
+    return { status: 'warning', message: 'PAYPLUS_BASE_URL חסר' };
+  }
+  
+  return { status: 'connected', message: 'PayPlus מוגדר - סליקת אשראי פעילה' };
+}
+
 export async function GET(req) {
   const rateLimit = rateLimiters.admin(req);
   if (!rateLimit.allowed) {
@@ -146,7 +168,8 @@ export async function GET(req) {
       cloudinary: await checkCloudinary(),
       resend: checkResend(),
       twilio: checkTwilio(),
-      npm: checkNPM()
+      npm: checkNPM(),
+      payplus: checkPayPlus()
     };
 
     return NextResponse.json({ 
