@@ -17,6 +17,8 @@ function BackupsContent() {
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentAction, setCurrentAction] = useState('');
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
+  const [restoreFile, setRestoreFile] = useState(null);
 
   useEffect(() => {
     async function checkAuth() {
@@ -131,6 +133,82 @@ function BackupsContent() {
   const runUpdate = () => runAction('update', 'עדכון מערכת');
   const runServer = () => runAction('server', 'הפעלת שרת מקומי');
 
+  // Handle file upload for restore
+  function handleRestoreFileChange(e) {
+    const file = e.target.files?.[0];
+    if (file) {
+      setRestoreFile(file);
+    }
+  }
+
+  async function runRestore() {
+    if (!restoreFile) {
+      setMessage('❌ יש לבחור קובץ גיבוי תחילה');
+      return;
+    }
+
+    // Confirm before restore
+    if (!confirm('⚠️ שחזור יחליף את כל הנתונים הקיימים במערכת!\n\nהאם אתה בטוח שברצונך להמשיך?')) {
+      return;
+    }
+
+    setIsRunning(true);
+    setCurrentAction('שחזור מגיבוי');
+    setProgress(0);
+    setMessage('קורא קובץ גיבוי...');
+
+    try {
+      // Read the file
+      const fileContent = await restoreFile.text();
+      let backupData;
+      
+      try {
+        backupData = JSON.parse(fileContent);
+      } catch (parseErr) {
+        setMessage('❌ קובץ הגיבוי לא תקין - לא ניתן לפרסר JSON');
+        setIsRunning(false);
+        return;
+      }
+
+      setProgress(30);
+      setMessage('משחזר נתונים...');
+
+      const res = await fetch('/api/admin/backups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'restore', backupData })
+      });
+
+      const data = await res.json();
+      setProgress(100);
+
+      if (res.ok) {
+        let msg = `✅ ${data.message}`;
+        if (data.restored) {
+          msg += '\n\n📋 קולקציות ששוחזרו:\n';
+          msg += data.restored.map(c => `• ${c.name}: ${c.count} רשומות`).join('\n');
+        }
+        if (data.errors && data.errors.length > 0) {
+          msg += '\n\n⚠️ שגיאות:\n';
+          msg += data.errors.map(e => `• ${e.collection}: ${e.error}`).join('\n');
+        }
+        setMessage(msg);
+        setShowRestoreModal(false);
+        setRestoreFile(null);
+      } else {
+        setMessage('❌ שגיאה: ' + (data.error || 'השחזור נכשל'));
+      }
+    } catch (error) {
+      setMessage('❌ שגיאה: ' + error.message);
+    } finally {
+      setTimeout(() => {
+        setIsRunning(false);
+        setProgress(0);
+        setCurrentAction('');
+      }, 2000);
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -208,6 +286,7 @@ function BackupsContent() {
               </div>
             </div>
             <button 
+              type="button"
               onClick={runBackup} 
               disabled={isRunning}
               className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
@@ -231,6 +310,7 @@ function BackupsContent() {
               </div>
             </div>
             <button 
+              type="button"
               onClick={runUpdate}
               disabled={isRunning}
               className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
@@ -250,12 +330,18 @@ function BackupsContent() {
               </span>
               <div>
                 <h3 className="font-bold text-gray-900">שחזור גיבוי</h3>
-                <p className="text-sm text-gray-500">שחזור מגיבוי קיים</p>
+                <p className="text-sm text-gray-500">שחזור מקובץ JSON</p>
               </div>
             </div>
-            <p className="text-sm text-amber-700 bg-amber-50 p-2 rounded">
-              ⚠️ לשחזור יש להריץ את הסקריפט מהטרמינל
-            </p>
+            <button 
+              type="button"
+              onClick={() => setShowRestoreModal(true)}
+              disabled={isRunning}
+              className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #d97706 0%, #fbbf24 100%)' }}
+            >
+              {isRunning ? 'משחזר...' : 'שחזר מגיבוי'}
+            </button>
           </div>
 
           {/* Deploy */}
@@ -272,6 +358,7 @@ function BackupsContent() {
               </div>
             </div>
             <button 
+              type="button"
               onClick={runDeploy}
               disabled={isRunning}
               className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
@@ -295,6 +382,7 @@ function BackupsContent() {
               </div>
             </div>
             <button 
+              type="button"
               onClick={runServer}
               disabled={isRunning}
               className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
@@ -364,7 +452,7 @@ function BackupsContent() {
                       <td className="py-3 px-4 text-gray-600">{backup.date}</td>
                       <td className="py-3 px-4 text-gray-600">{backup.size}</td>
                       <td className="py-3 px-4">
-                        <button className="text-cyan-600 hover:text-cyan-800 text-sm">שחזר</button>
+                        <span className="text-gray-400 text-sm">גיבוי מקומי</span>
                       </td>
                     </tr>
                   ))}
@@ -382,6 +470,76 @@ function BackupsContent() {
           )}
         </div>
       </div>
+
+      {/* Restore Modal */}
+      {showRestoreModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6" dir="rtl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                שחזור מגיבוי
+              </h3>
+              <button 
+                onClick={() => { setShowRestoreModal(false); setRestoreFile(null); }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <p className="text-sm text-amber-800 flex items-start gap-2">
+                <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>שחזור יחליף את כל הנתונים הקיימים במערכת! מומלץ לבצע גיבוי לפני.</span>
+              </p>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                בחר קובץ גיבוי (JSON)
+              </label>
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleRestoreFileChange}
+                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
+              />
+              {restoreFile && (
+                <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  נבחר: {restoreFile.name}
+                </p>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={runRestore}
+                disabled={!restoreFile || isRunning}
+                className="flex-1 py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
+                style={{ background: 'linear-gradient(135deg, #d97706 0%, #fbbf24 100%)' }}
+              >
+                {isRunning ? 'משחזר...' : 'התחל שחזור'}
+              </button>
+              <button
+                onClick={() => { setShowRestoreModal(false); setRestoreFile(null); }}
+                className="py-2 px-4 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50"
+              >
+                ביטול
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
