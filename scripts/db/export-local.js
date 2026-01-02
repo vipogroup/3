@@ -1,7 +1,9 @@
 // scripts/db/export-local.js
 // Export all collections from the configured MongoDB into JSON files
+// Auto-cleanup: keeps only the last 10 backups
 
 const fs = require('fs/promises');
+const fsSync = require('fs');
 const path = require('path');
 const { MongoClient } = require('mongodb');
 const { EJSON } = require('bson');
@@ -19,6 +21,63 @@ for (const envFile of envFiles) {
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || 'vipo';
 const backupRoot = path.join(process.cwd(), 'backups', 'database');
+const MAX_BACKUPS = 10; // מספר הגיבויים המקסימלי לשמור
+
+// פונקציה למחיקת תיקייה רקורסיבית
+async function deleteDirectory(dirPath) {
+  try {
+    const items = await fs.readdir(dirPath, { withFileTypes: true });
+    for (const item of items) {
+      const fullPath = path.join(dirPath, item.name);
+      if (item.isDirectory()) {
+        await deleteDirectory(fullPath);
+      } else {
+        await fs.unlink(fullPath);
+      }
+    }
+    await fs.rmdir(dirPath);
+  } catch (err) {
+    console.error(`   ⚠️  Failed to delete ${dirPath}:`, err.message);
+  }
+}
+
+// פונקציה לניקוי גיבויים ישנים - שומרת רק 10 אחרונים
+async function cleanupOldBackups() {
+  console.log('\n🧹 Checking for old backups to cleanup...');
+  
+  try {
+    const items = await fs.readdir(backupRoot, { withFileTypes: true });
+    
+    // סינון רק תיקיות גיבוי בפורמט mongo-YYYY-MM-DD...
+    const backupDirs = items
+      .filter(item => item.isDirectory() && item.name.startsWith('mongo-'))
+      .map(item => ({
+        name: item.name,
+        path: path.join(backupRoot, item.name)
+      }))
+      .sort((a, b) => b.name.localeCompare(a.name)); // מיון מהחדש לישן
+    
+    console.log(`   📊 Found ${backupDirs.length} backup folders`);
+    
+    if (backupDirs.length <= MAX_BACKUPS) {
+      console.log(`   ✅ No cleanup needed (keeping ${MAX_BACKUPS} backups)`);
+      return;
+    }
+    
+    // מחיקת גיבויים ישנים
+    const toDelete = backupDirs.slice(MAX_BACKUPS);
+    console.log(`   🗑️  Deleting ${toDelete.length} old backups...`);
+    
+    for (const backup of toDelete) {
+      console.log(`   ↳ Deleting: ${backup.name}`);
+      await deleteDirectory(backup.path);
+    }
+    
+    console.log(`   ✅ Cleanup complete! Kept ${MAX_BACKUPS} most recent backups`);
+  } catch (err) {
+    console.error('   ⚠️  Cleanup failed:', err.message);
+  }
+}
 
 if (!uri) {
   console.error('❌ MONGODB_URI missing. Aborting export.');
@@ -89,6 +148,9 @@ async function exportDb() {
     console.log('   ↳ Helper scripts created: restore.ps1 / restore.cmd');
 
     console.log(`✅ Export complete. Files saved to ${path.relative(process.cwd(), exportDir)}`);
+    
+    // ניקוי גיבויים ישנים אחרי גיבוי מוצלח
+    await cleanupOldBackups();
   } catch (err) {
     console.error('❌ Export failed:', err);
     process.exitCode = 1;

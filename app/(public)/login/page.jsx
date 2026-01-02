@@ -39,7 +39,6 @@ function LoginPageContent() {
   };
 
   const handleGoogleSignIn = () => {
-    console.log('[LOGIN] Redirecting to /login/google page');
     saveReferralToCookie();
     window.location.href = '/login/google';
   };
@@ -51,9 +50,7 @@ function LoginPageContent() {
         setEmail(stored.email);
         setRememberMe(true);
       }
-      if (stored?.password) {
-        setPassword(stored.password);
-      }
+      // לא שומרים סיסמה ב-localStorage מסיבות אבטחה
     } catch {
       // ignore corrupted localStorage data
     }
@@ -77,11 +74,8 @@ function LoginPageContent() {
         body: JSON.stringify(payload),
       });
 
-      console.log('[LOGIN] Response status:', res.status);
-
       if (!res.ok) {
         const data = await res.json();
-        console.log('[LOGIN] Error response:', data);
         setErr(data.error || 'שגיאה בהתחברות');
         setLoading(false);
         return;
@@ -89,11 +83,10 @@ function LoginPageContent() {
 
       // Success - get user role and redirect accordingly
       const data = await res.json();
-      console.log('[LOGIN] Success response:', data);
-      console.log('[LOGIN] User role:', data.role);
 
+      // שמירת אימייל בלבד (לא סיסמה!) לזכור אותי
       if (rememberMe) {
-        localStorage.setItem('vipo-login', JSON.stringify({ email: payload.identifier, password }));
+        localStorage.setItem('vipo-login', JSON.stringify({ email: payload.identifier }));
       } else {
         localStorage.removeItem('vipo-login');
       }
@@ -103,8 +96,6 @@ function LoginPageContent() {
 
       // Add a longer delay to ensure cookie is properly set and synced
       setTimeout(() => {
-        console.log('[LOGIN] About to redirect for role:', data.role);
-
         let targetPath = '/dashboard';
         if (data.role === 'customer') {
           targetPath = '/products';
@@ -113,8 +104,6 @@ function LoginPageContent() {
         } else if (data.role === 'admin') {
           targetPath = '/dashboard';
         }
-
-        console.log('[LOGIN] Redirecting to:', targetPath);
 
         // First update the cookie status
         fetch('/api/auth/me', { credentials: 'include' })
@@ -131,7 +120,6 @@ function LoginPageContent() {
 
       }, 1000);
     } catch (e) {
-      console.error('[LOGIN] Exception:', e);
       setErr('שגיאה בחיבור לשרת. אנא נסה שוב.');
       setLoading(false);
     }

@@ -7,6 +7,99 @@ import { logAdminActivity } from '@/lib/auditMiddleware';
 import { rateLimiters } from '@/lib/rateLimit';
 
 const execAsync = promisify(exec);
+const MAX_BACKUPS = 10; // מספר גיבויים מקסימלי לשמור
+
+// פונקציה לשליחת התראה על כשלון
+async function sendFailureAlert(action, error, userEmail) {
+  try {
+    // שמירה בלוג
+    await logAdminActivity({
+      action: 'system_alert',
+      entity: 'system',
+      description: `התראה: ${action} נכשל - ${error}`,
+      metadata: { 
+        alertType: 'failure',
+        failedAction: action,
+        error: error,
+        timestamp: new Date().toISOString()
+      }
+    });
+
+    // אם יש Resend API Key - שלח מייל
+    if (process.env.RESEND_API_KEY && process.env.ADMIN_EMAIL) {
+      try {
+        const { Resend } = await import('resend');
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        
+        await resend.emails.send({
+          from: 'VIPO System <noreply@vipo.co.il>',
+          to: process.env.ADMIN_EMAIL,
+          subject: `⚠️ התראת מערכת VIPO: ${action} נכשל`,
+          html: `
+            <div dir="rtl" style="font-family: Arial, sans-serif; padding: 20px;">
+              <h2 style="color: #dc2626;">התראת כשלון מערכת</h2>
+              <p><strong>פעולה:</strong> ${action}</p>
+              <p><strong>שגיאה:</strong> ${error}</p>
+              <p><strong>זמן:</strong> ${new Date().toLocaleString('he-IL')}</p>
+              <p><strong>משתמש:</strong> ${userEmail || 'לא ידוע'}</p>
+              <hr>
+              <p style="color: #6b7280; font-size: 12px;">הודעה אוטומטית ממערכת VIPO</p>
+            </div>
+          `
+        });
+        console.log('[Alert] Email sent to admin');
+      } catch (emailErr) {
+        console.error('[Alert] Failed to send email:', emailErr.message);
+      }
+    }
+  } catch (err) {
+    console.error('[Alert] Failed to send alert:', err.message);
+  }
+}
+
+// פונקציה לניקוי גיבויים ישנים - רק בסביבה מקומית
+async function cleanupOldBackups(backupsDir) {
+  // לא זמין בסביבת Vercel
+  const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+  if (!isLocal) {
+    return { cleaned: 0, skipped: true };
+  }
+  
+  try {
+    if (!fs.existsSync(backupsDir)) {
+      return { cleaned: 0 };
+    }
+    
+    const items = fs.readdirSync(backupsDir, { withFileTypes: true });
+    const backupDirs = items
+      .filter(item => item.isDirectory() && item.name.startsWith('mongo-'))
+      .map(item => item.name)
+      .sort((a, b) => b.localeCompare(a)); // מיון מהחדש לישן
+    
+    if (backupDirs.length <= MAX_BACKUPS) {
+      return { cleaned: 0 };
+    }
+    
+    const toDelete = backupDirs.slice(MAX_BACKUPS);
+    let deletedCount = 0;
+    
+    for (const dir of toDelete) {
+      const dirPath = path.join(backupsDir, dir);
+      try {
+        fs.rmSync(dirPath, { recursive: true, force: true });
+        deletedCount++;
+        console.log(`[Cleanup] Deleted old backup: ${dir}`);
+      } catch (err) {
+        console.error(`[Cleanup] Failed to delete ${dir}:`, err.message);
+      }
+    }
+    
+    return { cleaned: deletedCount };
+  } catch (err) {
+    console.error('[Cleanup] Error:', err.message);
+    return { cleaned: 0, error: err.message };
+  }
+}
 
 // Helper to check if user is admin
 async function checkAdmin(req) {
@@ -42,6 +135,17 @@ export async function GET(req) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // בדיקה אם אנחנו בסביבת Vercel
+  const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+  
+  // ב-Vercel אין גישה למערכת קבצים - החזר רשימה ריקה
+  if (!isLocal) {
+    return NextResponse.json({ 
+      backups: [],
+      message: 'גיבויים מקומיים זמינים רק בסביבת פיתוח'
+    });
+  }
+
   try {
     const backupsDir = path.join(process.cwd(), 'backups', 'database');
     
@@ -54,7 +158,6 @@ export async function GET(req) {
       .filter(item => item.isDirectory() && item.name.startsWith('mongo-'))
       .map(item => {
         const fullPath = path.join(backupsDir, item.name);
-        const stats = fs.statSync(fullPath);
         
         // Parse date from folder name (mongo-2025-12-31T15-47-00-767Z)
         const dateMatch = item.name.match(/mongo-(\d{4})-(\d{2})-(\d{2})T(\d{2})-(\d{2})-(\d{2})/);
@@ -72,12 +175,12 @@ export async function GET(req) {
         };
       })
       .sort((a, b) => b.name.localeCompare(a.name)) // Sort newest first
-      .slice(0, 20); // Limit to 20 most recent
+      .slice(0, 10); // Limit to 10 most recent
 
     return NextResponse.json({ backups });
   } catch (error) {
     console.error('Error listing backups:', error);
-    return NextResponse.json({ error: 'Failed to list backups' }, { status: 500 });
+    return NextResponse.json({ backups: [], error: error.message });
   }
 }
 
@@ -166,12 +269,17 @@ export async function POST(req) {
         }
       });
 
+      // ניקוי גיבויים ישנים - שמירת 10 אחרונים בלבד
+      const backupsDir = path.join(process.cwd(), 'backups', 'database');
+      const cleanupResult = await cleanupOldBackups(backupsDir);
+
       return NextResponse.json({ 
         success: true, 
         message: `גיבוי הושלם בהצלחה! נשמר בתיקייה: mongo-${timestamp}`,
         backupFolder: `mongo-${timestamp}`,
         collectionsCount: collections.length,
-        totalDocs
+        totalDocs,
+        cleanedBackups: cleanupResult.cleaned
       });
     }
 
@@ -498,6 +606,10 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error) {
     console.error('Backup error:', error);
+    
+    // שליחת התראה על כשלון
+    await sendFailureAlert('פעולת מערכת', error.message, user?.email);
+    
     return NextResponse.json({ 
       error: 'Failed to run backup', 
       details: error.message 
