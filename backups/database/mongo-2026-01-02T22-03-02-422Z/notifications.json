@@ -1098,5 +1098,27 @@
       "$date": "2025-12-09T19:43:21.517Z"
     },
     "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695813ee2566d1780a07540d"
+    },
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: m0507123331@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "695813ee2566d1780a07540c"
+      },
+      "email": "m0507123331@gmail.com",
+      "fullName": "דניאל"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-02T18:52:30.545Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-02T18:52:30.545Z"
+    },
+    "__v": 0
   }
 ]
