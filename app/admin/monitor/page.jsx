@@ -413,14 +413,16 @@ export default function MonitorPage() {
           <div className="p-4 border-b border-gray-200 flex items-center justify-between">
             <h2 className="text-lg font-bold text-gray-900">כלי מפתחים (DevTools)</h2>
             <button
+              type="button"
               onClick={() => {
-                // This triggers the debugger which opens DevTools
-                console.log('%c🔧 DevTools נפתחו!', 'font-size: 20px; color: #0891b2; font-weight: bold;');
-                console.log('%c📊 Network - לצפייה בבקשות רשת', 'font-size: 14px; color: #059669;');
-                console.log('%c💾 Application - לצפייה ב-LocalStorage/Cookies', 'font-size: 14px; color: #7c3aed;');
-                console.log('%c🐛 Console - לצפייה בשגיאות והודעות', 'font-size: 14px; color: #dc2626;');
-                // eslint-disable-next-line no-debugger
-                debugger;
+                // Log helpful info to console
+                console.log('%c[DevTools] כלי מפתחים', 'font-size: 20px; color: #0891b2; font-weight: bold;');
+                console.log('%c[Network] לצפייה בבקשות רשת', 'font-size: 14px; color: #059669;');
+                console.log('%c[Application] לצפייה ב-LocalStorage/Cookies', 'font-size: 14px; color: #7c3aed;');
+                console.log('%c[Console] לצפייה בשגיאות והודעות', 'font-size: 14px; color: #dc2626;');
+                console.log('\n--- לחץ F12 או Ctrl+Shift+I לפתיחת DevTools ---');
+                // Alert user to open DevTools manually
+                alert('לפתיחת DevTools:\n\nWindows/Linux: F12 או Ctrl+Shift+I\nMac: Cmd+Option+I\n\nאו לחץ ימני על הדף ובחר "בדוק"');
               }}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
               style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)' }}
@@ -456,9 +458,10 @@ export default function MonitorPage() {
               <p className="text-sm text-gray-600 mb-3">גישה מהירה לטאבים:</p>
               <div className="flex flex-wrap gap-2">
                 <button
+                  type="button"
                   onClick={() => {
                     console.clear();
-                    console.log('%c🧹 הקונסול נוקה!', 'font-size: 16px; color: #059669;');
+                    console.log('%c[Console] הקונסול נוקה בהצלחה', 'font-size: 16px; color: #059669;');
                   }}
                   className="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200 transition-all flex items-center gap-2"
                 >
@@ -468,14 +471,16 @@ export default function MonitorPage() {
                   נקה Console
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
+                    console.log('%c[Storage] מידע אחסון:', 'font-size: 14px; font-weight: bold; color: #7c3aed;');
                     console.table({
                       'LocalStorage Items': localStorage.length,
                       'SessionStorage Items': sessionStorage.length,
-                      'Cookies': document.cookie.split(';').length,
+                      'Cookies': document.cookie.split(';').filter(c => c.trim()).length,
                     });
-                    console.log('%c📦 Storage Info:', 'font-size: 14px; font-weight: bold; color: #7c3aed;');
                     console.log('LocalStorage:', { ...localStorage });
+                    console.log('SessionStorage:', { ...sessionStorage });
                   }}
                   className="px-3 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-200 transition-all flex items-center gap-2"
                 >
@@ -485,11 +490,14 @@ export default function MonitorPage() {
                   הצג Storage
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
-                    console.log('%c🌐 Network Info:', 'font-size: 14px; font-weight: bold; color: #0891b2;');
-                    console.log('Online:', navigator.onLine);
-                    console.log('Connection:', navigator.connection || 'Not available');
+                    console.log('%c[Network] מידע רשת:', 'font-size: 14px; font-weight: bold; color: #0891b2;');
+                    console.log('Online:', navigator.onLine ? 'כן' : 'לא');
+                    console.log('Connection:', navigator.connection || 'לא זמין');
                     console.log('User Agent:', navigator.userAgent);
+                    console.log('Language:', navigator.language);
+                    console.log('Platform:', navigator.platform);
                   }}
                   className="px-3 py-2 bg-cyan-100 text-cyan-700 rounded-lg text-sm font-medium hover:bg-cyan-200 transition-all flex items-center gap-2"
                 >
@@ -499,13 +507,15 @@ export default function MonitorPage() {
                   מידע רשת
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     const perfData = performance.getEntriesByType('navigation')[0];
-                    console.log('%c⚡ Performance Info:', 'font-size: 14px; font-weight: bold; color: #ea580c;');
+                    console.log('%c[Performance] מידע ביצועים:', 'font-size: 14px; font-weight: bold; color: #ea580c;');
                     console.table({
                       'DOM Load': Math.round(perfData?.domContentLoadedEventEnd || 0) + 'ms',
                       'Full Load': Math.round(perfData?.loadEventEnd || 0) + 'ms',
                       'Memory (MB)': Math.round((performance.memory?.usedJSHeapSize || 0) / 1048576),
+                      'Time Since Load': Math.round(performance.now()) + 'ms',
                     });
                   }}
                   className="px-3 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-200 transition-all flex items-center gap-2"
