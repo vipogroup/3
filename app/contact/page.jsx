@@ -17,10 +17,10 @@ export default function ContactPage() {
 
   const contactDetails = useMemo(
     () => ({
-      email: settings?.email || 'info@vipo.com',
-      phone: settings?.phone || '050-1234567',
-      address: settings?.address || 'תל אביב, ישראל',
-      whatsapp: settings?.whatsapp || '972501234567',
+      email: settings?.email || 'support@vipo-group.com',
+      phone: settings?.phone || '0555545821',
+      address: settings?.address || 'באר יעקב, ישראל',
+      whatsapp: settings?.whatsapp || '972555545821',
     }),
     [settings],
   );

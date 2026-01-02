@@ -1,0 +1,109 @@
+[
+  {
+    "_id": {
+      "$oid": "690f366dc3841a52e00e5d63"
+    },
+    "fullName": "מנהל ראשי",
+    "email": "admin@vipo.local",
+    "phone": "0501234567",
+    "passwordHash": "$2a$10$aGMpU3gZdp9Neeyg0FOsQOKS5fZtZyREGhgCXjzWe7RebwLvwWJqi",
+    "role": "admin",
+    "isActive": true,
+    "isAgent": false,
+    "agentId": null,
+    "referralsCount": 0,
+    "referralCount": 0,
+    "commissionBalance": 0,
+    "totalSales": 0,
+    "createdAt": {
+      "$date": "2025-11-08T12:24:13.376Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-01T01:43:58.763Z"
+    },
+    "password": "$2a$10$N6bTS91A6uK8V7h2xZe8Luub2SQKVLG5yMLCR3nocGTxjcVRpENSG"
+  },
+  {
+    "_id": {
+      "$oid": "69402069f10dd22ad6e73efc"
+    },
+    "email": "m0587009938@gmail.com",
+    "phone": "0587009938",
+    "fullName": "System Admin",
+    "passwordHash": "$2a$10$6wc1L54jbVkaTiD5PMg84uqSvuONB/y7mh5XRlmWWHQWw0K3rprlO",
+    "role": "admin",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-15T14:51:21.929Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T03:29:57.204Z"
+    },
+    "referralsCount": 0,
+    "commissionBalance": 0,
+    "totalSales": 0,
+    "commissionOnHold": 0,
+    "image": "https://lh3.googleusercontent.com/a/ACg8ocKlEEr9IghCHms0u85l_TpnFhmxb0OfvSccjrNtfdlFusI--w=s96-c",
+    "provider": "google",
+    "providerAccountId": "107129372780600575444"
+  },
+  {
+    "_id": {
+      "$oid": "69578dc0c5566f20f398adcf"
+    },
+    "fullName": "דניאל ",
+    "phone": "0507123331",
+    "email": "m0507123331@gmail.com",
+    "passwordHash": "$2a$10$c2ovgGrEeJLDPTm6FxA7P.rHPurJkdqO5tL3PBEGcseOqKJBypXOm",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-02T09:20:00.247Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-02T09:23:37.526Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "dnyal-001",
+    "couponSequence": 1,
+    "couponSlug": "dnyal",
+    "couponStatus": "active",
+    "discountPercent": 10,
+    "commissionBalance": 183.6,
+    "totalSales": 1
+  },
+  {
+    "_id": {
+      "$oid": "69578e80af97d367aaaa7b35"
+    },
+    "fullName": "מרים חדש",
+    "phone": "0533858881",
+    "email": "m0533858881@gmail.com",
+    "passwordHash": "$2a$10$iWRdT3qt92h.a2bD5Ivw5OyBElZ9d8LvfkWOfhXpH1HWNwDlXwySu",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-02T09:23:12.884Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-02T09:23:12.884Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69578fb8cbfdc3ccb7172ab1"
+    },
+    "fullName": "מרים",
+    "phone": "053898625",
+    "email": "miriamshabo22@gmail.com",
+    "passwordHash": "$2a$10$ZpsiWAEF4FOYYKQfTn7u5uhKh08l6macjqI8Zvr/xBi0JnZZ5aTqa",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-02T09:28:24.516Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-02T09:28:24.516Z"
+    }
+  }
+]
