@@ -179,21 +179,38 @@ function RegisterPageContent() {
 
     setLoading(true);
 
-    // Send verification code to email
+    // הרשמה ישירה ללא אימות מייל (מבוטל זמנית)
     try {
-      const res = await fetch('/api/auth/send-email-code', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ fullName, phone, email, password, role }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || 'שליחת הקוד נכשלה');
+      const j = await res.json().catch(() => ({}));
+      
+      if (!res.ok || !j?.ok) {
+        let errorMsg = j?.message || j?.error || 'הרשמה נכשלה';
+        if (j?.error === 'phone exists') errorMsg = 'מספר הטלפון כבר רשום';
+        else if (j?.error === 'email exists') errorMsg = 'האימייל כבר רשום';
+        throw new Error(errorMsg);
       }
-      setCountdown(60);
-      setShowVerifyModal(true);
+
+      // Auto-login
+      const loginRes = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: email, password }),
+      });
+
+      setMsg('נרשמת בהצלחה!');
+
+      if (loginRes.ok) {
+        setTimeout(() => router.push('/products'), 500);
+      } else {
+        setTimeout(() => router.push('/login'), 1500);
+      }
     } catch (e) {
-      setErr(e.message || 'שגיאה בשליחת קוד אימות');
+      setErr(e.message || 'שגיאה בהרשמה');
     } finally {
       setLoading(false);
     }
