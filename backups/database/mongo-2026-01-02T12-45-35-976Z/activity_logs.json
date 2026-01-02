@@ -1,0 +1,382 @@
+[
+  {
+    "_id": {
+      "$oid": "69578dc5c5566f20f398ade4"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "69578dc0c5566f20f398adcf",
+    "userId": "69578dc0c5566f20f398adcf",
+    "userEmail": "m0507123331@gmail.com",
+    "description": "התחברות למערכת: m0507123331@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-02T09:20:05.693Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T09:20:05.693Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69578dd2cbfdc3ccb7172a87"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "69578dc0c5566f20f398adcf",
+    "userId": "69578dc0c5566f20f398adcf",
+    "userEmail": "m0507123331@gmail.com",
+    "description": "התחברות למערכת: m0507123331@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": true,
+      "timestamp": "2026-01-02T09:20:18.698Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T09:20:18.699Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69578e84af97d367aaaa7b3d"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "69578e80af97d367aaaa7b35",
+    "userId": "69578e80af97d367aaaa7b35",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-02T09:23:16.325Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T09:23:16.325Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69578fbbf26d19c2dfa3b6d4"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "69578fb8cbfdc3ccb7172ab1",
+    "userId": "69578fb8cbfdc3ccb7172ab1",
+    "userEmail": "miriamshabo22@gmail.com",
+    "description": "התחברות למערכת: miriamshabo22@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-02T09:28:27.809Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T09:28:27.810Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69579d1d17e0d272d80843a4"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים",
+    "metadata": {
+      "type": "database",
+      "collectionsCount": 23,
+      "timestamp": "2026-01-02T10:25:33.583Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T10:25:33.583Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69579e69db705e85b522f449"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים",
+    "metadata": {
+      "type": "database",
+      "collectionsCount": 23,
+      "timestamp": "2026-01-02T10:31:05.523Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T10:31:05.523Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69579eb0db705e85b522f44c"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים",
+    "metadata": {
+      "type": "database",
+      "collectionsCount": 23,
+      "timestamp": "2026-01-02T10:32:16.997Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T10:32:16.997Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957ad0d1290f9e7a61f959f"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים",
+    "metadata": {
+      "type": "database",
+      "collectionsCount": 23,
+      "timestamp": "2026-01-02T11:33:33.666Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T11:33:33.666Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957ad1a1290f9e7a61f95a1"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "בקשת Deploy - מתבצע אוטומטית דרך GitHub",
+    "metadata": {
+      "platform": "vercel",
+      "method": "git_push",
+      "timestamp": "2026-01-02T11:33:46.131Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T11:33:46.131Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957ad7a465eb0371509127d"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "בקשת Deploy - מתבצע אוטומטית דרך GitHub",
+    "metadata": {
+      "platform": "vercel",
+      "method": "git_push",
+      "timestamp": "2026-01-02T11:35:22.695Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T11:35:22.695Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957adf3465eb03715091282"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "בקשת Deploy - מתבצע אוטומטית דרך GitHub",
+    "metadata": {
+      "platform": "vercel",
+      "method": "git_push",
+      "timestamp": "2026-01-02T11:37:23.421Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T11:37:23.421Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957b311d48000cc8a241070"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים",
+    "metadata": {
+      "type": "database",
+      "collectionsCount": 23,
+      "timestamp": "2026-01-02T11:59:13.043Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T11:59:13.043Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957b320d48000cc8a241071"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "בקשת Deploy - מתבצע אוטומטית דרך GitHub",
+    "metadata": {
+      "platform": "vercel",
+      "method": "git_push",
+      "timestamp": "2026-01-02T11:59:28.365Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T11:59:28.365Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957b329d48000cc8a241072"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "בקשת Deploy - מתבצע אוטומטית דרך GitHub",
+    "metadata": {
+      "platform": "vercel",
+      "method": "git_push",
+      "timestamp": "2026-01-02T11:59:37.381Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T11:59:37.381Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957b3bdd48000cc8a241078"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "בקשת Deploy - לא הוגדר Deploy Hook",
+    "metadata": {
+      "platform": "vercel",
+      "method": "manual",
+      "timestamp": "2026-01-02T12:02:05.979Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T12:02:05.979Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957b3c6d48000cc8a24107a"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "בקשת Deploy - לא הוגדר Deploy Hook",
+    "metadata": {
+      "platform": "vercel",
+      "method": "manual",
+      "timestamp": "2026-01-02T12:02:14.865Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T12:02:14.865Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957b40bd48000cc8a24107d"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "בקשת Deploy - לא הוגדר Deploy Hook",
+    "metadata": {
+      "platform": "vercel",
+      "method": "manual",
+      "timestamp": "2026-01-02T12:03:23.548Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T12:03:23.548Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957b497d48000cc8a241083"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "בקשת Deploy - לא הוגדר Deploy Hook",
+    "metadata": {
+      "platform": "vercel",
+      "method": "manual",
+      "timestamp": "2026-01-02T12:05:43.769Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T12:05:43.769Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957bbac99a79bb422937b25"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים",
+    "metadata": {
+      "type": "database",
+      "collectionsCount": 23,
+      "timestamp": "2026-01-02T12:35:56.947Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T12:35:56.947Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6957bbbd99a79bb422937b27"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "69402069f10dd22ad6e73efc",
+    "userEmail": null,
+    "description": "בקשת Deploy - לא הוגדר Deploy Hook",
+    "metadata": {
+      "platform": "vercel",
+      "method": "manual",
+      "timestamp": "2026-01-02T12:36:13.490Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-02T12:36:13.490Z"
+    }
+  }
+]

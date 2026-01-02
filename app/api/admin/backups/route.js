@@ -93,7 +93,41 @@ export async function POST(req) {
     const { action } = body;
 
     if (action === 'backup') {
-      // Direct MongoDB backup - works in Vercel serverless
+      const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+      
+      if (isLocal) {
+        // Run backup.cmd script locally
+        try {
+          const scriptPath = path.join(process.cwd(), 'backups', 'database', 'backup.cmd');
+          console.log('[Backup] Running script:', scriptPath);
+          
+          const { stdout, stderr } = await execAsync(`"${scriptPath}"`, { 
+            cwd: process.cwd(),
+            timeout: 120000 
+          });
+          
+          await logAdminActivity({
+            action: 'backup',
+            entity: 'system',
+            userId: user.userId,
+            userEmail: user.email,
+            description: 'גיבוי מסד נתונים באמצעות backup.cmd',
+            metadata: { type: 'script', output: (stdout || '').substring(0, 500) }
+          });
+
+          return NextResponse.json({ 
+            success: true, 
+            message: 'גיבוי הושלם בהצלחה באמצעות backup.cmd!',
+            details: stdout,
+            scriptUsed: 'backup.cmd'
+          });
+        } catch (error) {
+          console.error('[Backup] Script error:', error);
+          // Fallback to direct MongoDB backup
+        }
+      }
+      
+      // Direct MongoDB backup - works in Vercel serverless (fallback)
       const { getDb } = await import('@/lib/db');
       const db = await getDb();
       
@@ -137,6 +171,40 @@ export async function POST(req) {
     }
 
     if (action === 'deploy') {
+      const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+      
+      // Try deploy-vercel.cmd in local environment
+      if (isLocal && !process.env.VERCEL_DEPLOY_HOOK_URL) {
+        try {
+          const scriptPath = path.join(process.cwd(), 'backups', 'database', 'deploy-vercel.cmd');
+          console.log('[Deploy] Running script:', scriptPath);
+          
+          const { stdout } = await execAsync(`"${scriptPath}"`, { 
+            cwd: process.cwd(),
+            timeout: 300000 
+          });
+          
+          await logAdminActivity({
+            action: 'deploy',
+            entity: 'system',
+            userId: user.userId,
+            userEmail: user.email,
+            description: 'Deploy ל-Vercel באמצעות deploy-vercel.cmd',
+            metadata: { type: 'script', output: (stdout || '').substring(0, 500) }
+          });
+
+          return NextResponse.json({ 
+            success: true, 
+            message: 'Deploy ל-Vercel הופעל באמצעות deploy-vercel.cmd!',
+            details: stdout,
+            scriptUsed: 'deploy-vercel.cmd'
+          });
+        } catch (error) {
+          console.error('[Deploy] Script error:', error);
+          // Fallback to deploy hook or instructions
+        }
+      }
+      
       // Use Vercel Deploy Hook if available
       const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL;
       
@@ -205,62 +273,74 @@ export async function POST(req) {
       const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
       
       if (isLocal) {
+        // Try update-all.cmd script first
         try {
-          // Run git pull in local environment
-          const cwd = process.cwd();
-          console.log('[Update] Running git pull in:', cwd);
+          const scriptPath = path.join(process.cwd(), 'backups', 'database', 'update-all.cmd');
+          console.log('[Update] Running script:', scriptPath);
           
-          const { stdout: pullOutput, stderr: pullError } = await execAsync('git pull origin main', { cwd });
+          const { stdout } = await execAsync(`"${scriptPath}"`, { 
+            cwd: process.cwd(),
+            timeout: 180000 
+          });
           
-          let updateResult = pullOutput || '';
-          let hasChanges = !updateResult.includes('Already up to date');
-          
-          // Log the activity
           await logAdminActivity({
             action: 'update',
             entity: 'system',
             userId: user.userId,
             userEmail: user.email,
-            description: hasChanges ? 'עדכון מערכת בוצע - נמשכו שינויים חדשים' : 'עדכון מערכת - אין שינויים חדשים',
-            metadata: { type: 'git_pull', hasChanges, output: updateResult.substring(0, 500) }
+            description: 'עדכון מערכת באמצעות update-all.cmd',
+            metadata: { type: 'script', output: (stdout || '').substring(0, 500) }
           });
 
-          if (hasChanges) {
-            // Run npm install if there are changes
-            console.log('[Update] Running npm install...');
-            try {
-              await execAsync('npm install', { cwd, timeout: 120000 });
-            } catch (npmErr) {
-              console.log('[Update] npm install warning:', npmErr.message);
+          return NextResponse.json({ 
+            success: true, 
+            message: 'עדכון מערכת הושלם באמצעות update-all.cmd!',
+            details: stdout,
+            info: 'הסקריפט ביצע: גיבוי, תיוג גרסה, ופתיחת Vercel',
+            scriptUsed: 'update-all.cmd'
+          });
+        } catch (scriptError) {
+          console.log('[Update] Script failed, trying git pull:', scriptError.message);
+          
+          // Fallback to git pull
+          try {
+            const cwd = process.cwd();
+            const { stdout: pullOutput } = await execAsync('git pull origin main', { cwd });
+            
+            let updateResult = pullOutput || '';
+            let hasChanges = !updateResult.includes('Already up to date');
+            
+            await logAdminActivity({
+              action: 'update',
+              entity: 'system',
+              userId: user.userId,
+              userEmail: user.email,
+              description: hasChanges ? 'עדכון מערכת - נמשכו שינויים' : 'עדכון מערכת - אין שינויים',
+              metadata: { type: 'git_pull', hasChanges }
+            });
+
+            if (hasChanges) {
+              try {
+                await execAsync('npm install', { cwd, timeout: 120000 });
+              } catch (npmErr) {
+                console.log('[Update] npm install warning:', npmErr.message);
+              }
             }
             
             return NextResponse.json({ 
               success: true, 
-              message: 'עדכון מערכת הושלם בהצלחה! נמשכו שינויים חדשים.',
+              message: hasChanges ? 'עדכון מערכת הושלם! נמשכו שינויים.' : 'המערכת מעודכנת!',
               details: updateResult,
-              info: 'מומלץ להפעיל מחדש את השרת המקומי לטעינת השינויים.',
-              hasChanges: true
+              hasChanges
             });
-          } else {
+          } catch (gitError) {
             return NextResponse.json({ 
-              success: true, 
-              message: 'המערכת מעודכנת! אין שינויים חדשים.',
-              details: updateResult,
-              hasChanges: false
-            });
+              success: false, 
+              error: 'שגיאה בעדכון המערכת',
+              details: gitError.message,
+              commands: ['git pull origin main', 'npm install']
+            }, { status: 500 });
           }
-        } catch (error) {
-          console.error('[Update] Error:', error);
-          return NextResponse.json({ 
-            success: false, 
-            error: 'שגיאה בעדכון המערכת',
-            details: error.message,
-            commands: [
-              'git pull origin main',
-              'npm install'
-            ],
-            info: 'נסה להריץ את הפקודות ידנית בטרמינל.'
-          }, { status: 500 });
         }
       } else {
         // In Vercel serverless, provide instructions
