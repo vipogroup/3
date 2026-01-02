@@ -410,11 +410,29 @@ export default function MonitorPage() {
 
         {/* DevTools Instructions */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 flex items-center justify-between">
             <h2 className="text-lg font-bold text-gray-900">כלי מפתחים (DevTools)</h2>
+            <button
+              onClick={() => {
+                // This triggers the debugger which opens DevTools
+                console.log('%c🔧 DevTools נפתחו!', 'font-size: 20px; color: #0891b2; font-weight: bold;');
+                console.log('%c📊 Network - לצפייה בבקשות רשת', 'font-size: 14px; color: #059669;');
+                console.log('%c💾 Application - לצפייה ב-LocalStorage/Cookies', 'font-size: 14px; color: #7c3aed;');
+                console.log('%c🐛 Console - לצפייה בשגיאות והודעות', 'font-size: 14px; color: #dc2626;');
+                // eslint-disable-next-line no-debugger
+                debugger;
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
+              style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)' }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+              פתח DevTools
+            </button>
           </div>
           <div className="p-4">
-            <p className="text-gray-600 mb-4">לפתיחת כלי המפתחים של הדפדפן עם מידע מפורט על בקשות רשת:</p>
+            <p className="text-gray-600 mb-4">לחץ על הכפתור למעלה או השתמש בקיצורי המקלדת:</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="p-4 bg-gray-50 rounded-lg text-center">
                 <p className="text-2xl font-mono font-bold text-gray-900 mb-2">F12</p>
@@ -430,6 +448,73 @@ export default function MonitorPage() {
                 <p className="text-sm text-gray-600 mb-2">לחץ ימני על הדף</p>
                 <p className="text-lg font-bold text-gray-900">בדוק / Inspect</p>
                 <p className="text-xs text-gray-500 mt-2">כל הדפדפנים</p>
+              </div>
+            </div>
+            
+            {/* Quick Access Buttons */}
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <p className="text-sm text-gray-600 mb-3">גישה מהירה לטאבים:</p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => {
+                    console.clear();
+                    console.log('%c🧹 הקונסול נוקה!', 'font-size: 16px; color: #059669;');
+                  }}
+                  className="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200 transition-all flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  נקה Console
+                </button>
+                <button
+                  onClick={() => {
+                    console.table({
+                      'LocalStorage Items': localStorage.length,
+                      'SessionStorage Items': sessionStorage.length,
+                      'Cookies': document.cookie.split(';').length,
+                    });
+                    console.log('%c📦 Storage Info:', 'font-size: 14px; font-weight: bold; color: #7c3aed;');
+                    console.log('LocalStorage:', { ...localStorage });
+                  }}
+                  className="px-3 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-200 transition-all flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                  </svg>
+                  הצג Storage
+                </button>
+                <button
+                  onClick={() => {
+                    console.log('%c🌐 Network Info:', 'font-size: 14px; font-weight: bold; color: #0891b2;');
+                    console.log('Online:', navigator.onLine);
+                    console.log('Connection:', navigator.connection || 'Not available');
+                    console.log('User Agent:', navigator.userAgent);
+                  }}
+                  className="px-3 py-2 bg-cyan-100 text-cyan-700 rounded-lg text-sm font-medium hover:bg-cyan-200 transition-all flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                  </svg>
+                  מידע רשת
+                </button>
+                <button
+                  onClick={() => {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    console.log('%c⚡ Performance Info:', 'font-size: 14px; font-weight: bold; color: #ea580c;');
+                    console.table({
+                      'DOM Load': Math.round(perfData?.domContentLoadedEventEnd || 0) + 'ms',
+                      'Full Load': Math.round(perfData?.loadEventEnd || 0) + 'ms',
+                      'Memory (MB)': Math.round((performance.memory?.usedJSHeapSize || 0) / 1048576),
+                    });
+                  }}
+                  className="px-3 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-200 transition-all flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  ביצועים
+                </button>
               </div>
             </div>
           </div>
