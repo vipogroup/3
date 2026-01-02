@@ -245,17 +245,68 @@ function CheckoutClient() {
     [currentStep, formData, stepFields, validateField],
   );
 
+  // מיפוי שמות שדות לעברית
+  const fieldLabels = useMemo(() => ({
+    fullName: 'שם מלא',
+    email: 'אימייל',
+    phone: 'טלפון',
+    address: 'כתובת',
+    city: 'עיר',
+    zipCode: 'מיקוד',
+    paymentMethod: 'אמצעי תשלום',
+    agreeToTerms: 'אישור תנאים',
+  }), []);
+
   const validateAllSteps = useCallback(() => {
     let valid = true;
+    let firstInvalidStep = null;
+    const missingFields = [];
+
     [1, 2, 3, 4].forEach((step) => {
-      if (!validateStep(step)) valid = false;
+      const fields = stepFields[step] || [];
+      fields.forEach((field) => {
+        const message = validateField(field, formData[field]);
+        if (message) {
+          valid = false;
+          if (!firstInvalidStep) firstInvalidStep = step;
+          missingFields.push(fieldLabels[field] || field);
+        }
+      });
+
+      // בדיקת אישור תנאים בשלב 4
+      if (step === 4 && !formData.agreeToTerms) {
+        setFieldErrors((prev) => ({ ...prev, agreeToTerms: 'יש לאשר את התנאים לפני התשלום' }));
+        valid = false;
+        if (!firstInvalidStep) firstInvalidStep = 4;
+        missingFields.push('אישור תנאים');
+      }
     });
+
     if (!isCartReady) {
       setError('העגלה ריקה או שאינה נטענה כראוי');
-      valid = false;
+      return false;
     }
+
+    if (!valid && missingFields.length > 0) {
+      // הצגת הודעה ברורה עם השדות החסרים
+      const uniqueFields = [...new Set(missingFields)];
+      if (uniqueFields.length <= 3) {
+        setError(`נא להשלים: ${uniqueFields.join(', ')}`);
+      } else {
+        setError(`נא להשלים ${uniqueFields.length} שדות חסרים`);
+      }
+
+      // מעבר לשלב עם השגיאה הראשונה
+      if (firstInvalidStep && firstInvalidStep !== currentStep) {
+        setCurrentStep(firstInvalidStep);
+      }
+
+      // גלילה למעלה כדי לראות את ההודעה
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     return valid;
-  }, [isCartReady, validateStep]);
+  }, [isCartReady, validateField, formData, stepFields, fieldLabels, currentStep]);
 
   const handleNext = () => {
     if (validateStep()) {
@@ -414,6 +465,7 @@ function CheckoutClient() {
     if (!SKIP_REQUIRED_FIELDS) {
       const canSubmit = validateAllSteps();
       if (!canSubmit) {
+        // הודעת שגיאה כבר הוצגה ב-validateAllSteps
         return;
       }
     }
