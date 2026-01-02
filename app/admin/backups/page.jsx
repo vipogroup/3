@@ -84,7 +84,7 @@ function BackupsContent() {
       setProgress(100);
       
       if (res.ok) {
-        setMessage(`✅ ${data.message || actionName + ' הושלם בהצלחה!'}`);
+        let msg = `✅ ${data.message || actionName + ' הושלם בהצלחה!'}`;
         
         // If backup, download the backup file
         if (actionType === 'backup' && data.downloadReady && data.backup) {
@@ -97,9 +97,18 @@ function BackupsContent() {
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
-          setMessage(`✅ ${data.message} - הקובץ הורד למחשב!`);
+          msg = `✅ ${data.message} - הקובץ הורד למחשב!`;
         }
         
+        // Show commands if provided
+        if (data.commands) {
+          msg += '\n\n📋 פקודות:\n' + data.commands.join('\n');
+        }
+        if (data.info) {
+          msg += '\n\nℹ️ ' + data.info;
+        }
+        
+        setMessage(msg);
         if (actionType === 'backup') await loadBackups();
       } else {
         setMessage('❌ שגיאה: ' + (data.error || data.details || 'הפעולה נכשלה'));
@@ -153,7 +162,7 @@ function BackupsContent() {
 
         {/* Message */}
         {message && (
-          <div className={`mb-4 p-4 rounded-lg ${message.includes('✅') ? 'bg-green-50 text-green-800' : message.includes('❌') ? 'bg-red-50 text-red-800' : 'bg-blue-50 text-blue-800'}`}>
+          <div className={`mb-4 p-4 rounded-lg whitespace-pre-line ${message.includes('✅') ? 'bg-green-50 text-green-800' : message.includes('❌') ? 'bg-red-50 text-red-800' : 'bg-blue-50 text-blue-800'}`}>
             {message}
           </div>
         )}
