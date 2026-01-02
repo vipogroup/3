@@ -179,7 +179,7 @@ export async function POST(req) {
           const scriptPath = path.join(process.cwd(), 'backups', 'database', 'deploy-vercel.cmd');
           console.log('[Deploy] Running script:', scriptPath);
           
-          const { stdout } = await execAsync(`"${scriptPath}"`, { 
+          const { stdout } = await execAsync(`"${scriptPath}" --auto`, { 
             cwd: process.cwd(),
             timeout: 300000 
           });

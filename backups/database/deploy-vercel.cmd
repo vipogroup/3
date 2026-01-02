@@ -3,17 +3,28 @@ setlocal
 set "REPO_ROOT=C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test"
 cd /d "%REPO_ROOT%"
 
-echo === Running Vercel production deploy (via npx) ===
-npx vercel --prod
-if errorlevel 1 (
-    echo Vercel deploy reported an issue (ייתכן שצריך להתחבר עם "npx vercel login").
+echo === Running Vercel production deploy ===
+echo.
+
+REM Check if running from dashboard (no pause) or manually (with pause)
+if "%1"=="--auto" (
+    npx vercel --prod --yes
+    if errorlevel 1 (
+        echo [ERROR] Vercel deploy failed
+        exit /b 1
+    ) else (
+        echo [SUCCESS] Vercel deploy finished
+        exit /b 0
+    )
 ) else (
-    echo Vercel deploy finished.
+    npx vercel --prod --yes
+    if errorlevel 1 (
+        echo Vercel deploy reported an issue.
+    ) else (
+        echo Vercel deploy finished successfully!
+    )
+    echo.
+    pause
 )
 
-echo.
-echo אם נדרש גיבוי, הרץ update-all.cmd לפני פריסה.
-
-echo.
-pause
 endlocal
