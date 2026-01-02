@@ -160,9 +160,9 @@ export default function UsersList() {
       return;
     }
     
-    // Check if promoting to admin and user is not super admin
-    if (newRole === 'admin' && !isSuperAdminUser) {
-      setError('רק מנהלים ראשיים יכולים להעניק הרשאות מנהל');
+    // Only super admins can change any role
+    if (!isSuperAdminUser) {
+      setError('רק מנהלים ראשיים יכולים לשנות תפקידים');
       return;
     }
 
@@ -466,10 +466,11 @@ export default function UsersList() {
                         <select
                           value={user.role}
                           onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                          disabled={isCurrentUser}
+                          disabled={isCurrentUser || !isSuperAdminUser}
                           className={`border rounded px-2 py-1 text-sm ${
-                            isCurrentUser ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'
+                            isCurrentUser || !isSuperAdminUser ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'
                           }`}
+                          title={!isSuperAdminUser ? 'רק מנהלים ראשיים יכולים לשנות תפקידים' : ''}
                         >
                           {roleOptions.map((option) => (
                             <option key={option.value} value={option.value}>
@@ -681,12 +682,12 @@ export default function UsersList() {
           </li>
           <li className="flex items-start gap-2">
             <span style={{ color: '#0891b2' }}>•</span>
-            <span>שינוי תפקיד מתבצע מיידית</span>
+            <span>רק מנהלים ראשיים יכולים לשנות תפקידים (לקוח/סוכן/מנהל)</span>
           </li>
           {isSuperAdminUser && (
             <li className="flex items-start gap-2">
               <span style={{ color: '#0891b2' }}>•</span>
-              <span>רק מנהלים ראשיים יכולים להעניק הרשאות מנהל ולנהל הרשאות של מנהלים אחרים</span>
+              <span>שינוי תפקיד מתבצע מיידית</span>
             </li>
           )}
         </ul>

@@ -411,10 +411,16 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const catalogSlug = searchParams.get('catalog');
     const includeInactive = searchParams.get('includeInactive') === 'true';
+    const featuredOnly = searchParams.get('featured') === 'true';
     const query = {};
 
     if (catalogSlug) {
       query.catalogSlug = catalogSlug;
+    }
+
+    // Filter by featured products (for homepage)
+    if (featuredOnly) {
+      query.isFeatured = true;
     }
 
     // By default, only return active products with stock (for customers)

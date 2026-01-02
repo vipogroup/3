@@ -101,7 +101,7 @@ html {
 }
 
 body {
-    font-family: 'Inter', 'Heebo', sans-serif;
+    font-family: 'Rubik', 'Assistant', sans-serif;
     line-height: 1.5;
     color: var(--text-color);
     background-color: var(--light-color);
@@ -121,7 +121,7 @@ section {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', 'Heebo', sans-serif;
+    font-family: 'Rubik', 'Assistant', sans-serif;
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 12px;
@@ -517,10 +517,13 @@ img {
 .hero {
     background-image: url('../תמונה חדשה/2.jpg');
     background-size: cover;
-    background-position: center;
+    background-position: center center;
     background-attachment: fixed;
+    background-repeat: no-repeat;
     color: var(--text-light);
-    min-height: 70vh;
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -1531,10 +1534,7 @@ img {
 
 .audience-icon i {
     font-size: 1.1rem;
-    background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #1e3a8a;
 }
 
 .audience-card h3 {

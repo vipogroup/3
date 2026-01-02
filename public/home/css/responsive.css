@@ -35,14 +35,18 @@
 
 /* Mobile devices */
 @media (max-width: 768px) {
-    /* Navbar mobile styling - שקוף וללא תפיסת מקום */
+    /* Navbar mobile styling - צף למעלה */
     .navbar {
         background-color: transparent;
         backdrop-filter: none;
         box-shadow: none;
         position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
         width: 100%;
         z-index: 1000;
+        height: 60px;
     }
     
     .navbar .container {
@@ -365,43 +369,73 @@
     /* Hero section mobile styling */
     .hero {
         min-height: 100vh;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
+        padding-bottom: 0;
         background-attachment: scroll;
+        background-size: cover;
+        background-position: center center;
     }
     
     .hero h1 {
-        font-size: 2.5rem;
+        font-size: 2.7rem;
         margin-bottom: 15px;
     }
     
     .hero-subtitle {
-        font-size: 1.1rem;
-        margin-bottom: 25px;
+        font-size: 1rem;
+        margin-bottom: 20px;
     }
     
     .hero-content {
-        padding: 0 15px;
+        padding: 80px 15px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
     }
     
     .cta-buttons {
-        flex-direction: row; /* שינוי לשורה במקום עמודה */
+        flex-direction: row;
         gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .cta-buttons .btn {
+        width: auto;
+        padding: 12px 20px;
+        font-size: 0.9rem;
     }
     
     .btn {
-        padding: 7px 14px;
+        padding: 12px 20px;
+    }
+    
+    /* Hot Products in hero */
+    .hot-products-slider {
+        margin-top: 20px;
+        padding: 20px 0;
+        background: transparent;
     }
 
     .hot-products-slider h2 {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         margin-bottom: 20px;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .products-container {
-        padding: 10px 12px 5px 12px;
-        gap: 12px;
+        padding: 10px 20px;
+        gap: 15px;
         scroll-snap-type: x mandatory;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        min-height: auto;
+        justify-content: center;
     }
 
     .products-container.mobile-carousel {
@@ -415,24 +449,82 @@
         display: none;
     }
 
-    .products-container.mobile-carousel .product-card {
-        flex: 0 0 170px;
-        width: 170px;
-        height: 220px;
-        transform: translateZ(0) scale(0.85);
-        opacity: 0.7;
-        box-shadow: 0 6px 18px rgba(8, 145, 178, 0.15);
-    }
-
-    .products-container.mobile-carousel .product-card.center {
-        transform: translateZ(0) scale(1);
-        opacity: 1;
-        box-shadow: 0 8px 24px rgba(8, 145, 178, 0.22);
-    }
-
-    .products-container.mobile-carousel .product-card.far {
-        transform: translateZ(0) scale(0.7);
+    .products-container .product-card {
+        flex: 0 0 140px;
+        width: 140px;
+        height: 180px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border-radius: 16px;
+        transition: all 0.5s ease;
         opacity: 0.5;
+        transform: scale(0.8);
+    }
+    
+    .products-container .product-card.center {
+        flex: 0 0 200px;
+        width: 200px;
+        height: 260px;
+        transform: scale(1);
+        opacity: 1;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        z-index: 10;
+    }
+    
+    .products-container .product-card.side {
+        flex: 0 0 160px;
+        width: 160px;
+        height: 210px;
+        transform: scale(0.9);
+        opacity: 0.7;
+        z-index: 5;
+    }
+    
+    .products-container .product-card.far {
+        flex: 0 0 140px;
+        width: 140px;
+        height: 180px;
+        transform: scale(0.75);
+        opacity: 0.4;
+        z-index: 1;
+    }
+    
+    .products-container .product-card .product-image {
+        height: 140px;
+    }
+    
+    .products-container .product-card .product-info {
+        padding: 10px;
+        text-align: center;
+    }
+    
+    .products-container .product-card .product-info h3 {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1e3a8a;
+        margin-bottom: 5px;
+        line-height: 1.3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .products-container .product-card .product-info .price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #0891b2;
+    }
+    
+    /* Scroll Arrow mobile */
+    .scroll-arrow {
+        margin-top: 25px;
+        padding-bottom: 20px;
+    }
+    
+    .scroll-arrow svg {
+        width: 32px;
+        height: 32px;
+        color: white;
+        animation: bounce 2s infinite;
     }
     
     .slider-controls {
@@ -871,46 +963,90 @@
 
 /* Small mobile devices */
 @media (max-width: 480px) {
+    .hero {
+        min-height: 100vh;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
+    }
+    
     .section-title {
         font-size: 1.5rem;
     }
     
     .hero h1 {
-        font-size: 2.2rem;
+        font-size: 2.1rem;
     }
     
     .hero-subtitle {
-        font-size: 1rem;
+        font-size: 0.8rem;
+        margin-bottom: 15px;
+    }
+    
+    .cta-buttons {
+        flex-direction: row;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
     
     .cta-buttons .btn {
-        padding: 12px 24px;
-        font-size: 1rem;
+        padding: 10px 16px;
+        font-size: 0.8rem;
+        width: auto;
     }
     
     .btn {
-        padding: 10px 20px;
-        font-size: 0.9rem;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+    
+    /* Hot Products - Small mobile fix */
+    .hot-products-slider {
+        margin-top: 15px;
+        padding: 15px 0;
+    }
+    
+    .hot-products-slider h2 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
     }
     
     /* Small mobile 3D Carousel */
     .products-container {
-        gap: 10px;
-        padding: 20px 10px;
+        gap: 12px;
+        padding: 10px 15px;
+        min-height: auto;
+        justify-content: center;
     }
     
-    .product-card.center {
-        width: 200px;
-        height: 250px;
+    .products-container .product-card {
+        flex: 0 0 160px;
+        width: 160px;
+        height: 220px;
+        transform: none !important;
+        opacity: 1 !important;
+        transition: none !important;
     }
     
-    .product-card.side {
-        width: 150px;
-        height: 190px;
+    .products-container .product-card .product-image {
+        height: 110px;
     }
     
-    .product-card.far {
-        display: none; /* Hide far cards on mobile */
+    .products-container .product-card .product-info {
+        padding: 8px;
+    }
+    
+    .products-container .product-card .product-title {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+    }
+    
+    .products-container .product-card .product-price {
+        font-size: 0.9rem;
+    }
+    
+    .products-container .product-card .original-price {
+        font-size: 0.7rem;
     }
     
     /* How It Works small mobile */

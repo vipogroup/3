@@ -1,0 +1,130 @@
+[
+  {
+    "_id": {
+      "$oid": "695556b77dd9b5bef037a955"
+    },
+    "name": "אביזרי מחשב",
+    "type": "product",
+    "active": true,
+    "sortOrder": 0,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2025-12-31T17:00:39.114Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:00:39.114Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695556b77dd9b5bef037a956"
+    },
+    "name": "אודיו",
+    "type": "product",
+    "active": true,
+    "sortOrder": 1,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2025-12-31T17:00:39.115Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:00:39.115Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695556b77dd9b5bef037a957"
+    },
+    "name": "מסכים",
+    "type": "product",
+    "active": true,
+    "sortOrder": 2,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2025-12-31T17:00:39.115Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:00:39.115Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695556b77dd9b5bef037a958"
+    },
+    "name": "ריהוט",
+    "type": "product",
+    "active": true,
+    "sortOrder": 3,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2025-12-31T17:00:39.115Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:00:39.115Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695556b77dd9b5bef037a959"
+    },
+    "name": "רכישה קבוצתית",
+    "type": "product",
+    "active": true,
+    "sortOrder": 4,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2025-12-31T17:00:39.115Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:00:39.115Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695556da06ad66e3f223e90e"
+    },
+    "name": "עיסוי",
+    "type": "product",
+    "active": true,
+    "sortOrder": 0,
+    "createdAt": {
+      "$date": "2025-12-31T17:01:14.779Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:01:14.779Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955573c7dd9b5bef037a969"
+    },
+    "name": "קוסמטיקה",
+    "type": "product",
+    "active": true,
+    "sortOrder": 0,
+    "createdAt": {
+      "$date": "2025-12-31T17:02:52.333Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:02:52.333Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6955593ae294fea8f6b74a1b"
+    },
+    "name": "נירוסטה",
+    "type": "product",
+    "active": true,
+    "sortOrder": 0,
+    "createdAt": {
+      "$date": "2025-12-31T17:11:22.288Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-31T17:11:22.288Z"
+    },
+    "__v": 0
+  }
+]

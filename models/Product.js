@@ -97,6 +97,11 @@ const ProductSchema = new mongoose.Schema(
       type: Boolean, 
       default: true 
     },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
     archivedAt: { 
       type: Date, 
       default: null 
@@ -143,5 +148,6 @@ ProductSchema.index({ catalogSlug: 1, active: 1 });
 ProductSchema.index({ active: 1, sortOrder: 1 || 1 });
 ProductSchema.index({ price: 1 });
 ProductSchema.index({ active: 1 });
+ProductSchema.index({ isFeatured: 1, active: 1 });
 
 export default mongoose.models.Product || mongoose.model('Product', ProductSchema);
