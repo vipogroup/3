@@ -3,7 +3,7 @@ param(
 )
 
 $repoRoot = "C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test"
-$backupDir = "C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test\backups\database\mongo-2026-01-03T13-19-55-223Z"
+$backupDir = "C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test\backups\database\mongo-2026-01-04T14-47-45-392Z"
 
 if ($MongoUri) { $env:MONGODB_URI = $MongoUri }
 

@@ -6,6 +6,7 @@ import { connectMongo } from '@/lib/mongoose';
 import Product from '@/models/Product';
 import Catalog from '@/models/Catalog';
 import { requireAdminApi } from '@/lib/auth/server';
+import { updateProductInPriority, deactivateProductInPriority } from '@/lib/priority/productSyncService';
 
 function buildProductQuery(id) {
   const conditions = [];
@@ -152,6 +153,18 @@ export async function PUT(req, { params }) {
 
     const doc = await Product.findOneAndUpdate(buildProductQuery(params.id), update, { new: true });
     if (!doc) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+    // Sync update to Priority ERP (async)
+    updateProductInPriority(doc, update).then((result) => {
+      if (result.synced) {
+        console.log('[PRIORITY] Product updated:', result.itemCode);
+      } else if (result.reason !== 'not_configured') {
+        console.warn('[PRIORITY] Product update sync failed:', result.reason);
+      }
+    }).catch((err) => {
+      console.warn('[PRIORITY] Product update sync error:', err?.message || err);
+    });
+
     return NextResponse.json(doc);
   } catch (err) {
     if (err.status === 401 || err.status === 403) {
@@ -170,6 +183,18 @@ export async function DELETE(req, { params }) {
     await connectMongo();
     const res = await Product.findOneAndDelete(buildProductQuery(params.id));
     if (!res) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+    // Deactivate in Priority ERP (async, soft delete)
+    deactivateProductInPriority(res).then((result) => {
+      if (result.synced) {
+        console.log('[PRIORITY] Product deactivated:', result.itemCode);
+      } else if (result.reason !== 'not_configured') {
+        console.warn('[PRIORITY] Product deactivation failed:', result.reason);
+      }
+    }).catch((err) => {
+      console.warn('[PRIORITY] Product deactivation error:', err?.message || err);
+    });
+
     return NextResponse.json({ ok: true });
   } catch (err) {
     if (err.status === 401 || err.status === 403) {

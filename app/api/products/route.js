@@ -9,6 +9,7 @@ import Catalog from '@/models/Catalog';
 import Message from '@/models/Message';
 import { requireAdminApi } from '@/lib/auth/server';
 import { pushToTags } from '@/lib/pushSender';
+import { syncProductToPriority } from '@/lib/priority/productSyncService';
 
 const SEED_PRODUCTS = [
   {
@@ -546,6 +547,21 @@ export async function POST(request) {
     });
 
     const serialized = serializeProduct(product);
+
+    // Sync to Priority ERP (async, don't block response)
+    syncProductToPriority(product).then((result) => {
+      if (result.synced) {
+        console.log('[PRIORITY] Product synced:', result.itemCode, result.action);
+        // Update product with Priority item code if created
+        if (result.itemCode && result.isNew) {
+          Product.findByIdAndUpdate(product._id, { priorityItemCode: result.itemCode }).catch(() => {});
+        }
+      } else if (result.reason !== 'not_configured') {
+        console.warn('[PRIORITY] Product sync failed:', result.reason);
+      }
+    }).catch((err) => {
+      console.warn('[PRIORITY] Product sync error:', err?.message || err);
+    });
 
     notifyProductCreation(adminUser, product).catch((err) => {
       console.warn('PRODUCT_NOTIFY_FAILED', err?.message || err);
