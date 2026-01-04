@@ -72,12 +72,12 @@ export default function PushNotificationModal() {
 
         // Don't mark as shown - modal stays until user makes a choice
 
-        // Show modal after short delay
-        console.log('PUSH_MODAL: Will show modal in 1.5s');
+        // Show modal after delay - 15 seconds to not interrupt user
+        console.log('PUSH_MODAL: Will show modal in 15s');
         setTimeout(() => {
           console.log('PUSH_MODAL: Showing modal now');
           setIsOpen(true);
-        }, 1500);
+        }, 15000);
       } catch (err) {
         console.error('PUSH_MODAL: Error in checkAndShow', err);
       }
@@ -138,64 +138,49 @@ export default function PushNotificationModal() {
 
   if (!isOpen) return null;
 
+  // עיצוב מקורי עם מיקום חדש
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
+    <div className="fixed bottom-0 left-0 right-0 z-[999] px-3 pb-3">
       <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        role="presentation"
-      />
-      
-      {/* Modal */}
-      <div 
-        className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl"
-        style={{ animation: 'fadeInUp 0.3s ease-out' }}
+        className="bg-white shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-3"
+        style={{ 
+          border: '2px solid transparent', 
+          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', 
+          backgroundOrigin: 'border-box', 
+          backgroundClip: 'padding-box, border-box', 
+          boxShadow: '0 8px 25px rgba(8, 145, 178, 0.25)' 
+        }}
       >
         {step === 'ask' && (
           <>
-            {/* Icon */}
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full"
+            <div 
+              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
-              <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
             </div>
-
-            {/* Title */}
-            <h2 className="mb-2 text-center text-xl font-bold text-gray-900">
-              קבלו עדכונים ישירות לנייד
-            </h2>
-
-            {/* Description */}
-            <p className="mb-6 text-center text-sm text-gray-600">
-              הפעילו התראות כדי לקבל עדכונים על מוצרים חדשים, מבצעים והודעות חשובות - גם כשהאתר סגור
+            
+            <p className="text-xs text-gray-600 flex-1">
+              הפעל התראות לקבלת מבצעים ועדכונים
             </p>
-
-            {/* Buttons */}
-            <div className="space-y-3">
+            
+            <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={handleEnable}
                 disabled={loading}
-                className="w-full rounded-xl py-3 text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-70"
-                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                className="text-white text-xs font-semibold px-4 py-2 rounded-xl disabled:opacity-70"
+                style={{ 
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', 
+                  boxShadow: '0 2px 8px rgba(8, 145, 178, 0.3)' 
+                }}
               >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V2C6.477 2 2 6.477 2 12h2z" />
-                    </svg>
-                    מפעיל...
-                  </span>
-                ) : (
-                  'כן, אני רוצה לקבל עדכונים'
-                )}
+                {loading ? '...' : 'הפעל'}
               </button>
-              
               <button
                 onClick={handleClose}
-                className="w-full rounded-xl py-3 text-sm font-medium text-gray-500 transition-colors hover:text-gray-700"
+                className="text-gray-500 hover:text-gray-700 text-xs px-2 py-2"
               >
                 לא עכשיו
               </button>
@@ -204,58 +189,37 @@ export default function PushNotificationModal() {
         )}
 
         {step === 'success' && (
-          <div className="text-center py-4">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-              <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-green-100">
+              <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">מעולה!</h2>
-            <p className="text-sm text-gray-600">תקבלו התראות ישירות לנייד</p>
-          </div>
+            <p className="text-xs text-gray-600 flex-1">
+              מעולה! תקבלו התראות לנייד
+            </p>
+          </>
         )}
 
         {step === 'error' && (
-          <div className="text-center py-4">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-              <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-red-100">
+              <svg className="w-4 h-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">לא הצלחנו להפעיל</h2>
-            <p className="text-sm text-red-600 mb-4">{error}</p>
+            <p className="text-xs text-red-500 flex-1">
+              {error}
+            </p>
             <button
               onClick={handleClose}
-              className="rounded-xl px-6 py-2 text-sm font-medium text-gray-600 hover:text-gray-800"
+              className="text-gray-500 hover:text-gray-700 text-xs px-2 py-2 flex-shrink-0"
             >
               סגור
             </button>
-          </div>
+          </>
         )}
-
-        {/* Close button */}
-        <button
-          onClick={handleClose}
-          className="absolute left-3 top-3 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-        >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
       </div>
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

@@ -1,0 +1,155 @@
+[
+  {
+    "_id": {
+      "$oid": "695a69ae024a6664dab35ad5"
+    },
+    "action": "scan_started",
+    "category": "system_reports",
+    "actorId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "actorName": "Admin",
+    "details": {
+      "scanId": "SCAN-MJZRHVHA-R2I1U7",
+      "scope": "full",
+      "areas": [
+        "database",
+        "users",
+        "orders",
+        "products",
+        "transactions",
+        "permissions",
+        "integrations",
+        "security",
+        "payment_data",
+        "system_keys"
+      ]
+    },
+    "ip": "",
+    "createdAt": {
+      "$date": "2026-01-04T13:22:54.259Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695a69ae024a6664dab35ade"
+    },
+    "action": "scan_completed",
+    "category": "system_reports",
+    "actorId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "actorName": "Admin",
+    "details": {
+      "scanId": "SCAN-MJZRHVHA-R2I1U7",
+      "score": 62,
+      "reportsGenerated": 8
+    },
+    "ip": "",
+    "createdAt": {
+      "$date": "2026-01-04T13:22:54.513Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695a69bc024a6664dab35ae0"
+    },
+    "action": "scan_started",
+    "category": "system_reports",
+    "actorId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "actorName": "Admin",
+    "details": {
+      "scanId": "SCAN-MJZRI6S6-Y2QUR4",
+      "scope": "full",
+      "areas": [
+        "database",
+        "users",
+        "orders",
+        "products",
+        "transactions",
+        "permissions",
+        "integrations",
+        "security",
+        "payment_data",
+        "system_keys"
+      ]
+    },
+    "ip": "",
+    "createdAt": {
+      "$date": "2026-01-04T13:23:08.887Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695a69bc024a6664dab35ae9"
+    },
+    "action": "scan_completed",
+    "category": "system_reports",
+    "actorId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "actorName": "Admin",
+    "details": {
+      "scanId": "SCAN-MJZRI6S6-Y2QUR4",
+      "score": 62,
+      "reportsGenerated": 8
+    },
+    "ip": "",
+    "createdAt": {
+      "$date": "2026-01-04T13:23:08.946Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695a6ae0024a6664dab35af6"
+    },
+    "action": "scan_started",
+    "category": "system_reports",
+    "actorId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "actorName": "Admin",
+    "details": {
+      "scanId": "SCAN-MJZROFU0-Q53N4U",
+      "scope": "full",
+      "areas": [
+        "database",
+        "users",
+        "orders",
+        "products",
+        "transactions",
+        "permissions",
+        "integrations",
+        "security",
+        "payment_data",
+        "system_keys"
+      ]
+    },
+    "ip": "",
+    "createdAt": {
+      "$date": "2026-01-04T13:28:00.554Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695a6ae0024a6664dab35aff"
+    },
+    "action": "scan_completed",
+    "category": "system_reports",
+    "actorId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "actorName": "Admin",
+    "details": {
+      "scanId": "SCAN-MJZROFU0-Q53N4U",
+      "score": 61,
+      "reportsGenerated": 8
+    },
+    "ip": "",
+    "createdAt": {
+      "$date": "2026-01-04T13:28:00.642Z"
+    }
+  }
+]

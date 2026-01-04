@@ -7,7 +7,7 @@ body {
   padding-top: 60px;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+/* Fonts loaded in layout.jsx for better performance */
 
 /* CSS Variables controlled by Theme API */
 :root {
@@ -22,11 +22,18 @@ body {
   --card: #ffffff;
   --muted: #6b7280;
 
-  /* Theme presets defaults */
-  --font-family: 'Inter', 'Heebo', sans-serif;
+  /* Theme presets defaults - iOS style fonts */
+  --font-family: 'Rubik', 'Assistant', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+  --font-family-hebrew: 'Assistant', 'Rubik', -apple-system, BlinkMacSystemFont, 'SF Pro Hebrew', system-ui, sans-serif;
   --line-height: 1.5;
   --letter-spacing: 0.01em;
   --direction: rtl;
+  
+  /* iOS-style font weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 }
 
 * {
@@ -42,6 +49,9 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  /* iOS-style text rendering */
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
 }
 
 html, body {
@@ -61,6 +71,9 @@ body {
   direction: var(--direction);
   overflow-x: hidden;
   max-width: 100vw;
+  font-weight: var(--font-weight-regular);
+  /* iOS-style font feature settings */
+  font-feature-settings: 'kern' 1, 'liga' 1;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
@@ -381,6 +394,79 @@ a {
 
 .text-balance {
   text-wrap: balance;
+}
+
+/* ============================================
+   iOS-Style Typography Normalization
+   ============================================ */
+
+/* Consistent font weights across platforms */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* iOS-style font sizes */
+h1 { font-size: 2rem; }      /* 32px */
+h2 { font-size: 1.5rem; }    /* 24px */
+h3 { font-size: 1.25rem; }   /* 20px */
+h4 { font-size: 1.125rem; }  /* 18px */
+h5 { font-size: 1rem; }      /* 16px */
+h6 { font-size: 0.875rem; }  /* 14px */
+
+/* Normalize button and input fonts */
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+/* iOS-style button text */
+button {
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0;
+}
+
+/* iOS-style labels */
+label {
+  font-weight: var(--font-weight-medium);
+}
+
+/* Strong/Bold consistency */
+strong, b {
+  font-weight: var(--font-weight-semibold);
+}
+
+/* iOS-style small text */
+small, .text-sm {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1.33;
+}
+
+/* Number and price formatting - tabular numbers */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* iOS-style placeholder */
+::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+/* Focus styles - iOS blue ring */
+:focus-visible {
+  outline: 2px solid #007AFF;
+  outline-offset: 2px;
 }
 
 /* Responsive Images */

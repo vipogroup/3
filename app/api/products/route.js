@@ -425,9 +425,14 @@ export async function GET(request) {
 
     // By default, only return active products with stock (for customers)
     // Admin panel can pass includeInactive=true to see all products
+    // Group purchase products don't need stock - they work on pre-orders
     if (!includeInactive) {
       query.active = true;
-      query.stockCount = { $gt: 0 };
+      query.$or = [
+        { stockCount: { $gt: 0 } },
+        { purchaseType: 'group' },
+        { type: 'group' }
+      ];
     }
 
     const products = await Product.find(query)

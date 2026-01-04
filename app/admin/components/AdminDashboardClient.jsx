@@ -643,6 +643,12 @@ export default function AdminDashboardClient() {
                 <span className="text-sm font-medium text-gray-900">הגדרות</span>
               </Link>
               )}
+              {canAccess(ADMIN_PERMISSIONS.VIEW_SETTINGS) && (
+              <Link href="/admin/system-reports" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <ChartBarIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">📊 דוחות מערכת</span>
+              </Link>
+              )}
             </div>
             )}
           </div>

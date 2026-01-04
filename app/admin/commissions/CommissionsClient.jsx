@@ -280,6 +280,27 @@ export default function CommissionsClient() {
           </div>
         </div>
 
+        {/* Release Date Info */}
+        <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+              <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h4 className="font-semibold text-blue-800 text-sm">תקופת המתנה לשחרור עמלות</h4>
+              <p className="text-xs text-blue-700 mt-1">
+                <span className="font-medium">רכישה רגילה:</span> 30 יום מתאריך ההזמנה &nbsp;|&nbsp; 
+                <span className="font-medium">רכישה קבוצתית:</span> 100 יום מתאריך ההזמנה
+              </p>
+              <p className="text-xs text-blue-600 mt-1">
+                💡 לחץ על תאריך השחרור בטבלה כדי לערוך אותו ידנית
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Filters */}
         <div className="bg-gray-50 rounded-xl p-4 sm:p-6">
           <h3 className="font-bold mb-4" style={{ color: '#1e3a8a' }}>פילטרים</h3>
@@ -528,10 +549,28 @@ export default function CommissionsClient() {
                             )}
                           </td>
                           <td className="px-4 py-3">
-                            <div className="text-sm font-medium">{c.agent?.fullName || 'לא ידוע'}</div>
-                            <code className="text-xs bg-purple-50 text-purple-600 px-1 rounded">
-                              {c.agent?.couponCode?.toUpperCase() || '-'}
-                            </code>
+                            <div className="flex items-start gap-2">
+                              <div className="flex-1">
+                                <div className="text-sm font-medium">{c.agent?.fullName || 'לא ידוע'}</div>
+                                <code className="text-xs bg-purple-50 text-purple-600 px-1 rounded">
+                                  {c.agent?.couponCode?.toUpperCase() || '-'}
+                                </code>
+                                {c.agent?.phone && (
+                                  <div className="text-xs text-gray-500 mt-1">{c.agent.phone}</div>
+                                )}
+                              </div>
+                              {c.agent?.id && (
+                                <Link 
+                                  href={`/admin/users/${c.agent.id}`}
+                                  className="p-1 rounded hover:bg-gray-100 transition-all"
+                                  title="צפה בפרופיל סוכן"
+                                >
+                                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                  </svg>
+                                </Link>
+                              )}
+                            </div>
                           </td>
                           <td className="px-4 py-3">
                             <div className="text-sm">{c.customerName}</div>
@@ -618,7 +657,26 @@ export default function CommissionsClient() {
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="text-xs text-gray-500">{formatDateTime(c.orderDate)}</p>
-                          <p className="font-medium">{c.agent?.fullName || 'לא ידוע'}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium">{c.agent?.fullName || 'לא ידוע'}</p>
+                            {c.agent?.id && (
+                              <Link 
+                                href={`/admin/users/${c.agent.id}`}
+                                className="p-1 rounded bg-blue-50 hover:bg-blue-100"
+                                title="פרופיל סוכן"
+                              >
+                                <svg className="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                              </Link>
+                            )}
+                          </div>
+                          {c.agent?.phone && (
+                            <p className="text-xs text-gray-500">{c.agent.phone}</p>
+                          )}
+                          <code className="text-xs bg-purple-50 text-purple-600 px-1 rounded">
+                            {c.agent?.couponCode?.toUpperCase() || '-'}
+                          </code>
                         </div>
                         <div className="flex flex-col items-end gap-1">
                           {c.orderType === 'group' ? (
@@ -647,11 +705,54 @@ export default function CommissionsClient() {
                           </span>
                         </div>
                       </div>
-                      {c.commissionAvailableAt && (
-                        <div className="text-xs text-gray-500">
-                          תאריך שחרור: {formatDate(c.commissionAvailableAt)}
+                      {/* Release Date - Mobile */}
+                      <div className="pt-2 border-t border-gray-100">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-500">תאריך שחרור:</span>
+                          {editingDateId === c.orderId ? (
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="date"
+                                value={editingDateValue}
+                                onChange={(e) => setEditingDateValue(e.target.value)}
+                                className="px-2 py-1 border rounded text-xs w-32"
+                                disabled={savingDate}
+                              />
+                              <button
+                                onClick={() => handleUpdateReleaseDate(c.orderId, editingDateValue)}
+                                disabled={savingDate}
+                                className="px-2 py-1 text-xs bg-green-500 text-white rounded"
+                              >
+                                ✓
+                              </button>
+                              <button
+                                onClick={() => setEditingDateId(null)}
+                                className="px-2 py-1 text-xs bg-gray-300 rounded"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ) : (
+                            <div 
+                              className="flex items-center gap-1 cursor-pointer"
+                              onClick={() => {
+                                setEditingDateId(c.orderId);
+                                setEditingDateValue(c.commissionAvailableAt ? new Date(c.commissionAvailableAt).toISOString().split('T')[0] : '');
+                              }}
+                            >
+                              <span className="text-xs font-medium">{formatDate(c.commissionAvailableAt)}</span>
+                              <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                              </svg>
+                            </div>
+                          )}
                         </div>
-                      )}
+                        {c.commissionStatus === 'pending' && c.commissionAvailableAt && getDaysUntilAvailable(c.commissionAvailableAt) > 0 && (
+                          <div className="text-xs text-yellow-600 text-left mt-1">
+                            עוד {getDaysUntilAvailable(c.commissionAvailableAt)} ימים
+                          </div>
+                        )}
+                      </div>
                     </div>
                   );
                 })

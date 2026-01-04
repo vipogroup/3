@@ -6,8 +6,10 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { processWithdrawalViaPriority, completeWithdrawal } from '@/lib/priority/agentPayoutService.js';
+import { isPriorityConfigured } from '@/lib/priority/client.js';
 
-const ACTIONS = ['approve', 'reject', 'complete'];
+const ACTIONS = ['approve', 'reject', 'complete', 'pay_via_priority'];
 
 function invalidIdResponse() {
   return NextResponse.json({ error: 'Invalid withdrawal id' }, { status: 400 });
@@ -259,6 +261,36 @@ export async function PATCH(req, { params }) {
         throw transactionError;
       }
       await session.endSession();
+    }
+
+    // === Pay via Priority ERP ===
+    if (action === 'pay_via_priority') {
+      if (!isPriorityConfigured()) {
+        return NextResponse.json({ error: 'Priority ERP לא מוגדר במערכת' }, { status: 400 });
+      }
+
+      if (existing.status !== 'approved') {
+        return NextResponse.json({ error: 'רק בקשות מאושרות ניתנות לתשלום' }, { status: 409 });
+      }
+
+      // Process payment via Priority
+      const paymentResult = await processWithdrawalViaPriority(id);
+      
+      if (!paymentResult.success) {
+        return NextResponse.json({ 
+          error: `שגיאה ביצירת תשלום Priority: ${paymentResult.reason}` 
+        }, { status: 500 });
+      }
+
+      // Get updated withdrawal
+      updatedDoc = await withdrawals.findOne({ _id: withdrawalId });
+
+      return NextResponse.json({ 
+        ok: true, 
+        message: 'מסמך תשלום נוצר בהצלחה ב-Priority',
+        priorityPaymentId: paymentResult.paymentId,
+        withdrawal: mapWithdrawal(updatedDoc, null)
+      });
     }
 
     const usersCollection = db.collection('users');

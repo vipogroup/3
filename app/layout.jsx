@@ -9,6 +9,9 @@ import PwaInstaller from '@/app/components/PwaInstaller';
 import InstallPrompt from '@/app/components/InstallPrompt';
 import UpdateNotifier from '@/app/components/UpdateNotifier';
 import PushNotificationModal from '@/app/components/PushNotificationModal';
+import GlobalFooter from '@/app/components/GlobalFooter';
+import CookieConsent from '@/components/CookieConsent';
+import LoadingScreen from '@/app/components/LoadingScreen';
 
 export const metadata = {
   title: 'Vipo - ביחד ננצח',
@@ -47,22 +50,30 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="VIPO" />
+        {/* Preload critical CSS to prevent layout shifts */}
+        <link rel="preload" href="/home/css/style.css" as="style" />
+        <link rel="stylesheet" href="/home/css/style.css" />
+        <link rel="stylesheet" href="/home/css/responsive.css" />
+        <link rel="stylesheet" href="/home/css/accessibility.css" />
         {/* Google Fonts - Rubik & Assistant */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700;800&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </head>
       <body className="bg-gray-50">
+        <LoadingScreen />
         <CartProvider>
           <ThemeProvider>
             <PwaInstaller enabled={enableServiceWorker} />
             <ReferralTracker />
             <UserHeader />
             {children}
+            <GlobalFooter />
             <CartToast />
             <InstallPrompt />
             <UpdateNotifier />
             <PushNotificationModal />
+            <CookieConsent />
           </ThemeProvider>
         </CartProvider>
       </body>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import FeaturedCarousel from './FeaturedCarousel';
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -235,12 +236,12 @@ export default function HomePage() {
   };
 
   const steps = [
-    { icon: 'cart', title: 'בחירת מוצר', desc: 'בוחרים את המוצר שמעניין אתכם מהמגוון שלנו' },
-    { icon: 'users', title: 'הצטרפות לקבוצה', desc: 'מצטרפים לקבוצת הרכישה ללא כל התחייבות' },
-    { icon: 'share', title: 'שיתוף', desc: 'משתפים חברים ומשפחה כדי להגדיל את הקבוצה' },
-    { icon: 'arrowDown', title: 'המחיר יורד', desc: 'ככל שיותר אנשים מצטרפים, המחיר יורד לכולם' },
-    { icon: 'check', title: 'סגירת קבוצה', desc: 'בסיום ההרשמה מקבלים הודעה עם המחיר הסופי' },
-    { icon: 'truck', title: 'תשלום ומשלוח', desc: 'משלמים רק אם מרוצים מהמחיר ומקבלים את המוצר הביתה' },
+    { icon: 'cart', title: 'בחירת מוצר', desc: 'בוחרים מוצרים במחיר מפעל מהמערכת שלנו עד 50% יותר זול ממחיר השוק' },
+    { icon: 'users', title: 'הצטרפות לקבוצה', desc: 'מצטרפים לקבוצת הרכישה בתום ה-30 יום ההזמנה עוברת למפעל לייצור' },
+    { icon: 'share', title: 'שיתוף', desc: 'משתפים את החברים ומשפחה כדי להגדיל את הקבוצה וגם מקבלים 10% עמלה על כל רכישה שהגיעה מהשיתוף שלכם' },
+    { icon: 'arrowDown', title: 'המחיר יורד', desc: 'ככל שיותר חברים מצטרפים, המחיר יורד לכולם' },
+    { icon: 'check', title: 'סגירת קבוצה', desc: 'בסיום ההרשמה מקבלים הודעה שמתחילים בייצור ועדכון על זמני הגעה' },
+    { icon: 'truck', title: 'תשלום ומשלוח', desc: 'עד 24 תשלומים ומשלוח עד הבית (יש איסוף עצמי)' },
   ];
 
   const faqs = [
@@ -284,52 +285,63 @@ export default function HomePage() {
 
   return (
     <div className="home-page" dir="rtl">
+      {/* Override hero overlay opacity + mobile text position */}
+      <style jsx global>{`
+        .hero::before {
+          background: linear-gradient(
+            to bottom,
+            rgba(13, 60, 97, 0.5) 0%,
+            rgba(13, 60, 97, 0.45) 16.67%,
+            rgba(13, 60, 97, 0.4) 33.33%,
+            rgba(13, 60, 97, 0.35) 50%,
+            rgba(13, 60, 97, 0.3) 66.67%,
+            rgba(13, 60, 97, 0.25) 83.33%,
+            rgba(13, 60, 97, 0.2) 100%
+          ) !important;
+        }
+        
+        @media (max-width: 768px) {
+          .hero-content {
+            margin-top: -60px !important;
+            padding-top: 60px !important;
+          }
+        }
+      `}</style>
       {/* Hero Section */}
       <section id="main-content" className="hero reveal-on-scroll">
         <div className="container">
           <div className="hero-content">
-            <h1><span className="word">קונים</span> <span className="word">חכם,</span><br/><span className="word">חוסכים</span> <span className="word">יותר</span></h1>
-            <p className="hero-subtitle">רכישה קבוצתית חכמה במחירים שלא תאמינו</p>
+            <h1><span className="word">ביחד</span> <span className="word">ננצח</span> <span className="word">🇮🇱</span><br/><span className="word">נלחמים</span> <span className="word">ביוקר</span> <span className="word">המחייה</span></h1>
+            <p className="hero-subtitle">רכישה קבוצתית במחיר מפעל - ככה ננצח!</p>
             <div className="cta-buttons">
               <Link 
-                href="/products" 
+                href="/shop" 
                 className="btn btn-primary magnetic"
                 ref={magneticBtnRef}
                 onMouseMove={handleMagneticMove}
                 onMouseLeave={handleMagneticLeave}
               >
-                למוצרים שזמינים עכשיו
+                למוצרים במחיר מפעל
               </Link>
-              <a href="#how-it-works" className="btn btn-secondary">איך זה עובד?</a>
+              <a 
+                href="#video-section" 
+                className="btn btn-secondary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const videoSection = document.getElementById('video-section');
+                  if (videoSection) {
+                    const offset = 20;
+                    const top = videoSection.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({ top, behavior: 'smooth' });
+                  }
+                }}
+              >איך זה עובד?</a>
             </div>
           </div>
         </div>
         
-        {/* Hot Products Slider */}
-        {featuredProducts.length > 0 && (
-          <div className="hot-products-slider" role="region" aria-label="מוצרים חמים">
-            <h2>המוצרים החמים שלנו</h2>
-            <div className="products-container" ref={productsContainerRef}>
-              {featuredProducts.map((product, index) => (
-                <Link href={`/p/${product.slug || product._id}`} key={product._id} className="product-card-link">
-                  <div className={`product-card ${getCardClass(index)}`}>
-                    <div className="product-image">
-                      <img src={product.image || product.imageUrl || '/home/images/1.jpg'} alt={product.name} loading="lazy" />
-                    </div>
-                    <div className="product-info">
-                      <h3>{product.name}</h3>
-                      <p className="price">{formatPrice(product.price)}</p>
-                    </div>
-                    <span className="discount-badge">{getDiscountText(product)}</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            <div className="scroll-arrow" onClick={handleScrollArrowClick}>
-              <i className="fa-solid fa-chevron-down"></i>
-            </div>
-          </div>
-        )}
+        {/* Hot Products Slider - New Carousel */}
+        <FeaturedCarousel />
       </section>
 
       {/* Video Section */}
@@ -342,7 +354,7 @@ export default function HomePage() {
                 הדפדפן שלך לא תומך בתגית וידאו.
               </video>
             </div>
-            <p className="video-caption">צפו: מהי רכישה קבוצתית וכיצד היא חוסכת לכם כסף</p>
+            <p className="video-caption">מעבירים את השליטה בחזרה לעם ונלחמים ביוקר המחייה</p>
           </div>
         </div>
       </section>
@@ -373,19 +385,23 @@ export default function HomePage() {
           <h2 className="section-title">המחיר יורד לפי כמות</h2>
           <div className="price-table-container">
             <div className="price-row">
-              <div className="participants">1-9 משתתפים</div>
+              <div className="participants">50-100 משתתפים</div>
               <div className="price">₪1,850</div>
             </div>
             <div className="price-row">
-              <div className="participants">10-19 משתתפים</div>
+              <div className="participants">100-200 משתתפים</div>
               <div className="price">₪1,600</div>
             </div>
             <div className="price-row">
-              <div className="participants">20-39 משתתפים</div>
+              <div className="participants">200-500 משתתפים</div>
               <div className="price">₪1,350</div>
             </div>
+            <div className="price-row">
+              <div className="participants">500-1000 משתתפים</div>
+              <div className="price">₪1,200</div>
+            </div>
             <div className="price-row highlight">
-              <div className="participants">40+ משתתפים</div>
+              <div className="participants">1000-5000 משתתפים</div>
               <div className="price">₪1,150</div>
             </div>
           </div>
@@ -399,8 +415,8 @@ export default function HomePage() {
             <div className="info-icon">
               <span style={{color: '#1e3a8a'}}>{svgIcons.shield}</span>
             </div>
-            <h2>אין התחייבות</h2>
-            <p>מצטרפים בלי לשלם; רק בסגירת הקבוצה משלמים; אם לא – אין חיוב.</p>
+            <h2>שאנחנו מאוחדים אנחנו חזקים</h2>
+            <p>מצטרפים ורוכשים ב-50% יותר זול ממחיר השוק בישראל ואם הצלחנו להיות מאוחדים וצרפנו חברים ומשפחה אז נקבל עוד הנחה רק ככה ננצח ביחד את יוקר המחייה</p>
           </div>
         </div>
       </section>
@@ -412,7 +428,7 @@ export default function HomePage() {
           <div className="referral-content">
             <div className="referral-info">
               <h3>שיתפת – הרווחת</h3>
-              <p>קבלו תגמול כספי על כל רכישה שמתבצעת באמצעות קוד הקופון האישי שלכם – ללא צורך לקנות בעצמכם.</p>
+              <p>קבלו תגמול כספי על כל רכישה שמתבצעת באמצעות קוד הקופון או שיתוף מוצר מהאזור האישי שלכם – ללא צורך לקנות בעצמכם 10% על כל רכישה</p>
             </div>
             <button 
               type="button"
@@ -425,12 +441,12 @@ export default function HomePage() {
             <div className={`referral-info-panel ${referralPanelOpen ? 'open' : ''}`}>
               <h4>איך מרוויחים כסף בלי לרכוש בעצמכם?</h4>
               <ol className="referral-steps">
-                <li>נרשמים בחינם ומקבלים אזור אישי + קוד קופון ייחודי לכל מוצר.</li>
-                <li>משתפים את קוד הקופון לחברים, משפחה או לקבוצות.</li>
-                <li>בכל פעם שמישהו מזמין ומשתמש בקוד שלכם — אתם מקבלים כסף אוטומטית.</li>
+                <li>נרשמים בחינם משתפים מוצר בלחיצת כפתור ישירות לווצאפ או לכל רשת חברתית ובכל פעם שחבר ירכוש דרך השיתוף שלך החשבון שלך יזוכה ב-10% מערך העסקה שיתפת הרווחת</li>
+                <li>שולחים בקשה למימוש העמלות והכסף נשלח לחשבון בנק שלך</li>
               </ol>
               <hr className="referral-divider" />
-              <p className="referral-summary">אין התחייבות. אין צורך לקנות. פשוט נותנים קוד – ומרוויחים.</p>
+              <p className="referral-summary">אין התחייבות אין צורך לקנות פשוט רק לשתף</p>
+              <p className="referral-motto" style={{fontWeight: 'bold', marginTop: '10px'}}>רק ביחד נתאחד ונחזיר את השליטה לעם זאת לא שיטה זאת תנועה של עם אחד</p>
               <Link href="/register" className="btn btn-primary referral-panel-cta">פתחו קוד קופון אישי</Link>
             </div>
             <div className="referral-link-box">
@@ -623,10 +639,10 @@ export default function HomePage() {
           </div>
           
           <div className="footer-bottom">
-            <p>&copy; 2025 קונים חכם</p>
+            <p>&copy; 2025 קונים חכם | ע.מ. 036517548</p>
             <div className="footer-links">
-              <a href="#">תנאי שימוש</a>
-              <a href="#">מדיניות פרטיות</a>
+              <a href="/terms">תנאי שימוש</a>
+              <a href="/privacy">מדיניות פרטיות</a>
             </div>
           </div>
         </div>

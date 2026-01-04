@@ -466,19 +466,50 @@ function CommissionsTab({ data }) {
 }
 
 function WithdrawalsTab({ data, onRefresh }) {
+  const [processing, setProcessing] = useState(null);
+
   async function handleAction(id, action) {
-    if (!confirm('האם לבצע פעולה: ' + action + '?')) return;
+    const actionLabels = {
+      'approve': 'לאשר את הבקשה',
+      'reject': 'לדחות את הבקשה',
+      'complete': 'לסמן כהושלם',
+      'pay_via_priority': 'ליצור מסמך תשלום ב-Priority'
+    };
     
-    const res = await fetch(`/api/admin/withdrawals/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: action }),
-    });
+    if (!confirm(`האם ${actionLabels[action] || action}?`)) return;
     
-    if (res.ok) {
-      onRefresh();
+    setProcessing(id);
+    try {
+      const res = await fetch(`/api/admin/withdrawals/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      });
+      
+      const json = await res.json();
+      
+      if (res.ok) {
+        if (json.priorityPaymentId) {
+          alert(`מסמך תשלום נוצר בהצלחה!\nמספר מסמך: ${json.priorityPaymentId}`);
+        }
+        onRefresh();
+      } else {
+        alert(json.error || 'שגיאה בביצוע הפעולה');
+      }
+    } catch (err) {
+      alert('שגיאת רשת');
+    } finally {
+      setProcessing(null);
     }
   }
+
+  const STATUS_LABELS = {
+    pending: { label: 'ממתין לאישור', color: 'bg-yellow-100 text-yellow-800' },
+    approved: { label: 'מאושר - ממתין לתשלום', color: 'bg-blue-100 text-blue-800' },
+    processing: { label: 'בתהליך תשלום', color: 'bg-purple-100 text-purple-800' },
+    completed: { label: 'הושלם', color: 'bg-green-100 text-green-800' },
+    rejected: { label: 'נדחה', color: 'bg-red-100 text-red-800' },
+  };
 
   return (
     <div>
@@ -489,46 +520,97 @@ function WithdrawalsTab({ data, onRefresh }) {
               <th className="p-3 text-right">סוכן</th>
               <th className="p-3 text-right">סכום</th>
               <th className="p-3 text-right">סטטוס</th>
+              <th className="p-3 text-right">Priority</th>
               <th className="p-3 text-right">תאריך</th>
               <th className="p-3 text-right">פעולות</th>
             </tr>
           </thead>
           <tbody>
-            {data?.map((req, idx) => (
-              <tr key={idx} className="border-b hover:bg-gray-50">
-                <td className="p-3">{req.userId?.fullName || req.userId}</td>
-                <td className="p-3">₪{req.amount?.toLocaleString()}</td>
-                <td className="p-3">
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    req.status === 'completed' ? 'bg-green-100 text-green-800' :
-                    req.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    req.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
-                    {req.status}
-                  </span>
-                </td>
-                <td className="p-3">{new Date(req.createdAt).toLocaleDateString('he-IL')}</td>
-                <td className="p-3">
-                  {req.status === 'pending' && (
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => handleAction(req._id, 'approved')}
-                        className="px-2 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600"
-                      >
-                        אישור
-                      </button>
-                      <button 
-                        onClick={() => handleAction(req._id, 'rejected')}
-                        className="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
-                      >
-                        דחייה
-                      </button>
+            {data?.map((req, idx) => {
+              const statusInfo = STATUS_LABELS[req.status] || { label: req.status, color: 'bg-gray-100 text-gray-800' };
+              const isProcessing = processing === req._id;
+              
+              return (
+                <tr key={idx} className="border-b hover:bg-gray-50">
+                  <td className="p-3">
+                    <div className="font-medium">{req.user?.fullName || req.userId?.fullName || 'לא ידוע'}</div>
+                    <div className="text-xs text-gray-500">{req.user?.phone || ''}</div>
+                  </td>
+                  <td className="p-3 font-bold">₪{req.amount?.toLocaleString()}</td>
+                  <td className="p-3">
+                    <span className={`px-2 py-1 rounded text-xs ${statusInfo.color}`}>
+                      {statusInfo.label}
+                    </span>
+                  </td>
+                  <td className="p-3">
+                    {req.priorityPaymentDocId ? (
+                      <span className="px-2 py-1 bg-green-50 text-green-700 rounded text-xs font-mono">
+                        {req.priorityPaymentDocId}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 text-xs">-</span>
+                    )}
+                  </td>
+                  <td className="p-3 text-sm">{new Date(req.createdAt).toLocaleDateString('he-IL')}</td>
+                  <td className="p-3">
+                    <div className="flex flex-wrap gap-1">
+                      {/* Pending - approve/reject */}
+                      {req.status === 'pending' && (
+                        <>
+                          <button 
+                            onClick={() => handleAction(req._id, 'approve')}
+                            disabled={isProcessing}
+                            className="px-2 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600 disabled:opacity-50"
+                          >
+                            {isProcessing ? '...' : 'אישור'}
+                          </button>
+                          <button 
+                            onClick={() => handleAction(req._id, 'reject')}
+                            disabled={isProcessing}
+                            className="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600 disabled:opacity-50"
+                          >
+                            דחייה
+                          </button>
+                        </>
+                      )}
+                      
+                      {/* Approved - pay via Priority or complete manually */}
+                      {req.status === 'approved' && (
+                        <>
+                          <button 
+                            onClick={() => handleAction(req._id, 'pay_via_priority')}
+                            disabled={isProcessing}
+                            className="px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 disabled:opacity-50"
+                            title="יצירת מסמך תשלום ב-Priority ERP"
+                          >
+                            {isProcessing ? '...' : '💳 Priority'}
+                          </button>
+                          <button 
+                            onClick={() => handleAction(req._id, 'complete')}
+                            disabled={isProcessing}
+                            className="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 disabled:opacity-50"
+                            title="סימון כהושלם (העברה ידנית)"
+                          >
+                            הושלם ידנית
+                          </button>
+                        </>
+                      )}
+                      
+                      {/* Processing - can complete after Priority payment */}
+                      {req.status === 'processing' && (
+                        <button 
+                          onClick={() => handleAction(req._id, 'complete')}
+                          disabled={isProcessing}
+                          className="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:opacity-50"
+                        >
+                          {isProcessing ? '...' : 'סיום'}
+                        </button>
+                      )}
                     </div>
-                  )}
-                </td>
-              </tr>
-            ))}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

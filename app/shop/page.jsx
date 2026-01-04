@@ -1,45 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import FeaturedCarousel from '@/app/components/FeaturedCarousel';
 
 export default function ShopPage() {
-  const [products, setProducts] = useState([]);
-  const carouselRef = useRef(null);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch('/api/products');
-        const data = await res.json();
-        const productsList = data.products || data;
-        if (Array.isArray(productsList)) {
-          setProducts(productsList.slice(0, 10));
-        }
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-    fetchProducts();
-  }, []);
-
-  // Auto-scroll carousel
-  useEffect(() => {
-    const carousel = carouselRef.current;
-    if (!carousel || products.length === 0) return;
-
-    const scrollSpeed = 1;
-    const interval = setInterval(() => {
-      if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth) {
-        carousel.scrollLeft = 0;
-      } else {
-        carousel.scrollLeft += scrollSpeed;
-      }
-    }, 20);
-
-    return () => clearInterval(interval);
-  }, [products]);
 
   return (
     <div className="min-h-screen" style={{ background: '#f8f9fa' }}>
@@ -150,78 +114,9 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* Products Section */}
-      <div className="py-8 px-4">
-        {/* Section Header */}
-        <div className="text-center mb-6">
-          <h2 className="text-xl font-bold" style={{ color: '#1e3a8a' }}>
-            הצצה למוצרים
-          </h2>
-          <div 
-            className="h-1 w-16 mx-auto mt-2 rounded-full"
-            style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
-          />
-        </div>
+      {/* Products Section - New Carousel */}
+      <FeaturedCarousel />
 
-        {/* Carousel */}
-        {products.length > 0 ? (
-          <div 
-            ref={carouselRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide pb-4"
-            style={{ scrollBehavior: 'auto' }}
-          >
-            {[...products, ...products].map((product, index) => (
-              <Link 
-                key={`${product._id}-${index}`}
-                href={`/products/${product._id}`}
-                className="flex-shrink-0 w-36"
-              >
-                <div 
-                  className="bg-white rounded-xl overflow-hidden transition-all duration-300 hover:scale-105"
-                  style={{
-                    border: '2px solid transparent',
-                    backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                    backgroundOrigin: 'border-box',
-                    backgroundClip: 'padding-box, border-box',
-                    boxShadow: '0 4px 15px rgba(8, 145, 178, 0.15)',
-                  }}
-                >
-                  <div className="aspect-square relative bg-gray-50">
-                    <Image
-                      src={product.image || 'https://placehold.co/300x300?text=VIPO'}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <div className="p-2">
-                    <h3 className="text-xs font-medium text-gray-800 line-clamp-1">{product.name}</h3>
-                    <p 
-                      className="text-sm font-bold mt-1"
-                      style={{ 
-                        background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                      }}
-                    >
-                      ₪{product.price?.toLocaleString('he-IL')}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <div className="animate-pulse flex justify-center gap-4">
-              {[1,2,3,4].map(i => (
-                <div key={i} className="w-36 h-48 bg-gray-200 rounded-xl" />
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 }

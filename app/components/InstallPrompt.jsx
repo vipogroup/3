@@ -9,16 +9,24 @@ export default function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showIOSGuide, setShowIOSGuide] = useState(false);
 
-  // האזנה לאירוע beforeinstallprompt
+  // האזנה לאירוע beforeinstallprompt - עם תזמון של 12 שניות
   useEffect(() => {
+    let promptTimer = null;
+    
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShowPrompt(true);
+      // הצג את הבאנר רק אחרי 12 שניות
+      promptTimer = setTimeout(() => {
+        setShowPrompt(true);
+      }, 12000);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      if (promptTimer) clearTimeout(promptTimer);
+    };
   }, []);
 
   // בדיקת פלטפורמה ומצב התקנה
@@ -39,10 +47,13 @@ export default function InstallPrompt() {
     return () => window.removeEventListener('appinstalled', checkInstallation);
   }, []);
 
-  // הצגת הבאנר ל-iOS
+  // הצגת הבאנר ל-iOS - עם תזמון של 12 שניות
   useEffect(() => {
     if (isIOS && !hasInstalledPWA) {
-      setShowPrompt(true);
+      const timer = setTimeout(() => {
+        setShowPrompt(true);
+      }, 12000); // הצג אחרי 12 שניות
+      return () => clearTimeout(timer);
     }
   }, [isIOS, hasInstalledPWA]);
 
@@ -142,87 +153,78 @@ export default function InstallPrompt() {
     );
   }
 
-  // Regular prompt bar
+  // Regular prompt - עיצוב מקורי עם מיקום חדש
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 p-4 z-50">
-      <div className="max-w-lg mx-auto flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Image
-            src="/icons/vipo-icon.svg"
-            alt="VIPO App"
-            width={48}
-            height={48}
-            className="rounded-xl"
-          />
-          <div>
-            <h3 className="font-bold text-gray-900">התקן את VIPO</h3>
-            <p className="text-sm text-gray-600">
-              {isIOS
-                ? 'גישה מהירה מהמסך הבית'
-                : 'התקן את האפליקציה לגישה מהירה'}
-            </p>
-          </div>
+    <div className="fixed bottom-0 left-0 right-0 z-[999] px-3 pb-3">
+      <div 
+        className="bg-white shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-3"
+        style={{ 
+          border: '2px solid transparent', 
+          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', 
+          backgroundOrigin: 'border-box', 
+          backgroundClip: 'padding-box, border-box', 
+          boxShadow: '0 8px 25px rgba(8, 145, 178, 0.25)' 
+        }}
+      >
+        <div 
+          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+        >
+          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
         </div>
-
-        <div className="flex items-center gap-2">
+        
+        <p className="text-xs text-gray-600 flex-1">
+          {isIOS ? 'הוסף את VIPO למסך הבית' : 'התקן את VIPO לגישה מהירה'}
+        </p>
+        
+        <div className="flex items-center gap-2 flex-shrink-0">
           {isIOS ? (
-            <>
-              <button
-                onClick={() => setShowPrompt(false)}
-                className="px-3 py-2 text-sm text-gray-500"
-              >
-                לא עכשיו
-              </button>
-              <button
-                onClick={() => setShowIOSGuide(true)}
-                className="px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2"
-                style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                  color: 'white',
-                }}
-              >
-                <span>איך מתקינים?</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </>
+            <button
+              onClick={() => setShowIOSGuide(true)}
+              className="text-white text-xs font-semibold px-4 py-2 rounded-xl"
+              style={{ 
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', 
+                boxShadow: '0 2px 8px rgba(8, 145, 178, 0.3)' 
+              }}
+            >
+              איך?
+            </button>
           ) : (
-            <>
-              <button
-                onClick={() => setShowPrompt(false)}
-                className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900"
-              >
-                לא עכשיו
-              </button>
-              <button
-                onClick={async () => {
-                  if (deferredPrompt) {
-                    try {
-                      await deferredPrompt.prompt();
-                      const { outcome } = await deferredPrompt.userChoice;
-                      if (outcome === 'accepted') {
-                        setShowPrompt(false);
-                      }
-                    } catch (err) {
-                      console.error('Installation failed:', err);
-                    } finally {
-                      setDeferredPrompt(null);
+            <button
+              onClick={async () => {
+                if (deferredPrompt) {
+                  try {
+                    await deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                      setShowPrompt(false);
                     }
-                  } else {
-                    setShowPrompt(false);
+                  } catch (err) {
+                    console.error('Installation failed:', err);
+                  } finally {
+                    setDeferredPrompt(null);
                   }
-                }}
-                className="px-4 py-2 text-sm font-medium rounded-lg"
-                style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                  color: 'white',
-                }}
-              >
-                התקן
-              </button>
-            </>
+                } else {
+                  setShowPrompt(false);
+                }
+              }}
+              className="text-white text-xs font-semibold px-4 py-2 rounded-xl"
+              style={{ 
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', 
+                boxShadow: '0 2px 8px rgba(8, 145, 178, 0.3)' 
+              }}
+            >
+              התקן
+            </button>
           )}
+          <button
+            onClick={() => setShowPrompt(false)}
+            className="text-gray-500 hover:text-gray-700 text-xs px-2 py-2"
+          >
+            לא עכשיו
+          </button>
         </div>
       </div>
     </div>

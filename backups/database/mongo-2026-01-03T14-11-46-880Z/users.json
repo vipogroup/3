@@ -1,0 +1,444 @@
+[
+  {
+    "_id": {
+      "$oid": "692cf3df3a64c7c8757a2706"
+    },
+    "email": "admin@vipo.local",
+    "createdAt": {
+      "$date": "2025-12-01T01:48:15.157Z"
+    },
+    "isActive": true,
+    "password": "$2a$10$M4QeUHd9LoWBKZO6b1H73uubfKOAWToH2D2jqrrVpBuFSykCnSvuG",
+    "phone": "0501234567",
+    "role": "admin",
+    "updatedAt": {
+      "$date": "2025-12-06T02:46:02.840Z"
+    },
+    "passwordHash": "$2a$10$ARn6ryv2M/mTUBkJ1CjJLeBUFOKLozjX6abhLUXVcy3GtMGXg0JDi",
+    "fullName": "מנהל 02"
+  },
+  {
+    "_id": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "email": "m0587009938@gmail.com",
+    "passwordHash": "$2a$10$iYqvg6kKwdvbLhUrcYfexOxCl5f0nx6W65fIeUFrxbhaisqI4pD7G",
+    "fullName": "Admin",
+    "role": "admin",
+    "phone": "0587009938",
+    "createdAt": {
+      "$date": "2025-12-01T19:38:12.359Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-10T16:55:17.409Z"
+    },
+    "isActive": true
+  },
+  {
+    "_id": {
+      "$oid": "692e0d8a4026d005c3a421f5"
+    },
+    "fullName": "מרי",
+    "phone": "053385881",
+    "email": "miriamshabo22@gmail.com",
+    "passwordHash": "$2a$10$omDg3/nBG73d8ThmZbOGbuZuX7Y4XWZluploT2bPLamrmLkHX05Ge",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-01T21:50:02.517Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-09T20:43:57.593Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "n-001",
+    "couponSequence": 1,
+    "couponSlug": "n",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "692e0e014026d005c3a42237"
+    },
+    "fullName": "Nnnnn",
+    "phone": "058",
+    "email": "m0533858881@gmail.com",
+    "passwordHash": "$2a$10$Aa95Fqi8Tg3myX60VpPnX.pYlwdRmOV3oauwRtjm1FLPZjGNbQWje",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-01T21:52:01.259Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T17:22:38.666Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "nnnnn-001",
+    "couponSequence": 1,
+    "couponSlug": "nnnnn",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "693213ab7b48a021293de148"
+    },
+    "fullName": "Agent Smoke-392f3b7c",
+    "phone": "0547506245",
+    "email": null,
+    "passwordHash": "$2a$10$ZmW/MedL.3CjSCaUVtWbqOYfYPM/OKEbPfpCu56qnBMygDXUo54lC",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-04T23:05:15.681Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-04T23:05:15.681Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "693215457b48a021293de14c"
+    },
+    "fullName": "לקוח",
+    "phone": "0523004374",
+    "email": "m0523004374@gmail.com",
+    "passwordHash": "$2a$10$njAfJ1.Kw2btMGQvQ/yDEeMJweZGVBsSXSOMeaV8TDBObAb5ChiQu",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-04T23:12:05.385Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T04:23:00.366Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "lkvch-001",
+    "couponSequence": 1,
+    "couponSlug": "lkvch",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "693306517b48a021293de284"
+    },
+    "fullName": "AGENT User",
+    "phone": "0520812749",
+    "email": null,
+    "passwordHash": "$2a$10$g2scONGbSfBOIdKfh7afHOsKuQ6peP8VThREeUYBA5rk.YAquRGgy",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-05T16:20:33.380Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-05T16:20:33.380Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "693306527b48a021293de287"
+    },
+    "fullName": "AGENT User",
+    "phone": "0597435322",
+    "email": null,
+    "passwordHash": "$2a$10$JTSbYlJs8s/eA31hrPXhDeHfef.h3XluxhZ3/W.AsWR/PGBNVkzn2",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-05T16:20:34.082Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-05T16:20:34.082Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69336cb6580da0479c948ea5"
+    },
+    "fullName": "לקוח 01",
+    "phone": "0555580986",
+    "email": "g0555580986@gmail.com",
+    "passwordHash": "$2a$10$u7h.SzQkjdi8BLh1.nI4t.8/OMjAVOCnT8.J2cxBxyBrs4lpt8Lza",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-05T23:37:26.481Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-09T22:02:46.538Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "lkvch-01-001",
+    "couponSequence": 1,
+    "couponSlug": "lkvch-01",
+    "couponStatus": "active",
+    "discountPercent": 10,
+    "commissionBalance": 63.5,
+    "totalSales": 2
+  },
+  {
+    "_id": {
+      "$oid": "69337b99f76b3211737d9952"
+    },
+    "email": "agent@vipo.local",
+    "phone": "0501111111",
+    "role": "agent",
+    "password": "$2a$10$Ej/YGWLMgTTzyF3AamnnO.7nPn92x6WDe08gThelWLGWwVwMmK8W2",
+    "createdAt": {
+      "$date": "2025-12-06T00:40:57.930Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69337b9af76b3211737d9953"
+    },
+    "email": "user@vipo.local",
+    "phone": "0502222222",
+    "role": "customer",
+    "password": "$2a$10$LUU6mg6Ialb8A08/1tVVf.D4swOB74XXq9CZ9k9bbvNAeEuVv.OoS",
+    "createdAt": {
+      "$date": "2025-12-06T00:40:58.048Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6933888492e6f1cc2419e7fa"
+    },
+    "fullName": "AGENT REF",
+    "phone": "0592682715",
+    "email": null,
+    "passwordHash": "$2a$10$bZxfxsE6K8vkNW4xBGx5dOn6GN9mkSaEDRSYDzGG24p3sc/Bb8.Ay",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:36:04.986Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:36:04.986Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6933888692e6f1cc2419e80e"
+    },
+    "fullName": "AGENT User",
+    "phone": "0564296049",
+    "email": null,
+    "passwordHash": "$2a$10$X.F1QKVRRTBjwb/1pgylLObdGGjhVCTXwooZ6fbdLr3Gc0be3e0ga",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:36:06.982Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:36:06.982Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6933891a92e6f1cc2419e81c"
+    },
+    "fullName": "AGENT REF",
+    "phone": "0557474340",
+    "email": null,
+    "passwordHash": "$2a$10$ImiYCM8qfDvwd.onzHPC3.fwQNZm1lpouKjH6wUoMQXfldzvZDwT6",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:38:34.615Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:38:34.615Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6933891b92e6f1cc2419e823"
+    },
+    "fullName": "AGENT CRUD",
+    "phone": "0570494163",
+    "email": null,
+    "passwordHash": "$2a$10$VWMdnOS42W42Yz8o.FRV7u..5ebMlHl0oZSQwmhreLgNB8HoIIAZq",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:38:35.905Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:38:35.905Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6933891b92e6f1cc2419e824"
+    },
+    "fullName": "AGENT REF",
+    "phone": "0596559258",
+    "email": null,
+    "passwordHash": "$2a$10$6Ut0Dgm9xz0c12OchBAmle/3JV5VaoNYS5iS6OMF/fEM8etLeSx3i",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:38:35.906Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:38:35.906Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6933891c92e6f1cc2419e829"
+    },
+    "fullName": "AGENT User",
+    "phone": "0548630942",
+    "email": null,
+    "passwordHash": "$2a$10$.NE4fwEzUj7CDvSYfWimneJ4lu99A8ayf.Xrkwp5qeJnI.Us3zm6.",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:38:36.159Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:38:36.159Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69338a0a92e6f1cc2419e836"
+    },
+    "fullName": "בדיקה 2",
+    "phone": "0533858881",
+    "email": "admin123@vipo.local",
+    "passwordHash": "$2a$10$JeHecZEPnjYwBl4MD8Tcs.l6SP2Zphp0dSWKr/ZLGA/cF0cOqIysS",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:42:34.033Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:42:34.033Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69338a1f92e6f1cc2419e83c"
+    },
+    "fullName": "AGENT REF",
+    "phone": "0544769091",
+    "email": null,
+    "passwordHash": "$2a$10$RrmxCgn0xe72fGPAGyJiW.4vs6nQ7TZw1t163Sz94TnDHM2JQXVVe",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:42:55.463Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:42:55.463Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69338a2092e6f1cc2419e842"
+    },
+    "fullName": "AGENT CRUD",
+    "phone": "0542411737",
+    "email": null,
+    "passwordHash": "$2a$10$C1Vuzd8boGmS8bDgEMp1u.jngFwCGCx0GQoKDzwZoiKX/JPw.Dpkm",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:42:56.480Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:42:56.480Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69338a2092e6f1cc2419e843"
+    },
+    "fullName": "AGENT User",
+    "phone": "0573801198",
+    "email": null,
+    "passwordHash": "$2a$10$/nXFEe3F2qEoL0VZd/TUJehLV.rLWQ957b7rKM7.bK0YFqi4Eqk12",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:42:56.481Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:42:56.481Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69338bcc92e6f1cc2419e895"
+    },
+    "fullName": "AGENT REF",
+    "phone": "0593510081",
+    "email": null,
+    "passwordHash": "$2a$10$8BKtfP9UxXdZmbW29k9G2e4mo4OGF5QUu8UFMAz94cI7kcvCaI4fW",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:50:04.174Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:50:04.174Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69338bcd92e6f1cc2419e89c"
+    },
+    "fullName": "AGENT User",
+    "phone": "0518932792",
+    "email": null,
+    "passwordHash": "$2a$10$hMlMBYhVSeO0ouYoMlql2OSpo7dTjr.n/562aT0EqxkSOstSELb2u",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:50:05.139Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:50:05.139Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69338c8992e6f1cc2419e8c5"
+    },
+    "fullName": "AGENT REF",
+    "phone": "0548068293",
+    "email": null,
+    "passwordHash": "$2a$10$X1JN7TgUdtBHr0F75x9i.eK5uCxNHa.Zj10JpJWoQgWbuTCI44QDK",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2025-12-06T01:53:13.014Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-06T01:53:13.014Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695845883bb44564746d1e4d"
+    },
+    "fullName": "דניאל",
+    "phone": "0507123331",
+    "email": "m0507123331@gmail.com",
+    "passwordHash": "$2a$10$3eacCYJROTahMeI7RnREO.ElpplYkenCW96qL4u4jtQPovP92WbmO",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-02T22:24:08.530Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-02T22:24:08.530Z"
+    }
+  }
+]

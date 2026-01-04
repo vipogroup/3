@@ -99,6 +99,15 @@ export async function GET(req) {
       if (status === 'claimed') summary.totalClaimed += amount;
       if (status === 'cancelled') summary.totalCancelled += amount;
 
+      // Calculate commission available date if not set
+      // Regular purchase: 30 days, Group purchase: 100 days from order date
+      let commissionAvailableAt = order.commissionAvailableAt;
+      if (!commissionAvailableAt && order.createdAt) {
+        const orderType = order.orderType || 'regular';
+        const daysUntilAvailable = orderType === 'group' ? 100 : 30;
+        commissionAvailableAt = new Date(new Date(order.createdAt).getTime() + daysUntilAvailable * 24 * 60 * 60 * 1000);
+      }
+
       return {
         orderId: order._id.toString(),
         orderDate: order.createdAt,
@@ -106,7 +115,7 @@ export async function GET(req) {
         orderTotal: order.totalAmount || 0,
         commissionAmount: amount,
         commissionStatus: status,
-        commissionAvailableAt: order.commissionAvailableAt,
+        commissionAvailableAt: commissionAvailableAt,
         deliveredAt: order.deliveredAt,
         customerName: order.customer?.fullName || order.customerName || 'לא ידוע',
         customerPhone: order.customer?.phone || order.customerPhone || '',
