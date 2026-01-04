@@ -6,8 +6,20 @@ import { getDb } from '@/lib/db';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { ObjectId } from 'mongodb';
-import { isPriorityConfigured } from '@/lib/priority/client.js';
-import { getPayPlusConfig } from '@/lib/payplus/config.js';
+
+// Safe imports with fallbacks
+let isPriorityConfigured = () => false;
+let getPayPlusConfig = () => ({ isConfigured: false });
+
+try {
+  const priorityModule = require('@/lib/priority/client.js');
+  if (priorityModule.isPriorityConfigured) isPriorityConfigured = priorityModule.isPriorityConfigured;
+} catch (e) { console.log('Priority module not available'); }
+
+try {
+  const payplusModule = require('@/lib/payplus/config.js');
+  if (payplusModule.getPayPlusConfig) getPayPlusConfig = payplusModule.getPayPlusConfig;
+} catch (e) { console.log('PayPlus module not available'); }
 
 // All scannable areas
 const SCAN_AREAS = [
@@ -76,90 +88,42 @@ export async function POST(req) {
     // Log audit event
     await logAudit(auditCol, 'scan_started', admin, { scanId, scope, areas });
 
-    // Run the scan
+    // Run the scan with error handling for each area
     const findings = {};
     let totalChecks = 0, passed = 0, failed = 0, warnings = 0;
     let progressCurrent = 0;
 
-    // 1. Database scan
-    if (areas.includes('database')) {
-      const dbFindings = await scanDatabase(db);
-      findings.database = dbFindings;
-      totalChecks += dbFindings.checks; passed += dbFindings.passed; failed += dbFindings.failed; warnings += dbFindings.warnings;
-      progressCurrent++;
-    }
+    const safeRun = async (name, fn) => {
+      try {
+        const result = await fn();
+        findings[name] = result;
+        totalChecks += result.checks || 0;
+        passed += result.passed || 0;
+        failed += result.failed || 0;
+        warnings += result.warnings || 0;
+        progressCurrent++;
+        return result;
+      } catch (e) {
+        console.error(`Scan ${name} failed:`, e.message);
+        findings[name] = { checks: 1, passed: 0, failed: 1, warnings: 0, error: e.message };
+        totalChecks++; failed++;
+        return null;
+      }
+    };
 
-    // 2. Users scan
-    if (areas.includes('users')) {
-      const usersFindings = await scanUsers(db);
-      findings.users = usersFindings;
-      totalChecks += usersFindings.checks; passed += usersFindings.passed; failed += usersFindings.failed; warnings += usersFindings.warnings;
-      progressCurrent++;
-    }
-
-    // 3. Orders scan
-    if (areas.includes('orders')) {
-      const ordersFindings = await scanOrders(db);
-      findings.orders = ordersFindings;
-      totalChecks += ordersFindings.checks; passed += ordersFindings.passed; failed += ordersFindings.failed; warnings += ordersFindings.warnings;
-      progressCurrent++;
-    }
-
-    // 4. Products scan
-    if (areas.includes('products')) {
-      const productsFindings = await scanProducts(db);
-      findings.products = productsFindings;
-      totalChecks += productsFindings.checks; passed += productsFindings.passed; failed += productsFindings.failed; warnings += productsFindings.warnings;
-      progressCurrent++;
-    }
-
-    // 5. Transactions scan
-    if (areas.includes('transactions')) {
-      const txFindings = await scanTransactions(db);
-      findings.transactions = txFindings;
-      totalChecks += txFindings.checks; passed += txFindings.passed; failed += txFindings.failed; warnings += txFindings.warnings;
-      progressCurrent++;
-    }
-
-    // 6. Permissions scan
-    if (areas.includes('permissions')) {
-      const permFindings = await scanPermissions(db);
-      findings.permissions = permFindings;
-      totalChecks += permFindings.checks; passed += permFindings.passed; failed += permFindings.failed; warnings += permFindings.warnings;
-      progressCurrent++;
-    }
-
-    // 7. Integrations scan
-    if (areas.includes('integrations')) {
-      const intFindings = await scanIntegrations();
-      findings.integrations = intFindings;
-      totalChecks += intFindings.checks; passed += intFindings.passed; failed += intFindings.failed; warnings += intFindings.warnings;
-      progressCurrent++;
-    }
-
-    // 8. Security scan
-    if (areas.includes('security')) {
-      const secFindings = await scanSecurity();
-      findings.security = secFindings;
-      totalChecks += secFindings.checks; passed += secFindings.passed; failed += secFindings.failed; warnings += secFindings.warnings;
-      progressCurrent++;
-    }
-
-    // 9. Payment data scan
-    if (areas.includes('payment_data')) {
-      const payFindings = await scanPaymentData(db);
-      findings.payment_data = payFindings;
-      totalChecks += payFindings.checks; passed += payFindings.passed; failed += payFindings.failed; warnings += payFindings.warnings;
-      progressCurrent++;
-    }
+    // Run all scans with error handling
+    if (areas.includes('database')) await safeRun('database', () => scanDatabase(db));
+    if (areas.includes('users')) await safeRun('users', () => scanUsers(db));
+    if (areas.includes('orders')) await safeRun('orders', () => scanOrders(db));
+    if (areas.includes('products')) await safeRun('products', () => scanProducts(db));
+    if (areas.includes('transactions')) await safeRun('transactions', () => scanTransactions(db));
+    if (areas.includes('permissions')) await safeRun('permissions', () => scanPermissions(db));
+    if (areas.includes('integrations')) await safeRun('integrations', () => scanIntegrations());
+    if (areas.includes('security')) await safeRun('security', () => scanSecurity());
+    if (areas.includes('payment_data')) await safeRun('payment_data', () => scanPaymentData(db));
 
     // 10. System keys scan (sanitized)
-    if (areas.includes('system_keys')) {
-      const keysFindings = await scanSystemKeys();
-      findings.system_keys = keysFindings;
-      totalChecks += keysFindings.checks; passed += keysFindings.passed; failed += keysFindings.failed; warnings += keysFindings.warnings;
-      progressCurrent++;
-    }
+    if (areas.includes('system_keys')) await safeRun('system_keys', () => scanSystemKeys());
 
     // Calculate score
     const score = totalChecks > 0 ? Math.round((passed / totalChecks) * 100) : 0;
@@ -434,9 +398,17 @@ async function scanPermissions(db) {
 }
 
 async function scanIntegrations() {
-  const priorityConfigured = isPriorityConfigured();
-  const payplusConfig = getPayPlusConfig();
-  const payplusConfigured = payplusConfig.isConfigured;
+  let priorityConfigured = false;
+  let payplusConfigured = false;
+  
+  try {
+    priorityConfigured = isPriorityConfigured();
+  } catch (e) { console.log('Priority check failed:', e.message); }
+  
+  try {
+    const payplusConfig = getPayPlusConfig();
+    payplusConfigured = payplusConfig?.isConfigured || false;
+  } catch (e) { console.log('PayPlus check failed:', e.message); }
 
   let passed = 0, failed = 0, warnings = 0;
   if (priorityConfigured) passed++; else warnings++;
