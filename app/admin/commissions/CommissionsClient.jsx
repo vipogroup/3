@@ -71,6 +71,37 @@ export default function CommissionsClient() {
   const [editingDateId, setEditingDateId] = useState(null);
   const [editingDateValue, setEditingDateValue] = useState('');
   const [savingDate, setSavingDate] = useState(false);
+  const [releasingId, setReleasingId] = useState(null);
+
+  // Release single commission
+  const handleReleaseCommission = async (orderId) => {
+    if (!confirm('האם לשחרר את העמלה הזו? הסוכן יוכל לבקש משיכה מיידית.')) return;
+    setReleasingId(orderId);
+    try {
+      const res = await fetch('/api/admin/commissions/release', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'release_single', orderId }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to release');
+      
+      // Update local state
+      setData(prev => ({
+        ...prev,
+        commissions: prev.commissions.map(c => 
+          c.orderId === orderId 
+            ? { ...c, commissionStatus: 'available' }
+            : c
+        )
+      }));
+      alert('העמלה שוחררה בהצלחה!');
+    } catch (err) {
+      alert('שגיאה בשחרור העמלה: ' + err.message);
+    } finally {
+      setReleasingId(null);
+    }
+  };
 
   // Update commission release date
   const handleUpdateReleaseDate = async (orderId, newDate) => {
@@ -632,7 +663,16 @@ export default function CommissionsClient() {
                                   </div>
                                 )}
                                 {c.commissionStatus === 'pending' && getDaysUntilAvailable(c.commissionAvailableAt) <= 0 && (
-                                  <div className="text-xs text-green-600 font-medium">מוכן לשחרור!</div>
+                                  <div className="flex flex-col items-center gap-1">
+                                    <div className="text-xs text-green-600 font-medium">מוכן לשחרור!</div>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); handleReleaseCommission(c.orderId); }}
+                                      disabled={releasingId === c.orderId}
+                                      className="px-2 py-1 text-xs rounded bg-gradient-to-r from-blue-900 to-cyan-600 text-white hover:opacity-90 disabled:opacity-50"
+                                    >
+                                      {releasingId === c.orderId ? 'משחרר...' : 'שחרר עכשיו'}
+                                    </button>
+                                  </div>
                                 )}
                               </div>
                             ) : '-'}
@@ -750,6 +790,18 @@ export default function CommissionsClient() {
                         {c.commissionStatus === 'pending' && c.commissionAvailableAt && getDaysUntilAvailable(c.commissionAvailableAt) > 0 && (
                           <div className="text-xs text-yellow-600 text-left mt-1">
                             עוד {getDaysUntilAvailable(c.commissionAvailableAt)} ימים
+                          </div>
+                        )}
+                        {c.commissionStatus === 'pending' && c.commissionAvailableAt && getDaysUntilAvailable(c.commissionAvailableAt) <= 0 && (
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="text-xs text-green-600 font-medium">מוכן לשחרור!</span>
+                            <button
+                              onClick={() => handleReleaseCommission(c.orderId)}
+                              disabled={releasingId === c.orderId}
+                              className="px-3 py-1 text-xs rounded bg-gradient-to-r from-blue-900 to-cyan-600 text-white hover:opacity-90 disabled:opacity-50"
+                            >
+                              {releasingId === c.orderId ? 'משחרר...' : 'שחרר עכשיו'}
+                            </button>
                           </div>
                         )}
                       </div>

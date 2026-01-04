@@ -1,7 +1,7 @@
 @echo off
 setlocal
 set "REPO_ROOT=C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test"
-set "BACKUP_DIR=C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test\backups\database\mongo-2026-01-03T14-11-46-880Z"
+set "BACKUP_DIR=C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test\backups\database\mongo-2026-01-04T16-25-44-483Z"
 cd /d "%REPO_ROOT%"
 if not "%~1"=="" set "MONGODB_URI=%~1"
 echo Restoring backup from "%BACKUP_DIR%"
