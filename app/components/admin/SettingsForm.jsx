@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { formatCurrencyILS } from '@/app/utils/date';
 import { useTheme } from '@/app/context/ThemeContext';
 import { getAllPresets, applyPreset } from '@/app/lib/themePresets';
@@ -293,22 +294,34 @@ export default function SettingsForm() {
       <div className="w-full max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white px-3 sm:px-6 py-4 sm:py-6 mb-4">
-          <div className="max-w-7xl mx-auto">
-            <h1
-              className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 flex items-center gap-2 sm:gap-3"
-              style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div>
+              <h1
+                className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 flex items-center gap-2 sm:gap-3"
+                style={{
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                <CogIcon className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#0891b2' }} />
+                הגדרות מערכת
+              </h1>
+              <p className="text-sm sm:text-base text-gray-600">
+                נהל את כל הגדרות האתר, לוגו, צבעים ופונקציות
+              </p>
+            </div>
+            <Link
+              href="/admin"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
-              <CogIcon className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#0891b2' }} />
-              הגדרות מערכת
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600">
-              נהל את כל הגדרות האתר, לוגו, צבעים ופונקציות
-            </p>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              חזרה
+            </Link>
           </div>
         </div>
 
@@ -901,6 +914,45 @@ export default function SettingsForm() {
                   placeholder="סוכנים, מוצרים, רכישה קבוצתית"
                 />
                 <p className="text-sm text-gray-600 mt-1">הפרד מילות מפתח בפסיקים</p>
+              </div>
+
+              <hr className="my-6 border-gray-200" />
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Google Analytics & Marketing</h3>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Google Analytics ID</label>
+                <input
+                  type="text"
+                  value={settings.googleAnalyticsId || ''}
+                  onChange={(e) => handleChange('googleAnalyticsId', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                  placeholder="G-XXXXXXXXXX"
+                />
+                <p className="text-sm text-gray-600 mt-1">Measurement ID מ-Google Analytics 4</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Google Tag Manager ID</label>
+                <input
+                  type="text"
+                  value={settings.googleTagManagerId || ''}
+                  onChange={(e) => handleChange('googleTagManagerId', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                  placeholder="GTM-XXXXXXX"
+                />
+                <p className="text-sm text-gray-600 mt-1">Container ID מ-Google Tag Manager (אופציונלי)</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Google Search Console Verification</label>
+                <input
+                  type="text"
+                  value={settings.googleSearchConsoleVerification || ''}
+                  onChange={(e) => handleChange('googleSearchConsoleVerification', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-600"
+                  placeholder="google-site-verification=XXXXX"
+                />
+                <p className="text-sm text-gray-600 mt-1">קוד אימות מ-Search Console (אופציונלי)</p>
               </div>
             </div>
           )}

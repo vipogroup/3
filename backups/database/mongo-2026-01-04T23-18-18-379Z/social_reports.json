@@ -1,0 +1,313 @@
+[
+  {
+    "_id": {
+      "$oid": "695af3b401977f99e9e2188e"
+    },
+    "reportId": "SMA-MK0CJ7J1-7OR4",
+    "scanId": null,
+    "reportType": "social_metadata_audit",
+    "title": "Social Metadata Audit Report",
+    "description": "בדיקת Open Graph tags, Twitter Cards ותאימות מטא-דאטה לכל עמודי האתר",
+    "status": "FAIL",
+    "score": 0,
+    "isSocialReady": false,
+    "summary": {
+      "totalPages": 6,
+      "pagesChecked": 0,
+      "totalIssues": 6,
+      "criticalIssues": 6,
+      "warningIssues": 0,
+      "infoIssues": 0,
+      "passedChecks": 0,
+      "failedChecks": 6
+    },
+    "issues": [
+      {
+        "page_url": "http://localhost:3000/",
+        "issue_type": "fetch_error",
+        "severity": "critical",
+        "issue_description": "לא ניתן לגשת לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש ומגיב"
+      },
+      {
+        "page_url": "http://localhost:3000/products",
+        "issue_type": "fetch_error",
+        "severity": "critical",
+        "issue_description": "לא ניתן לגשת לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש ומגיב"
+      },
+      {
+        "page_url": "http://localhost:3000/about",
+        "issue_type": "fetch_error",
+        "severity": "critical",
+        "issue_description": "לא ניתן לגשת לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש ומגיב"
+      },
+      {
+        "page_url": "http://localhost:3000/contact",
+        "issue_type": "fetch_error",
+        "severity": "critical",
+        "issue_description": "לא ניתן לגשת לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש ומגיב"
+      },
+      {
+        "page_url": "http://localhost:3000/login",
+        "issue_type": "fetch_error",
+        "severity": "critical",
+        "issue_description": "לא ניתן לגשת לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש ומגיב"
+      },
+      {
+        "page_url": "http://localhost:3000/register",
+        "issue_type": "fetch_error",
+        "severity": "critical",
+        "issue_description": "לא ניתן לגשת לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש ומגיב"
+      }
+    ],
+    "pagesMetadata": [],
+    "generatedBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "generatedByName": "Admin",
+    "trigger": "manual",
+    "createdAt": {
+      "$date": "2026-01-04T23:11:48.446Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-04T23:11:48.446Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695af3b401977f99e9e2188f"
+    },
+    "reportId": "SPS-MK0CJ7LH-6HI1",
+    "scanId": null,
+    "reportType": "social_preview_shareability",
+    "title": "Social Preview & Shareability Report",
+    "description": "בדיקת תצוגת Preview בפלטפורמות חברתיות שונות",
+    "status": "FAIL",
+    "score": 0,
+    "isSocialReady": false,
+    "summary": {
+      "totalPages": 6,
+      "pagesChecked": 6,
+      "totalIssues": 6,
+      "criticalIssues": 6,
+      "warningIssues": 0,
+      "infoIssues": 0,
+      "passedChecks": 0,
+      "failedChecks": 6
+    },
+    "issues": [
+      {
+        "page_url": "http://localhost:3000/",
+        "platform": "all",
+        "severity": "critical",
+        "issue_description": "שגיאת גישה לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש"
+      },
+      {
+        "page_url": "http://localhost:3000/products",
+        "platform": "all",
+        "severity": "critical",
+        "issue_description": "שגיאת גישה לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש"
+      },
+      {
+        "page_url": "http://localhost:3000/about",
+        "platform": "all",
+        "severity": "critical",
+        "issue_description": "שגיאת גישה לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש"
+      },
+      {
+        "page_url": "http://localhost:3000/contact",
+        "platform": "all",
+        "severity": "critical",
+        "issue_description": "שגיאת גישה לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש"
+      },
+      {
+        "page_url": "http://localhost:3000/login",
+        "platform": "all",
+        "severity": "critical",
+        "issue_description": "שגיאת גישה לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש"
+      },
+      {
+        "page_url": "http://localhost:3000/register",
+        "platform": "all",
+        "severity": "critical",
+        "issue_description": "שגיאת גישה לעמוד: fetch failed",
+        "recommended_fix": "ודא שהעמוד נגיש"
+      }
+    ],
+    "previewData": [],
+    "platformSummary": {
+      "facebook": {
+        "status": "FAIL",
+        "issues": 6
+      },
+      "whatsapp": {
+        "status": "FAIL",
+        "issues": 6
+      },
+      "linkedin": {
+        "status": "FAIL",
+        "issues": 6
+      },
+      "twitter": {
+        "status": "FAIL",
+        "issues": 6
+      }
+    },
+    "generatedBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "generatedByName": "Admin",
+    "trigger": "manual",
+    "createdAt": {
+      "$date": "2026-01-04T23:11:48.534Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-04T23:11:48.534Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695af3b401977f99e9e21890"
+    },
+    "reportId": "SCD-MK0CJ7M6-L46I",
+    "scanId": null,
+    "reportType": "social_crawlability_discovery",
+    "title": "Social Crawlability & Fast Discovery Report",
+    "description": "בדיקת יכולת סריקה, HTTP headers, redirects וזמינות sitemap",
+    "status": "FAIL",
+    "score": 0,
+    "isSocialReady": false,
+    "summary": {
+      "totalPages": 6,
+      "pagesChecked": 6,
+      "totalIssues": 7,
+      "criticalIssues": 6,
+      "warningIssues": 1,
+      "infoIssues": 0,
+      "passedChecks": 0,
+      "failedChecks": 6
+    },
+    "issues": [
+      {
+        "page_url": "http://localhost:3000/sitemap.xml",
+        "issue_type": "crawl",
+        "severity": "warning",
+        "issue_description": "לא ניתן לבדוק sitemap",
+        "technical_fix_hint": "צור קובץ sitemap.xml"
+      },
+      {
+        "page_url": "http://localhost:3000/",
+        "issue_type": "crawl",
+        "severity": "critical",
+        "issue_description": "שגיאת חיבור: fetch failed",
+        "technical_fix_hint": "ודא שהשרת פעיל ונגיש"
+      },
+      {
+        "page_url": "http://localhost:3000/products",
+        "issue_type": "crawl",
+        "severity": "critical",
+        "issue_description": "שגיאת חיבור: fetch failed",
+        "technical_fix_hint": "ודא שהשרת פעיל ונגיש"
+      },
+      {
+        "page_url": "http://localhost:3000/about",
+        "issue_type": "crawl",
+        "severity": "critical",
+        "issue_description": "שגיאת חיבור: fetch failed",
+        "technical_fix_hint": "ודא שהשרת פעיל ונגיש"
+      },
+      {
+        "page_url": "http://localhost:3000/contact",
+        "issue_type": "crawl",
+        "severity": "critical",
+        "issue_description": "שגיאת חיבור: fetch failed",
+        "technical_fix_hint": "ודא שהשרת פעיל ונגיש"
+      },
+      {
+        "page_url": "http://localhost:3000/login",
+        "issue_type": "crawl",
+        "severity": "critical",
+        "issue_description": "שגיאת חיבור: fetch failed",
+        "technical_fix_hint": "ודא שהשרת פעיל ונגיש"
+      },
+      {
+        "page_url": "http://localhost:3000/register",
+        "issue_type": "crawl",
+        "severity": "critical",
+        "issue_description": "שגיאת חיבור: fetch failed",
+        "technical_fix_hint": "ודא שהשרת פעיל ונגיש"
+      }
+    ],
+    "crawlData": [
+      {
+        "url": "http://localhost:3000/",
+        "http_status": 0,
+        "issues": [
+          "Connection failed"
+        ],
+        "is_orphan": true
+      },
+      {
+        "url": "http://localhost:3000/products",
+        "http_status": 0,
+        "issues": [
+          "Connection failed"
+        ],
+        "is_orphan": true
+      },
+      {
+        "url": "http://localhost:3000/about",
+        "http_status": 0,
+        "issues": [
+          "Connection failed"
+        ],
+        "is_orphan": true
+      },
+      {
+        "url": "http://localhost:3000/contact",
+        "http_status": 0,
+        "issues": [
+          "Connection failed"
+        ],
+        "is_orphan": true
+      },
+      {
+        "url": "http://localhost:3000/login",
+        "http_status": 0,
+        "issues": [
+          "Connection failed"
+        ],
+        "is_orphan": true
+      },
+      {
+        "url": "http://localhost:3000/register",
+        "http_status": 0,
+        "issues": [
+          "Connection failed"
+        ],
+        "is_orphan": true
+      }
+    ],
+    "generatedBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "generatedByName": "Admin",
+    "trigger": "manual",
+    "createdAt": {
+      "$date": "2026-01-04T23:11:48.559Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-04T23:11:48.559Z"
+    }
+  }
+]

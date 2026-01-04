@@ -12,6 +12,7 @@ import PushNotificationModal from '@/app/components/PushNotificationModal';
 import GlobalFooter from '@/app/components/GlobalFooter';
 import CookieConsent from '@/components/CookieConsent';
 import LoadingScreen from '@/app/components/LoadingScreen';
+import GoogleAnalytics from '@/app/components/GoogleAnalytics';
 
 export const metadata = {
   title: 'Vipo - ביחד ננצח',
@@ -61,6 +62,7 @@ export default function RootLayout({ children }) {
         <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700;800&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </head>
       <body className="bg-gray-50">
+        <GoogleAnalytics />
         <LoadingScreen />
         <CartProvider>
           <ThemeProvider>

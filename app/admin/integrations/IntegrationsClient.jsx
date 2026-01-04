@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function IntegrationsClient() {
   const [loading, setLoading] = useState(true);
@@ -155,17 +156,28 @@ export default function IntegrationsClient() {
           <p className="text-gray-500 mt-1">ניהול חיבורים למערכות חיצוניות</p>
         </div>
         
-        <button
-          onClick={checkAllConnections}
-          disabled={loading}
-          className="px-4 py-2 text-white rounded-lg flex items-center gap-2 disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-        >
-          <svg className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          <span>רענן הכל</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={checkAllConnections}
+            disabled={loading}
+            className="px-4 py-2 text-white rounded-lg flex items-center gap-2 disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+          >
+            <svg className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>רענן הכל</span>
+          </button>
+          <Link
+            href="/admin"
+            className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 flex items-center gap-2 hover:bg-gray-100"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            חזרה
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-6">

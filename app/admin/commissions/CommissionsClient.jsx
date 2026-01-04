@@ -73,6 +73,28 @@ export default function CommissionsClient() {
   const [savingDate, setSavingDate] = useState(false);
   const [releasingId, setReleasingId] = useState(null);
 
+  // Fix commission balance (for orders released before the fix)
+  const handleFixBalance = async (orderId) => {
+    if (!confirm('האם לתקן את יתרת העמלה? זה יוסיף את הסכום ליתרה של הסוכן.')) return;
+    setReleasingId(orderId);
+    try {
+      const res = await fetch('/api/admin/commissions/release', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'fix_balance', orderId }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to fix balance');
+      
+      alert('יתרת העמלה תוקנה בהצלחה! הסוכן יכול עכשיו לבקש משיכה.');
+      fetchData(); // Refresh data
+    } catch (err) {
+      alert('שגיאה בתיקון היתרה: ' + err.message);
+    } finally {
+      setReleasingId(null);
+    }
+  };
+
   // Release single commission
   const handleReleaseCommission = async (orderId) => {
     if (!confirm('האם לשחרר את העמלה הזו? הסוכן יוכל לבקש משיכה מיידית.')) return;
@@ -615,6 +637,16 @@ export default function CommissionsClient() {
                             <span className={`px-2 py-1 text-xs rounded-full ${statusInfo.color}`}>
                               {statusInfo.label}
                             </span>
+                            {c.commissionStatus === 'available' && !c.commissionSettled && (
+                              <button
+                                onClick={() => handleFixBalance(c.orderId)}
+                                disabled={releasingId === c.orderId}
+                                className="mt-1 px-2 py-1 text-xs rounded bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
+                                title="תיקון יתרה - הסכום לא נוסף לסוכן"
+                              >
+                                {releasingId === c.orderId ? '...' : 'תקן יתרה'}
+                              </button>
+                            )}
                           </td>
                           <td className="px-4 py-3 text-center text-sm">
                             {editingDateId === c.orderId ? (

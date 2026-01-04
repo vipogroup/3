@@ -104,6 +104,52 @@ export async function POST(req) {
       });
     }
 
+    if (action === 'fix_balance' && orderId) {
+      // Fix commission balance for orders that were released before the fix
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+      }
+
+      if (order.commissionStatus !== 'available') {
+        return NextResponse.json({ 
+          error: `Order commission status is ${order.commissionStatus}, not available` 
+        }, { status: 400 });
+      }
+
+      const agentId = order.refAgentId || order.agentId;
+      if (!agentId) {
+        return NextResponse.json({ error: 'No agent found for this order' }, { status: 400 });
+      }
+
+      // Check if already settled
+      if (order.commissionSettled) {
+        return NextResponse.json({ 
+          error: 'Commission already settled',
+          orderId: order._id,
+        }, { status: 400 });
+      }
+
+      // Add commission to agent's balance
+      const User = (await import('@/models/User')).default;
+      await User.updateOne(
+        { _id: agentId },
+        { $inc: { commissionBalance: order.commissionAmount } }
+      );
+
+      // Mark as settled
+      order.commissionSettled = true;
+      await order.save();
+
+      return NextResponse.json({
+        ok: true,
+        message: 'Commission balance fixed',
+        orderId: order._id,
+        amount: order.commissionAmount,
+        agentId: agentId,
+      });
+    }
+
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
 
   } catch (err) {

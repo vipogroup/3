@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import MediaUpload from '@/app/components/MediaUpload';
 
 const initialForm = {
@@ -167,21 +168,33 @@ export default function MarketingAssetsClient() {
   return (
     <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        <header>
-          <h1
-            className="text-2xl sm:text-3xl font-bold mb-2"
-            style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
+        <header className="flex items-center justify-between">
+          <div>
+            <h1
+              className="text-2xl sm:text-3xl font-bold mb-2"
+              style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              ספריית תוכן שיווקי
+            </h1>
+            <p className="text-gray-600 text-sm">
+              נהל כאן סרטונים ותמונות שיווק עבור הסוכנים. כל נכס פעיל יוצג בדשבורד הסוכן להעתקה ושיתוף.
+            </p>
+          </div>
+          <Link
+            href="/admin"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
           >
-            ספריית תוכן שיווקי
-          </h1>
-          <p className="text-gray-600 text-sm">
-            נהל כאן סרטונים ותמונות שיווק עבור הסוכנים. כל נכס פעיל יוצג בדשבורד הסוכן להעתקה ושיתוף.
-          </p>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            חזרה
+          </Link>
         </header>
 
         <section

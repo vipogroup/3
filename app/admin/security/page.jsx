@@ -11,6 +11,9 @@ export default function SecurityPage() {
   const [securityData, setSecurityData] = useState(null);
   const [scanning, setScanning] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState(null);
+  const [securityLogs, setSecurityLogs] = useState([]);
+  const [logsLoading, setLogsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('scan'); // 'scan' | 'logs'
 
   const checkAuth = useCallback(async () => {
     try {
@@ -51,11 +54,27 @@ export default function SecurityPage() {
     checkAuth();
   }, [checkAuth]);
 
+  const loadSecurityLogs = useCallback(async () => {
+    setLogsLoading(true);
+    try {
+      const res = await fetch('/api/admin/activity-logs?category=security&limit=50');
+      if (res.ok) {
+        const data = await res.json();
+        setSecurityLogs(data.logs || []);
+      }
+    } catch (error) {
+      console.error('Failed to load security logs:', error);
+    } finally {
+      setLogsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (user) {
       runSecurityScan();
+      loadSecurityLogs();
     }
-  }, [user, runSecurityScan]);
+  }, [user, runSecurityScan, loadSecurityLogs]);
 
   if (loading) {
     return (
@@ -104,7 +123,7 @@ export default function SecurityPage() {
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #f59e0b 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <h1 className="text-2xl sm:text-3xl font-bold" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               אבטחת מערכת
             </h1>
             <p className="text-gray-500 text-sm mt-1">סריקה מקיפה של רמת האבטחה במערכת</p>
@@ -114,7 +133,7 @@ export default function SecurityPage() {
               onClick={runSecurityScan}
               disabled={scanning}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #dc2626 0%, #f59e0b 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
               <svg className={`w-4 h-4 ${scanning ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -133,7 +152,110 @@ export default function SecurityPage() {
           </div>
         </div>
 
-        {securityData && (
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6">
+          <button
+            onClick={() => setActiveTab('scan')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'scan' ? 'text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+            style={activeTab === 'scan' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              סריקת אבטחה
+          </button>
+          <button
+            onClick={() => setActiveTab('logs')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'logs' ? 'text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+            style={activeTab === 'logs' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+              לוג אבטחה
+          </button>
+        </div>
+
+        {/* Security Logs Tab */}
+        {activeTab === 'logs' && (
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                לוג אירועי אבטחה
+              </h2>
+              <button
+                onClick={loadSecurityLogs}
+                disabled={logsLoading}
+                className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50"
+              >
+                {logsLoading ? 'טוען...' : 'רענן'}
+              </button>
+            </div>
+            <div className="p-4">
+              {logsLoading ? (
+                <div className="text-center py-8">
+                  <div className="w-8 h-8 rounded-full animate-spin mx-auto mb-2" style={{ border: '3px solid #ddd', borderTopColor: '#0891b2' }}></div>
+                  <p className="text-gray-500 text-sm">טוען לוגים...</p>
+                </div>
+              ) : securityLogs.length === 0 ? (
+                <div className="text-center py-12">
+                  <svg className="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                  <p className="text-gray-500">אין אירועי אבטחה</p>
+                </div>
+              ) : (
+                <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                  {securityLogs.map((log, i) => (
+                    <div key={i} className={`p-4 rounded-lg border ${
+                      log.action?.includes('fail') || log.action?.includes('error') || log.action?.includes('block') 
+                        ? 'bg-red-50 border-red-200' 
+                        : log.action?.includes('warn') 
+                        ? 'bg-amber-50 border-amber-200' 
+                        : 'bg-gray-50 border-gray-200'
+                    }`}>
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                              log.action?.includes('fail') || log.action?.includes('error') || log.action?.includes('block')
+                                ? 'bg-red-100 text-red-700'
+                                : log.action?.includes('warn')
+                                ? 'bg-amber-100 text-amber-700'
+                                : log.action?.includes('login') || log.action?.includes('auth')
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-gray-100 text-gray-700'
+                            }`}>
+                              {log.action || 'פעולה'}
+                            </span>
+                            {log.category && (
+                              <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">{log.category}</span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-900 font-medium">{log.details?.message || log.action || 'אירוע אבטחה'}</p>
+                          {log.actorName && (
+                            <p className="text-xs text-gray-500 mt-1 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg> {log.actorName}</p>
+                          )}
+                          {log.ip && (
+                            <p className="text-xs text-gray-500 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" /></svg> IP: {log.ip}</p>
+                          )}
+                          {log.details && typeof log.details === 'object' && Object.keys(log.details).length > 1 && (
+                            <details className="mt-2">
+                              <summary className="text-xs text-blue-600 cursor-pointer hover:underline">פרטים נוספים</summary>
+                              <pre className="mt-1 p-2 bg-gray-100 rounded text-xs overflow-x-auto" dir="ltr">
+                                {JSON.stringify(log.details, null, 2)}
+                              </pre>
+                            </details>
+                          )}
+                        </div>
+                        <div className="text-left text-xs text-gray-500 whitespace-nowrap">
+                          {log.createdAt ? new Date(log.createdAt).toLocaleString('he-IL') : '-'}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'scan' && securityData && (
           <>
             {/* Overall Score Card */}
             <div className={`bg-white rounded-xl p-6 border-2 shadow-lg mb-6 ${securityData.overallScore >= 85 ? 'border-green-300' : securityData.overallScore >= 70 ? 'border-amber-300' : 'border-red-300'}`}>
@@ -281,7 +403,7 @@ export default function SecurityPage() {
           </>
         )}
 
-        {!securityData && !scanning && (
+        {activeTab === 'scan' && !securityData && !scanning && (
           <div className="bg-white rounded-xl p-8 text-center">
             <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />

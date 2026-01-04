@@ -115,6 +115,7 @@ export async function GET(req) {
         orderTotal: order.totalAmount || 0,
         commissionAmount: amount,
         commissionStatus: status,
+        commissionSettled: order.commissionSettled || false,
         commissionAvailableAt: commissionAvailableAt,
         deliveredAt: order.deliveredAt,
         customerName: order.customer?.fullName || order.customerName || 'לא ידוע',

@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { analytics } from '@/app/components/GoogleAnalytics';
 
 const STORAGE_KEY = 'vipo_cart_v1';
 
@@ -91,6 +92,11 @@ export function CartProvider({ children }) {
       totalQuantity: finalQuantity,
       timestamp: Date.now(),
     });
+
+    // Track add to cart event in Google Analytics
+    if (analytics?.addToCart) {
+      analytics.addToCart(product, qtyToAdd);
+    }
   }, []);
 
   const setItemQuantity = useCallback((productId, nextQuantity) => {
