@@ -1,0 +1,1140 @@
+[
+  {
+    "_id": {
+      "$oid": "695a69ae024a6664dab35ad4"
+    },
+    "scanId": "SCAN-MJZRHVHA-R2I1U7",
+    "initiatedBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "initiatedByName": "Admin",
+    "scope": "full",
+    "scannedAreas": [
+      "database",
+      "users",
+      "orders",
+      "products",
+      "transactions",
+      "permissions",
+      "integrations",
+      "security",
+      "payment_data",
+      "system_keys"
+    ],
+    "status": "completed",
+    "progress": {
+      "current": 18,
+      "total": 18,
+      "percentage": 100
+    },
+    "startedAt": {
+      "$date": "2026-01-04T13:22:54.238Z"
+    },
+    "results": {
+      "totalChecks": 39,
+      "passed": 24,
+      "failed": 0,
+      "warnings": 11,
+      "score": 62
+    },
+    "findings": {
+      "database": {
+        "checks": 5,
+        "passed": 5,
+        "failed": 0,
+        "warnings": 0,
+        "details": [
+          {
+            "check": "Collection users",
+            "status": "ok"
+          },
+          {
+            "check": "Collection orders",
+            "status": "ok"
+          },
+          {
+            "check": "Collection products",
+            "status": "ok"
+          },
+          {
+            "check": "DB Stats",
+            "status": "ok",
+            "data": {
+              "collections": 19,
+              "objects": 170
+            }
+          },
+          {
+            "check": "User indexes",
+            "count": 13
+          }
+        ]
+      },
+      "users": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "totalUsers": 25,
+          "admins": 2,
+          "agents": 20,
+          "customers": 3,
+          "noRole": 0
+        }
+      },
+      "orders": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 1,
+        "details": {
+          "total": 34,
+          "paid": 15,
+          "pending": 19,
+          "completed": 0,
+          "cancelled": 0,
+          "orphaned": 34
+        }
+      },
+      "products": {
+        "checks": 3,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "total": 26,
+          "active": 0,
+          "outOfStock": 0,
+          "noPrice": 0
+        }
+      },
+      "transactions": {
+        "checks": 2,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "total": 0,
+          "completed": 0,
+          "pending": 0,
+          "failed": 0
+        }
+      },
+      "permissions": {
+        "checks": 2,
+        "passed": 1,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "adminCount": 2,
+          "admins": [
+            {
+              "name": "מנהל 02",
+              "hasPermissions": false
+            },
+            {
+              "name": "Admin",
+              "hasPermissions": false
+            }
+          ]
+        }
+      },
+      "integrations": {
+        "checks": 2,
+        "passed": 0,
+        "failed": 0,
+        "warnings": 2,
+        "details": {
+          "priority": {
+            "configured": false,
+            "status": "not_configured"
+          },
+          "payplus": {
+            "configured": false,
+            "status": "not_configured"
+          }
+        }
+      },
+      "security": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 1,
+        "details": [
+          {
+            "var": "JWT_SECRET",
+            "status": "set",
+            "strength": "weak"
+          },
+          {
+            "var": "MONGODB_URI",
+            "status": "set",
+            "strength": "weak"
+          },
+          {
+            "var": "NEXTAUTH_SECRET",
+            "status": "set",
+            "strength": "strong"
+          },
+          {
+            "var": "NODE_ENV",
+            "status": "development"
+          }
+        ]
+      },
+      "payment_data": {
+        "checks": 3,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "ordersWithPayment": 33,
+          "paymentEvents": 0,
+          "failedPayments": 0
+        }
+      },
+      "system_keys": {
+        "checks": 10,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 7,
+        "details": [
+          {
+            "key": "JWT_SECRET",
+            "status": "configured"
+          },
+          {
+            "key": "NEXTAUTH_SECRET",
+            "status": "configured"
+          },
+          {
+            "key": "MONGODB_URI",
+            "status": "configured"
+          },
+          {
+            "key": "PAYPLUS_API_KEY",
+            "status": "not_set"
+          },
+          {
+            "key": "PAYPLUS_SECRET",
+            "status": "not_set"
+          },
+          {
+            "key": "PAYPLUS_WEBHOOK_SECRET",
+            "status": "not_set"
+          },
+          {
+            "key": "PRIORITY_CLIENT_ID",
+            "status": "not_set"
+          },
+          {
+            "key": "PRIORITY_CLIENT_SECRET",
+            "status": "not_set"
+          },
+          {
+            "key": "TWILIO_ACCOUNT_SID",
+            "status": "not_set"
+          },
+          {
+            "key": "TWILIO_AUTH_TOKEN",
+            "status": "not_set"
+          }
+        ]
+      }
+    },
+    "generatedReports": [
+      {
+        "reportId": {
+          "$oid": "695a69ae024a6664dab35ad6"
+        },
+        "reportType": "financial_payments",
+        "generatedAt": {
+          "$date": "2026-01-04T13:22:54.487Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69ae024a6664dab35ad7"
+        },
+        "reportType": "orders_transactions",
+        "generatedAt": {
+          "$date": "2026-01-04T13:22:54.488Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69ae024a6664dab35ad8"
+        },
+        "reportType": "users_permissions",
+        "generatedAt": {
+          "$date": "2026-01-04T13:22:54.490Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69ae024a6664dab35ad9"
+        },
+        "reportType": "admin_audit_trail",
+        "generatedAt": {
+          "$date": "2026-01-04T13:22:54.501Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69ae024a6664dab35ada"
+        },
+        "reportType": "integrations_webhooks",
+        "generatedAt": {
+          "$date": "2026-01-04T13:22:54.502Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69ae024a6664dab35adb"
+        },
+        "reportType": "data_integrity",
+        "generatedAt": {
+          "$date": "2026-01-04T13:22:54.504Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69ae024a6664dab35adc"
+        },
+        "reportType": "security_access",
+        "generatedAt": {
+          "$date": "2026-01-04T13:22:54.505Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69ae024a6664dab35add"
+        },
+        "reportType": "system_health",
+        "generatedAt": {
+          "$date": "2026-01-04T13:22:54.507Z"
+        }
+      }
+    ],
+    "version": "2.0",
+    "environment": "development",
+    "createdAt": {
+      "$date": "2026-01-04T13:22:54.238Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-04T13:22:54.507Z"
+    },
+    "completedAt": {
+      "$date": "2026-01-04T13:22:54.507Z"
+    },
+    "duration": 269
+  },
+  {
+    "_id": {
+      "$oid": "695a69bc024a6664dab35adf"
+    },
+    "scanId": "SCAN-MJZRI6S6-Y2QUR4",
+    "initiatedBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "initiatedByName": "Admin",
+    "scope": "full",
+    "scannedAreas": [
+      "database",
+      "users",
+      "orders",
+      "products",
+      "transactions",
+      "permissions",
+      "integrations",
+      "security",
+      "payment_data",
+      "system_keys"
+    ],
+    "status": "completed",
+    "progress": {
+      "current": 18,
+      "total": 18,
+      "percentage": 100
+    },
+    "startedAt": {
+      "$date": "2026-01-04T13:23:08.886Z"
+    },
+    "results": {
+      "totalChecks": 39,
+      "passed": 24,
+      "failed": 0,
+      "warnings": 11,
+      "score": 62
+    },
+    "findings": {
+      "database": {
+        "checks": 5,
+        "passed": 5,
+        "failed": 0,
+        "warnings": 0,
+        "details": [
+          {
+            "check": "Collection users",
+            "status": "ok"
+          },
+          {
+            "check": "Collection orders",
+            "status": "ok"
+          },
+          {
+            "check": "Collection products",
+            "status": "ok"
+          },
+          {
+            "check": "DB Stats",
+            "status": "ok",
+            "data": {
+              "collections": 19,
+              "objects": 181
+            }
+          },
+          {
+            "check": "User indexes",
+            "count": 13
+          }
+        ]
+      },
+      "users": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "totalUsers": 25,
+          "admins": 2,
+          "agents": 20,
+          "customers": 3,
+          "noRole": 0
+        }
+      },
+      "orders": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 1,
+        "details": {
+          "total": 34,
+          "paid": 15,
+          "pending": 19,
+          "completed": 0,
+          "cancelled": 0,
+          "orphaned": 34
+        }
+      },
+      "products": {
+        "checks": 3,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "total": 26,
+          "active": 0,
+          "outOfStock": 0,
+          "noPrice": 0
+        }
+      },
+      "transactions": {
+        "checks": 2,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "total": 0,
+          "completed": 0,
+          "pending": 0,
+          "failed": 0
+        }
+      },
+      "permissions": {
+        "checks": 2,
+        "passed": 1,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "adminCount": 2,
+          "admins": [
+            {
+              "name": "מנהל 02",
+              "hasPermissions": false
+            },
+            {
+              "name": "Admin",
+              "hasPermissions": false
+            }
+          ]
+        }
+      },
+      "integrations": {
+        "checks": 2,
+        "passed": 0,
+        "failed": 0,
+        "warnings": 2,
+        "details": {
+          "priority": {
+            "configured": false,
+            "status": "not_configured"
+          },
+          "payplus": {
+            "configured": false,
+            "status": "not_configured"
+          }
+        }
+      },
+      "security": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 1,
+        "details": [
+          {
+            "var": "JWT_SECRET",
+            "status": "set",
+            "strength": "weak"
+          },
+          {
+            "var": "MONGODB_URI",
+            "status": "set",
+            "strength": "weak"
+          },
+          {
+            "var": "NEXTAUTH_SECRET",
+            "status": "set",
+            "strength": "strong"
+          },
+          {
+            "var": "NODE_ENV",
+            "status": "development"
+          }
+        ]
+      },
+      "payment_data": {
+        "checks": 3,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "ordersWithPayment": 33,
+          "paymentEvents": 0,
+          "failedPayments": 0
+        }
+      },
+      "system_keys": {
+        "checks": 10,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 7,
+        "details": [
+          {
+            "key": "JWT_SECRET",
+            "status": "configured"
+          },
+          {
+            "key": "NEXTAUTH_SECRET",
+            "status": "configured"
+          },
+          {
+            "key": "MONGODB_URI",
+            "status": "configured"
+          },
+          {
+            "key": "PAYPLUS_API_KEY",
+            "status": "not_set"
+          },
+          {
+            "key": "PAYPLUS_SECRET",
+            "status": "not_set"
+          },
+          {
+            "key": "PAYPLUS_WEBHOOK_SECRET",
+            "status": "not_set"
+          },
+          {
+            "key": "PRIORITY_CLIENT_ID",
+            "status": "not_set"
+          },
+          {
+            "key": "PRIORITY_CLIENT_SECRET",
+            "status": "not_set"
+          },
+          {
+            "key": "TWILIO_ACCOUNT_SID",
+            "status": "not_set"
+          },
+          {
+            "key": "TWILIO_AUTH_TOKEN",
+            "status": "not_set"
+          }
+        ]
+      }
+    },
+    "generatedReports": [
+      {
+        "reportId": {
+          "$oid": "695a69bc024a6664dab35ae1"
+        },
+        "reportType": "financial_payments",
+        "generatedAt": {
+          "$date": "2026-01-04T13:23:08.938Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69bc024a6664dab35ae2"
+        },
+        "reportType": "orders_transactions",
+        "generatedAt": {
+          "$date": "2026-01-04T13:23:08.939Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69bc024a6664dab35ae3"
+        },
+        "reportType": "users_permissions",
+        "generatedAt": {
+          "$date": "2026-01-04T13:23:08.940Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69bc024a6664dab35ae4"
+        },
+        "reportType": "admin_audit_trail",
+        "generatedAt": {
+          "$date": "2026-01-04T13:23:08.942Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69bc024a6664dab35ae5"
+        },
+        "reportType": "integrations_webhooks",
+        "generatedAt": {
+          "$date": "2026-01-04T13:23:08.943Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69bc024a6664dab35ae6"
+        },
+        "reportType": "data_integrity",
+        "generatedAt": {
+          "$date": "2026-01-04T13:23:08.943Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69bc024a6664dab35ae7"
+        },
+        "reportType": "security_access",
+        "generatedAt": {
+          "$date": "2026-01-04T13:23:08.944Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a69bc024a6664dab35ae8"
+        },
+        "reportType": "system_health",
+        "generatedAt": {
+          "$date": "2026-01-04T13:23:08.945Z"
+        }
+      }
+    ],
+    "version": "2.0",
+    "environment": "development",
+    "createdAt": {
+      "$date": "2026-01-04T13:23:08.886Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-04T13:23:08.945Z"
+    },
+    "completedAt": {
+      "$date": "2026-01-04T13:23:08.945Z"
+    },
+    "duration": 59
+  },
+  {
+    "_id": {
+      "$oid": "695a6ae0024a6664dab35af5"
+    },
+    "scanId": "SCAN-MJZROFU0-Q53N4U",
+    "initiatedBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "initiatedByName": "Admin",
+    "scope": "full",
+    "scannedAreas": [
+      "database",
+      "users",
+      "orders",
+      "products",
+      "transactions",
+      "permissions",
+      "integrations",
+      "security",
+      "payment_data",
+      "system_keys"
+    ],
+    "status": "completed",
+    "progress": {
+      "current": 18,
+      "total": 18,
+      "percentage": 100
+    },
+    "startedAt": {
+      "$date": "2026-01-04T13:28:00.552Z"
+    },
+    "results": {
+      "totalChecks": 41,
+      "passed": 25,
+      "failed": 0,
+      "warnings": 12,
+      "score": 61
+    },
+    "findings": {
+      "database": {
+        "checks": 5,
+        "passed": 5,
+        "failed": 0,
+        "warnings": 0,
+        "details": [
+          {
+            "check": "Collection users",
+            "status": "ok"
+          },
+          {
+            "check": "Collection orders",
+            "status": "ok"
+          },
+          {
+            "check": "Collection products",
+            "status": "ok"
+          },
+          {
+            "check": "DB Stats",
+            "status": "ok",
+            "data": {
+              "collections": 19,
+              "objects": 192
+            }
+          },
+          {
+            "check": "User indexes",
+            "count": 13
+          }
+        ]
+      },
+      "users": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "totalUsers": 25,
+          "admins": 2,
+          "agents": 20,
+          "customers": 3,
+          "noRole": 0
+        }
+      },
+      "orders": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 1,
+        "details": {
+          "total": 34,
+          "paid": 15,
+          "pending": 19,
+          "completed": 0,
+          "cancelled": 0,
+          "orphaned": 34
+        }
+      },
+      "products": {
+        "checks": 3,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "total": 26,
+          "active": 0,
+          "outOfStock": 0,
+          "noPrice": 0
+        }
+      },
+      "transactions": {
+        "checks": 2,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "total": 0,
+          "completed": 0,
+          "pending": 0,
+          "failed": 0
+        }
+      },
+      "permissions": {
+        "checks": 2,
+        "passed": 1,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "adminCount": 2,
+          "admins": [
+            {
+              "name": "מנהל 02",
+              "hasPermissions": false
+            },
+            {
+              "name": "Admin",
+              "hasPermissions": false
+            }
+          ]
+        }
+      },
+      "integrations": {
+        "checks": 2,
+        "passed": 0,
+        "failed": 0,
+        "warnings": 2,
+        "details": {
+          "priority": {
+            "configured": false,
+            "status": "not_configured"
+          },
+          "payplus": {
+            "configured": false,
+            "status": "not_configured"
+          }
+        }
+      },
+      "security": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 1,
+        "details": [
+          {
+            "var": "JWT_SECRET",
+            "status": "set",
+            "strength": "weak"
+          },
+          {
+            "var": "MONGODB_URI",
+            "status": "set",
+            "strength": "weak"
+          },
+          {
+            "var": "NEXTAUTH_SECRET",
+            "status": "set",
+            "strength": "strong"
+          },
+          {
+            "var": "NODE_ENV",
+            "status": "development"
+          }
+        ]
+      },
+      "payment_data": {
+        "checks": 3,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "ordersWithPayment": 33,
+          "paymentEvents": 0,
+          "failedPayments": 0
+        }
+      },
+      "system_keys": {
+        "checks": 12,
+        "passed": 4,
+        "failed": 0,
+        "warnings": 8,
+        "details": [
+          {
+            "key": "JWT_SECRET",
+            "status": "configured",
+            "weight": 10,
+            "category": "security",
+            "priority": "critical",
+            "description": "מפתח הצפנת JWT לאימות משתמשים",
+            "potentialGain": 0,
+            "strength": "medium"
+          },
+          {
+            "key": "NEXTAUTH_SECRET",
+            "status": "configured",
+            "weight": 8,
+            "category": "security",
+            "priority": "critical",
+            "description": "מפתח NextAuth לאבטחת סשנים",
+            "potentialGain": 0,
+            "strength": "strong"
+          },
+          {
+            "key": "MONGODB_URI",
+            "status": "configured",
+            "weight": 10,
+            "category": "database",
+            "priority": "critical",
+            "description": "כתובת חיבור למסד הנתונים",
+            "potentialGain": 0,
+            "strength": "medium"
+          },
+          {
+            "key": "PAYPLUS_API_KEY",
+            "status": "missing",
+            "weight": 6,
+            "category": "payments",
+            "priority": "high",
+            "description": "מפתח API של PayPlus לתשלומים",
+            "potentialGain": 6
+          },
+          {
+            "key": "PAYPLUS_SECRET",
+            "status": "missing",
+            "weight": 6,
+            "category": "payments",
+            "priority": "high",
+            "description": "סוד PayPlus לאימות בקשות",
+            "potentialGain": 6
+          },
+          {
+            "key": "PAYPLUS_WEBHOOK_SECRET",
+            "status": "missing",
+            "weight": 4,
+            "category": "payments",
+            "priority": "medium",
+            "description": "מפתח וובהוק PayPlus",
+            "potentialGain": 4
+          },
+          {
+            "key": "PRIORITY_CLIENT_ID",
+            "status": "missing",
+            "weight": 5,
+            "category": "integrations",
+            "priority": "high",
+            "description": "מזהה לקוח Priority ERP",
+            "potentialGain": 5
+          },
+          {
+            "key": "PRIORITY_CLIENT_SECRET",
+            "status": "missing",
+            "weight": 5,
+            "category": "integrations",
+            "priority": "high",
+            "description": "סוד Priority ERP",
+            "potentialGain": 5
+          },
+          {
+            "key": "TWILIO_ACCOUNT_SID",
+            "status": "missing",
+            "weight": 3,
+            "category": "communications",
+            "priority": "medium",
+            "description": "מזהה חשבון Twilio ל-SMS",
+            "potentialGain": 3
+          },
+          {
+            "key": "TWILIO_AUTH_TOKEN",
+            "status": "missing",
+            "weight": 3,
+            "category": "communications",
+            "priority": "medium",
+            "description": "טוקן Twilio לאימות",
+            "potentialGain": 3
+          },
+          {
+            "key": "NEXT_PUBLIC_SITE_URL",
+            "status": "missing",
+            "weight": 2,
+            "category": "config",
+            "priority": "low",
+            "description": "כתובת URL של האתר",
+            "potentialGain": 2
+          },
+          {
+            "key": "NODE_ENV",
+            "status": "configured",
+            "weight": 3,
+            "category": "config",
+            "priority": "medium",
+            "description": "סביבת ריצה (production/development)",
+            "potentialGain": 0,
+            "strength": "weak"
+          }
+        ],
+        "missingVars": [
+          {
+            "key": "PAYPLUS_API_KEY",
+            "weight": 6,
+            "percentageGain": 9,
+            "category": "payments",
+            "priority": "high",
+            "description": "מפתח API של PayPlus לתשלומים"
+          },
+          {
+            "key": "PAYPLUS_SECRET",
+            "weight": 6,
+            "percentageGain": 9,
+            "category": "payments",
+            "priority": "high",
+            "description": "סוד PayPlus לאימות בקשות"
+          },
+          {
+            "key": "PAYPLUS_WEBHOOK_SECRET",
+            "weight": 4,
+            "percentageGain": 6,
+            "category": "payments",
+            "priority": "medium",
+            "description": "מפתח וובהוק PayPlus"
+          },
+          {
+            "key": "PRIORITY_CLIENT_ID",
+            "weight": 5,
+            "percentageGain": 8,
+            "category": "integrations",
+            "priority": "high",
+            "description": "מזהה לקוח Priority ERP"
+          },
+          {
+            "key": "PRIORITY_CLIENT_SECRET",
+            "weight": 5,
+            "percentageGain": 8,
+            "category": "integrations",
+            "priority": "high",
+            "description": "סוד Priority ERP"
+          },
+          {
+            "key": "TWILIO_ACCOUNT_SID",
+            "weight": 3,
+            "percentageGain": 5,
+            "category": "communications",
+            "priority": "medium",
+            "description": "מזהה חשבון Twilio ל-SMS"
+          },
+          {
+            "key": "TWILIO_AUTH_TOKEN",
+            "weight": 3,
+            "percentageGain": 5,
+            "category": "communications",
+            "priority": "medium",
+            "description": "טוקן Twilio לאימות"
+          },
+          {
+            "key": "NEXT_PUBLIC_SITE_URL",
+            "weight": 2,
+            "percentageGain": 3,
+            "category": "config",
+            "priority": "low",
+            "description": "כתובת URL של האתר"
+          }
+        ],
+        "scoreBreakdown": {
+          "current": 48,
+          "potential": 100,
+          "earnedWeight": 31,
+          "totalWeight": 65,
+          "missingWeight": 34
+        }
+      }
+    },
+    "generatedReports": [
+      {
+        "reportId": {
+          "$oid": "695a6ae0024a6664dab35af7"
+        },
+        "reportType": "financial_payments",
+        "generatedAt": {
+          "$date": "2026-01-04T13:28:00.627Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a6ae0024a6664dab35af8"
+        },
+        "reportType": "orders_transactions",
+        "generatedAt": {
+          "$date": "2026-01-04T13:28:00.628Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a6ae0024a6664dab35af9"
+        },
+        "reportType": "users_permissions",
+        "generatedAt": {
+          "$date": "2026-01-04T13:28:00.629Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a6ae0024a6664dab35afa"
+        },
+        "reportType": "admin_audit_trail",
+        "generatedAt": {
+          "$date": "2026-01-04T13:28:00.634Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a6ae0024a6664dab35afb"
+        },
+        "reportType": "integrations_webhooks",
+        "generatedAt": {
+          "$date": "2026-01-04T13:28:00.635Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a6ae0024a6664dab35afc"
+        },
+        "reportType": "data_integrity",
+        "generatedAt": {
+          "$date": "2026-01-04T13:28:00.636Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a6ae0024a6664dab35afd"
+        },
+        "reportType": "security_access",
+        "generatedAt": {
+          "$date": "2026-01-04T13:28:00.637Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695a6ae0024a6664dab35afe"
+        },
+        "reportType": "system_health",
+        "generatedAt": {
+          "$date": "2026-01-04T13:28:00.639Z"
+        }
+      }
+    ],
+    "version": "2.0",
+    "environment": "development",
+    "createdAt": {
+      "$date": "2026-01-04T13:28:00.552Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-04T13:28:00.639Z"
+    },
+    "completedAt": {
+      "$date": "2026-01-04T13:28:00.639Z"
+    },
+    "duration": 87
+  }
+]

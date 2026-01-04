@@ -42,15 +42,31 @@ export async function POST(req) {
         }, { status: 400 });
       }
 
+      // Get agent ID
+      const agentId = order.refAgentId || order.agentId;
+      if (!agentId) {
+        return NextResponse.json({ error: 'No agent found for this order' }, { status: 400 });
+      }
+
+      // Update order status
       order.commissionStatus = 'available';
       order.commissionAvailableAt = new Date();
+      order.commissionSettled = true;
       await order.save();
+
+      // Add commission to agent's balance
+      const User = (await import('@/models/User')).default;
+      await User.updateOne(
+        { _id: agentId },
+        { $inc: { commissionBalance: order.commissionAmount } }
+      );
 
       return NextResponse.json({
         ok: true,
         message: 'Commission released',
         orderId: order._id,
         amount: order.commissionAmount,
+        agentId: agentId,
       });
     }
 
