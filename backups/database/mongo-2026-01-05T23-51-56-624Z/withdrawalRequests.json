@@ -1,0 +1,60 @@
+[
+  {
+    "_id": {
+      "$oid": "695ba86f73a32dbaab1e6a0e"
+    },
+    "userId": {
+      "$oid": "695845883bb44564746d1e4d"
+    },
+    "amount": 50,
+    "notes": "העברה",
+    "status": "completed",
+    "adminNotes": "לאן להעבירעיעיעעע",
+    "snapshotBalance": 14.689999999999998,
+    "snapshotOnHold": 150,
+    "autoSettled": false,
+    "createdAt": {
+      "$date": "2026-01-05T12:02:55.396Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-05T12:10:00.875Z"
+    },
+    "processedAt": {
+      "$date": "2026-01-05T12:10:00.875Z"
+    },
+    "processedBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c4e2f38126d81d2eb3a1b"
+    },
+    "userId": {
+      "$oid": "695badb073a32dbaab1e6a88"
+    },
+    "amount": 30,
+    "notes": "",
+    "paymentDetails": {
+      "method": "bit",
+      "phone": "0523005462"
+    },
+    "status": "completed",
+    "adminNotes": "",
+    "snapshotBalance": 2.289999999999999,
+    "snapshotOnHold": 30,
+    "autoSettled": false,
+    "createdAt": {
+      "$date": "2026-01-05T23:50:07.295Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-05T23:50:54.573Z"
+    },
+    "processedAt": {
+      "$date": "2026-01-05T23:50:54.573Z"
+    },
+    "processedBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    }
+  }
+]

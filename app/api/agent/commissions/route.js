@@ -11,6 +11,8 @@ const COMMISSION_STATUSES = ['pending', 'available', 'claimed', 'cancelled'];
 
 function inferStatusLabel(status) {
   switch (status) {
+    case 'pending':
+      return 'ממתין לשחרור';
     case 'available':
       return 'זמין למשיכה';
     case 'claimed':
@@ -18,7 +20,7 @@ function inferStatusLabel(status) {
     case 'cancelled':
       return 'בוטל';
     default:
-      return 'זמין למשיכה';
+      return 'ממתין לשחרור';
   }
 }
 

@@ -4,6 +4,10 @@ import { useMemo } from 'react';
 import { formatCurrencyILS } from '@/app/utils/date';
 
 const commissionStatusConfig = {
+  pending: {
+    label: 'ממתין לשחרור',
+    className: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+  },
   available: {
     label: 'זמין למשיכה',
     className: 'bg-green-100 text-green-700 border-green-200',
