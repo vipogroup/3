@@ -21,13 +21,35 @@
         "_id": {
           "$oid": "69589484e477e3a74af1ff90"
         }
+      },
+      {
+        "userId": {
+          "$oid": "695badb073a32dbaab1e6a88"
+        },
+        "readAt": {
+          "$date": "2026-01-05T16:03:58.543Z"
+        },
+        "_id": {
+          "$oid": "695be0ee73a32dbaab1e6d63"
+        }
+      },
+      {
+        "userId": {
+          "$oid": "695badb073a32dbaab1e6a88"
+        },
+        "readAt": {
+          "$date": "2026-01-05T16:03:58.560Z"
+        },
+        "_id": {
+          "$oid": "695be0ee73a32dbaab1e6d65"
+        }
       }
     ],
     "createdAt": {
       "$date": "2026-01-03T04:01:08.257Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:01:08.257Z"
+      "$date": "2026-01-05T16:03:58.560Z"
     },
     "__v": 0
   },

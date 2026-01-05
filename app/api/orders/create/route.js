@@ -85,8 +85,9 @@ export async function POST(req) {
     const now = new Date();
     const orderType = 'regular'; // This route is for regular orders
     
-    // Commission is available immediately (no hold period)
-    const commissionAvailableAt = now;
+    // Commission hold period: 30 days for regular purchases
+    const holdDays = 30;
+    const commissionAvailableAt = new Date(now.getTime() + holdDays * 24 * 60 * 60 * 1000);
     const finalCommissionAmount = refAgentId ? commissionAmount : 0;
     
     const orderDoc = {
@@ -102,8 +103,8 @@ export async function POST(req) {
       paymentMethod,
       status: 'pending',
       orderType,
-      commissionStatus: 'available',
-      commissionSettled: true,
+      commissionStatus: 'pending',
+      commissionSettled: false,
       commissionAvailableAt: finalCommissionAmount > 0 ? commissionAvailableAt : null,
       refSource: refSource || null,
       refAgentId: refAgentId || null,

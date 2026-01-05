@@ -125,13 +125,13 @@ export async function GET(req) {
     }
 
     const commissions = orders.map((order) => {
-      // Treat pending as available (no hold period anymore)
-      const rawStatus = order.commissionStatus || 'available';
-      const status = rawStatus === 'pending' ? 'available' : rawStatus;
+      const status = order.commissionStatus || 'pending';
       const amount = Number(order.commissionAmount || 0);
       totalEarned += amount;
 
-      if (status === 'available') {
+      if (status === 'pending') {
+        pendingCommissions += amount;
+      } else if (status === 'available') {
         availableCommissions += amount;
       } else if (status === 'claimed') {
         claimedCommissions += amount;
@@ -174,10 +174,14 @@ export async function GET(req) {
       };
     });
 
+    // Available for withdrawal = available commissions minus what's already on hold (pending withdrawal requests)
+    const availableForWithdrawal = Math.max(0, availableCommissions - commissionOnHold);
+
     return NextResponse.json({
       ok: true,
       summary: {
-        availableBalance: availableCommissions,
+        availableBalance: availableForWithdrawal,
+        availableCommissions,
         pendingCommissions,
         onHold: commissionOnHold,
         totalEarned,

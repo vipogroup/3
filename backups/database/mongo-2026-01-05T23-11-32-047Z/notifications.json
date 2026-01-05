@@ -1142,5 +1142,49 @@
       "$date": "2026-01-02T22:24:08.551Z"
     },
     "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695badb073a32dbaab1e6a89"
+    },
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: s0533858881@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "695badb073a32dbaab1e6a88"
+      },
+      "email": "s0533858881@gmail.com",
+      "fullName": "ישראל"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-05T12:25:20.912Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-05T12:25:20.912Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695be27773a32dbaab1e6d8a"
+    },
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: vipo.m1985@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "695be27773a32dbaab1e6d89"
+      },
+      "email": "vipo.m1985@gmail.com",
+      "fullName": "לקוח"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-05T16:10:31.541Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-05T16:10:31.541Z"
+    },
+    "__v": 0
   }
 ]

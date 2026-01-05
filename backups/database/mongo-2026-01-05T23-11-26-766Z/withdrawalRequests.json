@@ -1,0 +1,29 @@
+[
+  {
+    "_id": {
+      "$oid": "695ba86f73a32dbaab1e6a0e"
+    },
+    "userId": {
+      "$oid": "695845883bb44564746d1e4d"
+    },
+    "amount": 50,
+    "notes": "העברה",
+    "status": "completed",
+    "adminNotes": "לאן להעבירעיעיעעע",
+    "snapshotBalance": 14.689999999999998,
+    "snapshotOnHold": 150,
+    "autoSettled": false,
+    "createdAt": {
+      "$date": "2026-01-05T12:02:55.396Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-05T12:10:00.875Z"
+    },
+    "processedAt": {
+      "$date": "2026-01-05T12:10:00.875Z"
+    },
+    "processedBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    }
+  }
+]

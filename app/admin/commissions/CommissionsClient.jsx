@@ -72,6 +72,33 @@ export default function CommissionsClient() {
   const [editingDateValue, setEditingDateValue] = useState('');
   const [savingDate, setSavingDate] = useState(false);
   const [releasingId, setReleasingId] = useState(null);
+  const [resettingCommissions, setResettingCommissions] = useState(false);
+
+  // Reset all commissions
+  const handleResetAllCommissions = async () => {
+    const confirmText = prompt('⚠️ פעולה זו תמחק את כל העמלות במערכת!\n\nהקלד "אפס עמלות" כדי לאשר:');
+    if (confirmText !== 'אפס עמלות') {
+      if (confirmText !== null) alert('הטקסט שהוזן אינו תואם. הפעולה בוטלה.');
+      return;
+    }
+    
+    setResettingCommissions(true);
+    try {
+      const res = await fetch('/api/admin/commissions/reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to reset commissions');
+      
+      alert(`✅ איפוס הושלם!\n\nהזמנות שאופסו: ${json.ordersReset || 0}\nמשתמשים שאופסו: ${json.usersReset || 0}`);
+      fetchData();
+    } catch (err) {
+      alert('שגיאה באיפוס העמלות: ' + err.message);
+    } finally {
+      setResettingCommissions(false);
+    }
+  };
 
   // Fix commission balance (for orders released before the fix)
   const handleFixBalance = async (orderId) => {
@@ -254,7 +281,15 @@ export default function CommissionsClient() {
               ניהול עמלות סוכנים
             </h1>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={handleResetAllCommissions}
+              disabled={resettingCommissions}
+              className="px-4 py-2 rounded-lg font-medium transition-all border-2 disabled:opacity-50"
+              style={{ borderColor: '#dc2626', color: '#dc2626' }}
+            >
+              {resettingCommissions ? '⏳ מאפס...' : '🗑️ איפוס עמלות'}
+            </button>
             <button
               onClick={() => exportToExcel(data?.agentsSummary, data?.commissions)}
               disabled={!data}

@@ -35,7 +35,7 @@
     "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
     "imagePath": "",
     "inStock": false,
-    "stockCount": 0,
+    "stockCount": -2,
     "rating": 4.5,
     "reviews": 234,
     "features": [
@@ -51,7 +51,7 @@
       "$date": "2025-12-01T04:34:52.101Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:48.391Z"
+      "$date": "2026-01-05T20:23:07.579Z"
     },
     "customFields": [],
     "sku": "5sds5d5sd5s",
@@ -96,7 +96,7 @@
     "videoUrl": "https://www.youtube.com/embed/jNQXAC9IVRw",
     "imagePath": "",
     "inStock": false,
-    "stockCount": 0,
+    "stockCount": -2,
     "rating": 4.7,
     "reviews": 156,
     "features": [
@@ -112,7 +112,7 @@
       "$date": "2025-12-01T04:34:52.103Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:49.012Z"
+      "$date": "2026-01-05T16:11:42.629Z"
     },
     "customFields": [],
     "sku": "",
@@ -346,7 +346,7 @@
     "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 60,
+    "stockCount": 59,
     "rating": 4.6,
     "reviews": 145,
     "features": [
@@ -369,7 +369,7 @@
       "$date": "2025-12-01T04:36:35.735Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:51.435Z"
+      "$date": "2026-01-05T16:28:07.348Z"
     },
     "isFeatured": true
   },
@@ -535,7 +535,7 @@
     "videoUrl": "https://www.youtube.com/embed/kJQP7kiw5Fk",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 55,
+    "stockCount": 54,
     "rating": 4.4,
     "reviews": 223,
     "features": [
@@ -558,7 +558,7 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.692Z"
+      "$date": "2026-01-05T19:37:13.177Z"
     }
   },
   {
@@ -597,7 +597,7 @@
     "videoUrl": "https://www.youtube.com/embed/tgbNymZ7vqY",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 80,
+    "stockCount": 78,
     "rating": 4.3,
     "reviews": 312,
     "features": [
@@ -620,7 +620,7 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.694Z"
+      "$date": "2026-01-05T19:45:01.295Z"
     }
   },
   {
@@ -1345,10 +1345,10 @@
       "תאורה": "RGB מלאה",
       "חיבור": "USB-C"
     },
-    "stockCount": 21,
+    "stockCount": 17,
     "type": "online",
     "updatedAt": {
-      "$date": "2026-01-02T22:14:45.174Z"
+      "$date": "2026-01-05T19:44:04.108Z"
     },
     "videoUrl": ""
   },

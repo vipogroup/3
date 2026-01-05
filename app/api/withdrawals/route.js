@@ -71,7 +71,7 @@ export async function POST(req) {
       orders.find({
         $or: [{ agentId: userObjectId }, { refAgentId: userObjectId }],
         commissionAmount: { $gt: 0 },
-        commissionStatus: { $in: ['available', 'pending'] }, // pending treated as available
+        commissionStatus: 'available', // Only available commissions can be withdrawn
         status: { $in: ['paid', 'completed', 'shipped'] }
       }).project({ commissionAmount: 1 }).toArray()
     ]);
@@ -82,18 +82,20 @@ export async function POST(req) {
 
     // Calculate available balance from orders (same as UI shows)
     const availableFromOrders = availableOrders.reduce((sum, order) => sum + Number(order.commissionAmount || 0), 0);
+    const currentOnHold = Number(userData.commissionOnHold || 0);
     
-    // Use the available from orders as the source of truth (matches UI)
-    const balance = availableFromOrders;
+    // Available for withdrawal = available from orders minus what's already on hold
+    const balance = Math.max(0, availableFromOrders - currentOnHold);
     const currentDbBalance = Number(userData.commissionBalance || 0);
 
     console.log('WITHDRAWAL_BALANCE_CHECK', {
       userId: user.id,
       requestedAmount: amount,
       availableFromOrders,
+      currentOnHold,
+      availableForWithdrawal: balance,
       currentDbBalance,
       ordersFound: availableOrders.length,
-      orders: availableOrders.map(o => ({ id: o._id?.toString(), amount: o.commissionAmount }))
     });
 
     if (amount > balance) {

@@ -62,16 +62,17 @@ async function processCommission(order, eventType) {
     return { credited: false, reason: 'no_commission' };
   }
 
-  // Commission is available immediately (no hold period)
-  const availableAt = new Date();
+  // Commission hold period: 30 days for regular, 100 days for group purchases
+  const now = new Date();
+  const holdDays = order.orderType === 'group' ? 100 : 30;
+  const availableAt = new Date(now.getTime() + holdDays * 24 * 60 * 60 * 1000);
 
   if (eventType === 'success') {
-    // Credit commission - available immediately
+    // Set commission as pending with hold period (do NOT add to balance yet)
     await User.updateOne(
       { _id: order.refAgentId },
       {
         $inc: {
-          commissionBalance: Number(order.commissionAmount),
           totalSales: 1,
         },
         $set: { updatedAt: new Date() },
@@ -82,9 +83,9 @@ async function processCommission(order, eventType) {
       { _id: order._id },
       {
         $set: {
-          commissionStatus: 'available',
+          commissionStatus: 'pending',
           commissionAvailableAt: availableAt,
-          commissionSettled: true,
+          commissionSettled: false,
         },
       }
     );
