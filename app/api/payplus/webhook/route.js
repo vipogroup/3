@@ -62,11 +62,11 @@ async function processCommission(order, eventType) {
     return { credited: false, reason: 'no_commission' };
   }
 
-  const holdDays = parseInt(process.env.COMMISSION_HOLD_DAYS || '14', 10);
-  const availableAt = new Date(Date.now() + holdDays * 24 * 60 * 60 * 1000);
+  // Commission is available immediately (no hold period)
+  const availableAt = new Date();
 
   if (eventType === 'success') {
-    // Credit commission with hold period
+    // Credit commission - available immediately
     await User.updateOne(
       { _id: order.refAgentId },
       {
@@ -82,7 +82,7 @@ async function processCommission(order, eventType) {
       { _id: order._id },
       {
         $set: {
-          commissionStatus: 'pending',
+          commissionStatus: 'available',
           commissionAvailableAt: availableAt,
           commissionSettled: true,
         },

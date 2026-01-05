@@ -8,8 +8,9 @@ import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { processWithdrawalViaPriority, completeWithdrawal } from '@/lib/priority/agentPayoutService.js';
 import { isPriorityConfigured } from '@/lib/priority/client.js';
+import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
 
-const ACTIONS = ['approve', 'reject', 'complete', 'pay_via_priority'];
+const ACTIONS = ['approve', 'reject', 'complete', 'pay_via_priority', 'delete'];
 
 function invalidIdResponse() {
   return NextResponse.json({ error: 'Invalid withdrawal id' }, { status: 400 });
@@ -29,6 +30,7 @@ function mapWithdrawal(doc, user) {
     status: doc.status,
     notes: doc.notes ?? '',
     adminNotes: doc.adminNotes ?? '',
+    paymentDetails: doc.paymentDetails || null,
     snapshotBalance: doc.snapshotBalance ?? 0,
     snapshotOnHold: doc.snapshotOnHold ?? 0,
     processedBy: doc.processedBy ? String(doc.processedBy) : null,
@@ -146,10 +148,25 @@ export async function PATCH(req, { params }) {
         },
         { returnDocument: 'after' },
       );
-      if (!result.value) {
+      
+      // Handle both old (.value) and new (direct) MongoDB driver response formats
+      const approvedDoc = result?.value || result;
+      
+      if (!approvedDoc || !approvedDoc._id) {
         return NextResponse.json({ error: 'Withdrawal already processed' }, { status: 409 });
       }
-      updatedDoc = result.value;
+      updatedDoc = approvedDoc;
+
+      // Send notification to agent
+      try {
+        await sendTemplateNotification({
+          templateType: 'withdrawal_approved',
+          variables: { amount: approvedDoc.amount },
+          audienceUserIds: [String(approvedDoc.userId)],
+        });
+      } catch (notifErr) {
+        console.error('WITHDRAWAL_APPROVED_NOTIFICATION_ERROR:', notifErr?.message);
+      }
     }
 
     if (action === 'reject') {
@@ -157,55 +174,61 @@ export async function PATCH(req, { params }) {
         return NextResponse.json({ error: 'Withdrawal already finalized' }, { status: 409 });
       }
 
-      const session = db.client.startSession();
-      try {
-        await session.withTransaction(async () => {
-          const rejectResult = await withdrawals.findOneAndUpdate(
-            { _id: withdrawalId, status: { $in: ['pending', 'approved'] } },
-            {
-              $set: {
-                status: 'rejected',
-                adminNotes,
-                processedBy: adminId,
-                processedAt: now,
-                updatedAt: now,
-              },
-            },
-            { returnDocument: 'after', session },
-          );
+      // Update withdrawal status (no transaction - works with standalone MongoDB)
+      const rejectResult = await withdrawals.findOneAndUpdate(
+        { _id: withdrawalId, status: { $in: ['pending', 'approved'] } },
+        {
+          $set: {
+            status: 'rejected',
+            adminNotes,
+            processedBy: adminId,
+            processedAt: now,
+            updatedAt: now,
+          },
+        },
+        { returnDocument: 'after' },
+      );
 
-          if (!rejectResult.value) {
-            throw new Error('ALREADY_PROCESSED');
-          }
-
-          const revertResult = await users.findOneAndUpdate(
-            { _id: rejectResult.value.userId },
-            {
-              $inc: {
-                commissionBalance: rejectResult.value.amount,
-                commissionOnHold: -rejectResult.value.amount,
-              },
-              $set: { updatedAt: now },
-            },
-            { session, returnDocument: 'after' },
-          );
-
-          if (!revertResult.value) {
-            throw new Error('USER_NOT_FOUND');
-          }
-
-          updatedDoc = rejectResult.value;
-        });
-      } catch (transactionError) {
-        if (transactionError.message === 'ALREADY_PROCESSED') {
-          await session.endSession();
-          return NextResponse.json({ error: 'Withdrawal already processed' }, { status: 409 });
-        }
-        console.error('ADMIN_WITHDRAWAL_REJECT_TRANSACTION_ERROR:', transactionError);
-        await session.endSession();
-        throw transactionError;
+      // Handle both old (.value) and new (direct) MongoDB driver response formats
+      const rejectedDoc = rejectResult?.value || rejectResult;
+      
+      if (!rejectedDoc || !rejectedDoc._id) {
+        return NextResponse.json({ error: 'Withdrawal already processed' }, { status: 409 });
       }
-      await session.endSession();
+
+      // Revert funds to user's balance
+      const revertResult = await users.findOneAndUpdate(
+        { _id: rejectedDoc.userId },
+        {
+          $inc: {
+            commissionBalance: rejectedDoc.amount,
+            commissionOnHold: -rejectedDoc.amount,
+          },
+          $set: { updatedAt: now },
+        },
+        { returnDocument: 'after' },
+      );
+
+      const revertedUser = revertResult?.value || revertResult;
+      if (!revertedUser || !revertedUser._id) {
+        console.error('ADMIN_WITHDRAWAL_REJECT_USER_NOT_FOUND:', { userId: rejectedDoc.userId });
+      }
+
+      // Send notification to agent about rejection
+      try {
+        await sendTemplateNotification({
+          templateType: 'withdrawal_rejected',
+          variables: { 
+            amount: rejectedDoc.amount,
+            reason: adminNotes || 'לא צוינה סיבה',
+          },
+          audienceUserIds: [String(rejectedDoc.userId)],
+        });
+      } catch (notifErr) {
+        console.error('WITHDRAWAL_REJECTED_NOTIFICATION_ERROR:', notifErr?.message);
+      }
+
+      updatedDoc = rejectedDoc;
     }
 
     if (action === 'complete') {
@@ -213,54 +236,88 @@ export async function PATCH(req, { params }) {
         return NextResponse.json({ error: 'Only approved withdrawals can be completed' }, { status: 409 });
       }
 
-      const session = db.client.startSession();
-      try {
-        await session.withTransaction(async () => {
-          const completeResult = await withdrawals.findOneAndUpdate(
-            { _id: withdrawalId, status: 'approved' },
-            {
-              $set: {
-                status: 'completed',
-                adminNotes,
-                processedBy: adminId,
-                processedAt: now,
-                updatedAt: now,
-              },
-            },
-            { returnDocument: 'after', session },
-          );
+      // Update withdrawal status (no transaction - works with standalone MongoDB)
+      const completeResult = await withdrawals.findOneAndUpdate(
+        { _id: withdrawalId, status: 'approved' },
+        {
+          $set: {
+            status: 'completed',
+            adminNotes,
+            processedBy: adminId,
+            processedAt: now,
+            updatedAt: now,
+          },
+        },
+        { returnDocument: 'after' },
+      );
 
-          if (!completeResult.value) {
-            throw new Error('ALREADY_PROCESSED');
-          }
-
-          const decResult = await users.findOneAndUpdate(
-            { _id: completeResult.value.userId },
-            {
-              $inc: {
-                commissionOnHold: -completeResult.value.amount,
-              },
-              $set: { updatedAt: now },
-            },
-            { session, returnDocument: 'after' },
-          );
-
-          if (!decResult.value) {
-            throw new Error('USER_NOT_FOUND');
-          }
-
-          updatedDoc = completeResult.value;
-        });
-      } catch (transactionError) {
-        if (transactionError.message === 'ALREADY_PROCESSED') {
-          await session.endSession();
-          return NextResponse.json({ error: 'Withdrawal already processed' }, { status: 409 });
-        }
-        console.error('ADMIN_WITHDRAWAL_COMPLETE_TRANSACTION_ERROR:', transactionError);
-        await session.endSession();
-        throw transactionError;
+      // Handle both old (.value) and new (direct) MongoDB driver response formats
+      const completedDoc = completeResult?.value || completeResult;
+      
+      if (!completedDoc || !completedDoc._id) {
+        return NextResponse.json({ error: 'Withdrawal already processed' }, { status: 409 });
       }
-      await session.endSession();
+
+      // Decrease user's onHold amount
+      const decResult = await users.findOneAndUpdate(
+        { _id: completedDoc.userId },
+        {
+          $inc: {
+            commissionOnHold: -completedDoc.amount,
+          },
+          $set: { updatedAt: now },
+        },
+        { returnDocument: 'after' },
+      );
+
+      const updatedUser = decResult?.value || decResult;
+      if (!updatedUser || !updatedUser._id) {
+        console.error('ADMIN_WITHDRAWAL_COMPLETE_USER_NOT_FOUND:', { userId: completedDoc.userId });
+      }
+
+      // Mark orders as claimed up to the withdrawal amount
+      // This ensures the "available" balance decreases correctly
+      const ordersCollection = db.collection('orders');
+      let remainingAmount = completedDoc.amount;
+      
+      // Find available orders for this user, oldest first
+      const availableOrders = await ordersCollection.find({
+        $or: [{ agentId: completedDoc.userId }, { refAgentId: completedDoc.userId }],
+        commissionAmount: { $gt: 0 },
+        commissionStatus: { $in: ['available', 'pending'] },
+        status: { $in: ['paid', 'completed', 'shipped'] }
+      }).sort({ createdAt: 1 }).toArray();
+
+      // Mark orders as claimed until we reach the withdrawal amount
+      for (const order of availableOrders) {
+        if (remainingAmount <= 0) break;
+        
+        await ordersCollection.updateOne(
+          { _id: order._id },
+          { $set: { commissionStatus: 'claimed', updatedAt: now } }
+        );
+        
+        remainingAmount -= Number(order.commissionAmount || 0);
+      }
+
+      console.log('ADMIN_WITHDRAWAL_COMPLETE_ORDERS_CLAIMED:', {
+        userId: completedDoc.userId.toString(),
+        withdrawalAmount: completedDoc.amount,
+        ordersMarkedClaimed: availableOrders.length,
+      });
+
+      // Send notification to agent about completed transfer
+      try {
+        await sendTemplateNotification({
+          templateType: 'withdrawal_completed',
+          variables: { amount: completedDoc.amount },
+          audienceUserIds: [String(completedDoc.userId)],
+        });
+      } catch (notifErr) {
+        console.error('WITHDRAWAL_COMPLETED_NOTIFICATION_ERROR:', notifErr?.message);
+      }
+
+      updatedDoc = completedDoc;
     }
 
     // === Pay via Priority ERP ===
@@ -290,6 +347,57 @@ export async function PATCH(req, { params }) {
         message: 'מסמך תשלום נוצר בהצלחה ב-Priority',
         priorityPaymentId: paymentResult.paymentId,
         withdrawal: mapWithdrawal(updatedDoc, null)
+      });
+    }
+
+    // === Delete withdrawal request ===
+    if (action === 'delete') {
+      // Only completed withdrawals cannot be deleted (money already transferred)
+      if (existing.status === 'completed') {
+        return NextResponse.json({ 
+          error: 'לא ניתן למחוק בקשה שהושלמה - הכסף כבר הועבר' 
+        }, { status: 409 });
+      }
+
+      // If pending or approved, revert funds back to user's balance
+      if (['pending', 'approved'].includes(existing.status)) {
+        const revertResult = await users.findOneAndUpdate(
+          { _id: existing.userId },
+          {
+            $inc: {
+              commissionBalance: existing.amount,
+              commissionOnHold: -existing.amount,
+            },
+            $set: { updatedAt: now },
+          },
+          { returnDocument: 'after' },
+        );
+
+        const revertedUser = revertResult?.value || revertResult;
+        if (!revertedUser || !revertedUser._id) {
+          console.error('ADMIN_WITHDRAWAL_DELETE_USER_NOT_FOUND:', { userId: existing.userId });
+        }
+      }
+
+      // Delete the withdrawal request
+      const deleteResult = await withdrawals.deleteOne({ _id: withdrawalId });
+      
+      if (deleteResult.deletedCount === 0) {
+        return NextResponse.json({ error: 'לא ניתן למחוק את הבקשה' }, { status: 500 });
+      }
+
+      console.log('ADMIN_WITHDRAWAL_DELETED', {
+        withdrawalId: id,
+        userId: String(existing.userId),
+        amount: existing.amount,
+        previousStatus: existing.status,
+        deletedBy: admin.id
+      });
+
+      return NextResponse.json({ 
+        ok: true, 
+        message: 'בקשת המשיכה נמחקה בהצלחה',
+        deleted: true
       });
     }
 

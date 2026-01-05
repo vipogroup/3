@@ -11,8 +11,6 @@ const COMMISSION_STATUSES = ['pending', 'available', 'claimed', 'cancelled'];
 
 function inferStatusLabel(status) {
   switch (status) {
-    case 'pending':
-      return 'ממתין לשחרור';
     case 'available':
       return 'זמין למשיכה';
     case 'claimed':
@@ -20,7 +18,7 @@ function inferStatusLabel(status) {
     case 'cancelled':
       return 'בוטל';
     default:
-      return 'לא ידוע';
+      return 'זמין למשיכה';
   }
 }
 
@@ -80,6 +78,7 @@ export async function GET(req) {
           customerName: 1,
           groupPurchaseId: 1,
           totalAmount: 1,
+          items: 1,
         })
         .sort({ createdAt: -1 })
         .toArray(),
@@ -126,13 +125,13 @@ export async function GET(req) {
     }
 
     const commissions = orders.map((order) => {
-      const status = order.commissionStatus || 'pending';
+      // Treat pending as available (no hold period anymore)
+      const rawStatus = order.commissionStatus || 'available';
+      const status = rawStatus === 'pending' ? 'available' : rawStatus;
       const amount = Number(order.commissionAmount || 0);
       totalEarned += amount;
 
-      if (status === 'pending') {
-        pendingCommissions += amount;
-      } else if (status === 'available') {
+      if (status === 'available') {
         availableCommissions += amount;
       } else if (status === 'claimed') {
         claimedCommissions += amount;
@@ -141,6 +140,11 @@ export async function GET(req) {
       const groupInfo = order.groupPurchaseId
         ? groupPurchaseMap.get(order.groupPurchaseId.toString()) || null
         : null;
+
+      // Extract product names from items
+      const productNames = Array.isArray(order.items) 
+        ? order.items.map(item => item.name).filter(Boolean).join(', ')
+        : '';
 
       return {
         orderId: order._id ? order._id.toString() : null,
@@ -152,6 +156,7 @@ export async function GET(req) {
         availableAt: order.commissionAvailableAt || null,
         deliveredAt: order.deliveredAt || null,
         customerName: order.customerName || '',
+        productName: productNames,
         totalAmount: order.totalAmount || 0,
         createdAt: order.createdAt,
         groupPurchase: groupInfo

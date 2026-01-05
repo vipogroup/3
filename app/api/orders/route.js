@@ -389,10 +389,8 @@ export async function POST(req) {
     // Determine order type: 'group' if any product is a group purchase, otherwise 'regular'
     const orderType = hasGroupProduct ? 'group' : (rest?.orderType || 'regular');
     
-    // Calculate commission available date based on order type
-    // Regular purchase: 30 days, Group purchase: 100 days
-    const daysUntilCommissionAvailable = orderType === 'group' ? 100 : 30;
-    const commissionAvailableAt = new Date(now.getTime() + daysUntilCommissionAvailable * 24 * 60 * 60 * 1000);
+    // Commission is available immediately (no hold period)
+    const commissionAvailableAt = now;
     
     const orderDoc = {
       items,
@@ -407,8 +405,8 @@ export async function POST(req) {
       createdBy: me._id,
       status: 'pending',
       orderType,
-      commissionSettled: false,
-      commissionStatus: 'pending',
+      commissionSettled: true,
+      commissionStatus: 'available',
       commissionAvailableAt: finalCommissionAmount > 0 ? commissionAvailableAt : null,
       refSource,
       refAgentId,

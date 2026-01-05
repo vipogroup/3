@@ -88,10 +88,12 @@ export function groupSalesByDay(sales, from, to) {
 export function formatCurrencyILS(n) {
   if (n === undefined || n === null) return '₪0';
 
+  // Show decimals only if there are any (e.g., 53.89 -> ₪53.89, 54 -> ₪54)
+  const hasDecimals = n % 1 !== 0;
   return new Intl.NumberFormat('he-IL', {
     style: 'currency',
     currency: 'ILS',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: hasDecimals ? 2 : 0,
+    maximumFractionDigits: 2,
   }).format(n);
 }

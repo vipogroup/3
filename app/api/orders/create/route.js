@@ -85,9 +85,8 @@ export async function POST(req) {
     const now = new Date();
     const orderType = 'regular'; // This route is for regular orders
     
-    // Calculate commission available date (30 days for regular, 100 days for group)
-    const daysUntilCommissionAvailable = orderType === 'group' ? 100 : 30;
-    const commissionAvailableAt = new Date(now.getTime() + daysUntilCommissionAvailable * 24 * 60 * 60 * 1000);
+    // Commission is available immediately (no hold period)
+    const commissionAvailableAt = now;
     const finalCommissionAmount = refAgentId ? commissionAmount : 0;
     
     const orderDoc = {
@@ -103,7 +102,8 @@ export async function POST(req) {
       paymentMethod,
       status: 'pending',
       orderType,
-      commissionStatus: 'pending',
+      commissionStatus: 'available',
+      commissionSettled: true,
       commissionAvailableAt: finalCommissionAmount > 0 ? commissionAvailableAt : null,
       refSource: refSource || null,
       refAgentId: refAgentId || null,

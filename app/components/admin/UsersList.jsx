@@ -13,6 +13,7 @@ export default function UsersList() {
   const [agents, setAgents] = useState({});
   const [deletingId, setDeletingId] = useState(null);
   const [togglingId, setTogglingId] = useState(null);
+  const [resettingId, setResettingId] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState('');
   const [isSuperAdminUser, setIsSuperAdminUser] = useState(false);
   const [permissionsModalUser, setPermissionsModalUser] = useState(null);
@@ -92,6 +93,42 @@ export default function UsersList() {
       setAgents(agentsMap);
     } catch (err) {
       console.error('Failed to fetch agents:', err);
+    }
+  }
+
+  async function handleResetUser(user) {
+    if (!user?._id) return;
+
+    if (user.role === 'admin') {
+      setError('לא ניתן לאפס מנהלים');
+      return;
+    }
+
+    if (!confirm(`האם לאפס את המשתמש ${user.fullName || user.email || user.phone}?\n\nפעולה זו תמחק את כל ההזמנות, העמלות ובקשות המשיכה של המשתמש!`)) {
+      return;
+    }
+
+    try {
+      setError('');
+      setResettingId(user._id);
+      const res = await fetch(`/api/users/${user._id}/reset`, {
+        method: 'POST',
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to reset user');
+      }
+
+      const data = await res.json();
+      alert(`המשתמש אופס בהצלחה!\n\nהזמנות שנמחקו: ${data.stats?.ordersDeleted || 0}\nבקשות משיכה שנמחקו: ${data.stats?.withdrawalsDeleted || 0}`);
+      
+      // Refresh users list
+      fetchUsers(searchQuery, roleFilter);
+    } catch (err) {
+      setError(err.message || 'איפוס נכשל');
+    } finally {
+      setResettingId(null);
     }
   }
 
@@ -552,6 +589,30 @@ export default function UsersList() {
                             הרשאות
                           </button>
                         )}
+                        {!isCurrentUser && user.role !== 'admin' && isSuperAdminUser && (
+                          <button
+                            type="button"
+                            onClick={() => handleResetUser(user)}
+                            disabled={resettingId === user._id}
+                            className="px-3 py-1 rounded-lg text-xs font-semibold transition"
+                            style={{
+                              background: resettingId === user._id ? '#e5e7eb' : 'white',
+                              border:
+                                resettingId === user._id ? '2px solid #9ca3af' : '2px solid #f59e0b',
+                              color: resettingId === user._id ? '#6b7280' : '#f59e0b',
+                              cursor: resettingId === user._id ? 'wait' : 'pointer',
+                            }}
+                            onMouseEnter={(e) =>
+                              !resettingId &&
+                              (e.currentTarget.style.background = 'rgba(245, 158, 11, 0.05)')
+                            }
+                            onMouseLeave={(e) =>
+                              !resettingId && (e.currentTarget.style.background = 'white')
+                            }
+                          >
+                            {resettingId === user._id ? 'מאפס...' : 'איפוס'}
+                          </button>
+                        )}
                         {!isCurrentUser && (
                           <button
                             type="button"
@@ -669,6 +730,21 @@ export default function UsersList() {
                       >
                         {togglingId === user._id ? 'מעבד...' : user.isActive ? 'כבה' : 'הפעל'}
                       </button>
+                      {user.role !== 'admin' && isSuperAdminUser && (
+                        <button
+                          type="button"
+                          onClick={() => handleResetUser(user)}
+                          disabled={resettingId === user._id}
+                          className="text-xs px-3 py-1.5 rounded-lg font-medium"
+                          style={{
+                            background: resettingId === user._id ? '#e5e7eb' : 'white',
+                            border: '2px solid #f59e0b',
+                            color: '#f59e0b',
+                          }}
+                        >
+                          {resettingId === user._id ? 'מאפס...' : 'איפוס'}
+                        </button>
+                      )}
                       <button
                         type="button"
                         onClick={() => handleDeleteUser(user)}

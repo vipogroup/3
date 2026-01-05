@@ -4,10 +4,6 @@ import { useMemo } from 'react';
 import { formatCurrencyILS } from '@/app/utils/date';
 
 const commissionStatusConfig = {
-  pending: {
-    label: 'ממתין לשחרור',
-    className: 'bg-amber-100 text-amber-700 border-amber-200',
-  },
   available: {
     label: 'זמין למשיכה',
     className: 'bg-green-100 text-green-700 border-green-200',
@@ -49,6 +45,9 @@ function CommissionRow({ commission }) {
       <td className="py-3 px-4 text-sm font-semibold text-gray-900">
         {commission.customerName || 'לקוח'}
       </td>
+      <td className="py-3 px-4 text-sm text-gray-600 max-w-[200px] truncate" title={commission.productName || '—'}>
+        {commission.productName || '—'}
+      </td>
       <td className="py-3 px-4 text-sm text-gray-600">
         {commission.orderType === 'group' ? 'רכישה קבוצתית' : 'רכישה רגילה'}
       </td>
@@ -59,9 +58,6 @@ function CommissionRow({ commission }) {
         <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium ${status.className}`}>
           {status.label}
         </span>
-      </td>
-      <td className="py-3 px-4 text-sm text-gray-600">
-        {commission.orderType === 'group' && commission.groupPurchase ? commission.groupPurchase.name || '—' : '—'}
       </td>
       <td className="py-3 px-4 text-sm text-gray-600">{formatDate(commission.availableAt)}</td>
     </tr>
@@ -79,6 +75,12 @@ function CommissionCard({ commission }) {
         </span>
       </div>
       <div className="space-y-2 text-sm">
+        {commission.productName && (
+          <div className="flex items-center justify-between text-gray-600">
+            <span>מוצר</span>
+            <span className="text-right max-w-[180px] truncate" title={commission.productName}>{commission.productName}</span>
+          </div>
+        )}
         <div className="flex items-center justify-between text-gray-600">
           <span>סוג הזמנה</span>
           <span>{commission.orderType === 'group' ? 'רכישה קבוצתית' : 'רכישה רגילה'}</span>
@@ -125,7 +127,6 @@ export default function CommissionsSection({ summary, commissions, withdrawals, 
   const hasWithdrawals = Array.isArray(withdrawals) && withdrawals.length > 0;
 
   const availableBalance = useMemo(() => summary?.availableBalance ?? 0, [summary]);
-  const pendingAmount = useMemo(() => summary?.pendingCommissions ?? 0, [summary]);
   const onHold = useMemo(() => summary?.onHold ?? 0, [summary]);
   const totalEarned = useMemo(() => summary?.totalEarned ?? 0, [summary]);
 
@@ -166,14 +167,10 @@ export default function CommissionsSection({ summary, commissions, withdrawals, 
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-4 mb-4">
+      <div className="grid gap-3 sm:grid-cols-3 mb-4">
         <div className="rounded-xl border bg-white p-4 shadow-sm" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
           <p className="text-xs text-gray-500">זמין למשיכה</p>
           <p className="text-lg font-bold" style={{ color: '#1e3a8a' }}>{formatCurrencyILS(availableBalance)}</p>
-        </div>
-        <div className="rounded-xl border bg-white p-4 shadow-sm" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
-          <p className="text-xs text-gray-500">ממתין לשחרור</p>
-          <p className="text-lg font-bold text-amber-600">{formatCurrencyILS(pendingAmount)}</p>
         </div>
         <div className="rounded-xl border bg-white p-4 shadow-sm" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
           <p className="text-xs text-gray-500">נעול בבקשות</p>
@@ -201,10 +198,10 @@ export default function CommissionsSection({ summary, commissions, withdrawals, 
                 <thead>
                   <tr className="border-b border-gray-200 text-sm text-gray-600">
                     <th className="py-2 px-4 font-medium">לקוח</th>
+                    <th className="py-2 px-4 font-medium">מוצר</th>
                     <th className="py-2 px-4 font-medium">סוג רכישה</th>
                     <th className="py-2 px-4 font-medium">עמלה (₪)</th>
                     <th className="py-2 px-4 font-medium">סטטוס עמלה</th>
-                    <th className="py-2 px-4 font-medium">רכישה קבוצתית</th>
                     <th className="py-2 px-4 font-medium">תאריך זמינות</th>
                   </tr>
                 </thead>

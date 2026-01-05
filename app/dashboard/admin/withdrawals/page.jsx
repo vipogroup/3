@@ -492,7 +492,7 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
         throw new Error(payload?.error || 'הפעולה נכשלה');
       }
 
-      setSuccess('הבקשה עודכנה בהצלחה');
+      setSuccess(payload.deleted ? 'בקשת המשיכה נמחקה בהצלחה' : 'הבקשה עודכנה בהצלחה');
       onActionComplete();
       setTimeout(() => {
         onClose();
@@ -596,13 +596,69 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
               </div>
             </div>
 
+            {/* Payment Details Section */}
+            {withdrawal.paymentDetails && (
+              <div className="rounded-xl p-4" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.08), rgba(8, 145, 178, 0.08))', border: '1px solid rgba(30, 58, 138, 0.2)' }}>
+                <p className="text-sm font-semibold mb-3" style={{ color: '#1e3a8a' }}>
+                  💰 פרטי העברת התשלום
+                </p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">אמצעי תשלום:</span>
+                    <span className="font-semibold" style={{ color: '#1e3a8a' }}>
+                      {withdrawal.paymentDetails.method === 'bit' && '💳 ביט'}
+                      {withdrawal.paymentDetails.method === 'paybox' && '📱 פייבוקס'}
+                      {withdrawal.paymentDetails.method === 'paypal' && '🅿️ פייפל'}
+                      {withdrawal.paymentDetails.method === 'bank' && '🏦 העברה בנקאית'}
+                    </span>
+                  </div>
+                  
+                  {(withdrawal.paymentDetails.method === 'bit' || withdrawal.paymentDetails.method === 'paybox') && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">מספר טלפון:</span>
+                      <span className="font-mono font-semibold text-gray-900">{withdrawal.paymentDetails.phone}</span>
+                    </div>
+                  )}
+                  
+                  {withdrawal.paymentDetails.method === 'paypal' && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">אימייל PayPal:</span>
+                      <span className="font-mono font-semibold text-gray-900">{withdrawal.paymentDetails.email}</span>
+                    </div>
+                  )}
+                  
+                  {withdrawal.paymentDetails.method === 'bank' && (
+                    <div className="grid gap-2 sm:grid-cols-2 mt-2 p-3 bg-white rounded-lg">
+                      <div>
+                        <span className="text-gray-500 text-xs">שם בעל החשבון:</span>
+                        <p className="font-semibold text-gray-900">{withdrawal.paymentDetails.accountName}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 text-xs">מספר בנק:</span>
+                        <p className="font-mono font-semibold text-gray-900">{withdrawal.paymentDetails.bankNumber}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 text-xs">מספר סניף:</span>
+                        <p className="font-mono font-semibold text-gray-900">{withdrawal.paymentDetails.branchNumber}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 text-xs">מספר חשבון:</span>
+                        <p className="font-mono font-semibold text-gray-900">{withdrawal.paymentDetails.accountNumber}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div>
               <p className="mb-2 text-sm font-semibold text-gray-900">בחר פעולה</p>
-              <div className="grid gap-2 sm:grid-cols-3">
+              <div className="grid gap-2 sm:grid-cols-4">
                 {[
-                  { value: 'approve', label: 'אישור בקשה' },
-                  { value: 'complete', label: 'סימון הושלם' },
-                  { value: 'reject', label: 'דחיית בקשה' },
+                  { value: 'approve', label: 'אישור בקשה', color: 'blue' },
+                  { value: 'complete', label: 'סימון הושלם', color: 'blue' },
+                  { value: 'reject', label: 'דחיית בקשה', color: 'blue' },
+                  { value: 'delete', label: 'מחיקת בקשה', color: 'red' },
                 ].map((option) => (
                   <button
                     key={option.value}
@@ -611,11 +667,15 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
                     className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
                       action === option.value
                         ? 'border-transparent text-white'
-                        : 'border-gray-200 text-gray-700'
+                        : option.color === 'red' 
+                          ? 'border-red-200 text-red-600 hover:bg-red-50'
+                          : 'border-gray-200 text-gray-700'
                     }`}
                     style={
                       action === option.value
-                        ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }
+                        ? option.color === 'red'
+                          ? { background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' }
+                          : { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }
                         : undefined
                     }
                   >
@@ -623,6 +683,11 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
                   </button>
                 ))}
               </div>
+              {action === 'delete' && (
+                <p className="mt-2 text-xs text-red-600">
+                  שים לב: מחיקת בקשה היא פעולה בלתי הפיכה. לא ניתן למחוק בקשות שהושלמו.
+                </p>
+              )}
             </div>
 
             <div>

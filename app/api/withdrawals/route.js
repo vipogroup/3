@@ -27,7 +27,7 @@ export async function POST(req) {
     }
 
     const body = await req.json();
-    const { amount, notes } = body;
+    const { amount, notes, paymentDetails } = body;
 
     // Validation
     if (!amount || typeof amount !== 'number' || amount < 1) {
@@ -37,6 +37,7 @@ export async function POST(req) {
     const db = await getDb();
     const users = db.collection('users');
     const withdrawals = db.collection('withdrawalRequests');
+    const orders = db.collection('orders');
     
     // Validate user.id before creating ObjectId
     if (!user.id || !ObjectId.isValid(user.id)) {
@@ -60,17 +61,40 @@ export async function POST(req) {
       );
     }
 
-    // Get user's current balance
-    const userData = await users.findOne(
-      { _id: userObjectId },
-      { projection: { commissionBalance: 1, commissionOnHold: 1 } },
-    );
+    // Get user's current balance AND calculate available commissions from orders
+    // This matches the calculation in /api/agent/commissions
+    const [userData, availableOrders] = await Promise.all([
+      users.findOne(
+        { _id: userObjectId },
+        { projection: { commissionBalance: 1, commissionOnHold: 1 } },
+      ),
+      orders.find({
+        $or: [{ agentId: userObjectId }, { refAgentId: userObjectId }],
+        commissionAmount: { $gt: 0 },
+        commissionStatus: { $in: ['available', 'pending'] }, // pending treated as available
+        status: { $in: ['paid', 'completed', 'shipped'] }
+      }).project({ commissionAmount: 1 }).toArray()
+    ]);
 
     if (!userData) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const balance = Number(userData.commissionBalance || 0);
+    // Calculate available balance from orders (same as UI shows)
+    const availableFromOrders = availableOrders.reduce((sum, order) => sum + Number(order.commissionAmount || 0), 0);
+    
+    // Use the available from orders as the source of truth (matches UI)
+    const balance = availableFromOrders;
+    const currentDbBalance = Number(userData.commissionBalance || 0);
+
+    console.log('WITHDRAWAL_BALANCE_CHECK', {
+      userId: user.id,
+      requestedAmount: amount,
+      availableFromOrders,
+      currentDbBalance,
+      ordersFound: availableOrders.length,
+      orders: availableOrders.map(o => ({ id: o._id?.toString(), amount: o.commissionAmount }))
+    });
 
     if (amount > balance) {
       return NextResponse.json(
@@ -83,6 +107,28 @@ export async function POST(req) {
       );
     }
 
+    // Sync DB commissionBalance with actual available from orders
+    // This ensures the atomic lock will work correctly
+    const syncResult = await users.findOneAndUpdate(
+      { _id: userObjectId },
+      { 
+        $set: { 
+          commissionBalance: balance, 
+          updatedAt: new Date() 
+        } 
+      },
+      { returnDocument: 'after' }
+    );
+
+    // Handle both old (.value) and new (direct) MongoDB driver response formats
+    const syncedDoc = syncResult?.value || syncResult;
+    
+    console.log('WITHDRAWAL_SYNC', {
+      userId: user.id,
+      syncedBalance: syncedDoc?.commissionBalance,
+      targetBalance: balance
+    });
+
     // Atomically lock funds: move from balance to onHold
     const lockResult = await users.findOneAndUpdate(
       { _id: userObjectId, commissionBalance: { $gte: amount } },
@@ -92,7 +138,19 @@ export async function POST(req) {
       { returnDocument: 'after' },
     );
 
-    if (!lockResult.value) {
+    // Handle both old (.value) and new (direct) MongoDB driver response formats
+    const lockedDoc = lockResult?.value || lockResult;
+
+    if (!lockedDoc || !lockedDoc._id) {
+      // Log the issue for debugging
+      console.error('WITHDRAWAL_LOCK_FAILED', { 
+        userId: user.id, 
+        amount, 
+        balance, 
+        currentDbBalance,
+        syncedBalance: syncedDoc?.commissionBalance,
+        lockResult: lockResult
+      });
       return NextResponse.json(
         {
           error: 'Insufficient balance',
@@ -103,14 +161,15 @@ export async function POST(req) {
       );
     }
 
-    const snapshotBalance = lockResult.value.commissionBalance ?? 0;
-    const snapshotOnHold = lockResult.value.commissionOnHold ?? 0;
+    const snapshotBalance = lockedDoc.commissionBalance ?? 0;
+    const snapshotOnHold = lockedDoc.commissionOnHold ?? 0;
 
     // Create withdrawal request
     const doc = {
       userId: userObjectId,
       amount,
       notes: notes || '',
+      paymentDetails: paymentDetails || null,
       status: 'pending',
       adminNotes: '',
       snapshotBalance,
