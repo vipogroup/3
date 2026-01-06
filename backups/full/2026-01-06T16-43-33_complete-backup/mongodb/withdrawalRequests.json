@@ -1,0 +1,59 @@
+[
+  {
+    "_id": "695c58f6beb9c3f10928c927",
+    "userId": "695badb073a32dbaab1e6a88",
+    "amount": 40,
+    "notes": "",
+    "paymentDetails": {
+      "method": "bit",
+      "phone": "0523005462"
+    },
+    "status": "completed",
+    "adminNotes": "",
+    "snapshotBalance": 8.490000000000002,
+    "snapshotOnHold": 40,
+    "autoSettled": false,
+    "createdAt": "2026-01-06T00:36:06.136Z",
+    "updatedAt": "2026-01-06T00:38:05.290Z",
+    "processedAt": "2026-01-06T00:38:05.290Z",
+    "processedBy": "692deea497ce1a2ba6d4e151"
+  },
+  {
+    "_id": "695c5cb3beb9c3f10928c96e",
+    "userId": "695badb073a32dbaab1e6a88",
+    "amount": 8,
+    "notes": "",
+    "paymentDetails": {
+      "method": "paybox",
+      "phone": "0523005462"
+    },
+    "status": "completed",
+    "adminNotes": "",
+    "snapshotBalance": 0.490000000000002,
+    "snapshotOnHold": 8,
+    "autoSettled": false,
+    "createdAt": "2026-01-06T00:52:03.765Z",
+    "updatedAt": "2026-01-06T00:53:30.530Z",
+    "processedAt": "2026-01-06T00:53:30.530Z",
+    "processedBy": "692deea497ce1a2ba6d4e151"
+  },
+  {
+    "_id": "695c6202beb9c3f10928c9f9",
+    "userId": "695badb073a32dbaab1e6a88",
+    "amount": 15.18,
+    "notes": "",
+    "paymentDetails": {
+      "method": "paypal",
+      "email": "m0587009938@gmail.com"
+    },
+    "status": "approved",
+    "adminNotes": "",
+    "snapshotBalance": 50.00000000000001,
+    "snapshotOnHold": 15.18,
+    "autoSettled": false,
+    "createdAt": "2026-01-06T01:14:42.940Z",
+    "updatedAt": "2026-01-06T01:15:18.178Z",
+    "processedAt": "2026-01-06T01:15:18.178Z",
+    "processedBy": "692deea497ce1a2ba6d4e151"
+  }
+]

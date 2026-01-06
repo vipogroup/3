@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-01-06T16:41:58.088Z",
+  "name": "full-backup",
+  "directory": "C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\backups\\full\\2026-01-06T16-41-58_full-backup",
+  "mongodb": {
+    "success": false,
+    "error": "querySrv ENOTFOUND _mongodb._tcp.cluster0.pf0x6u.mongodb.net"
+  },
+  "git": {
+    "success": true,
+    "tag": "backup/2026-01-06T16-41-58_full-backup",
+    "commit": "e5ef8612b0069d3c51d0f739a00f799946b88ba4"
+  },
+  "config": {
+    "success": true,
+    "files": 7
+  },
+  "vercel": {
+    "success": true
+  }
+}

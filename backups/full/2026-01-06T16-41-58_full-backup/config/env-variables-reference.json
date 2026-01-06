@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-01-06T16:41:58.987Z",
+  "note": "This file contains environment variable NAMES only, not values",
+  "variables": [
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET",
+    "CLOUDINARY_CLOUD_NAME",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "JWT_SECRET",
+    "MONGODB_DB",
+    "MONGODB_URI",
+    "NEXTAUTH_SECRET",
+    "NEXTAUTH_URL",
+    "NEXT_PUBLIC_ENABLE_SW",
+    "NEXT_PUBLIC_GA_MEASUREMENT_ID",
+    "VERCEL_OIDC_TOKEN"
+  ]
+}

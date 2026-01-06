@@ -26,7 +26,7 @@ const transactionSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'WithdrawalRequest',
       default: null,
-      index: true,
+      // Note: index defined via schema.index() below
     },
     amount: {
       type: Number,

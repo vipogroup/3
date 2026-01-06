@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-01-06T16:43:33.282Z",
+  "database": "vipo",
+  "collections": 24,
+  "totalDocuments": 627,
+  "collectionNames": [
+    "settings",
+    "social_reports",
+    "levelrules",
+    "auditlogs",
+    "withdrawalRequests",
+    "activity_logs",
+    "notifications",
+    "categories",
+    "systemscans",
+    "seo_reports",
+    "systemreports",
+    "transactions",
+    "agentgoals",
+    "pushSubscriptions",
+    "referral_logs",
+    "sales",
+    "notificationTemplates",
+    "orders",
+    "messages",
+    "bonusrules",
+    "users",
+    "scheduledNotifications",
+    "catalogs",
+    "products"
+  ]
+}

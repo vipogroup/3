@@ -1,0 +1,98 @@
+[
+  {
+    "_id": {
+      "$oid": "69589484e477e3a74af1ff92"
+    },
+    "senderId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: מכונת לייזר משולבת אנגלית",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "692deea497ce1a2ba6d4e151"
+        },
+        "readAt": {
+          "$date": "2026-01-03T04:01:08.283Z"
+        },
+        "_id": {
+          "$oid": "69589484e477e3a74af1ff93"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-01-03T04:01:08.285Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-03T04:01:08.285Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695c7cb63bc3dd7d20469635"
+    },
+    "senderId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: עיעכי",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "692deea497ce1a2ba6d4e151"
+        },
+        "readAt": {
+          "$date": "2026-01-06T03:08:38.093Z"
+        },
+        "_id": {
+          "$oid": "695c7cb63bc3dd7d20469636"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-01-06T03:08:38.095Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T03:08:38.095Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695c8ee33bc3dd7d2046990c"
+    },
+    "senderId": {
+      "$oid": "695c7e593bc3dd7d2046966b"
+    },
+    "senderRole": "agent",
+    "targetRole": "admin",
+    "targetUserId": null,
+    "message": "היי",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "695c7e593bc3dd7d2046966b"
+        },
+        "readAt": {
+          "$date": "2026-01-06T04:26:11.902Z"
+        },
+        "_id": {
+          "$oid": "695c8ee33bc3dd7d2046990d"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-01-06T04:26:12.014Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T04:26:12.014Z"
+    },
+    "__v": 0
+  }
+]

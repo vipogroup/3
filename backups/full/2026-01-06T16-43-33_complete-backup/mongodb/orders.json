@@ -1,0 +1,220 @@
+[
+  {
+    "_id": "695c585cbeb9c3f10928c90d",
+    "items": [
+      {
+        "productId": "692d1aec869076b593f909ae",
+        "name": "נעלי ריצה מקצועיות",
+        "quantity": 1,
+        "unitPrice": 449,
+        "totalPrice": 449,
+        "image": "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 449,
+      "discountPercent": 10,
+      "discountAmount": 44.9,
+      "totalAmount": 404.1,
+      "shippingAmount": 0,
+      "vatAmount": 0
+    },
+    "totalAmount": 404.1,
+    "discountAmount": 44.9,
+    "createdBy": "695be27773a32dbaab1e6d89",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": true,
+    "commissionStatus": "claimed",
+    "commissionAvailableAt": "2026-01-06T00:35:25.164Z",
+    "refSource": "yshral-001",
+    "refAgentId": "695badb073a32dbaab1e6a88",
+    "commissionAmount": 48.49,
+    "appliedCouponCode": "yshral-001",
+    "agentId": "695badb073a32dbaab1e6a88",
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": "2026-01-06T00:33:32.227Z",
+    "updatedAt": "2026-01-06T00:38:05.290Z",
+    "customer": {
+      "fullName": "לקוח עאט",
+      "email": "vipo.m1985@gmail.com",
+      "phone": "0524005020",
+      "address": "5",
+      "city": "באר יעקב",
+      "zipCode": "8363363"
+    },
+    "paymentMethod": "credit_card",
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": "2026-01-06T00:33:34.980Z"
+    },
+    "paymentStatus": "pending",
+    "prioritySyncStatus": "pending",
+    "refundAmount": 0
+  },
+  {
+    "_id": "695c6125beb9c3f10928c9de",
+    "items": [
+      {
+        "productId": "692d1aec869076b593f909ac",
+        "name": "שעון חכם ספורט",
+        "quantity": 1,
+        "unitPrice": 599,
+        "totalPrice": 599,
+        "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "group"
+      }
+    ],
+    "totals": {
+      "subtotal": 599,
+      "discountPercent": 10,
+      "discountAmount": 59.9,
+      "totalAmount": 539.1,
+      "shippingAmount": 0,
+      "vatAmount": 0
+    },
+    "totalAmount": 539.1,
+    "discountAmount": 59.9,
+    "createdBy": "695be27773a32dbaab1e6d89",
+    "status": "paid",
+    "orderType": "group",
+    "commissionSettled": true,
+    "commissionStatus": "available",
+    "commissionAvailableAt": "2026-01-06T01:13:44.432Z",
+    "refSource": "yshral-001",
+    "refAgentId": "695badb073a32dbaab1e6a88",
+    "commissionAmount": 64.69,
+    "appliedCouponCode": "yshral-001",
+    "agentId": "695badb073a32dbaab1e6a88",
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": "2026-01-06T01:11:01.911Z",
+    "updatedAt": "2026-01-06T01:13:44.435Z",
+    "customer": {
+      "fullName": "לקוח נע",
+      "email": "vipo.m1985@gmail.com",
+      "phone": "0524005020",
+      "address": "5",
+      "city": "באר יעקב",
+      "zipCode": "8363363"
+    },
+    "paymentMethod": "credit_card",
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": "2026-01-06T01:11:05.619Z"
+    },
+    "paymentStatus": "pending",
+    "prioritySyncStatus": "pending",
+    "refundAmount": 0
+  },
+  {
+    "_id": "695c63fcbeb9c3f10928ca2c",
+    "items": [
+      {
+        "productId": "692d1b537ac4faea85645f1f",
+        "name": "מטען אלחוטי מהיר",
+        "quantity": 1,
+        "unitPrice": 129,
+        "totalPrice": 129,
+        "image": "https://images.unsplash.com/photo-1572635196184-84e35138cf62?w=800",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 129,
+      "discountPercent": 10,
+      "discountAmount": 12.9,
+      "totalAmount": 116.1
+    },
+    "totalAmount": 116.1,
+    "discountAmount": 12.9,
+    "createdBy": "695be27773a32dbaab1e6d89",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": "2026-02-05T01:23:08.673Z",
+    "refSource": "yshral-001",
+    "refAgentId": "695badb073a32dbaab1e6a88",
+    "commissionAmount": 13.93,
+    "appliedCouponCode": "yshral-001",
+    "agentId": "695badb073a32dbaab1e6a88",
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": "2026-01-06T01:23:08.673Z",
+    "updatedAt": "2026-01-06T01:23:11.361Z",
+    "customer": {
+      "fullName": "לקוח חג",
+      "email": "vipo.m1985@gmail.com",
+      "phone": "0524005020",
+      "address": "5",
+      "city": "באר יעקב",
+      "zipCode": "8363363"
+    },
+    "paymentMethod": "credit_card",
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": "2026-01-06T01:23:11.361Z"
+    }
+  },
+  {
+    "_id": "695c665abeb9c3f10928ca68",
+    "items": [
+      {
+        "productId": "692def013a64c7c8757a2707",
+        "name": "אוזניות אלחוטיות עם ביטול רעשים מתקדם",
+        "quantity": 1,
+        "unitPrice": 1190,
+        "totalPrice": 1190,
+        "image": "https://images.unsplash.com/photo-1512314889357-e157c22f938d?auto=format&fit=crop&w=1200&q=80",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 1190,
+      "discountPercent": 10,
+      "discountAmount": 119,
+      "totalAmount": 1071
+    },
+    "totalAmount": 1071,
+    "discountAmount": 119,
+    "createdBy": "695be27773a32dbaab1e6d89",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": "2026-02-05T01:33:14.535Z",
+    "refSource": "yshral-001",
+    "refAgentId": "695badb073a32dbaab1e6a88",
+    "commissionAmount": 128.52,
+    "appliedCouponCode": "yshral-001",
+    "agentId": "695badb073a32dbaab1e6a88",
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": "2026-01-06T01:33:14.535Z",
+    "updatedAt": "2026-01-06T01:33:16.842Z",
+    "customer": {
+      "fullName": "לקוח עי",
+      "email": "vipo.m1985@gmail.com",
+      "phone": "0524005020",
+      "address": "5",
+      "city": "באר יעקב",
+      "zipCode": "8363363"
+    },
+    "paymentMethod": "credit_card",
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": "2026-01-06T01:33:16.842Z"
+    }
+  }
+]

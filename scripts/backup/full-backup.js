@@ -14,10 +14,10 @@ const { execSync, spawn } = require('child_process');
 const { MongoClient } = require('mongodb');
 const dotenv = require('dotenv');
 
-// Load environment variables
+// Load environment variables (.env first, then .env.local overrides)
 const envFiles = [
-  path.join(process.cwd(), '.env.local'),
   path.join(process.cwd(), '.env'),
+  path.join(process.cwd(), '.env.local'),
 ];
 for (const envFile of envFiles) {
   if (fsSync.existsSync(envFile)) {
