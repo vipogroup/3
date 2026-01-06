@@ -36,50 +36,25 @@
   },
   {
     "_id": {
-      "$oid": "695badb073a32dbaab1e6a88"
+      "$oid": "695cfa87a6b19e4ce1364ed6"
     },
-    "fullName": "ישראל",
-    "phone": "0523004378",
-    "email": "s0533858881@gmail.com",
-    "passwordHash": "$2a$10$r345Ijrt9XIAf96BeSGNdOMpYomsflbCXH7s9zncbnF6gDFqTtnkm",
+    "fullName": "מוביל שרת ",
+    "phone": "0533858882",
+    "email": "admin123@vipo.local",
+    "passwordHash": "$2a$10$0ujqznQA5CuwFV26OYUgSOeUmd2.gblrujpR.ucscCFoxojemRc3K",
     "role": "agent",
     "isActive": true,
     "createdAt": {
-      "$date": "2026-01-05T12:25:20.890Z"
+      "$date": "2026-01-06T12:05:27.165Z"
     },
     "updatedAt": {
-      "$date": "2026-01-05T23:07:14.374Z"
+      "$date": "2026-01-06T12:05:40.892Z"
     },
-    "commissionBalance": 0,
-    "commissionOnHold": 0,
-    "commissionOnHoldManual": 0,
-    "totalSales": 0,
     "commissionPercent": 12,
-    "couponCode": "yshral-001",
+    "couponCode": "mvbyl-shrt-001",
     "couponSequence": 1,
-    "couponSlug": "yshral",
+    "couponSlug": "mvbyl-shrt",
     "couponStatus": "active",
     "discountPercent": 10
-  },
-  {
-    "_id": {
-      "$oid": "695be27773a32dbaab1e6d89"
-    },
-    "fullName": "לקוח",
-    "phone": "0524005020",
-    "email": "vipo.m1985@gmail.com",
-    "passwordHash": "$2a$10$qbCDIY2y4S7tLguVr.tIiuRh9I8EbDamzXXEUuWIVhCYpi5tfFM/6",
-    "role": "customer",
-    "isActive": true,
-    "createdAt": {
-      "$date": "2026-01-05T16:10:31.526Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-05T23:07:12.159Z"
-    },
-    "commissionBalance": 0,
-    "commissionOnHold": 0,
-    "commissionOnHoldManual": 0,
-    "totalSales": 0
   }
 ]

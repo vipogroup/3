@@ -35,7 +35,7 @@
     "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
     "imagePath": "",
     "inStock": false,
-    "stockCount": -2,
+    "stockCount": -3,
     "rating": 4.5,
     "reviews": 234,
     "features": [
@@ -51,7 +51,7 @@
       "$date": "2025-12-01T04:34:52.101Z"
     },
     "updatedAt": {
-      "$date": "2026-01-05T20:23:07.579Z"
+      "$date": "2026-01-06T12:45:40.795Z"
     },
     "customFields": [],
     "sku": "5sds5d5sd5s",
@@ -96,7 +96,7 @@
     "videoUrl": "https://www.youtube.com/embed/jNQXAC9IVRw",
     "imagePath": "",
     "inStock": false,
-    "stockCount": -2,
+    "stockCount": -3,
     "rating": 4.7,
     "reviews": 156,
     "features": [
@@ -112,14 +112,14 @@
       "$date": "2025-12-01T04:34:52.103Z"
     },
     "updatedAt": {
-      "$date": "2026-01-05T16:11:42.629Z"
+      "$date": "2026-01-06T12:45:42.596Z"
     },
     "customFields": [],
     "sku": "",
     "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
     "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
     "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
-    "isFeatured": true
+    "isFeatured": false
   },
   {
     "_id": {
@@ -157,7 +157,7 @@
     "videoUrl": "https://www.youtube.com/embed/9bZkp7q19f0",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 75,
+    "stockCount": 74,
     "rating": 4.3,
     "reviews": 89,
     "features": [
@@ -180,9 +180,9 @@
       "$date": "2025-12-01T04:34:52.103Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:49.653Z"
+      "$date": "2026-01-06T12:45:45.291Z"
     },
-    "isFeatured": true
+    "isFeatured": false
   },
   {
     "_id": {
@@ -220,7 +220,7 @@
     "videoUrl": "https://www.youtube.com/embed/kJQP7kiw5Fk",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 40,
+    "stockCount": 39,
     "rating": 4.8,
     "reviews": 312,
     "features": [
@@ -243,7 +243,7 @@
       "$date": "2025-12-01T04:34:52.104Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:50.302Z"
+      "$date": "2026-01-06T00:33:32.227Z"
     },
     "isFeatured": true
   },
@@ -597,7 +597,7 @@
     "videoUrl": "https://www.youtube.com/embed/tgbNymZ7vqY",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 78,
+    "stockCount": 77,
     "rating": 4.3,
     "reviews": 312,
     "features": [
@@ -620,7 +620,7 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2026-01-05T19:45:01.295Z"
+      "$date": "2026-01-06T01:23:08.673Z"
     }
   },
   {
@@ -1227,10 +1227,10 @@
       "אודיו": "Hi-Res Wireless",
       "טעינה": "USB-C + טעינה מהירה"
     },
-    "stockCount": 22,
+    "stockCount": 21,
     "type": "online",
     "updatedAt": {
-      "$date": "2025-12-18T20:09:35.344Z"
+      "$date": "2026-01-06T01:33:14.535Z"
     },
     "videoUrl": ""
   },
@@ -1596,6 +1596,125 @@
     },
     "updatedAt": {
       "$date": "2026-01-03T04:01:08.132Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695c7cb53bc3dd7d2046962f"
+    },
+    "sku": "עיכי",
+    "name": "עיעכי",
+    "description": "עיעי",
+    "fullDescription": "עיעיע",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 50,
+    "originalPrice": 99.99,
+    "commission": 5,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 5,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "specs": "",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": false,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-06T03:08:37.336Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T03:08:37.336Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695d02b6a6b19e4ce1364fa8"
+    },
+    "sku": "5sds5d5sd5s-COPY-222457",
+    "name": "אוזניות Bluetooth אלחוטיות (עותק)",
+    "description": "אוזניות אלחוטיות עם סאונד איכותי וביטול רעשים",
+    "fullDescription": "אוזניות Bluetooth מתקדמות עם טכנולוגיית ביטול רעשים אקטיבי, סוללה ל-30 שעות, וחיבור מהיר לכל המכשירים.",
+    "category": "אלקטרוניקה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 299,
+    "originalPrice": 1000.02,
+    "commission": 0,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": null,
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 54,
+    "groupCurrentQuantity": 15,
+    "groupPurchaseDetails": {
+      "closingDays": 30,
+      "shippingDays": 60,
+      "minQuantity": 54,
+      "currentQuantity": 15,
+      "totalDays": 90
+    },
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
+    "imageUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
+    "images": [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800",
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800"
+    ],
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    "imagePath": "",
+    "inStock": false,
+    "stockCount": 0,
+    "rating": 4.5,
+    "reviews": 234,
+    "features": [
+      "ביטול רעשים",
+      "30 שעות סוללה",
+      "Bluetooth 5.0",
+      "עמיד למים"
+    ],
+    "specs": "כגעגעגעגכעגע",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": false,
+    "isFeatured": false,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-06T12:40:22.457Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T12:40:22.457Z"
     },
     "__v": 0
   }

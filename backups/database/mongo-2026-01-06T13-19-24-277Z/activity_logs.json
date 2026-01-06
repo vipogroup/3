@@ -1004,5 +1004,879 @@
     "createdAt": {
       "$date": "2026-01-05T23:11:27.071Z"
     }
+  },
+  {
+    "_id": {
+      "$oid": "695c45244adffa5d3b64fbd5"
+    },
+    "action": "update",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "עדכון מערכת באמצעות update-all.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Starting full pre-update routine ===\r\n\r\n[1/3] Running database backup...\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 document",
+      "timestamp": "2026-01-05T23:11:32.338Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-05T23:11:32.338Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c452b4adffa5d3b64fbd6"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 9ae7e65] Update from dashboard - Tue 01/06/2026  1:11:36.53\n 69 files changed, 88079 insertions(+), 10437 deletions(-)\n create mode 100644 app/api/admin/commissions/reset/route.js\n delete mode 100644 backups/database/mongo-2026-01-04T16-25-39-126Z/activity_logs.json\n delete mode 100644 backups/database/mongo-2026-01-04T16-25-39-126Z/auditlogs.json\n delete mode 100644 backups/database/mongo-2026-01-04T16-25-39-126Z/orders.json\n delete mode 100644 backups/databa",
+      "timestamp": "2026-01-05T23:11:39.966Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-05T23:11:39.966Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c45aa4adffa5d3b64fbe1"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-i6muocmox-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-05T23:13:46.904Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-05T23:13:46.904Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c4e9c38126d81d2eb3a28"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1",
+      "timestamp": "2026-01-05T23:51:56.914Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-05T23:51:56.914Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c4ea238126d81d2eb3a29"
+    },
+    "action": "update",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "עדכון מערכת באמצעות update-all.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Starting full pre-update routine ===\r\n\r\n[1/3] Running database backup...\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Save",
+      "timestamp": "2026-01-05T23:52:02.261Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-05T23:52:02.261Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c4ea938126d81d2eb3a2b"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 2811f85] Update from dashboard - Tue 01/06/2026  1:52:07.16\n 64 files changed, 88308 insertions(+), 10532 deletions(-)\n delete mode 100644 backups/database/mongo-2026-01-04T17-35-39-207Z/activity_logs.json\n delete mode 100644 backups/database/mongo-2026-01-04T17-35-39-207Z/auditlogs.json\n delete mode 100644 backups/database/mongo-2026-01-04T17-35-39-207Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-04T17-35-39-207Z/systemreports.json\n delete ",
+      "timestamp": "2026-01-05T23:52:09.957Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-05T23:52:09.957Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c4f5838126d81d2eb3a38"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-86haiwh31-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-05T23:55:04.030Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-05T23:55:04.031Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c5565beb9c3f10928c8b8"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "692deea497ce1a2ba6d4e151",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": "m0587009938@gmail.com",
+    "description": "התחברות למערכת: m0587009938@gmail.com (admin)",
+    "metadata": {
+      "role": "admin",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T00:20:53.490Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T00:20:53.490Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c55a7beb9c3f10928c8cd"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695badb073a32dbaab1e6a88",
+    "userId": "695badb073a32dbaab1e6a88",
+    "userEmail": "s0533858881@gmail.com",
+    "description": "התחברות למערכת: s0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": true,
+      "timestamp": "2026-01-06T00:21:59.402Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T00:21:59.403Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c6869beb9c3f10928caa0"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695badb073a32dbaab1e6a88",
+    "userId": "695badb073a32dbaab1e6a88",
+    "userEmail": "s0533858881@gmail.com",
+    "description": "התחברות למערכת: s0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T01:42:01.066Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T01:42:01.066Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c78f73bc3dd7d204695b5"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695badb073a32dbaab1e6a88",
+    "userId": "695badb073a32dbaab1e6a88",
+    "userEmail": "s0533858881@gmail.com",
+    "description": "התחברות למערכת: s0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": true,
+      "timestamp": "2026-01-06T02:52:39.600Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T02:52:39.600Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c7a973bc3dd7d204695e5"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695badb073a32dbaab1e6a88",
+    "userId": "695badb073a32dbaab1e6a88",
+    "userEmail": "s0533858881@gmail.com",
+    "description": "התחברות למערכת: s0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T02:59:35.000Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T02:59:35Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c7df03bc3dd7d2046965c"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695badb073a32dbaab1e6a88",
+    "userId": "695badb073a32dbaab1e6a88",
+    "userEmail": "s0533858881@gmail.com",
+    "description": "התחברות למערכת: s0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T03:13:52.738Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T03:13:52.738Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c7e5a3bc3dd7d20469679"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695c7e593bc3dd7d2046966b",
+    "userId": "695c7e593bc3dd7d2046966b",
+    "userEmail": "s0533858881@gmail.com",
+    "description": "התחברות למערכת: s0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T03:15:38.159Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T03:15:38.160Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c809c3bc3dd7d204696cd"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695c7e593bc3dd7d2046966b",
+    "userId": "695c7e593bc3dd7d2046966b",
+    "userEmail": "s0533858881@gmail.com",
+    "description": "התחברות למערכת: s0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T03:25:16.246Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T03:25:16.246Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695c81493bc3dd7d204696f0"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695c7e593bc3dd7d2046966b",
+    "userId": "695c7e593bc3dd7d2046966b",
+    "userEmail": "s0533858881@gmail.com",
+    "description": "התחברות למערכת: s0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T03:28:09.477Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T03:28:09.477Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ca78f3bc3dd7d20469d1b"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695ca78f3bc3dd7d20469d18",
+    "userId": "695ca78f3bc3dd7d20469d18",
+    "userEmail": "s0533858881@gmail.com",
+    "description": "התחברות למערכת: s0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T06:11:27.978Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T06:11:27.978Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cb0013bc3dd7d20469e1a"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695cb0003bc3dd7d20469e17",
+    "userId": "695cb0003bc3dd7d20469e17",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T06:47:29.709Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T06:47:29.709Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cb2d23bc3dd7d20469e7a"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695cb0003bc3dd7d20469e17",
+    "userId": "695cb0003bc3dd7d20469e17",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T06:59:30.492Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T06:59:30.493Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cb31e3bc3dd7d20469e8a"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695cb0003bc3dd7d20469e17",
+    "userId": "695cb0003bc3dd7d20469e17",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": true,
+      "timestamp": "2026-01-06T07:00:46.908Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T07:00:46.908Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cb37e3bc3dd7d20469e9f"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695cb0003bc3dd7d20469e17",
+    "userId": "695cb0003bc3dd7d20469e17",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T07:02:22.635Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T07:02:22.635Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cb6083bc3dd7d20469efe"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695cb0003bc3dd7d20469e17",
+    "userId": "695cb0003bc3dd7d20469e17",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (agent)",
+    "metadata": {
+      "role": "agent",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T07:13:12.569Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T07:13:12.569Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cc746e8e93a56908742ff"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695cc746e8e93a56908742fc",
+    "userId": "695cc746e8e93a56908742fc",
+    "userEmail": "m0507123331@gmail.com",
+    "description": "התחברות למערכת: m0507123331@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T08:26:46.994Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T08:26:46.994Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cc9cce8e93a569087436a"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "692deea497ce1a2ba6d4e151",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": "m0587009938@gmail.com",
+    "description": "התחברות למערכת: m0587009938@gmail.com (admin)",
+    "metadata": {
+      "role": "admin",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T08:37:32.800Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T08:37:32.801Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cca40e8e93a5690874382"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695cca3fe8e93a569087437f",
+    "userId": "695cca3fe8e93a569087437f",
+    "userEmail": "admin123@vipo.local",
+    "description": "התחברות למערכת: admin123@vipo.local (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T08:39:28.395Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T08:39:28.395Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ccdeae8e93a5690874416"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695ccde9e8e93a5690874413",
+    "userId": "695ccde9e8e93a5690874413",
+    "userEmail": "s0533858881@gmail.com",
+    "description": "התחברות למערכת: s0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T08:55:06.140Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T08:55:06.140Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cd7d1288c3f36443863e0"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "692deea497ce1a2ba6d4e151",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": "m0587009938@gmail.com",
+    "description": "התחברות למערכת: m0587009938@gmail.com (admin)",
+    "metadata": {
+      "role": "admin",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T09:37:21.506Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T09:37:21.506Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cdc6ee06ce2731c9da809"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "692deea497ce1a2ba6d4e151",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": "m0587009938@gmail.com",
+    "description": "התחברות למערכת: m0587009938@gmail.com (admin)",
+    "metadata": {
+      "role": "admin",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T09:57:02.013Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T09:57:02.013Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cdfd6e06ce2731c9da880"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695cdfd4e06ce2731c9da872",
+    "userId": "695cdfd4e06ce2731c9da872",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T10:11:34.895Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T10:11:34.895Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ce18ae06ce2731c9da8b4"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695ce189e06ce2731c9da8b1",
+    "userId": "695ce189e06ce2731c9da8b1",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T10:18:50.547Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T10:18:50.547Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ce4d8e06ce2731c9da921"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695ce189e06ce2731c9da8b1",
+    "userId": "695ce189e06ce2731c9da8b1",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T10:32:56.828Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T10:32:56.828Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ce60ee06ce2731c9da95a"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "בקשת Deploy - הפניה ל-Vercel",
+    "metadata": {
+      "platform": "vercel",
+      "method": "redirect",
+      "timestamp": "2026-01-06T10:38:06.698Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T10:38:06.698Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ce9a556955e10c161fadf"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "692deea497ce1a2ba6d4e151",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": "m0587009938@gmail.com",
+    "description": "התחברות למערכת: m0587009938@gmail.com (admin)",
+    "metadata": {
+      "role": "admin",
+      "rememberMe": true,
+      "timestamp": "2026-01-06T10:53:25.595Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T10:53:25.596Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ceac456955e10c161faf4"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings",
+      "timestamp": "2026-01-06T10:58:12.186Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T10:58:12.186Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ceacd56955e10c161faf5"
+    },
+    "action": "update",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "עדכון מערכת באמצעות update-all.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Starting full pre-update routine ===\r\n\r\n[1/3] Running database backup...\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 documents to b",
+      "timestamp": "2026-01-06T10:58:21.578Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T10:58:21.578Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cead556955e10c161faf8"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main b4f7b39] Update from dashboard - Tue 01/06/2026 12:58:25.37\n 92 files changed, 96955 insertions(+), 11063 deletions(-)\n create mode 100644 app/agent/components/ProductShareCard.jsx\n create mode 100644 app/agent/components/ProductsGallery.jsx\n create mode 100644 app/agent/components/ShareModal.jsx\n create mode 100644 app/agent/components/StatisticsSection.jsx\n create mode 100644 app/api/admin/tunnel/route.js\n create mode 100644 app/api/push/send-all/route.js\n c",
+      "timestamp": "2026-01-06T10:58:29.927Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T10:58:29.928Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ceb9d56955e10c161fb05"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-gszvzf6q8-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-06T11:01:49.104Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T11:01:49.104Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cefb5a6b19e4ce1364e11"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 doc",
+      "timestamp": "2026-01-06T11:19:17.276Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T11:19:17.276Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cefbea6b19e4ce1364e13"
+    },
+    "action": "update",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "עדכון מערכת באמצעות update-all.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Starting full pre-update routine ===\r\n\r\n[1/3] Running database backup...\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 document",
+      "timestamp": "2026-01-06T11:19:26.185Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T11:19:26.185Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cefc4a6b19e4ce1364e15"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 4575e9d] Update from dashboard - Tue 01/06/2026 13:19:29.66\n 64 files changed, 9936 insertions(+), 6064 deletions(-)\n delete mode 100644 backups/database/mongo-2026-01-04T23-18-18-379Z/activity_logs.json\n delete mode 100644 backups/database/mongo-2026-01-04T23-18-18-379Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-04T23-18-18-379Z/pushSubscriptions.json\n delete mode 100644 backups/database/mongo-2026-01-04T23-18-18-379Z/users.json\n delete mo",
+      "timestamp": "2026-01-06T11:19:32.695Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T11:19:32.696Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cf045a6b19e4ce1364e1e"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-lv25q6ok9-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-06T11:21:41.080Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T11:21:41.080Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cfa88a6b19e4ce1364ed9"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695cfa87a6b19e4ce1364ed6",
+    "userId": "695cfa87a6b19e4ce1364ed6",
+    "userEmail": "admin123@vipo.local",
+    "description": "התחברות למערכת: admin123@vipo.local (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T12:05:28.547Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T12:05:28.547Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cff72a6b19e4ce1364f77"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: ",
+      "timestamp": "2026-01-06T12:26:26.365Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T12:26:26.365Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cff7ca6b19e4ce1364f79"
+    },
+    "action": "update",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "עדכון מערכת באמצעות update-all.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Starting full pre-update routine ===\r\n\r\n[1/3] Running database backup...\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: ⚙️  enable debug logging with { debug: true }\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 documents to backu",
+      "timestamp": "2026-01-06T12:26:36.139Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T12:26:36.139Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cff84a6b19e4ce1364f7a"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 12e8b6a] Update from dashboard - Tue 01/06/2026 14:26:41.36\n 67 files changed, 9828 insertions(+), 3178 deletions(-)\n create mode 100644 app/agent/share/[productId]/page.jsx\n delete mode 100644 backups/database/mongo-2026-01-05T20-35-15-105Z/activity_logs.json\n delete mode 100644 backups/database/mongo-2026-01-05T20-35-15-105Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-05T20-35-15-105Z/pushSubscriptions.json\n delete mode 100644 backups/data",
+      "timestamp": "2026-01-06T12:26:44.598Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T12:26:44.598Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d0040a6b19e4ce1364f89"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-n0gv8t9cn-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-06T12:29:52.809Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T12:29:52.809Z"
+    }
   }
 ]

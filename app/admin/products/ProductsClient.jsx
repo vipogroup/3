@@ -138,6 +138,36 @@ export default function ProductsClient() {
     }
   };
 
+  const handleDuplicate = async (product) => {
+    if (!confirm(`האם אתה בטוח שברצונך לשכפל את "${product.name}"?`)) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await fetch('/api/products/duplicate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: product._id }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data?.error || 'שגיאה בשכפול המוצר');
+        return;
+      }
+
+      const data = await res.json();
+      alert(`המוצר שוכפל בהצלחה! שם המוצר החדש: "${data.product?.name || 'עותק'}"`);
+      await loadProducts();
+    } catch (error) {
+      console.error('Duplicate error:', error);
+      alert('שגיאה בשכפול המוצר');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const toggleSelectionMode = () => {
     setSelectionMode((prev) => {
       const next = !prev;
@@ -524,21 +554,22 @@ export default function ProductsClient() {
                         <button
                           onClick={() => handleToggleFeatured(product._id, product.isFeatured)}
                           disabled={loading}
-                          className="p-1.5 rounded-lg transition-all disabled:opacity-50"
+                          className="p-0.5 rounded-full transition-all disabled:opacity-50 hover:scale-110"
                           style={{
                             background: product.isFeatured
-                              ? 'linear-gradient(135deg, #10b981 0%, #34d399 100%)'
-                              : '#e5e7eb',
-                            boxShadow: product.isFeatured ? '0 2px 8px rgba(16, 185, 129, 0.4)' : 'none',
+                              ? 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                              : 'transparent',
                           }}
                           title={product.isFeatured ? 'הסר מדף הבית' : 'הצג בדף הבית'}
                         >
                           <svg
-                            className="w-5 h-5"
-                            fill={product.isFeatured ? '#ffffff' : '#9ca3af'}
+                            className="w-4 h-4"
+                            fill={product.isFeatured ? '#ffffff' : 'none'}
+                            stroke={product.isFeatured ? '#ffffff' : '#9ca3af'}
+                            strokeWidth="2"
                             viewBox="0 0 24 24"
                           >
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                           </svg>
                         </button>
                       </td>
@@ -571,8 +602,10 @@ export default function ProductsClient() {
                             >
                               <Link
                                 href={`/admin/products/${product._id}/edit`}
-                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-gray-50"
-                                style={{ color: '#0891b2' }}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right transition-colors"
+                                style={{ color: '#1e3a8a' }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                                 onClick={() => setOpenDropdownId(null)}
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -584,8 +617,10 @@ export default function ProductsClient() {
                                 type="button"
                                 onClick={() => { handleToggleFeatured(product._id, product.isFeatured); setOpenDropdownId(null); }}
                                 disabled={loading}
-                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-gray-50"
-                                style={{ color: product.isFeatured ? '#f59e0b' : '#0891b2' }}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right transition-colors"
+                                style={{ color: '#1e3a8a' }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                               >
                                 <svg className="w-4 h-4" fill={product.isFeatured ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -596,13 +631,29 @@ export default function ProductsClient() {
                                 type="button"
                                 onClick={() => { handleToggleActive(product._id, product.active, product.name); setOpenDropdownId(null); }}
                                 disabled={loading}
-                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-gray-50"
-                                style={{ color: product.active ? '#f59e0b' : '#22c55e' }}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right transition-colors"
+                                style={{ color: '#1e3a8a' }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={product.active ? "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" : "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"} />
                                 </svg>
                                 {product.active ? 'השבת' : 'הפעל'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => { handleDuplicate(product); setOpenDropdownId(null); }}
+                                disabled={loading}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right transition-colors"
+                                style={{ color: '#1e3a8a' }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                שכפל
                               </button>
                               <button
                                 type="button"
@@ -689,22 +740,34 @@ export default function ProductsClient() {
                           className="w-4 h-4"
                         />
                       )}
-                      <div className="flex gap-1">
+                      <div className="flex gap-1 flex-wrap">
                         <Link
                           href={`/admin/products/${product._id}/edit`}
-                          className="flex-1 text-center text-white font-medium px-2 py-1.5 rounded text-xs"
-                          style={{ background: '#0891b2' }}
+                          className="flex-1 text-center text-white font-medium px-2 py-1.5 rounded text-xs min-w-[60px]"
+                          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                         >
                           ערוך
                         </Link>
                         <button
-                          onClick={() => handleToggleActive(product._id, product.active, product.name)}
+                          onClick={() => handleDuplicate(product)}
                           disabled={loading}
-                          className="flex-1 font-medium px-2 py-1.5 rounded text-xs"
+                          className="flex-1 font-medium px-2 py-1.5 rounded text-xs min-w-[60px]"
                           style={{
                             background: loading ? '#e5e7eb' : 'white',
-                            border: `2px solid ${product.active ? '#f59e0b' : '#22c55e'}`,
-                            color: loading ? '#6b7280' : product.active ? '#f59e0b' : '#22c55e',
+                            border: '2px solid #0891b2',
+                            color: loading ? '#6b7280' : '#1e3a8a',
+                          }}
+                        >
+                          שכפל
+                        </button>
+                        <button
+                          onClick={() => handleToggleActive(product._id, product.active, product.name)}
+                          disabled={loading}
+                          className="flex-1 font-medium px-2 py-1.5 rounded text-xs min-w-[60px]"
+                          style={{
+                            background: loading ? '#e5e7eb' : 'white',
+                            border: '2px solid #0891b2',
+                            color: loading ? '#6b7280' : '#1e3a8a',
                           }}
                         >
                           {product.active ? 'השבת' : 'הפעל'}
@@ -712,7 +775,7 @@ export default function ProductsClient() {
                         <button
                           onClick={() => handleDelete(product._id, product.name)}
                           disabled={loading}
-                          className="flex-1 font-medium px-2 py-1.5 rounded text-xs"
+                          className="flex-1 font-medium px-2 py-1.5 rounded text-xs min-w-[60px]"
                           style={{
                             background: loading ? '#e5e7eb' : 'white',
                             border: '2px solid #dc2626',

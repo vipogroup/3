@@ -1143,5 +1143,56 @@
     "createdAt": {
       "$date": "2026-01-04T23:13:02.905Z"
     }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225ac"
+    },
+    "action": "scan_started",
+    "category": "system_reports",
+    "actorId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "actorName": "Admin",
+    "details": {
+      "scanId": "SCAN-MK29V3T8-EWRO70",
+      "scope": "full",
+      "areas": [
+        "database",
+        "users",
+        "orders",
+        "products",
+        "transactions",
+        "permissions",
+        "integrations",
+        "security",
+        "payment_data",
+        "system_keys"
+      ]
+    },
+    "ip": "",
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.018Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225ba"
+    },
+    "action": "scan_completed",
+    "category": "system_reports",
+    "actorId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "actorName": "Admin",
+    "details": {
+      "scanId": "SCAN-MK29V3T8-EWRO70",
+      "score": 51,
+      "reportsGenerated": 13
+    },
+    "ip": "",
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.377Z"
+    }
   }
 ]
