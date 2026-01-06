@@ -472,9 +472,17 @@ export default function AdminDashboardClient() {
                       const data = await res.json();
                       if (data.ok && data.tunnelUrl) {
                         setTunnelUrl(data.tunnelUrl);
-                        // Copy to clipboard
-                        navigator.clipboard.writeText(data.tunnelUrl);
-                        alert(`✅ Tunnel פעיל!\n\nכתובת HTTPS למובייל:\n${data.tunnelUrl}\n\n(הועתק ללוח)`);
+                        // Copy to clipboard (with fallback)
+                        try {
+                          if (navigator.clipboard && navigator.clipboard.writeText) {
+                            await navigator.clipboard.writeText(data.tunnelUrl);
+                            alert(`✅ Tunnel פעיל!\n\nכתובת HTTPS למובייל:\n${data.tunnelUrl}\n\n(הועתק ללוח)`);
+                          } else {
+                            prompt('Tunnel פעיל! העתק את הקישור:', data.tunnelUrl);
+                          }
+                        } catch (clipErr) {
+                          prompt('Tunnel פעיל! העתק את הקישור:', data.tunnelUrl);
+                        }
                       } else {
                         alert('❌ ' + (data.error || 'שגיאה ביצירת tunnel'));
                       }
@@ -499,9 +507,18 @@ export default function AdminDashboardClient() {
               </button>
               {tunnelUrl && (
                 <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(tunnelUrl);
-                    alert('✅ הועתק!\n\n' + tunnelUrl);
+                  onClick={async () => {
+                    try {
+                      if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(tunnelUrl);
+                        alert('✅ הועתק!\n\n' + tunnelUrl);
+                      } else {
+                        // Fallback for non-HTTPS
+                        prompt('העתק את הקישור:', tunnelUrl);
+                      }
+                    } catch (err) {
+                      prompt('העתק את הקישור:', tunnelUrl);
+                    }
                   }}
                   className="flex items-center gap-1 px-2 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
                   title={tunnelUrl}

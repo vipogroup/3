@@ -35,6 +35,7 @@ export default function ProductPage() {
   const [liveNotification, setLiveNotification] = useState(null);
   const [viewersCount, setViewersCount] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const { addItem } = useCartContext();
   const { settings: themeSettings } = useTheme();
 
@@ -417,26 +418,52 @@ export default function ProductPage() {
               />
             )}
             
-            {/* Favorite Button */}
-            <button
-              onClick={toggleFavorite}
-              className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 z-10"
-              style={{
-                background: isFavorite ? 'rgba(239, 68, 68, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-              }}
-              aria-label={isFavorite ? 'הסר ממועדפים' : 'הוסף למועדפים'}
-            >
-              <svg
-                className="w-5 h-5"
-                fill={isFavorite ? 'white' : 'none'}
-                stroke={isFavorite ? 'white' : '#6b7280'}
-                strokeWidth="2"
-                viewBox="0 0 24 24"
+            {/* Icons Container - Top Right */}
+            <div className="absolute top-3 right-3 flex gap-2 z-10">
+              {/* Favorite Button */}
+              <button
+                onClick={toggleFavorite}
+                className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
+                style={{
+                  background: isFavorite ? 'rgba(239, 68, 68, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                }}
+                aria-label={isFavorite ? 'הסר ממועדפים' : 'הוסף למועדפים'}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
+                <svg
+                  className="w-5 h-5"
+                  fill={isFavorite ? 'white' : 'none'}
+                  stroke={isFavorite ? 'white' : '#6b7280'}
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </button>
+
+              {/* Share Button - Only for agents */}
+              {(user?.role === 'agent' || user?.role === 'admin') && (
+                <button
+                  onClick={() => router.push(`/agent/share/${product._id}`)}
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                  }}
+                  aria-label="שתף מוצר"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="#0891b2"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                </button>
+              )}
+            </div>
 
             {/* Discount Badge */}
             {hasDiscount && (
@@ -1221,6 +1248,7 @@ export default function ProductPage() {
           }
         }
       `}</style>
+
     </div>
   );
 }

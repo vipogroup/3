@@ -513,8 +513,8 @@ export default function UserHeader() {
                     </div>
                   </div>
 
-                  {/* Push Notifications Toggle Button - Hidden if admin disabled */}
-                  {!user?.hideNotificationButtons && (
+                  {/* Push Notifications Toggle Button - Only shown if admin enabled */}
+                  {user?.showPushButtons === true && (
                   <div className="border-b border-gray-200">
                     <button
                       onClick={handleTogglePush}
