@@ -62,7 +62,7 @@ export async function POST(request) {
       return NextResponse.json({ 
         ok: false, 
         error: `No subscriptions found for tag: ${targetTag}`,
-        suggestion: 'המשתמש צריך ללחוץ על "אפשר התראות דחיפה" בתפריט החשבון שלי'
+        suggestion: 'המשתמש צריך ללחוץ על "הפעל התראות" בתפריט החשבון שלי'
       }, { status: 404 });
     }
 

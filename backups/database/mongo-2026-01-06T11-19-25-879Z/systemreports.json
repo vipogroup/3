@@ -16622,5 +16622,814 @@
     "updatedAt": {
       "$date": "2026-01-04T23:13:02.872Z"
     }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225ad"
+    },
+    "reportId": "RPT-MK29V3Y0-8RPL",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Financial & Payments Report",
+    "type": "audit",
+    "category": "financial_payments",
+    "summary": "Revenue: ₪2,130.3",
+    "content": "# 💰 Financial & Payments Report\n\n**Generated:** 2026-01-06T07:32:37.178Z\n\n## Revenue Summary\n- Total Revenue: ₪2,130.3\n- Payment Events: 0\n- Failed Payments: 0\n\n## Withdrawals\n- Pending Amount: ₪0\n\n## Payment Methods\n- Orders with payment: 4\n",
+    "contentHtml": "",
+    "tags": [
+      "financial",
+      "payments",
+      "revenue"
+    ],
+    "version": "2.0",
+    "status": "published",
+    "stats": {
+      "checks": 3,
+      "passed": 2,
+      "failed": 0,
+      "warnings": 0,
+      "details": {
+        "ordersWithPayment": 4,
+        "paymentEvents": 0,
+        "failedPayments": 0
+      }
+    },
+    "dataSource": "system_scan",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.176Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.176Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225ae"
+    },
+    "reportId": "RPT-MK29V41N-TNBW",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Orders & Transactions Report",
+    "type": "audit",
+    "category": "orders_transactions",
+    "summary": "4 orders, 4 paid",
+    "content": "# 🛒 Orders & Transactions Report\n\n**Generated:** 2026-01-06T07:32:37.307Z\n\n## Orders Summary\n| Status | Count |\n|--------|-------|\n| Total | 4 |\n| Paid | 4 |\n| Pending | 0 |\n| Completed | 0 |\n| Cancelled | 0 |\n\n## Data Quality\n- Orphaned Orders: 4\n\n## Transactions\n- Total: 0\n- Completed: 0\n- Failed: 0\n",
+    "contentHtml": "",
+    "tags": [
+      "orders",
+      "transactions"
+    ],
+    "version": "2.0",
+    "status": "published",
+    "stats": {
+      "checks": 4,
+      "passed": 3,
+      "failed": 0,
+      "warnings": 1,
+      "details": {
+        "total": 4,
+        "paid": 4,
+        "pending": 0,
+        "completed": 0,
+        "cancelled": 0,
+        "orphaned": 4
+      }
+    },
+    "dataSource": "system_scan",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.307Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.307Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225af"
+    },
+    "reportId": "RPT-MK29V41O-QO0E",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Users & Permissions Report",
+    "type": "security",
+    "category": "users_permissions",
+    "summary": "4 users, 2 admins",
+    "content": "# 👥 Users & Permissions Report\n\n**Generated:** 2026-01-06T07:32:37.308Z\n\n## User Statistics\n| Role | Count |\n|------|-------|\n| Total | 4 |\n| Admins | 2 |\n| Agents | 1 |\n| Customers | 1 |\n\n## Data Quality\n- Users without role: 0\n\n## Admin Permissions\n- מנהל 02: ⚠️\n- Admin: ⚠️\n",
+    "contentHtml": "",
+    "tags": [
+      "users",
+      "permissions",
+      "roles"
+    ],
+    "version": "2.0",
+    "status": "published",
+    "stats": {
+      "checks": 4,
+      "passed": 3,
+      "failed": 0,
+      "warnings": 0,
+      "details": {
+        "totalUsers": 4,
+        "admins": 2,
+        "agents": 1,
+        "customers": 1,
+        "noRole": 0
+      }
+    },
+    "dataSource": "system_scan",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.308Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.308Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225b0"
+    },
+    "reportId": "RPT-MK29V41P-CR3R",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Admin Actions & Audit Trail",
+    "type": "audit",
+    "category": "admin_audit_trail",
+    "summary": "20 recent actions",
+    "content": "# 📋 Admin Actions & Audit Trail\n\n**Generated:** 2026-01-06T07:32:37.312Z\n\n## Recent Actions\n| 6.1.2026, 9:32:37 | Admin | scan_started |\n| 5.1.2026, 1:13:02 | Admin | scan_completed |\n| 5.1.2026, 1:13:02 | Admin | scan_started |\n| 5.1.2026, 1:11:48 | Admin | social_audit_scan |\n| 4.1.2026, 22:57:19 | Admin | scan_completed |\n| 4.1.2026, 22:57:19 | Admin | scan_started |\n| 4.1.2026, 22:50:05 | Admin | scan_completed |\n| 4.1.2026, 22:50:04 | Admin | scan_started |\n| 4.1.2026, 22:03:00 | Admin | scan_completed |\n| 4.1.2026, 22:03:00 | Admin | scan_started |\n| 4.1.2026, 21:04:54 | Admin | scan_completed |\n| 4.1.2026, 21:04:54 | Admin | scan_started |\n| 4.1.2026, 21:04:54 | Admin | scan_completed |\n| 4.1.2026, 21:04:54 | Admin | scan_started |\n| 4.1.2026, 21:04:54 | Admin | scan_completed |\n| 4.1.2026, 21:04:53 | Admin | scan_started |\n| 4.1.2026, 21:04:53 | Admin | scan_completed |\n| 4.1.2026, 21:04:53 | Admin | scan_started |\n| 4.1.2026, 21:04:52 | Admin | scan_completed |\n| 4.1.2026, 21:04:52 | Admin | scan_started |\n\n## Summary\n- Total logged actions: 20\n",
+    "contentHtml": "",
+    "tags": [
+      "audit",
+      "admin",
+      "trail"
+    ],
+    "version": "2.0",
+    "status": "published",
+    "stats": {
+      "totalChecks": 0,
+      "passed": 0,
+      "failed": 0,
+      "warnings": 0,
+      "score": 0
+    },
+    "dataSource": "system_scan",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.309Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.309Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225b1"
+    },
+    "reportId": "RPT-MK29V42F-XBS6",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Integrations & Webhooks Report",
+    "type": "integration",
+    "category": "integrations_webhooks",
+    "summary": "Priority: ❌ | PayPlus: ❌",
+    "content": "# 🔗 Integrations & Webhooks Report\n\n**Generated:** 2026-01-06T07:32:37.336Z\n\n## Integration Status\n| Integration | Status | Configured |\n|-------------|--------|------------|\n| Priority ERP | not_configured | ❌ |\n| PayPlus | not_configured | ❌ |\n\n## Recommendations\n- Configure Priority ERP for full ERP sync\n\n- Configure PayPlus for payment processing\n\n\n",
+    "contentHtml": "",
+    "tags": [
+      "integrations",
+      "webhooks",
+      "priority",
+      "payplus"
+    ],
+    "version": "2.0",
+    "status": "published",
+    "stats": {
+      "checks": 2,
+      "passed": 0,
+      "failed": 0,
+      "warnings": 2,
+      "details": {
+        "priority": {
+          "configured": false,
+          "status": "not_configured"
+        },
+        "payplus": {
+          "configured": false,
+          "status": "not_configured"
+        }
+      }
+    },
+    "dataSource": "system_scan",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.335Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.335Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225b2"
+    },
+    "reportId": "RPT-MK29V42G-MH7F",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Data Integrity & Consistency Report",
+    "type": "performance",
+    "category": "data_integrity",
+    "summary": "1 issues found",
+    "content": "# 🔍 Data Integrity & Consistency Report\n\n**Generated:** 2026-01-06T07:32:37.337Z\n\n## Integrity Checks\n| Check | Status | Issues |\n|-------|--------|--------|\n| Orphaned Orders | ⚠️ | 4 |\n| Users without Role | ✅ | 0 |\n| Products without Price | ✅ | 0 |\n\n## Summary\n⚠️ Found 1 issues:\n- 4 orphaned orders\n",
+    "contentHtml": "",
+    "tags": [
+      "integrity",
+      "consistency",
+      "data"
+    ],
+    "version": "2.0",
+    "status": "published",
+    "stats": {
+      "totalChecks": 0,
+      "passed": 0,
+      "failed": 0,
+      "warnings": 0,
+      "score": 0
+    },
+    "dataSource": "system_scan",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.336Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.336Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225b3"
+    },
+    "reportId": "RPT-MK29V42J-XK14",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Security & Access Report",
+    "type": "security",
+    "category": "security_access",
+    "summary": "3/4 checks passed",
+    "content": "# 🔒 Security & Access Report\n\n**Generated:** 2026-01-06T07:32:37.339Z\n\n## Environment Security\n| JWT_SECRET | ✅ | weak |\n| MONGODB_URI | ✅ | weak |\n| NEXTAUTH_SECRET | ✅ | strong |\n| NODE_ENV | ❌ | development |\n\n## System Keys Status\n| Key | Status |\n|-----|--------|\n| JWT_SECRET | ✅ |\n| NEXTAUTH_SECRET | ✅ |\n| MONGODB_URI | ✅ |\n| PAYPLUS_API_KEY | ⚠️ |\n| PAYPLUS_SECRET | ⚠️ |\n| PAYPLUS_WEBHOOK_SECRET | ⚠️ |\n| PAYPLUS_BASE_URL | ⚠️ |\n| PAYPLUS_CALLBACK_URL | ⚠️ |\n| PRIORITY_BASE_URL | ⚠️ |\n| PRIORITY_CLIENT_ID | ⚠️ |\n| PRIORITY_CLIENT_SECRET | ⚠️ |\n| PRIORITY_COMPANY_CODE | ⚠️ |\n| PRIORITY_ENV | ⚠️ |\n| CLOUDINARY_CLOUD_NAME | ✅ |\n| CLOUDINARY_API_KEY | ✅ |\n| CLOUDINARY_API_SECRET | ✅ |\n| TWILIO_ACCOUNT_SID | ⚠️ |\n| TWILIO_AUTH_TOKEN | ⚠️ |\n| TWILIO_PHONE_NUMBER | ⚠️ |\n| EMAIL_SERVER_HOST | ⚠️ |\n| EMAIL_SERVER_PORT | ⚠️ |\n| EMAIL_SERVER_USER | ⚠️ |\n| EMAIL_SERVER_PASSWORD | ⚠️ |\n| EMAIL_FROM | ✅ |\n| NEXT_PUBLIC_VAPID_PUBLIC_KEY | ⚠️ |\n| VAPID_PRIVATE_KEY | ⚠️ |\n| NEXT_PUBLIC_SITE_URL | ⚠️ |\n| NODE_ENV | ✅ |\n\n## Score\n- Security checks passed: 3/4\n",
+    "contentHtml": "",
+    "tags": [
+      "security",
+      "access",
+      "environment"
+    ],
+    "version": "2.0",
+    "status": "published",
+    "stats": {
+      "checks": 4,
+      "passed": 3,
+      "failed": 0,
+      "warnings": 1,
+      "details": [
+        {
+          "var": "JWT_SECRET",
+          "status": "set",
+          "strength": "weak"
+        },
+        {
+          "var": "MONGODB_URI",
+          "status": "set",
+          "strength": "weak"
+        },
+        {
+          "var": "NEXTAUTH_SECRET",
+          "status": "set",
+          "strength": "strong"
+        },
+        {
+          "var": "NODE_ENV",
+          "status": "development"
+        }
+      ]
+    },
+    "dataSource": "system_scan",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.339Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.339Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225b4"
+    },
+    "reportId": "RPT-MK29V42K-ZTJJ",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "System Health & Stability Report",
+    "type": "performance",
+    "category": "system_health",
+    "summary": "Health Score: 51%",
+    "content": "# ⚡ System Health & Stability Report\n\n**Generated:** 2026-01-06T07:32:37.340Z\n\n## System Metrics\n| Metric | Value |\n|--------|-------|\n| Memory Usage | 600MB |\n| Uptime | 0 hours |\n| Environment | development |\n\n## Database Health\n- Collections checked: 5/5\n\n## Overall Health Score\n**51%** (29/57 checks passed)\n\n## Status\n⚠️ System needs attention\n",
+    "contentHtml": "",
+    "tags": [
+      "health",
+      "stability",
+      "performance"
+    ],
+    "version": "2.0",
+    "status": "published",
+    "stats": {
+      "totalChecks": 57,
+      "passed": 29,
+      "failed": 28,
+      "warnings": 0,
+      "score": 51
+    },
+    "dataSource": "system_scan",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.340Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.340Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225b5"
+    },
+    "reportId": "ENT-MK29V42L-M6SW",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Go-Live Readiness Report",
+    "type": "executive",
+    "category": "go_live_readiness",
+    "isEnterprise": true,
+    "summary": "❌ 4 BLOCKERS",
+    "content": "# 🚀 Go-Live Readiness Report\n\n**Generated:** 2026-01-06T07:32:37.342Z\n**Scan ID:** N/A\n\n---\n\n## 📊 EXECUTIVE DECISION\n\n| Status | Value |\n|--------|-------|\n| **READY_FOR_PRODUCTION** | ❌ NO |\n| **Overall Score** | 63% |\n| **Blockers Count** | 4 critical, 1 warnings |\n\n---\n\n## 🔍 Score Breakdown\n\n| Area | Score | Threshold | Status |\n|------|-------|-----------|--------|\n| Financial | 67% | ≥80% | ❌ BLOCK |\n| Security | 75% | ≥90% | ❌ BLOCK |\n| Data Integrity | 75% | - | ✅ OK |\n| Integrations | 0% | - | ⚠️ WARN |\n| System Health | 100% | - | ✅ OK |\n\n---\n\n## 🚫 Blockers\n\n| 🔴 FINANCIAL | Financial score 67% < 80% threshold |\n| 🔴 SECURITY | Security score 75% < 90% threshold |\n| 🔴 PAYMENT_KEYS | Missing payment keys: PAYPLUS_API_KEY, PAYPLUS_SECRET |\n| 🔴 INTEGRATION | PayPlus not configured |\n| 🟡 DATA_INTEGRITY | 4 orphaned orders found |\n\n---\n\n## ✅ Checklist\n\n- [ ] Financial systems operational (≥80%)\n- [ ] Security requirements met (≥90%)\n- [ ] Payment keys configured\n- [ ] PayPlus integration active\n- [ ] Priority ERP integration (optional)\n- [ ] No orphaned orders\n\n---\n\n## 📋 Recommendation\n\n**❌ NOT READY FOR GO-LIVE** - Please resolve the following 4 critical blocker(s) before proceeding.\n",
+    "contentHtml": "",
+    "tags": [
+      "go-live",
+      "executive",
+      "critical",
+      "production",
+      "decision"
+    ],
+    "version": "1.0",
+    "status": "published",
+    "stats": {
+      "totalChecks": 5,
+      "passed": 0,
+      "failed": 4,
+      "warnings": 1,
+      "score": 63
+    },
+    "decision": {
+      "readyForProduction": false,
+      "blockers": [
+        {
+          "type": "FINANCIAL",
+          "message": "Financial score 67% < 80% threshold",
+          "severity": "critical"
+        },
+        {
+          "type": "SECURITY",
+          "message": "Security score 75% < 90% threshold",
+          "severity": "critical"
+        },
+        {
+          "type": "PAYMENT_KEYS",
+          "message": "Missing payment keys: PAYPLUS_API_KEY, PAYPLUS_SECRET",
+          "severity": "critical"
+        },
+        {
+          "type": "INTEGRATION",
+          "message": "PayPlus not configured",
+          "severity": "critical"
+        },
+        {
+          "type": "DATA_INTEGRITY",
+          "message": "4 orphaned orders found",
+          "severity": "warning"
+        }
+      ],
+      "scores": {
+        "financial": 67,
+        "security": 75,
+        "dataIntegrity": 75,
+        "integrations": 0,
+        "health": 100
+      }
+    },
+    "dataSource": "enterprise_analysis",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.341Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.341Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225b6"
+    },
+    "reportId": "ENT-MK29V42N-VXQU",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Financial Reconciliation Report",
+    "type": "financial",
+    "category": "financial_reconciliation",
+    "isEnterprise": true,
+    "summary": "⚠️ 4 issues found",
+    "content": "# 💰 Financial Reconciliation Report\n\n**Generated:** 2026-01-06T07:32:37.347Z\n\n---\n\n## 📊 Reconciliation Summary\n\n| Metric | Value |\n|--------|-------|\n| **Status** | ⚠️ DISCREPANCIES FOUND |\n| **Total Orders** | 4 |\n| **Total Transactions** | 0 |\n| **Payment Events** | 0 |\n\n---\n\n## 💵 Financial Totals\n\n| Source | Amount |\n|--------|--------|\n| Orders Total | ₪2,130.3 |\n| Transactions Total | ₪0 |\n| **Discrepancy** | ₪2,130.3 |\n\n---\n\n## 🔍 Issues Found\n\n| Category | Count | Severity |\n|----------|-------|----------|\n| Orphan Payments | 0 | ✅ None |\n| Missing Transactions | 4 | 🔴 High |\n| Mismatched Amounts | 0 | ✅ None |\n\n---\n\n## 📋 Issue Details\n\n- **MISSING_TX**: Order 695c585cbeb9c3f10928c90d has no transaction record\n- **MISSING_TX**: Order 695c6125beb9c3f10928c9de has no transaction record\n- **MISSING_TX**: Order 695c63fcbeb9c3f10928ca2c has no transaction record\n- **MISSING_TX**: Order 695c665abeb9c3f10928ca68 has no transaction record\n\n\n---\n\n## 📈 Recommendation\n\n⚠️ Found 4 reconciliation issue(s). Review and resolve before financial reporting.\n",
+    "contentHtml": "",
+    "tags": [
+      "financial",
+      "reconciliation",
+      "critical",
+      "payments",
+      "audit"
+    ],
+    "version": "1.0",
+    "status": "published",
+    "stats": {
+      "totalChecks": 4,
+      "passed": 0,
+      "failed": 4,
+      "warnings": 0,
+      "score": 80
+    },
+    "decision": {
+      "reconciled": false,
+      "orphanPayments": 0,
+      "missingTransactions": 4,
+      "mismatchedAmounts": 0,
+      "discrepancy": 2130.3,
+      "issuesCount": 4
+    },
+    "dataSource": "enterprise_analysis",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.343Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.343Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225b7"
+    },
+    "reportId": "ENT-MK29V42T-WZLH",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Missing Keys Impact Report",
+    "type": "operational",
+    "category": "missing_keys_impact",
+    "isEnterprise": true,
+    "summary": "20 missing keys (3 critical)",
+    "content": "# 🔑 Missing Keys Impact Report\n\n**Generated:** 2026-01-06T07:32:37.350Z\n\n---\n\n## 📊 Summary\n\n| Metric | Value |\n|--------|-------|\n| **Missing Keys** | 20 |\n| **Critical** | 3 |\n| **High** | 5 |\n| **Medium** | 9 |\n| **Low** | 3 |\n\n---\n\n## 🚨 Impact by Severity\n\n### Critical (System Breaking)\n- **PAYPLUS_API_KEY**: Affects Payment Processing, Checkout, Refunds\n- **PAYPLUS_SECRET**: Affects Payment Authentication, Secure Transactions\n- **PAYPLUS_BASE_URL**: Affects Payment API Connection, Checkout Process\n\n### High (Feature Breaking)\n- **PAYPLUS_WEBHOOK_SECRET**: Affects Payment Webhooks, Order Status Updates\n- **PRIORITY_BASE_URL**: Affects ERP Connection, All Priority Operations\n- **PRIORITY_CLIENT_ID**: Affects ERP Sync, Invoice Generation, Customer Sync\n- **PRIORITY_CLIENT_SECRET**: Affects ERP Authentication, Priority API Access\n- **PRIORITY_COMPANY_CODE**: Affects Company Selection, Document Creation\n\n### Medium (Degraded Functionality)\n- **PAYPLUS_CALLBACK_URL**: Affects Payment Completion Redirect, Order Confirmation\n- **PRIORITY_ENV**: Affects Environment Selection (sandbox/production)\n- **TWILIO_ACCOUNT_SID**: Affects SMS Notifications, OTP Verification\n- **TWILIO_AUTH_TOKEN**: Affects SMS Authentication\n- **TWILIO_PHONE_NUMBER**: Affects SMS Sending\n- **EMAIL_SERVER_HOST**: Affects Email Sending, Password Reset, Notifications\n- **EMAIL_SERVER_USER**: Affects SMTP Authentication\n- **EMAIL_SERVER_PASSWORD**: Affects SMTP Authentication\n- **NEXT_PUBLIC_SITE_URL**: Affects Email Links, Callback URLs, Agent Share Links\n\n### Low (Minor Impact)\n- **EMAIL_SERVER_PORT**: Affects SMTP Connection\n- **NEXT_PUBLIC_VAPID_PUBLIC_KEY**: Affects Push Notifications\n- **VAPID_PRIVATE_KEY**: Affects Push Notification Authentication\n\n---\n\n## 📍 Affected Business Flows\n\n- Payment Processing\n- Checkout\n- Refunds\n- Payment Authentication\n- Secure Transactions\n- Payment Webhooks\n- Order Status Updates\n- Payment API Connection\n- Checkout Process\n- Payment Completion Redirect\n- Order Confirmation\n- ERP Connection\n- All Priority Operations\n- ERP Sync\n- Invoice Generation\n- Customer Sync\n- ERP Authentication\n- Priority API Access\n- Company Selection\n- Document Creation\n- Environment Selection (sandbox/production)\n- SMS Notifications\n- OTP Verification\n- SMS Authentication\n- SMS Sending\n- Email Sending\n- Password Reset\n- Notifications\n- SMTP Connection\n- SMTP Authentication\n- Push Notifications\n- Push Notification Authentication\n- Email Links\n- Callback URLs\n- Agent Share Links\n\n---\n\n## 📋 Affected Reports\n\n- Financial & Payments Report\n- Financial Reconciliation\n- Orders & Transactions Report\n- Integrations Report\n- Integrations & Webhooks Report\n- System Health Report\n\n---\n\n## 🎯 Prioritized Action Plan\n\n1. Configure **PAYPLUS_API_KEY** (critical) - +7% system score\n2. Configure **PAYPLUS_SECRET** (critical) - +7% system score\n3. Configure **PAYPLUS_BASE_URL** (critical) - +4% system score\n4. Configure **PAYPLUS_WEBHOOK_SECRET** (high) - +4% system score\n5. Configure **PRIORITY_BASE_URL** (high) - +4% system score\n6. Configure **PRIORITY_CLIENT_ID** (high) - +4% system score\n7. Configure **PRIORITY_CLIENT_SECRET** (high) - +4% system score\n8. Configure **PRIORITY_COMPANY_CODE** (high) - +3% system score\n9. Configure **PAYPLUS_CALLBACK_URL** (medium) - +2% system score\n10. Configure **PRIORITY_ENV** (medium) - +2% system score\n11. Configure **TWILIO_ACCOUNT_SID** (medium) - +2% system score\n12. Configure **TWILIO_AUTH_TOKEN** (medium) - +2% system score\n13. Configure **TWILIO_PHONE_NUMBER** (medium) - +2% system score\n14. Configure **EMAIL_SERVER_HOST** (medium) - +2% system score\n15. Configure **EMAIL_SERVER_USER** (medium) - +2% system score\n16. Configure **EMAIL_SERVER_PASSWORD** (medium) - +2% system score\n17. Configure **NEXT_PUBLIC_SITE_URL** (medium) - +2% system score\n18. Configure **EMAIL_SERVER_PORT** (low) - +1% system score\n19. Configure **NEXT_PUBLIC_VAPID_PUBLIC_KEY** (low) - +1% system score\n20. Configure **VAPID_PRIVATE_KEY** (low) - +1% system score\n",
+    "contentHtml": "",
+    "tags": [
+      "keys",
+      "environment",
+      "impact",
+      "operational"
+    ],
+    "version": "1.0",
+    "status": "published",
+    "stats": {
+      "totalChecks": 28,
+      "passed": 8,
+      "failed": 8,
+      "warnings": 12,
+      "score": 29
+    },
+    "decision": null,
+    "dataSource": "enterprise_analysis",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.349Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.349Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225b8"
+    },
+    "reportId": "ENT-MK29V432-GJO8",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Risk Matrix Report",
+    "type": "risk",
+    "category": "risk_matrix",
+    "isEnterprise": true,
+    "summary": "Score: 67% | 2 high, 3 medium risks",
+    "content": "# ⚠️ Risk Matrix Report\n\n**Generated:** 2026-01-06T07:32:37.359Z\n\n---\n\n## 📊 Risk Overview\n\n| Overall Score | High Risks | Medium Risks | Low Risks |\n|---------------|------------|--------------|-----------|\n| **67%** | 🔴 2 | 🟡 3 | 🟢 3 |\n\n---\n\n## 📈 Category Breakdown\n\n| Category | Score | Level |\n|----------|-------|-------|\n| Technical | 70% | 🟡 Medium |\n| Financial | 50% | 🟡 Medium |\n| Security | 88% | 🟢 Low |\n| Operational | 60% | 🟡 Medium |\n\n---\n\n## 🔴 High Risks\n\n| TECHNICAL | System Configuration | Environment configuration at 39% |\n| FINANCIAL | Payment Processing | PayPlus not configured - cannot process payments |\n\n---\n\n## 🟡 Medium Risks\n\n| SECURITY | Environment Security | Security checks: 3/4 passed |\n| OPERATIONAL | Data Integrity | 4 orphaned order(s) |\n| OPERATIONAL | ERP Integration | Priority ERP not configured |\n\n---\n\n## 🟢 Low Risks\n\n| TECHNICAL | Database Stability | Database health at 100% |\n| FINANCIAL | Payment Failures | 0 failed payment(s) recorded |\n| SECURITY | Critical Keys | 0 critical key(s) missing |\n\n---\n\n## 📋 Risk Matrix\n\n```\n         │ Low Impact │ Med Impact │ High Impact\n─────────┼────────────┼────────────┼────────────\nHigh Prob│     🟡     │     🔴     │     🔴\nMed Prob │     🟢     │     🟡     │     🔴\nLow Prob │     🟢     │     🟢     │     🟡\n```\n\n**Current Position:** 🟡 Medium Risk Zone\n",
+    "contentHtml": "",
+    "tags": [
+      "risk",
+      "matrix",
+      "analysis",
+      "executive"
+    ],
+    "version": "1.0",
+    "status": "published",
+    "stats": {
+      "totalChecks": 8,
+      "passed": 3,
+      "failed": 2,
+      "warnings": 3,
+      "score": 67
+    },
+    "decision": {
+      "overallScore": 67,
+      "categoryScores": {
+        "technical": 70,
+        "financial": 50,
+        "security": 88,
+        "operational": 60
+      },
+      "highRisks": 2,
+      "mediumRisks": 3,
+      "risks": [
+        {
+          "category": "technical",
+          "name": "Database Stability",
+          "score": 100,
+          "level": "low",
+          "description": "Database health at 100%"
+        },
+        {
+          "category": "technical",
+          "name": "System Configuration",
+          "score": 39,
+          "level": "high",
+          "description": "Environment configuration at 39%"
+        },
+        {
+          "category": "financial",
+          "name": "Payment Processing",
+          "score": 0,
+          "level": "high",
+          "description": "PayPlus not configured - cannot process payments"
+        },
+        {
+          "category": "financial",
+          "name": "Payment Failures",
+          "score": 100,
+          "level": "low",
+          "description": "0 failed payment(s) recorded"
+        },
+        {
+          "category": "security",
+          "name": "Environment Security",
+          "score": 75,
+          "level": "medium",
+          "description": "Security checks: 3/4 passed"
+        },
+        {
+          "category": "security",
+          "name": "Critical Keys",
+          "score": 100,
+          "level": "low",
+          "description": "0 critical key(s) missing"
+        },
+        {
+          "category": "operational",
+          "name": "Data Integrity",
+          "score": 70,
+          "level": "medium",
+          "description": "4 orphaned order(s)"
+        },
+        {
+          "category": "operational",
+          "name": "ERP Integration",
+          "score": 50,
+          "level": "medium",
+          "description": "Priority ERP not configured"
+        }
+      ]
+    },
+    "dataSource": "enterprise_analysis",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.358Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.358Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225b9"
+    },
+    "reportId": "ENT-MK29V434-YDZB",
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "title": "Reports Reliability Status Report",
+    "type": "meta",
+    "category": "reports_reliability",
+    "isEnterprise": true,
+    "summary": "6 reliable, 0 partial, 4 unreliable",
+    "content": "# 📊 Reports Reliability Status Report\n\n**Generated:** 2026-01-06T07:32:37.361Z\n\n---\n\n## 📈 Summary\n\n| Status | Count |\n|--------|-------|\n| ✅ Reliable | 6 |\n| ⚠️ Partially Reliable | 0 |\n| ❌ Unreliable | 4 |\n\n---\n\n## 📋 Report Status Matrix\n\n| Report | Status | Issues |\n|--------|--------|--------|\n| Financial & Payments Report | ❌ unreliable | Missing keys: PAYPLUS_API_KEY, PAYPLUS_SECRET; Missing integrations: payplus |\n| Orders & Transactions Report | ✅ reliable | - |\n| Users & Permissions Report | ✅ reliable | - |\n| Admin Actions & Audit Trail | ✅ reliable | - |\n| Integrations & Webhooks Report | ❌ unreliable | Missing keys: PRIORITY_CLIENT_ID, PAYPLUS_API_KEY; Missing integrations: priority, payplus |\n| Data Integrity & Consistency Report | ✅ reliable | - |\n| Security & Access Report | ✅ reliable | - |\n| System Health & Stability Report | ✅ reliable | - |\n| Go-Live Readiness Report | ❌ unreliable | Missing keys: PAYPLUS_API_KEY, PAYPLUS_SECRET; Missing integrations: payplus |\n| Financial Reconciliation Report | ❌ unreliable | Missing keys: PAYPLUS_API_KEY; Missing integrations: payplus |\n\n---\n\n## ✅ Reliable Reports\n\n- Orders & Transactions Report\n- Users & Permissions Report\n- Admin Actions & Audit Trail\n- Data Integrity & Consistency Report\n- Security & Access Report\n- System Health & Stability Report\n\n---\n\n## ⚠️ Partially Reliable Reports\n\nNone\n\n---\n\n## ❌ Unreliable Reports\n\n- **Financial & Payments Report**\n  - Missing keys: PAYPLUS_API_KEY, PAYPLUS_SECRET\n  - Missing integrations: payplus\n\n- **Integrations & Webhooks Report**\n  - Missing keys: PRIORITY_CLIENT_ID, PAYPLUS_API_KEY\n  - Missing integrations: priority, payplus\n\n- **Go-Live Readiness Report**\n  - Missing keys: PAYPLUS_API_KEY, PAYPLUS_SECRET\n  - Missing integrations: payplus\n\n- **Financial Reconciliation Report**\n  - Missing keys: PAYPLUS_API_KEY\n  - Missing integrations: payplus\n\n---\n\n## 🔧 Dependencies Status\n\n### Configured Keys (8)\n- ✅ JWT_SECRET\n- ✅ NEXTAUTH_SECRET\n- ✅ MONGODB_URI\n- ✅ CLOUDINARY_CLOUD_NAME\n- ✅ CLOUDINARY_API_KEY\n- ✅ CLOUDINARY_API_SECRET\n- ✅ EMAIL_FROM\n- ✅ NODE_ENV\n\n### Active Integrations (0)\n- None\n\n---\n\n## 📋 Recommendation\n\n❌ 4 report(s) are unreliable. Configure missing dependencies before using these reports.\n",
+    "contentHtml": "",
+    "tags": [
+      "reliability",
+      "meta",
+      "reports",
+      "status"
+    ],
+    "version": "1.0",
+    "status": "published",
+    "stats": {
+      "totalChecks": 10,
+      "passed": 6,
+      "failed": 4,
+      "warnings": 0,
+      "score": 60
+    },
+    "decision": {
+      "reliable": 6,
+      "partiallyReliable": 0,
+      "unreliable": 4,
+      "reportStatuses": [
+        {
+          "name": "Financial & Payments Report",
+          "category": "financial_payments",
+          "status": "unreliable",
+          "issues": [
+            "Missing keys: PAYPLUS_API_KEY, PAYPLUS_SECRET",
+            "Missing integrations: payplus"
+          ],
+          "missingKeys": [
+            "PAYPLUS_API_KEY",
+            "PAYPLUS_SECRET"
+          ],
+          "missingIntegrations": [
+            "payplus"
+          ],
+          "failedDataChecks": []
+        },
+        {
+          "name": "Orders & Transactions Report",
+          "category": "orders_transactions",
+          "status": "reliable",
+          "issues": [],
+          "missingKeys": [],
+          "missingIntegrations": [],
+          "failedDataChecks": []
+        },
+        {
+          "name": "Users & Permissions Report",
+          "category": "users_permissions",
+          "status": "reliable",
+          "issues": [],
+          "missingKeys": [],
+          "missingIntegrations": [],
+          "failedDataChecks": []
+        },
+        {
+          "name": "Admin Actions & Audit Trail",
+          "category": "admin_audit_trail",
+          "status": "reliable",
+          "issues": [],
+          "missingKeys": [],
+          "missingIntegrations": [],
+          "failedDataChecks": []
+        },
+        {
+          "name": "Integrations & Webhooks Report",
+          "category": "integrations_webhooks",
+          "status": "unreliable",
+          "issues": [
+            "Missing keys: PRIORITY_CLIENT_ID, PAYPLUS_API_KEY",
+            "Missing integrations: priority, payplus"
+          ],
+          "missingKeys": [
+            "PRIORITY_CLIENT_ID",
+            "PAYPLUS_API_KEY"
+          ],
+          "missingIntegrations": [
+            "priority",
+            "payplus"
+          ],
+          "failedDataChecks": []
+        },
+        {
+          "name": "Data Integrity & Consistency Report",
+          "category": "data_integrity",
+          "status": "reliable",
+          "issues": [],
+          "missingKeys": [],
+          "missingIntegrations": [],
+          "failedDataChecks": []
+        },
+        {
+          "name": "Security & Access Report",
+          "category": "security_access",
+          "status": "reliable",
+          "issues": [],
+          "missingKeys": [],
+          "missingIntegrations": [],
+          "failedDataChecks": []
+        },
+        {
+          "name": "System Health & Stability Report",
+          "category": "system_health",
+          "status": "reliable",
+          "issues": [],
+          "missingKeys": [],
+          "missingIntegrations": [],
+          "failedDataChecks": []
+        },
+        {
+          "name": "Go-Live Readiness Report",
+          "category": "go_live_readiness",
+          "status": "unreliable",
+          "issues": [
+            "Missing keys: PAYPLUS_API_KEY, PAYPLUS_SECRET",
+            "Missing integrations: payplus"
+          ],
+          "missingKeys": [
+            "PAYPLUS_API_KEY",
+            "PAYPLUS_SECRET"
+          ],
+          "missingIntegrations": [
+            "payplus"
+          ],
+          "failedDataChecks": []
+        },
+        {
+          "name": "Financial Reconciliation Report",
+          "category": "financial_reconciliation",
+          "status": "unreliable",
+          "issues": [
+            "Missing keys: PAYPLUS_API_KEY",
+            "Missing integrations: payplus"
+          ],
+          "missingKeys": [
+            "PAYPLUS_API_KEY"
+          ],
+          "missingIntegrations": [
+            "payplus"
+          ],
+          "failedDataChecks": []
+        }
+      ]
+    },
+    "dataSource": "enterprise_analysis",
+    "createdBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "createdByName": "Admin",
+    "attachments": [],
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.360Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.360Z"
+    }
   }
 ]

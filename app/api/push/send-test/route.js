@@ -68,9 +68,9 @@ export async function POST(request) {
         role: s.role
       }));
       
-      let hint = 'לחץ על "אפשר התראות דחיפה" בתפריט החשבון שלי';
+      let hint = 'לחץ על "הפעל התראות" בתפריט החשבון שלי';
       if (userSubsIncludingRevoked.length > 0) {
-        hint = 'נמצאו מנויים מבוטלים. לחץ על "אפשר התראות דחיפה" להפעלה מחדש';
+        hint = 'נמצאו מנויים מבוטלים. לחץ על "הפעל התראות" להפעלה מחדש';
       }
       
       return NextResponse.json({ 

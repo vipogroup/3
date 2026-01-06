@@ -130,6 +130,16 @@ export default function UserHeader() {
     return () => { ignore = true; };
   }, [user]);
 
+  // Listen for push subscription changes (e.g., from PushNotificationModal)
+  useEffect(() => {
+    const handleSubscriptionChange = (event) => {
+      const { subscribed } = event.detail || {};
+      setPushEnabled(!!subscribed);
+    };
+    window.addEventListener('push-subscription-changed', handleSubscriptionChange);
+    return () => window.removeEventListener('push-subscription-changed', handleSubscriptionChange);
+  }, []);
+
   // Toggle push notifications
   const handleTogglePush = useCallback(async () => {
     if (pushLoading) return;
@@ -524,7 +534,7 @@ export default function UserHeader() {
                         />
                       </svg>
                       <span className="flex-1">
-                        {pushLoading ? 'מעדכן...' : pushEnabled ? 'התראות מופעלות' : 'אפשר התראות דחיפה'}
+                        {pushLoading ? 'מעדכן...' : pushEnabled ? 'מחובר' : 'הפעל התראות'}
                       </span>
                       <span
                         className="w-3 h-3 rounded-full"

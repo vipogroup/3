@@ -35,7 +35,7 @@
     "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
     "imagePath": "",
     "inStock": false,
-    "stockCount": 0,
+    "stockCount": -3,
     "rating": 4.5,
     "reviews": 234,
     "features": [
@@ -51,7 +51,7 @@
       "$date": "2025-12-01T04:34:52.101Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:48.391Z"
+      "$date": "2026-01-05T23:48:38.785Z"
     },
     "customFields": [],
     "sku": "5sds5d5sd5s",
@@ -96,7 +96,7 @@
     "videoUrl": "https://www.youtube.com/embed/jNQXAC9IVRw",
     "imagePath": "",
     "inStock": false,
-    "stockCount": 0,
+    "stockCount": -3,
     "rating": 4.7,
     "reviews": 156,
     "features": [
@@ -112,7 +112,7 @@
       "$date": "2025-12-01T04:34:52.103Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:49.012Z"
+      "$date": "2026-01-06T01:11:01.911Z"
     },
     "customFields": [],
     "sku": "",
@@ -157,7 +157,7 @@
     "videoUrl": "https://www.youtube.com/embed/9bZkp7q19f0",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 75,
+    "stockCount": 74,
     "rating": 4.3,
     "reviews": 89,
     "features": [
@@ -180,7 +180,7 @@
       "$date": "2025-12-01T04:34:52.103Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:49.653Z"
+      "$date": "2026-01-05T23:44:35.104Z"
     },
     "isFeatured": true
   },
@@ -220,7 +220,7 @@
     "videoUrl": "https://www.youtube.com/embed/kJQP7kiw5Fk",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 40,
+    "stockCount": 39,
     "rating": 4.8,
     "reviews": 312,
     "features": [
@@ -243,7 +243,7 @@
       "$date": "2025-12-01T04:34:52.104Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:50.302Z"
+      "$date": "2026-01-06T00:33:32.227Z"
     },
     "isFeatured": true
   },
@@ -346,7 +346,7 @@
     "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 60,
+    "stockCount": 59,
     "rating": 4.6,
     "reviews": 145,
     "features": [
@@ -369,7 +369,7 @@
       "$date": "2025-12-01T04:36:35.735Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:51.435Z"
+      "$date": "2026-01-05T16:28:07.348Z"
     },
     "isFeatured": true
   },
@@ -535,7 +535,7 @@
     "videoUrl": "https://www.youtube.com/embed/kJQP7kiw5Fk",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 55,
+    "stockCount": 54,
     "rating": 4.4,
     "reviews": 223,
     "features": [
@@ -558,7 +558,7 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.692Z"
+      "$date": "2026-01-05T19:37:13.177Z"
     }
   },
   {
@@ -597,7 +597,7 @@
     "videoUrl": "https://www.youtube.com/embed/tgbNymZ7vqY",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 80,
+    "stockCount": 77,
     "rating": 4.3,
     "reviews": 312,
     "features": [
@@ -620,7 +620,7 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.694Z"
+      "$date": "2026-01-06T01:23:08.673Z"
     }
   },
   {
@@ -1227,10 +1227,10 @@
       "אודיו": "Hi-Res Wireless",
       "טעינה": "USB-C + טעינה מהירה"
     },
-    "stockCount": 22,
+    "stockCount": 21,
     "type": "online",
     "updatedAt": {
-      "$date": "2025-12-18T20:09:35.344Z"
+      "$date": "2026-01-06T01:33:14.535Z"
     },
     "videoUrl": ""
   },
@@ -1345,10 +1345,10 @@
       "תאורה": "RGB מלאה",
       "חיבור": "USB-C"
     },
-    "stockCount": 21,
+    "stockCount": 17,
     "type": "online",
     "updatedAt": {
-      "$date": "2026-01-02T22:14:45.174Z"
+      "$date": "2026-01-05T19:44:04.108Z"
     },
     "videoUrl": ""
   },
@@ -1596,6 +1596,58 @@
     },
     "updatedAt": {
       "$date": "2026-01-03T04:01:08.132Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695c7cb53bc3dd7d2046962f"
+    },
+    "sku": "עיכי",
+    "name": "עיעכי",
+    "description": "עיעי",
+    "fullDescription": "עיעיע",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 50,
+    "originalPrice": 99.99,
+    "commission": 5,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "",
+    "imageUrl": "",
+    "images": [],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 5,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "specs": "",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": false,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-06T03:08:37.336Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T03:08:37.336Z"
     },
     "__v": 0
   }

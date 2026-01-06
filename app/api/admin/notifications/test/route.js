@@ -46,7 +46,7 @@ export async function POST(req) {
       return NextResponse.json({ 
         ok: false, 
         error: 'לא נמצאו מכשירים רשומים להתראות',
-        hint: 'לחץ על "אפשר התראות דחיפה" בתפריט החשבון שלי'
+        hint: 'לחץ על "הפעל התראות" בתפריט החשבון שלי'
       }, { status: 404 });
     }
 

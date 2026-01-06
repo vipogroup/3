@@ -15278,5 +15278,775 @@
       "$date": "2026-01-04T23:13:02.890Z"
     },
     "duration": 311
+  },
+  {
+    "_id": {
+      "$oid": "695cba9577196e76d8e225ab"
+    },
+    "scanId": "SCAN-MK29V3T8-EWRO70",
+    "initiatedBy": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "initiatedByName": "Admin",
+    "scope": "full",
+    "scannedAreas": [
+      "database",
+      "users",
+      "orders",
+      "products",
+      "transactions",
+      "permissions",
+      "integrations",
+      "security",
+      "payment_data",
+      "system_keys"
+    ],
+    "status": "completed",
+    "progress": {
+      "current": 23,
+      "total": 18,
+      "percentage": 100
+    },
+    "startedAt": {
+      "$date": "2026-01-06T07:32:37.004Z"
+    },
+    "results": {
+      "totalChecks": 57,
+      "passed": 29,
+      "failed": 0,
+      "warnings": 24,
+      "score": 51
+    },
+    "findings": {
+      "database": {
+        "checks": 5,
+        "passed": 5,
+        "failed": 0,
+        "warnings": 0,
+        "details": [
+          {
+            "check": "Collection users",
+            "status": "ok"
+          },
+          {
+            "check": "Collection orders",
+            "status": "ok"
+          },
+          {
+            "check": "Collection products",
+            "status": "ok"
+          },
+          {
+            "check": "DB Stats",
+            "status": "ok",
+            "data": {
+              "collections": 24,
+              "objects": 571
+            }
+          },
+          {
+            "check": "User indexes",
+            "count": 13
+          }
+        ]
+      },
+      "users": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "totalUsers": 4,
+          "admins": 2,
+          "agents": 1,
+          "customers": 1,
+          "noRole": 0
+        }
+      },
+      "orders": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 1,
+        "details": {
+          "total": 4,
+          "paid": 4,
+          "pending": 0,
+          "completed": 0,
+          "cancelled": 0,
+          "orphaned": 4
+        }
+      },
+      "products": {
+        "checks": 3,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "total": 27,
+          "active": 0,
+          "outOfStock": 0,
+          "noPrice": 0
+        }
+      },
+      "transactions": {
+        "checks": 2,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "total": 0,
+          "completed": 0,
+          "pending": 0,
+          "failed": 0
+        }
+      },
+      "permissions": {
+        "checks": 2,
+        "passed": 1,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "adminCount": 2,
+          "admins": [
+            {
+              "name": "מנהל 02",
+              "hasPermissions": false
+            },
+            {
+              "name": "Admin",
+              "hasPermissions": false
+            }
+          ]
+        }
+      },
+      "integrations": {
+        "checks": 2,
+        "passed": 0,
+        "failed": 0,
+        "warnings": 2,
+        "details": {
+          "priority": {
+            "configured": false,
+            "status": "not_configured"
+          },
+          "payplus": {
+            "configured": false,
+            "status": "not_configured"
+          }
+        }
+      },
+      "security": {
+        "checks": 4,
+        "passed": 3,
+        "failed": 0,
+        "warnings": 1,
+        "details": [
+          {
+            "var": "JWT_SECRET",
+            "status": "set",
+            "strength": "weak"
+          },
+          {
+            "var": "MONGODB_URI",
+            "status": "set",
+            "strength": "weak"
+          },
+          {
+            "var": "NEXTAUTH_SECRET",
+            "status": "set",
+            "strength": "strong"
+          },
+          {
+            "var": "NODE_ENV",
+            "status": "development"
+          }
+        ]
+      },
+      "payment_data": {
+        "checks": 3,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 0,
+        "details": {
+          "ordersWithPayment": 4,
+          "paymentEvents": 0,
+          "failedPayments": 0
+        }
+      },
+      "system_keys": {
+        "checks": 28,
+        "passed": 8,
+        "failed": 0,
+        "warnings": 20,
+        "details": [
+          {
+            "key": "JWT_SECRET",
+            "status": "configured",
+            "weight": 8,
+            "category": "security",
+            "priority": "critical",
+            "description": "מפתח הצפנת JWT לאימות משתמשים",
+            "potentialGain": 0,
+            "strength": "medium"
+          },
+          {
+            "key": "NEXTAUTH_SECRET",
+            "status": "configured",
+            "weight": 8,
+            "category": "security",
+            "priority": "critical",
+            "description": "מפתח NextAuth לאבטחת סשנים",
+            "potentialGain": 0,
+            "strength": "strong"
+          },
+          {
+            "key": "MONGODB_URI",
+            "status": "configured",
+            "weight": 8,
+            "category": "database",
+            "priority": "critical",
+            "description": "כתובת חיבור למסד הנתונים",
+            "potentialGain": 0,
+            "strength": "medium"
+          },
+          {
+            "key": "PAYPLUS_API_KEY",
+            "status": "missing",
+            "weight": 6,
+            "category": "payments",
+            "priority": "high",
+            "description": "מפתח API של PayPlus לתשלומים",
+            "potentialGain": 6
+          },
+          {
+            "key": "PAYPLUS_SECRET",
+            "status": "missing",
+            "weight": 6,
+            "category": "payments",
+            "priority": "high",
+            "description": "סוד PayPlus לאימות בקשות",
+            "potentialGain": 6
+          },
+          {
+            "key": "PAYPLUS_WEBHOOK_SECRET",
+            "status": "missing",
+            "weight": 4,
+            "category": "payments",
+            "priority": "medium",
+            "description": "מפתח וובהוק PayPlus לעדכוני תשלום",
+            "potentialGain": 4
+          },
+          {
+            "key": "PAYPLUS_BASE_URL",
+            "status": "missing",
+            "weight": 4,
+            "category": "payments",
+            "priority": "high",
+            "description": "כתובת שרת PayPlus (sandbox/production)",
+            "potentialGain": 4
+          },
+          {
+            "key": "PAYPLUS_CALLBACK_URL",
+            "status": "missing",
+            "weight": 2,
+            "category": "payments",
+            "priority": "medium",
+            "description": "כתובת callback לאחר תשלום",
+            "potentialGain": 2
+          },
+          {
+            "key": "PRIORITY_BASE_URL",
+            "status": "missing",
+            "weight": 4,
+            "category": "integrations",
+            "priority": "high",
+            "description": "כתובת שרת Priority ERP",
+            "potentialGain": 4
+          },
+          {
+            "key": "PRIORITY_CLIENT_ID",
+            "status": "missing",
+            "weight": 4,
+            "category": "integrations",
+            "priority": "high",
+            "description": "מזהה לקוח Priority ERP",
+            "potentialGain": 4
+          },
+          {
+            "key": "PRIORITY_CLIENT_SECRET",
+            "status": "missing",
+            "weight": 4,
+            "category": "integrations",
+            "priority": "high",
+            "description": "סוד Priority ERP",
+            "potentialGain": 4
+          },
+          {
+            "key": "PRIORITY_COMPANY_CODE",
+            "status": "missing",
+            "weight": 3,
+            "category": "integrations",
+            "priority": "high",
+            "description": "קוד חברה ב-Priority",
+            "potentialGain": 3
+          },
+          {
+            "key": "PRIORITY_ENV",
+            "status": "missing",
+            "weight": 2,
+            "category": "integrations",
+            "priority": "medium",
+            "description": "סביבת Priority (sandbox/production)",
+            "potentialGain": 2
+          },
+          {
+            "key": "CLOUDINARY_CLOUD_NAME",
+            "status": "configured",
+            "weight": 3,
+            "category": "media",
+            "priority": "medium",
+            "description": "שם ענן Cloudinary להעלאת תמונות",
+            "potentialGain": 0,
+            "strength": "weak"
+          },
+          {
+            "key": "CLOUDINARY_API_KEY",
+            "status": "configured",
+            "weight": 3,
+            "category": "media",
+            "priority": "medium",
+            "description": "מפתח API של Cloudinary",
+            "potentialGain": 0,
+            "strength": "weak"
+          },
+          {
+            "key": "CLOUDINARY_API_SECRET",
+            "status": "configured",
+            "weight": 3,
+            "category": "media",
+            "priority": "medium",
+            "description": "סוד Cloudinary",
+            "potentialGain": 0,
+            "strength": "medium"
+          },
+          {
+            "key": "TWILIO_ACCOUNT_SID",
+            "status": "missing",
+            "weight": 2,
+            "category": "communications",
+            "priority": "medium",
+            "description": "מזהה חשבון Twilio ל-SMS",
+            "potentialGain": 2
+          },
+          {
+            "key": "TWILIO_AUTH_TOKEN",
+            "status": "missing",
+            "weight": 2,
+            "category": "communications",
+            "priority": "medium",
+            "description": "טוקן Twilio לאימות",
+            "potentialGain": 2
+          },
+          {
+            "key": "TWILIO_PHONE_NUMBER",
+            "status": "missing",
+            "weight": 2,
+            "category": "communications",
+            "priority": "medium",
+            "description": "מספר טלפון Twilio לשליחת SMS",
+            "potentialGain": 2
+          },
+          {
+            "key": "EMAIL_SERVER_HOST",
+            "status": "missing",
+            "weight": 2,
+            "category": "email",
+            "priority": "medium",
+            "description": "שרת SMTP לשליחת מיילים",
+            "potentialGain": 2
+          },
+          {
+            "key": "EMAIL_SERVER_PORT",
+            "status": "missing",
+            "weight": 1,
+            "category": "email",
+            "priority": "low",
+            "description": "פורט שרת SMTP",
+            "potentialGain": 1
+          },
+          {
+            "key": "EMAIL_SERVER_USER",
+            "status": "missing",
+            "weight": 2,
+            "category": "email",
+            "priority": "medium",
+            "description": "שם משתמש SMTP",
+            "potentialGain": 2
+          },
+          {
+            "key": "EMAIL_SERVER_PASSWORD",
+            "status": "missing",
+            "weight": 2,
+            "category": "email",
+            "priority": "medium",
+            "description": "סיסמת SMTP",
+            "potentialGain": 2
+          },
+          {
+            "key": "EMAIL_FROM",
+            "status": "configured",
+            "weight": 1,
+            "category": "email",
+            "priority": "low",
+            "description": "כתובת מייל שולח",
+            "potentialGain": 0,
+            "strength": "medium"
+          },
+          {
+            "key": "NEXT_PUBLIC_VAPID_PUBLIC_KEY",
+            "status": "missing",
+            "weight": 1,
+            "category": "notifications",
+            "priority": "low",
+            "description": "מפתח VAPID ציבורי לPush notifications",
+            "potentialGain": 1
+          },
+          {
+            "key": "VAPID_PRIVATE_KEY",
+            "status": "missing",
+            "weight": 1,
+            "category": "notifications",
+            "priority": "low",
+            "description": "מפתח VAPID פרטי",
+            "potentialGain": 1
+          },
+          {
+            "key": "NEXT_PUBLIC_SITE_URL",
+            "status": "missing",
+            "weight": 2,
+            "category": "config",
+            "priority": "medium",
+            "description": "כתובת URL של האתר",
+            "potentialGain": 2
+          },
+          {
+            "key": "NODE_ENV",
+            "status": "configured",
+            "weight": 2,
+            "category": "config",
+            "priority": "medium",
+            "description": "סביבת ריצה (production/development)",
+            "potentialGain": 0,
+            "strength": "weak"
+          }
+        ],
+        "missingVars": [
+          {
+            "key": "PAYPLUS_API_KEY",
+            "weight": 6,
+            "percentageGain": 7,
+            "category": "payments",
+            "priority": "high",
+            "description": "מפתח API של PayPlus לתשלומים"
+          },
+          {
+            "key": "PAYPLUS_SECRET",
+            "weight": 6,
+            "percentageGain": 7,
+            "category": "payments",
+            "priority": "high",
+            "description": "סוד PayPlus לאימות בקשות"
+          },
+          {
+            "key": "PAYPLUS_WEBHOOK_SECRET",
+            "weight": 4,
+            "percentageGain": 4,
+            "category": "payments",
+            "priority": "medium",
+            "description": "מפתח וובהוק PayPlus לעדכוני תשלום"
+          },
+          {
+            "key": "PAYPLUS_BASE_URL",
+            "weight": 4,
+            "percentageGain": 4,
+            "category": "payments",
+            "priority": "high",
+            "description": "כתובת שרת PayPlus (sandbox/production)"
+          },
+          {
+            "key": "PAYPLUS_CALLBACK_URL",
+            "weight": 2,
+            "percentageGain": 2,
+            "category": "payments",
+            "priority": "medium",
+            "description": "כתובת callback לאחר תשלום"
+          },
+          {
+            "key": "PRIORITY_BASE_URL",
+            "weight": 4,
+            "percentageGain": 4,
+            "category": "integrations",
+            "priority": "high",
+            "description": "כתובת שרת Priority ERP"
+          },
+          {
+            "key": "PRIORITY_CLIENT_ID",
+            "weight": 4,
+            "percentageGain": 4,
+            "category": "integrations",
+            "priority": "high",
+            "description": "מזהה לקוח Priority ERP"
+          },
+          {
+            "key": "PRIORITY_CLIENT_SECRET",
+            "weight": 4,
+            "percentageGain": 4,
+            "category": "integrations",
+            "priority": "high",
+            "description": "סוד Priority ERP"
+          },
+          {
+            "key": "PRIORITY_COMPANY_CODE",
+            "weight": 3,
+            "percentageGain": 3,
+            "category": "integrations",
+            "priority": "high",
+            "description": "קוד חברה ב-Priority"
+          },
+          {
+            "key": "PRIORITY_ENV",
+            "weight": 2,
+            "percentageGain": 2,
+            "category": "integrations",
+            "priority": "medium",
+            "description": "סביבת Priority (sandbox/production)"
+          },
+          {
+            "key": "TWILIO_ACCOUNT_SID",
+            "weight": 2,
+            "percentageGain": 2,
+            "category": "communications",
+            "priority": "medium",
+            "description": "מזהה חשבון Twilio ל-SMS"
+          },
+          {
+            "key": "TWILIO_AUTH_TOKEN",
+            "weight": 2,
+            "percentageGain": 2,
+            "category": "communications",
+            "priority": "medium",
+            "description": "טוקן Twilio לאימות"
+          },
+          {
+            "key": "TWILIO_PHONE_NUMBER",
+            "weight": 2,
+            "percentageGain": 2,
+            "category": "communications",
+            "priority": "medium",
+            "description": "מספר טלפון Twilio לשליחת SMS"
+          },
+          {
+            "key": "EMAIL_SERVER_HOST",
+            "weight": 2,
+            "percentageGain": 2,
+            "category": "email",
+            "priority": "medium",
+            "description": "שרת SMTP לשליחת מיילים"
+          },
+          {
+            "key": "EMAIL_SERVER_PORT",
+            "weight": 1,
+            "percentageGain": 1,
+            "category": "email",
+            "priority": "low",
+            "description": "פורט שרת SMTP"
+          },
+          {
+            "key": "EMAIL_SERVER_USER",
+            "weight": 2,
+            "percentageGain": 2,
+            "category": "email",
+            "priority": "medium",
+            "description": "שם משתמש SMTP"
+          },
+          {
+            "key": "EMAIL_SERVER_PASSWORD",
+            "weight": 2,
+            "percentageGain": 2,
+            "category": "email",
+            "priority": "medium",
+            "description": "סיסמת SMTP"
+          },
+          {
+            "key": "NEXT_PUBLIC_VAPID_PUBLIC_KEY",
+            "weight": 1,
+            "percentageGain": 1,
+            "category": "notifications",
+            "priority": "low",
+            "description": "מפתח VAPID ציבורי לPush notifications"
+          },
+          {
+            "key": "VAPID_PRIVATE_KEY",
+            "weight": 1,
+            "percentageGain": 1,
+            "category": "notifications",
+            "priority": "low",
+            "description": "מפתח VAPID פרטי"
+          },
+          {
+            "key": "NEXT_PUBLIC_SITE_URL",
+            "weight": 2,
+            "percentageGain": 2,
+            "category": "config",
+            "priority": "medium",
+            "description": "כתובת URL של האתר"
+          }
+        ],
+        "scoreBreakdown": {
+          "current": 39,
+          "potential": 100,
+          "earnedWeight": 36,
+          "totalWeight": 92,
+          "missingWeight": 56
+        }
+      }
+    },
+    "generatedReports": [
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225ad"
+        },
+        "reportType": "financial_payments",
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.307Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225ae"
+        },
+        "reportType": "orders_transactions",
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.308Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225af"
+        },
+        "reportType": "users_permissions",
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.309Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225b0"
+        },
+        "reportType": "admin_audit_trail",
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.335Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225b1"
+        },
+        "reportType": "integrations_webhooks",
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.336Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225b2"
+        },
+        "reportType": "data_integrity",
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.339Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225b3"
+        },
+        "reportType": "security_access",
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.340Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225b4"
+        },
+        "reportType": "system_health",
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.341Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225b5"
+        },
+        "reportType": "go_live_readiness",
+        "isEnterprise": true,
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.343Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225b6"
+        },
+        "reportType": "financial_reconciliation",
+        "isEnterprise": true,
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.349Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225b7"
+        },
+        "reportType": "missing_keys_impact",
+        "isEnterprise": true,
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.358Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225b8"
+        },
+        "reportType": "risk_matrix",
+        "isEnterprise": true,
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.360Z"
+        }
+      },
+      {
+        "reportId": {
+          "$oid": "695cba9577196e76d8e225b9"
+        },
+        "reportType": "reports_reliability",
+        "isEnterprise": true,
+        "generatedAt": {
+          "$date": "2026-01-06T07:32:37.363Z"
+        }
+      }
+    ],
+    "version": "2.0",
+    "environment": "development",
+    "createdAt": {
+      "$date": "2026-01-06T07:32:37.004Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T07:32:37.363Z"
+    },
+    "completedAt": {
+      "$date": "2026-01-06T07:32:37.363Z"
+    },
+    "duration": 359
   }
 ]
