@@ -8,6 +8,8 @@ import CopyCouponButton from './components/CopyCouponButton';
 import KPICard from './components/KPICard';
 import ShareButton from './components/ShareButton';
 import AgentCommissionsClient from './components/AgentCommissionsClient';
+import ProductsGallery from './components/ProductsGallery';
+import StatisticsSection from './components/StatisticsSection';
 
 const TrophyIcon = ({ className = 'w-10 h-10' }) => (
   <svg
@@ -463,6 +465,33 @@ export default async function AgentPage() {
           <AgentCommissionsClient />
         </section>
 
+        {/* Products Gallery Section */}
+        <section
+          className="mb-6 rounded-xl p-5"
+          style={{
+            border: '2px solid transparent',
+            backgroundImage:
+              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+            boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
+          }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold" style={{ color: '#1e3a8a' }}>
+              מוצרים לשיתוף
+            </h2>
+            <Link
+              href="/agent/products"
+              className="text-sm font-medium px-3 py-1.5 rounded-lg transition-colors"
+              style={{ color: '#0891b2', background: 'rgba(8, 145, 178, 0.1)' }}
+            >
+              לכל המוצרים
+            </Link>
+          </div>
+          <ProductsGallery couponCode={stats.referralCode} referralLink={stats.referralLink} />
+        </section>
+
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Coupon Code Section */}
@@ -546,76 +575,8 @@ export default async function AgentPage() {
               </div>
             </div>
           </section>
-          {/* Statistics Section */}
-          <section
-            className="rounded-xl p-5"
-            style={{
-              border: '2px solid transparent',
-              backgroundImage:
-                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-              backgroundOrigin: 'border-box',
-              backgroundClip: 'padding-box, border-box',
-              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
-            }}
-          >
-            <h2 className="text-lg font-bold mb-4" style={{ color: '#1e3a8a' }}>
-              סטטיסטיקות
-            </h2>
-            <div className="grid grid-cols-2 gap-3">
-              <div
-                className="p-4 rounded-xl transition-all duration-300"
-                style={{
-                  background:
-                    'linear-gradient(135deg, rgba(30, 58, 138, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%)',
-                  border: '2px solid rgba(30, 58, 138, 0.2)',
-                }}
-              >
-                <p className="text-xs font-semibold mb-1" style={{ color: '#1e3a8a' }}>
-                  סה&quot;כ עמלות
-                </p>
-                <p className="text-xl font-bold" style={{ color: '#1e3a8a' }}>
-                  {formatCurrency(stats.totalCommission)}
-                </p>
-              </div>
-              <div
-                className="p-4 rounded-xl transition-all duration-300"
-                style={{
-                  background:
-                    'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(251, 191, 36, 0.08) 100%)',
-                  border: '2px solid rgba(245, 158, 11, 0.3)',
-                }}
-              >
-                <p className="text-xs font-semibold text-amber-700 mb-1">ממתינות</p>
-                <p className="text-xl font-bold text-amber-600">
-                  {formatCurrency(stats.pendingCommission)}
-                </p>
-              </div>
-              <div
-                className="p-4 rounded-xl transition-all duration-300"
-                style={{
-                  background:
-                    'linear-gradient(135deg, rgba(107, 114, 128, 0.08) 0%, rgba(148, 163, 184, 0.08) 100%)',
-                  border: '2px solid rgba(107, 114, 128, 0.2)',
-                }}
-              >
-                <p className="text-xs font-semibold text-gray-600 mb-1">קליקים</p>
-                <p className="text-xl font-bold text-gray-900">{formatNumber(stats.clicks)}</p>
-              </div>
-              <div
-                className="p-4 rounded-xl transition-all duration-300"
-                style={{
-                  background:
-                    'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(52, 211, 153, 0.08) 100%)',
-                  border: '2px solid rgba(16, 185, 129, 0.3)',
-                }}
-              >
-                <p className="text-xs font-semibold text-emerald-700 mb-1">המרה</p>
-                <p className="text-xl font-bold text-emerald-600">
-                  {formatPercent(stats.conversionRate)}
-                </p>
-              </div>
-            </div>
-          </section>
+          {/* Statistics Section - With Click-to-Toggle Descriptions */}
+          <StatisticsSection stats={stats} />
         </div>
 
         {/* Recent Orders Section */}

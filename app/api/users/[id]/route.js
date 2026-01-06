@@ -93,6 +93,9 @@ export async function PATCH(req, { params }) {
     if (Object.prototype.hasOwnProperty.call(body, 'isActive')) {
       updates.isActive = Boolean(body.isActive);
     }
+    if (Object.prototype.hasOwnProperty.call(body, 'showPushButtons')) {
+      updates.showPushButtons = Boolean(body.showPushButtons);
+    }
     const col = await usersCollection();
     const existing = await col.findOne({ _id: objectId });
     if (!existing) {

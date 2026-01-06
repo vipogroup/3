@@ -22,6 +22,7 @@ function RegisterPageContent() {
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [verifyError, setVerifyError] = useState('');
   const [countdown, setCountdown] = useState(0);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -205,7 +206,8 @@ function RegisterPageContent() {
       setMsg('נרשמת בהצלחה!');
 
       if (loginRes.ok) {
-        setTimeout(() => router.push('/products'), 500);
+        // Show notification modal before redirecting
+        setShowNotificationModal(true);
       } else {
         setTimeout(() => router.push('/login'), 1500);
       }
@@ -215,6 +217,30 @@ function RegisterPageContent() {
       setLoading(false);
     }
   }
+
+  const handleEnableNotifications = async () => {
+    try {
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          // Try to subscribe to push
+          if ('serviceWorker' in navigator) {
+            const registration = await navigator.serviceWorker.ready;
+            // Subscription will be handled by the app
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Notification error:', err);
+    }
+    setShowNotificationModal(false);
+    router.push('/products');
+  };
+
+  const handleSkipNotifications = () => {
+    setShowNotificationModal(false);
+    router.push('/products');
+  };
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-white px-4 py-8">
@@ -506,6 +532,54 @@ function RegisterPageContent() {
                   חזור
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notification Permission Modal */}
+      {showNotificationModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
+            <div className="text-center mb-6">
+              <div 
+                className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+              </div>
+              <h2 
+                className="text-xl font-bold mb-2"
+                style={{
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                הישאר מעודכן!
+              </h2>
+              <p className="text-gray-500 text-sm">
+                קבל התראות על מבצעים, הנחות והזמנות חדשות
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={handleEnableNotifications}
+                className="w-full text-white font-semibold py-3 rounded-xl transition-all"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                אפשר התראות
+              </button>
+              <button
+                onClick={handleSkipNotifications}
+                className="w-full text-gray-500 font-medium py-2 hover:text-gray-700 transition-colors"
+              >
+                אולי אחר כך
+              </button>
             </div>
           </div>
         </div>

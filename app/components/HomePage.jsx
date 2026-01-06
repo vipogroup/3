@@ -330,7 +330,7 @@ export default function HomePage() {
                   e.preventDefault();
                   const videoSection = document.getElementById('video-section');
                   if (videoSection) {
-                    const offset = 20;
+                    const offset = 60;
                     const top = videoSection.getBoundingClientRect().top + window.pageYOffset - offset;
                     window.scrollTo({ top, behavior: 'smooth' });
                   }

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { formatCurrencyILS } from '@/app/utils/date';
 import { useTheme } from '@/app/context/ThemeContext';
 import { getAllPresets, applyPreset } from '@/app/lib/themePresets';
+import TunnelButton from './TunnelButton';
 
 function PaletteIcon({ className = 'w-5 h-5' }) {
   return (
@@ -601,6 +602,9 @@ export default function SettingsForm() {
                   placeholder="https://..."
                 />
               </div>
+
+              {/* Mobile Tunnel Button */}
+              <TunnelButton />
             </div>
           )}
 

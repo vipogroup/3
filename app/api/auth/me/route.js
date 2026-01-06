@@ -20,6 +20,7 @@ export async function GET(req) {
         phone: user.phone,
         role: user.role || 'customer',
         name: user.fullName || user.email,
+        showPushButtons: user.showPushButtons !== false,
       },
     });
   } catch (e) {

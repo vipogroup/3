@@ -9,6 +9,7 @@ export default function ProductsClient() {
   const [loading, setLoading] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(() => new Set());
+  const [openDropdownId, setOpenDropdownId] = useState(null);
 
   const selectedCount = selectedProducts.size;
   const allSelected = useMemo(() => {
@@ -542,44 +543,81 @@ export default function ProductsClient() {
                         </button>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex gap-2">
-                          <Link
-                            href={`/admin/products/${product._id}/edit`}
-                            className="font-medium transition-colors"
-                            style={{ color: '#0891b2' }}
-                            onMouseEnter={(e) => (e.currentTarget.style.color = '#0e7490')}
-                            onMouseLeave={(e) => (e.currentTarget.style.color = '#0891b2')}
-                          >
-                            ערוך
-                          </Link>
+                        <div className="relative">
                           <button
-                            onClick={() => handleToggleActive(product._id, product.active, product.name)}
-                            disabled={loading}
-                            className="font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            style={{ color: loading ? '#9ca3af' : product.active ? '#f59e0b' : '#22c55e' }}
-                            onMouseEnter={(e) =>
-                              !loading && (e.currentTarget.style.color = product.active ? '#d97706' : '#16a34a')
-                            }
-                            onMouseLeave={(e) =>
-                              !loading && (e.currentTarget.style.color = product.active ? '#f59e0b' : '#22c55e')
-                            }
+                            type="button"
+                            onClick={() => setOpenDropdownId(openDropdownId === product._id ? null : product._id)}
+                            className="p-2 rounded-lg transition-all"
+                            style={{ 
+                              background: openDropdownId === product._id ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' : 'transparent',
+                              color: '#1e3a8a'
+                            }}
                           >
-                            {product.active ? 'השבת' : 'הפעל'}
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                            </svg>
                           </button>
-                          <button
-                            onClick={() => handleDelete(product._id, product.name)}
-                            disabled={loading}
-                            className="font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            style={{ color: loading ? '#9ca3af' : '#dc2626' }}
-                            onMouseEnter={(e) =>
-                              !loading && (e.currentTarget.style.color = '#b91c1c')
-                            }
-                            onMouseLeave={(e) =>
-                              !loading && (e.currentTarget.style.color = '#dc2626')
-                            }
-                          >
-                            מחק
-                          </button>
+                          
+                          {openDropdownId === product._id && (
+                            <div 
+                              className="absolute left-0 mt-1 w-40 bg-white rounded-xl py-2 z-50"
+                              style={{
+                                border: '2px solid transparent',
+                                backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                                backgroundOrigin: 'border-box',
+                                backgroundClip: 'padding-box, border-box',
+                                boxShadow: '0 8px 25px rgba(8, 145, 178, 0.25)',
+                              }}
+                            >
+                              <Link
+                                href={`/admin/products/${product._id}/edit`}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-gray-50"
+                                style={{ color: '#0891b2' }}
+                                onClick={() => setOpenDropdownId(null)}
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                ערוך
+                              </Link>
+                              <button
+                                type="button"
+                                onClick={() => { handleToggleFeatured(product._id, product.isFeatured); setOpenDropdownId(null); }}
+                                disabled={loading}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-gray-50"
+                                style={{ color: product.isFeatured ? '#f59e0b' : '#0891b2' }}
+                              >
+                                <svg className="w-4 h-4" fill={product.isFeatured ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                </svg>
+                                {product.isFeatured ? 'הסר מובלט' : 'הבלט'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => { handleToggleActive(product._id, product.active, product.name); setOpenDropdownId(null); }}
+                                disabled={loading}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-gray-50"
+                                style={{ color: product.active ? '#f59e0b' : '#22c55e' }}
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={product.active ? "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" : "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"} />
+                                </svg>
+                                {product.active ? 'השבת' : 'הפעל'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => { handleDelete(product._id, product.name); setOpenDropdownId(null); }}
+                                disabled={loading}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-red-50 border-t border-gray-100"
+                                style={{ color: '#dc2626' }}
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                מחק
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>

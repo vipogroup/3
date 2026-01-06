@@ -250,44 +250,6 @@ export default function UserHeader() {
         </div>
 
         <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
-          {/* Install App Button */}
-          <button
-            onClick={() => {
-              if (window.deferredPrompt) {
-                window.deferredPrompt.prompt();
-              } else {
-                // אם זה iOS, הצג הנחיות להתקנה
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                if (isIOS) {
-                  alert('להתקנת האפליקציה: לחץ על כפתור ״שתף״ ובחר ״הוסף למסך הבית״');
-                }
-              }
-            }}
-            className="flex items-center gap-1 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all duration-300"
-            style={{
-              background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
-              color: '#1e3a8a',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(8, 145, 178, 0.15)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              />
-            </svg>
-            <span className="hidden sm:inline">התקן אפליקציה</span>
-          </button>
-
           {/* Navigation */}
           <nav className="flex items-center gap-2 sm:gap-3">
             {navItems.map(({ href, label }) => {
@@ -508,7 +470,7 @@ export default function UserHeader() {
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
-                <span className="hidden sm:inline">החשבון שלי</span>
+                החשבון שלי
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -541,7 +503,8 @@ export default function UserHeader() {
                     </div>
                   </div>
 
-                  {/* Push Notifications Toggle Button */}
+                  {/* Push Notifications Toggle Button - Hidden if admin disabled */}
+                  {!user?.hideNotificationButtons && (
                   <div className="border-b border-gray-200">
                     <button
                       onClick={handleTogglePush}
@@ -568,8 +531,8 @@ export default function UserHeader() {
                         style={{ background: pushEnabled ? '#16a34a' : '#ef4444' }}
                       />
                     </button>
-                    {/* Test Push Button - only show when enabled */}
-                    {pushEnabled && (
+                    {/* Test Push Button - only show when enabled and showPushButtons is not false */}
+                    {pushEnabled && user?.showPushButtons !== false && (
                       <button
                         onClick={async () => {
                           try {
@@ -595,8 +558,8 @@ export default function UserHeader() {
                         שלח התראת בדיקה
                       </button>
                     )}
-                    {/* Reset Push Button - for fixing iOS issues */}
-                    {pushEnabled && (
+                    {/* Reset Push Button - for fixing iOS issues - only show when showPushButtons is not false */}
+                    {pushEnabled && user?.showPushButtons !== false && (
                       <button
                         onClick={async () => {
                           if (!confirm('פעולה זו תמחק את כל רישומי ההתראות שלך ותירשם מחדש. להמשיך?')) {
@@ -642,6 +605,7 @@ export default function UserHeader() {
                       </button>
                     )}
                   </div>
+                  )}
 
                   {/* Menu Items */}
                   <div className="py-1">
@@ -785,6 +749,25 @@ export default function UserHeader() {
                   </div>
 
                   <div className="border-t border-gray-200 pt-1">
+                    {/* Install App Button - moved to menu */}
+                    <button
+                      onClick={() => {
+                        if (window.deferredPrompt) {
+                          window.deferredPrompt.prompt();
+                        } else {
+                          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                          if (isIOS) {
+                            alert('להתקנת האפליקציה: לחץ על כפתור ״שתף״ ובחר ״הוסף למסך הבית״');
+                          }
+                        }
+                      }}
+                      className="flex items-center gap-2 w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      התקן אפליקציה
+                    </button>
                     <button
                       onClick={() => {
                         if (window.confirm('האם לרענן את האפליקציה כדי לקבל את העדכונים האחרונים?')) {

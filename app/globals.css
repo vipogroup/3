@@ -497,3 +497,8 @@ small, .text-sm {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 }
+
+/* Hero Content Position */
+.hero-content {
+  transform: translateY(20px);
+}

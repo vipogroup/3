@@ -132,6 +132,32 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
     evaluateStatus();
   }, [evaluateStatus]);
 
+  // Listen for push subscription changes from other components (e.g., PushNotificationModal)
+  useEffect(() => {
+    const handleSubscriptionChange = (event) => {
+      const { subscribed } = event.detail || {};
+      if (subscribed) {
+        setState((prev) => ({
+          ...prev,
+          subscribed: true,
+          loading: false,
+          permission: 'granted',
+          message: MESSAGES.granted,
+        }));
+      } else {
+        setState((prev) => ({
+          ...prev,
+          subscribed: false,
+          loading: false,
+          message: MESSAGES.disabled,
+        }));
+      }
+    };
+
+    window.addEventListener('push-subscription-changed', handleSubscriptionChange);
+    return () => window.removeEventListener('push-subscription-changed', handleSubscriptionChange);
+  }, []);
+
   const performSubscribe = useCallback(
     async ({ source, consentAt = new Date().toISOString(), recordConsent = true, forcePrompt = false }) => {
       console.log('PUSH_DEBUG: performSubscribe called', { source, consentAt, recordConsent });
@@ -259,9 +285,9 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
 
   const buttonLabel = () => {
     if (!actionable) return 'התראות לא זמינות';
-    if (subscribed) return 'בטל התראות דחיפה';
+    if (subscribed) return 'כבה התראות';
     if (permission === 'denied') return 'אפשר התראות בדפדפן';
-    return 'אפשר התראות דחיפה';
+    return 'הדלק התראות';
   };
 
   const buttonDisabled = !actionable || permission === 'denied';
@@ -278,7 +304,7 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
           color: '#ffffff',
           background: subscribed
             ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)'
-            : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+            : 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)',
           opacity: loading ? 0.8 : 1,
         }}
       >

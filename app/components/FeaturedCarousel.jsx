@@ -3,14 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCartContext } from '@/app/context/CartContext';
-
 export default function FeaturedCarousel() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const { addItem } = useCartContext();
 
   // Fetch featured products
   useEffect(() => {
@@ -45,14 +42,14 @@ export default function FeaturedCarousel() {
 
   if (loading) {
     return (
-      <div className="py-0 md:py-2 px-4 pb-20" style={{ position: 'relative', zIndex: 2, marginBottom: '120px', minHeight: '380px' }}>
+      <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, transform: 'translateY(25px)', marginBottom: '0', minHeight: '380px' }}>
         <div className="text-center mb-2 md:mb-4">
-          <h2 className="text-xl font-bold text-white drop-shadow-lg">
+          <h2 className="text-xl font-bold drop-shadow-lg" style={{ color: '#1e3a8a' }}>
             מוצרים במחיר מפעל
           </h2>
           <div 
             className="h-1 w-16 mx-auto mt-2 rounded-full"
-            style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.5) 0%, #ffffff 50%, rgba(255,255,255,0.5) 100%)' }}
+            style={{ background: 'linear-gradient(90deg, rgba(30, 58, 138, 0.3) 0%, #0891b2 50%, rgba(30, 58, 138, 0.3) 100%)' }}
           />
         </div>
         <div className="animate-pulse flex justify-center gap-4 overflow-hidden">
@@ -94,10 +91,10 @@ export default function FeaturedCarousel() {
   };
 
   return (
-    <div className="py-0 md:py-2 px-4 pb-20" style={{ position: 'relative', zIndex: 2, marginBottom: '120px', minHeight: '380px' }}>
+    <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, transform: 'translateY(25px)', marginBottom: '0', minHeight: '380px' }}>
       {/* Section Header */}
       <div className="text-center mb-2 md:mb-4">
-        <h2 className="text-xl font-bold text-white drop-shadow-lg">
+        <h2 className="text-xl font-bold drop-shadow-lg" style={{ color: '#1e3a8a' }}>
           מוצרים במחיר מפעל
         </h2>
         <div 
@@ -138,7 +135,6 @@ export default function FeaturedCarousel() {
             >
               <FeaturedProductCard 
                 product={product}
-                addItem={addItem}
               />
             </div>
           ))}
@@ -149,9 +145,8 @@ export default function FeaturedCarousel() {
   );
 }
 
-function FeaturedProductCard({ product, addItem }) {
+function FeaturedProductCard({ product }) {
   const [isFavorite, setIsFavorite] = useState(false);
-  const [addedToCart, setAddedToCart] = useState(false);
 
   const discountPercent = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -196,23 +191,6 @@ function FeaturedProductCard({ product, addItem }) {
     } catch (e) {
       console.error('Error saving favorites:', e);
     }
-  };
-
-  // Add to cart
-  const handleAddToCart = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    addItem({
-      _id: product._id,
-      name: product.name,
-      price: product.price,
-      image: product.image || product.imageUrl,
-      quantity: 1,
-    });
-    
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
   };
 
   return (
@@ -323,45 +301,7 @@ function FeaturedProductCard({ product, addItem }) {
           )}
         </div>
 
-        {/* Add to Cart Button */}
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={addedToCart}
-          className="mt-auto w-full text-white text-xs font-bold py-2 rounded-lg transition-all duration-200"
-          style={{
-            background: addedToCart 
-              ? '#10b981' 
-              : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-          }}
-          onMouseEnter={(e) => {
-            if (!addedToCart) {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!addedToCart) {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
-            }
-          }}
-        >
-          {addedToCart ? (
-            <span className="flex items-center justify-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              נוסף!
-            </span>
-          ) : (
-            <span className="flex items-center justify-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              הוסף לסל
-            </span>
-          )}
-        </button>
-      </div>
+              </div>
     </div>
   );
 }

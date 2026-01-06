@@ -115,6 +115,9 @@ export default function PushNotificationModal() {
         consentMeta: { source: 'login_modal', role: userRole },
       });
 
+      // Dispatch event to sync with PushNotificationsToggle
+      window.dispatchEvent(new CustomEvent('push-subscription-changed', { detail: { subscribed: true } }));
+
       setStep('success');
       
       // Auto close after success - short delay to show success message

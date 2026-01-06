@@ -264,6 +264,8 @@ export default function AdminDashboardClient() {
   const [alertCount, setAlertCount] = useState(0);
   const [securityData, setSecurityData] = useState(null);
   const [securityLoading, setSecurityLoading] = useState(false);
+  const [tunnelUrl, setTunnelUrl] = useState(null);
+  const [tunnelLoading, setTunnelLoading] = useState(false);
 
   const backupInfoTexts = {
     backup: 'יוצר גיבוי חדש של כל הקבצים והנתונים במערכת. מומלץ לבצע לפני כל עדכון גדול.',
@@ -446,7 +448,70 @@ export default function AdminDashboardClient() {
             </span>
           </h1>
           {isSuperAdmin && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* Tunnel Button for Mobile Push Notifications */}
+              <button
+                onClick={async () => {
+                  setTunnelLoading(true);
+                  try {
+                    if (tunnelUrl) {
+                      // Stop tunnel
+                      await fetch('/api/tunnel', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'stop' }),
+                      });
+                      setTunnelUrl(null);
+                    } else {
+                      // Start tunnel
+                      const res = await fetch('/api/tunnel', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'start', port: 3001 }),
+                      });
+                      const data = await res.json();
+                      if (data.ok && data.tunnelUrl) {
+                        setTunnelUrl(data.tunnelUrl);
+                        // Copy to clipboard
+                        navigator.clipboard.writeText(data.tunnelUrl);
+                        alert(`✅ Tunnel פעיל!\n\nכתובת HTTPS למובייל:\n${data.tunnelUrl}\n\n(הועתק ללוח)`);
+                      } else {
+                        alert('❌ ' + (data.error || 'שגיאה ביצירת tunnel'));
+                      }
+                    }
+                  } catch (err) {
+                    alert('❌ שגיאה: ' + err.message);
+                  }
+                  setTunnelLoading(false);
+                }}
+                disabled={tunnelLoading}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
+                style={{ 
+                  background: tunnelUrl 
+                    ? 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)' 
+                    : 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)' 
+                }}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                </svg>
+                {tunnelLoading ? 'טוען...' : tunnelUrl ? 'כבה Tunnel' : 'הפעל Tunnel'}
+              </button>
+              {tunnelUrl && (
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(tunnelUrl);
+                    alert('✅ הועתק!\n\n' + tunnelUrl);
+                  }}
+                  className="flex items-center gap-1 px-2 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  title={tunnelUrl}
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  העתק URL
+                </button>
+              )}
               <Link
                 href="/admin/monitor"
                 className="relative flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
@@ -630,6 +695,35 @@ export default function AdminDashboardClient() {
                 <SettingsIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
                 <span className="text-sm font-medium text-gray-900">התראות</span>
               </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.MANAGE_NOTIFICATIONS) && (
+              <button 
+                onClick={async () => {
+                  const message = prompt('הכנס את תוכן ההתראה:');
+                  if (!message) return;
+                  try {
+                    const res = await fetch('/api/push/send-all', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ title: 'VIPO', body: message }),
+                    });
+                    const data = await res.json();
+                    if (data.ok) {
+                      alert(`✅ התראה נשלחה ל-${data.sent || 0} משתמשים`);
+                    } else {
+                      alert('❌ ' + (data.error || 'שגיאה בשליחה'));
+                    }
+                  } catch (err) {
+                    alert('❌ שגיאה: ' + err.message);
+                  }
+                }}
+                className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all"
+              >
+                <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span className="text-sm font-medium text-gray-900">שלח Popup לכולם</span>
+              </button>
               )}
               {canAccess(ADMIN_PERMISSIONS.MANAGE_NOTIFICATIONS) && (
               <Link href="/admin/marketing-assets" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">

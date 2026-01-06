@@ -8,6 +8,17 @@ export default function InstallPrompt() {
   const [hasInstalledPWA, setHasInstalledPWA] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showIOSGuide, setShowIOSGuide] = useState(false);
+  const [promptCount, setPromptCount] = useState(0);
+
+  // Check prompt count on mount
+  useEffect(() => {
+    try {
+      const count = parseInt(localStorage.getItem('installPromptCount') || '0', 10);
+      setPromptCount(count);
+    } catch (e) {
+      console.log('localStorage not available');
+    }
+  }, []);
 
   // האזנה לאירוע beforeinstallprompt - עם תזמון של 12 שניות
   useEffect(() => {
@@ -16,9 +27,24 @@ export default function InstallPrompt() {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      // Check if we've shown the prompt 3 times already
+      try {
+        const count = parseInt(localStorage.getItem('installPromptCount') || '0', 10);
+        if (count >= 3) return; // Don't show after 3 times
+      } catch (err) {
+        // Continue if localStorage fails
+      }
       // הצג את הבאנר רק אחרי 12 שניות
       promptTimer = setTimeout(() => {
         setShowPrompt(true);
+        // Increment count when shown
+        try {
+          const currentCount = parseInt(localStorage.getItem('installPromptCount') || '0', 10);
+          localStorage.setItem('installPromptCount', String(currentCount + 1));
+          setPromptCount(currentCount + 1);
+        } catch (err) {
+          // Ignore localStorage errors
+        }
       }, 12000);
     };
 
@@ -50,8 +76,23 @@ export default function InstallPrompt() {
   // הצגת הבאנר ל-iOS - עם תזמון של 12 שניות
   useEffect(() => {
     if (isIOS && !hasInstalledPWA) {
+      // Check if we've shown the prompt 3 times already
+      try {
+        const count = parseInt(localStorage.getItem('installPromptCount') || '0', 10);
+        if (count >= 3) return; // Don't show after 3 times
+      } catch (err) {
+        // Continue if localStorage fails
+      }
       const timer = setTimeout(() => {
         setShowPrompt(true);
+        // Increment count when shown
+        try {
+          const currentCount = parseInt(localStorage.getItem('installPromptCount') || '0', 10);
+          localStorage.setItem('installPromptCount', String(currentCount + 1));
+          setPromptCount(currentCount + 1);
+        } catch (err) {
+          // Ignore localStorage errors
+        }
       }, 12000); // הצג אחרי 12 שניות
       return () => clearTimeout(timer);
     }

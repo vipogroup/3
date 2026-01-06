@@ -20,6 +20,7 @@ export default function UsersList() {
   const [roleFilter, setRoleFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchInput, setSearchInput] = useState('');
+  const [openDropdownId, setOpenDropdownId] = useState(null);
 
   const getCurrentUser = useCallback(async () => {
     try {
@@ -194,6 +195,32 @@ export default function UsersList() {
       setError(err.message || 'עדכון סטטוס נכשל');
     } finally {
       setTogglingId(null);
+    }
+  }
+
+  async function handleTogglePushButtons(user) {
+    if (!user?._id) return;
+
+    try {
+      setError('');
+      const newValue = user.showPushButtons === false ? true : false;
+      const res = await fetch(`/api/users/${user._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ showPushButtons: newValue }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to update');
+      }
+
+      const { user: updated } = await res.json();
+      setUsers((prev) =>
+        prev.map((u) => (u._id === user._id ? { ...u, showPushButtons: updated?.showPushButtons } : u)),
+      );
+    } catch (err) {
+      setError(err.message || 'עדכון נכשל');
     }
   }
 
@@ -417,12 +444,6 @@ export default function UsersList() {
                   className="px-6 py-3 text-right text-xs font-medium uppercase"
                   style={{ color: '#1e3a8a' }}
                 >
-                  סטטוס
-                </th>
-                <th
-                  className="px-6 py-3 text-right text-xs font-medium uppercase"
-                  style={{ color: '#1e3a8a' }}
-                >
                   תאריך הצטרפות
                 </th>
                 <th
@@ -510,132 +531,130 @@ export default function UsersList() {
                         <span className="text-gray-400 text-sm">-</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2 justify-end">
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full ${
-                            user.isActive
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}
-                        >
-                          {user.isActive ? 'פעיל' : 'לא פעיל'}
-                        </span>
-                        {!isCurrentUser && (
-                          <button
-                            type="button"
-                            onClick={() => handleToggleActive(user)}
-                            disabled={togglingId === user._id}
-                            className="px-3 py-1 rounded-lg text-xs font-semibold transition"
-                            style={{
-                              background: togglingId === user._id ? '#e5e7eb' : 'white',
-                              border:
-                                togglingId === user._id ? '2px solid #9ca3af' : '2px solid #0891b2',
-                              color: togglingId === user._id ? '#6b7280' : '#0891b2',
-                              cursor: togglingId === user._id ? 'wait' : 'pointer',
-                            }}
-                            onMouseEnter={(e) =>
-                              !togglingId &&
-                              (e.currentTarget.style.background =
-                                'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)')
-                            }
-                            onMouseLeave={(e) =>
-                              !togglingId && (e.currentTarget.style.background = 'white')
-                            }
-                          >
-                            {togglingId === user._id ? 'מעבד...' : user.isActive ? 'כבה' : 'הפעל'}
-                          </button>
-                        )}
-                      </div>
-                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(user.createdAt).toLocaleDateString('he-IL')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <div className="flex items-center gap-2">
-                        <select
-                          value={user.role}
-                          onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                          disabled={isCurrentUser || !isSuperAdminUser}
-                          className={`border rounded px-2 py-1 text-sm ${
-                            isCurrentUser || !isSuperAdminUser ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'
-                          }`}
-                          title={!isSuperAdminUser ? 'רק מנהלים ראשיים יכולים לשנות תפקידים' : ''}
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={() => setOpenDropdownId(openDropdownId === user._id ? null : user._id)}
+                          className="p-2 rounded-lg transition-all"
+                          style={{ 
+                            background: openDropdownId === user._id ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' : 'transparent',
+                            color: '#1e3a8a'
+                          }}
                         >
-                          {roleOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                        {user.role === 'admin' && isSuperAdminUser && !isSuperAdmin(user.email) && (
-                          <button
-                            type="button"
-                            onClick={() => handleOpenPermissionsModal(user)}
-                            className="px-3 py-1 rounded-lg text-xs font-semibold transition"
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                          </svg>
+                        </button>
+                        
+                        {openDropdownId === user._id && (
+                          <div 
+                            className="absolute left-0 mt-1 w-48 bg-white rounded-xl py-2 z-50"
                             style={{
-                              background: 'white',
-                              border: '2px solid #0891b2',
-                              color: '#0891b2',
+                              border: '2px solid transparent',
+                              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                              backgroundOrigin: 'border-box',
+                              backgroundClip: 'padding-box, border-box',
+                              boxShadow: '0 8px 25px rgba(8, 145, 178, 0.25)',
                             }}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.style.background =
-                                'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)')
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.style.background = 'white')
-                            }
                           >
-                            הרשאות
-                          </button>
-                        )}
-                        {!isCurrentUser && user.role !== 'admin' && isSuperAdminUser && (
-                          <button
-                            type="button"
-                            onClick={() => handleResetUser(user)}
-                            disabled={resettingId === user._id}
-                            className="px-3 py-1 rounded-lg text-xs font-semibold transition"
-                            style={{
-                              background: resettingId === user._id ? '#e5e7eb' : 'white',
-                              border:
-                                resettingId === user._id ? '2px solid #9ca3af' : '2px solid #f59e0b',
-                              color: resettingId === user._id ? '#6b7280' : '#f59e0b',
-                              cursor: resettingId === user._id ? 'wait' : 'pointer',
-                            }}
-                            onMouseEnter={(e) =>
-                              !resettingId &&
-                              (e.currentTarget.style.background = 'rgba(245, 158, 11, 0.05)')
-                            }
-                            onMouseLeave={(e) =>
-                              !resettingId && (e.currentTarget.style.background = 'white')
-                            }
-                          >
-                            {resettingId === user._id ? 'מאפס...' : 'איפוס'}
-                          </button>
-                        )}
-                        {!isCurrentUser && (
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteUser(user)}
-                            disabled={deletingId === user._id}
-                            className="px-3 py-1 rounded-lg text-xs font-semibold transition"
-                            style={{
-                              background: deletingId === user._id ? '#e5e7eb' : 'white',
-                              border:
-                                deletingId === user._id ? '2px solid #9ca3af' : '2px solid #dc2626',
-                              color: deletingId === user._id ? '#6b7280' : '#dc2626',
-                              cursor: deletingId === user._id ? 'wait' : 'pointer',
-                            }}
-                            onMouseEnter={(e) =>
-                              !deletingId &&
-                              (e.currentTarget.style.background = 'rgba(220, 38, 38, 0.05)')
-                            }
-                            onMouseLeave={(e) =>
-                              !deletingId && (e.currentTarget.style.background = 'white')
-                            }
-                          >
-                            {deletingId === user._id ? 'מוחק...' : 'מחק'}
-                          </button>
+                            {/* Role Change */}
+                            {isSuperAdminUser && !isCurrentUser && (
+                              <div className="px-3 py-2 border-b border-gray-100">
+                                <p className="text-xs text-gray-500 mb-1">שנה תפקיד:</p>
+                                <select
+                                  value={user.role}
+                                  onChange={(e) => { handleRoleChange(user._id, e.target.value); setOpenDropdownId(null); }}
+                                  className="w-full border rounded px-2 py-1 text-sm cursor-pointer"
+                                >
+                                  {roleOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
+                            
+                            {/* Permissions */}
+                            {user.role === 'admin' && isSuperAdminUser && !isSuperAdmin(user.email) && (
+                              <button
+                                type="button"
+                                onClick={() => { handleOpenPermissionsModal(user); setOpenDropdownId(null); }}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-gray-50"
+                                style={{ color: '#0891b2' }}
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                הרשאות
+                              </button>
+                            )}
+                            
+                            {/* Toggle Active */}
+                            {!isCurrentUser && (
+                              <button
+                                type="button"
+                                onClick={() => { handleToggleActive(user); setOpenDropdownId(null); }}
+                                disabled={togglingId === user._id}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-gray-50"
+                                style={{ color: user.isActive ? '#f59e0b' : '#16a34a' }}
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={user.isActive ? "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" : "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"} />
+                                </svg>
+                                {togglingId === user._id ? 'מעבד...' : user.isActive ? 'כבה משתמש' : 'הפעל משתמש'}
+                              </button>
+                            )}
+                            
+                            {/* Toggle Push Buttons */}
+                            {!isCurrentUser && user.role !== 'admin' && (
+                              <button
+                                type="button"
+                                onClick={() => { handleTogglePushButtons(user); setOpenDropdownId(null); }}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-gray-50"
+                                style={{ color: user.showPushButtons === false ? '#16a34a' : '#f59e0b' }}
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                {user.showPushButtons === false ? 'הדלק כפתורי התראות' : 'כבה כפתורי התראות'}
+                              </button>
+                            )}
+                            
+                            {/* Reset */}
+                            {!isCurrentUser && user.role !== 'admin' && isSuperAdminUser && (
+                              <button
+                                type="button"
+                                onClick={() => { handleResetUser(user); setOpenDropdownId(null); }}
+                                disabled={resettingId === user._id}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-gray-50"
+                                style={{ color: '#f59e0b' }}
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                {resettingId === user._id ? 'מאפס...' : 'איפוס משתמש'}
+                              </button>
+                            )}
+                            
+                            {/* Delete */}
+                            {!isCurrentUser && (
+                              <button
+                                type="button"
+                                onClick={() => { handleDeleteUser(user); setOpenDropdownId(null); }}
+                                disabled={deletingId === user._id}
+                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right hover:bg-red-50 border-t border-gray-100"
+                                style={{ color: '#dc2626' }}
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                {deletingId === user._id ? 'מוחק...' : 'מחק משתמש'}
+                              </button>
+                            )}
+                          </div>
                         )}
                       </div>
                     </td>
