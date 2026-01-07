@@ -616,5 +616,41 @@
     "userObjectId": {
       "$oid": "692deea497ce1a2ba6d4e151"
     }
+  },
+  {
+    "_id": {
+      "$oid": "695cfab3c488370764604ff9"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/fTJ_47lYRVE:APA91bGfvTdLWsZIgtfkePJpgYFrbKBQ_xfhoRbtNNoDJ6sQd6txph8EO3a_UXOJybsC_dNXIU863yy2UGzAViv8XtIiyPign7FbxEZaPpwWktpmMEJaTGHeS7wza6U-EuIw83T-Azyg",
+    "consentAt": {
+      "$date": "2026-01-06T12:06:07.149Z"
+    },
+    "consentMeta": {
+      "source": "login_modal",
+      "role": "agent"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-06T12:06:11.993Z"
+    },
+    "ip": "79.177.157.200",
+    "keys": {
+      "p256dh": "BAujh2WvVE-aNk35owwzk7fgmUVY-FOaKGMRR2XYL3QHCLzqmPyRLwwaDnczEIgtU2WY2m0-IwOQXayfJSFln74",
+      "auth": "OcnMxslakPMeqaHkhkin8A"
+    },
+    "lastConsentAction": "accepted",
+    "revokedAt": null,
+    "role": "agent",
+    "tags": [
+      "agent"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-06T12:06:11.993Z"
+    },
+    "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
+    "userId": "695cfa87a6b19e4ce1364ed6",
+    "userObjectId": {
+      "$oid": "695cfa87a6b19e4ce1364ed6"
+    }
   }
 ]

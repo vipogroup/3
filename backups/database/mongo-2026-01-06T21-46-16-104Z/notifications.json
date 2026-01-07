@@ -1494,5 +1494,27 @@
       "$date": "2026-01-06T10:32:55.913Z"
     },
     "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695cfa87a6b19e4ce1364ed7"
+    },
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: admin123@vipo.local",
+    "payload": {
+      "userId": {
+        "$oid": "695cfa87a6b19e4ce1364ed6"
+      },
+      "email": "admin123@vipo.local",
+      "fullName": "מוביל שרת "
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-06T12:05:27.198Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T12:05:27.198Z"
+    },
+    "__v": 0
   }
 ]

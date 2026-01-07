@@ -3,6 +3,7 @@
 import React, { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { subscribeToPush, ensureNotificationPermission } from '@/app/lib/pushClient';
 
 function RegisterPageContent() {
   const [fullName, setFullName] = useState('');
@@ -220,15 +221,24 @@ function RegisterPageContent() {
 
   const handleEnableNotifications = async () => {
     try {
-      if ('Notification' in window) {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          // Try to subscribe to push
-          if ('serviceWorker' in navigator) {
-            const registration = await navigator.serviceWorker.ready;
-            // Subscription will be handled by the app
-          }
-        }
+      // בקשת הרשאה והרשמה להתראות
+      const permission = await ensureNotificationPermission();
+      
+      if (permission.granted) {
+        // הרשמה להתראות Push
+        await subscribeToPush({
+          tags: [role || 'customer'],
+          consentAt: new Date().toISOString(),
+          consentVersion: '1.0',
+          consentMeta: { source: 'registration', role: role || 'customer' },
+        });
+        
+        // שליחת אירוע לעדכון הכפתור ב-Header
+        window.dispatchEvent(new CustomEvent('push-subscription-changed', { detail: { subscribed: true } }));
+        
+        console.log('Push notifications enabled successfully');
+      } else {
+        console.log('Push permission not granted:', permission.reason);
       }
     } catch (err) {
       console.error('Notification error:', err);

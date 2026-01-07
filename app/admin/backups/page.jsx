@@ -22,6 +22,7 @@ function BackupsContent() {
   const [activityLogs, setActivityLogs] = useState([]);
   const [logsLoading, setLogsLoading] = useState(false);
   const [backupValidation, setBackupValidation] = useState(null);
+  const [selectedBackupName, setSelectedBackupName] = useState('');
 
   useEffect(() => {
     async function checkAuth() {
@@ -155,6 +156,116 @@ function BackupsContent() {
   const runUpdate = () => runAction('update', 'עדכון מערכת');
   const runServer = () => runAction('server', 'הפעלת שרת מקומי');
 
+  // גיבוי מלא - קוד + DB + הגדרות
+  async function runFullBackup() {
+    setIsRunning(true);
+    setCurrentAction('גיבוי מלא');
+    setProgress(0);
+    setMessage('מכין גיבוי מלא (קוד + DB + הגדרות)...');
+
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 90) return prev;
+        return Math.min(prev + 5, 90);
+      });
+    }, 500);
+
+    try {
+      const res = await fetch('/api/admin/backups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'fullBackup' })
+      });
+
+      clearInterval(progressInterval);
+      setProgress(100);
+
+      if (res.ok) {
+        // Download the ZIP file
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `vipo-full-backup-${new Date().toISOString().split('T')[0]}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+        
+        setMessage('✅ גיבוי מלא הורד בהצלחה!\n\nהקובץ כולל:\n• קוד המערכת\n• מסד נתונים\n• קובץ הגדרות (.env.local)\n• הוראות שחזור');
+      } else {
+        const data = await res.json();
+        setMessage('❌ שגיאה: ' + (data.error || 'הגיבוי נכשל'));
+      }
+    } catch (error) {
+      clearInterval(progressInterval);
+      setProgress(0);
+      setMessage('❌ שגיאה: ' + error.message);
+    } finally {
+      setTimeout(() => {
+        setIsRunning(false);
+        setProgress(0);
+        setCurrentAction('');
+      }, 2000);
+    }
+  }
+
+  // שחזור גיבוי והעלאה ל-Vercel
+  async function runRestoreAndDeploy(backupName) {
+    if (!confirm(`⚠️ שחזור גיבוי "${backupName}" והעלאה ל-Vercel\n\nפעולה זו תחליף את כל הנתונים הקיימים במערכת ותעלה את השינויים ל-Vercel.\n\nהאם להמשיך?`)) {
+      return;
+    }
+
+    setIsRunning(true);
+    setCurrentAction('שחזור והעלאה ל-Vercel');
+    setProgress(0);
+    setMessage('מתחיל שחזור...');
+
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 90) return prev;
+        return Math.min(prev + 3, 90);
+      });
+    }, 500);
+
+    try {
+      const res = await fetch('/api/admin/backups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'restoreAndDeploy', backupName })
+      });
+      const data = await res.json();
+
+      clearInterval(progressInterval);
+      setProgress(100);
+
+      if (res.ok) {
+        let msg = `✅ ${data.message || 'שחזור והעלאה ל-Vercel הושלמו בהצלחה!'}`;
+        if (data.restored) {
+          msg += '\n\n📋 קולקציות ששוחזרו:\n';
+          msg += data.restored.map(c => `• ${c.name}: ${c.count} רשומות`).join('\n');
+        }
+        if (data.deployUrl) {
+          msg += `\n\n🚀 Vercel Deploy URL:\n${data.deployUrl}`;
+        }
+        setMessage(msg);
+        await loadBackups();
+      } else {
+        setMessage('❌ שגיאה: ' + (data.error || 'השחזור נכשל'));
+      }
+    } catch (error) {
+      clearInterval(progressInterval);
+      setProgress(0);
+      setMessage('❌ שגיאה: ' + error.message);
+    } finally {
+      setTimeout(() => {
+        setIsRunning(false);
+        setProgress(0);
+        setCurrentAction('');
+      }, 2000);
+    }
+  }
+
   // בדיקת תקינות קובץ גיבוי
   function validateBackupFile(fileContent) {
     try {
@@ -235,76 +346,114 @@ function BackupsContent() {
       setRestoreFile(file);
       setBackupValidation(null);
       
-      // בדיקת תקינות הקובץ
-      try {
-        const content = await file.text();
-        const validation = validateBackupFile(content);
-        setBackupValidation(validation);
-      } catch (err) {
-        setBackupValidation({ valid: false, issues: ['לא ניתן לקרוא את הקובץ'] });
+      // בדיקת סוג הקובץ
+      if (file.name.endsWith('.zip')) {
+        // קובץ ZIP - נבדוק אותו בשרת
+        setBackupValidation({ valid: true, issues: [], isZip: true, size: formatBytes(file.size) });
+      } else {
+        // קובץ JSON - בדיקת תקינות
+        try {
+          const content = await file.text();
+          const validation = validateBackupFile(content);
+          setBackupValidation(validation);
+        } catch (err) {
+          setBackupValidation({ valid: false, issues: ['לא ניתן לקרוא את הקובץ'] });
+        }
       }
     }
   }
 
   async function runRestore() {
-    if (!restoreFile) {
-      setMessage('❌ יש לבחור קובץ גיבוי תחילה');
+    // בדיקה אם נבחר גיבוי מהרשימה או הועלה קובץ
+    if (!restoreFile && !selectedBackupName) {
+      setMessage('יש לבחור גיבוי מהרשימה או להעלות קובץ');
       return;
     }
 
     // Confirm before restore
-    if (!confirm('⚠️ שחזור יחליף את כל הנתונים הקיימים במערכת!\n\nהאם אתה בטוח שברצונך להמשיך?')) {
+    if (!confirm('שחזור יחליף את כל הנתונים הקיימים במערכת!\n\nהאם אתה בטוח שברצונך להמשיך?')) {
       return;
     }
 
     setIsRunning(true);
     setCurrentAction('שחזור מגיבוי');
     setProgress(0);
-    setMessage('קורא קובץ גיבוי...');
+    setMessage('מתחיל שחזור...');
 
     try {
-      // Read the file
-      const fileContent = await restoreFile.text();
-      let backupData;
-      
-      try {
-        backupData = JSON.parse(fileContent);
-      } catch (parseErr) {
-        setMessage('❌ קובץ הגיבוי לא תקין - לא ניתן לפרסר JSON');
-        setIsRunning(false);
-        return;
+      let res, data;
+
+      // אם נבחר גיבוי מהרשימה - משתמש ב-restoreAndDeploy API (בלי Deploy)
+      if (selectedBackupName && !restoreFile) {
+        setMessage(`משחזר מגיבוי: ${selectedBackupName}...`);
+        setProgress(30);
+        
+        res = await fetch('/api/admin/backups', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'restoreFromLocal', backupName: selectedBackupName })
+        });
+        data = await res.json();
+      } else if (restoreFile.name.endsWith('.zip')) {
+        // קובץ ZIP - שולח לשרת לחילוץ ושחזור
+        setMessage('מעלה קובץ ZIP...');
+        setProgress(20);
+        
+        const formData = new FormData();
+        formData.append('file', restoreFile);
+        formData.append('action', 'restoreFromZip');
+        
+        res = await fetch('/api/admin/backups/upload', {
+          method: 'POST',
+          body: formData
+        });
+        data = await res.json();
+      } else {
+        // אם הועלה קובץ JSON - משתמש בשיטה הישנה
+        setMessage('קורא קובץ גיבוי...');
+        const fileContent = await restoreFile.text();
+        let backupData;
+        
+        try {
+          backupData = JSON.parse(fileContent);
+        } catch (parseErr) {
+          setMessage('קובץ הגיבוי לא תקין - לא ניתן לפרסר JSON');
+          setIsRunning(false);
+          return;
+        }
+
+        setProgress(30);
+        setMessage('משחזר נתונים...');
+
+        res = await fetch('/api/admin/backups', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'restore', backupData })
+        });
+        data = await res.json();
       }
 
-      setProgress(30);
-      setMessage('משחזר נתונים...');
-
-      const res = await fetch('/api/admin/backups', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'restore', backupData })
-      });
-
-      const data = await res.json();
       setProgress(100);
 
       if (res.ok) {
-        let msg = `✅ ${data.message}`;
+        let msg = `${data.message}`;
         if (data.restored) {
-          msg += '\n\n📋 קולקציות ששוחזרו:\n';
-          msg += data.restored.map(c => `• ${c.name}: ${c.count} רשומות`).join('\n');
+          msg += '\n\nקולקציות ששוחזרו:\n';
+          msg += data.restored.map(c => `- ${c.name}: ${c.count} רשומות`).join('\n');
         }
         if (data.errors && data.errors.length > 0) {
-          msg += '\n\n⚠️ שגיאות:\n';
-          msg += data.errors.map(e => `• ${e.collection}: ${e.error}`).join('\n');
+          msg += '\n\nשגיאות:\n';
+          msg += data.errors.map(e => `- ${e.collection}: ${e.error}`).join('\n');
         }
         setMessage(msg);
         setShowRestoreModal(false);
         setRestoreFile(null);
+        setSelectedBackupName('');
       } else {
-        setMessage('❌ שגיאה: ' + (data.error || 'השחזור נכשל'));
+        setMessage('שגיאה: ' + (data.error || 'השחזור נכשל'));
       }
     } catch (error) {
-      setMessage('❌ שגיאה: ' + error.message);
+      setMessage('שגיאה: ' + error.message);
     } finally {
       setTimeout(() => {
         setIsRunning(false);
@@ -398,6 +547,30 @@ function BackupsContent() {
               style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)' }}
             >
               {isRunning ? 'מבצע...' : '1. בצע גיבוי עכשיו'}
+            </button>
+          </div>
+
+          {/* Full Backup - Code + DB */}
+          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #7c3aed, #a855f7)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                </svg>
+              </span>
+              <div>
+                <h3 className="font-bold text-gray-900">גיבוי מלא</h3>
+                <p className="text-sm text-gray-500">קוד + DB + הגדרות</p>
+              </div>
+            </div>
+            <button 
+              type="button"
+              onClick={runFullBackup}
+              disabled={isRunning}
+              className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}
+            >
+              {isRunning ? 'מגבה...' : 'גיבוי מלא (הורדה)'}
             </button>
           </div>
 
@@ -507,7 +680,7 @@ function BackupsContent() {
               </span>
               <div>
                 <h3 className="font-bold text-gray-900">3. הפעל שרת פנימי</h3>
-                <p className="text-sm text-gray-500">הפעלת השרת המקומי לפיתוח</p>
+                <p className="text-sm text-gray-500">סוגר שרת קיים + מפעיל חדש + Auto-Restart</p>
               </div>
             </div>
             <button 
@@ -517,9 +690,9 @@ function BackupsContent() {
               className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
               style={{ background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)' }}
             >
-              {isRunning ? 'מפעיל...' : '3. הפעל שרת עכשיו'}
+              {isRunning ? 'מפעיל...' : '3. הפעל שרת (Auto-Restart)'}
             </button>
-            <p className="text-xs text-gray-500 mt-2 text-center">השרת יפעל בכתובת: http://localhost:3001</p>
+            <p className="text-xs text-gray-500 mt-2 text-center">יסגור שרת קיים, יפעיל חדש, ויפעיל מחדש אוטומטית בכל שינוי קוד</p>
           </div>
         </div>
 
@@ -615,11 +788,44 @@ function BackupsContent() {
                 <tbody>
                   {backups.map((backup, index) => (
                     <tr key={index} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4 font-medium">{backup.name}</td>
+                      <td className="py-3 px-4 font-medium">
+                        <div className="flex items-center gap-2">
+                          {backup.type === 'full' ? (
+                            <span className="px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-700">מלא</span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded text-xs bg-green-100 text-green-700">DB</span>
+                          )}
+                          <span className="text-xs text-gray-500">{backup.name}</span>
+                        </div>
+                      </td>
                       <td className="py-3 px-4 text-gray-600">{backup.date}</td>
                       <td className="py-3 px-4 text-gray-600">{backup.size}</td>
                       <td className="py-3 px-4">
-                        <span className="text-gray-400 text-sm">גיבוי מקומי</span>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => runRestoreAndDeploy(backup.name)}
+                            disabled={isRunning}
+                            className="px-3 py-1.5 rounded-lg text-white text-xs font-medium transition-all disabled:opacity-50 flex items-center gap-1.5"
+                            style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            שחזר
+                          </button>
+                          {backup.hasZip && (
+                            <a
+                              href={`/api/admin/backups/download?name=${backup.name}`}
+                              className="px-3 py-1.5 rounded-lg text-white text-xs font-medium transition-all flex items-center gap-1.5"
+                              style={{ background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)' }}
+                            >
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                              </svg>
+                              ZIP
+                            </a>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -744,57 +950,52 @@ function BackupsContent() {
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                בחר קובץ גיבוי (JSON)
+                בחר גיבוי לשחזור
               </label>
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleRestoreFileChange}
-                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
-              />
-              {restoreFile && (
-                <div className="mt-2">
-                  <p className="text-sm text-green-600 flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    נבחר: {restoreFile.name}
-                  </p>
-                  {/* תוצאות בדיקת תקינות */}
-                  {backupValidation && (
-                    <div className={`mt-2 p-2 rounded-lg text-sm ${backupValidation.valid ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-                      {backupValidation.valid ? (
-                        <div className="flex items-center gap-2">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span>קובץ תקין | גודל: {backupValidation.size}</span>
-                        </div>
-                      ) : (
-                        <div>
-                          <div className="flex items-center gap-2 font-medium">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            בעיות בקובץ:
-                          </div>
-                          <ul className="mt-1 mr-6 list-disc text-xs">
-                            {backupValidation.issues.map((issue, i) => (
-                              <li key={i}>{issue}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  )}
+              {backups.length > 0 ? (
+                <select
+                  value={selectedBackupName}
+                  onChange={(e) => setSelectedBackupName(e.target.value)}
+                  className="w-full p-3 border-2 border-amber-200 rounded-lg text-sm bg-white focus:border-amber-500 focus:outline-none"
+                >
+                  <option value="">-- בחר גיבוי --</option>
+                  {backups.map((backup, index) => (
+                    <option key={index} value={backup.name}>
+                      {backup.date} | {backup.size}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <p className="text-sm text-gray-500 p-3 bg-gray-50 rounded-lg">אין גיבויים זמינים</p>
+              )}
+              {selectedBackupName && (
+                <div className="mt-2 p-2 bg-green-50 text-green-700 rounded-lg text-sm flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>נבחר: {selectedBackupName}</span>
                 </div>
               )}
+              
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <p className="text-xs text-gray-500 mb-2">או העלה קובץ גיבוי ידנית:</p>
+                <input
+                  type="file"
+                  accept=".json,.zip"
+                  onChange={handleRestoreFileChange}
+                  className="w-full text-xs text-gray-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                />
+                {restoreFile && (
+                  <p className="mt-1 text-xs text-green-600">קובץ: {restoreFile.name}</p>
+                )}
+                <p className="mt-2 text-xs text-blue-600">💡 ניתן להעלות קובץ JSON או ZIP מגיבוי מלא</p>
+              </div>
             </div>
 
             <div className="flex gap-3">
               <button
                 onClick={runRestore}
-                disabled={!restoreFile || isRunning}
+                disabled={(!restoreFile && !selectedBackupName) || isRunning}
                 className="flex-1 py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
                 style={{ background: 'linear-gradient(135deg, #d97706 0%, #fbbf24 100%)' }}
               >

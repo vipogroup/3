@@ -1707,5 +1707,290 @@
     "createdAt": {
       "$date": "2026-01-06T11:01:49.104Z"
     }
+  },
+  {
+    "_id": {
+      "$oid": "695cefb5a6b19e4ce1364e11"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 doc",
+      "timestamp": "2026-01-06T11:19:17.276Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T11:19:17.276Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cefbea6b19e4ce1364e13"
+    },
+    "action": "update",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "עדכון מערכת באמצעות update-all.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Starting full pre-update routine ===\r\n\r\n[1/3] Running database backup...\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 document",
+      "timestamp": "2026-01-06T11:19:26.185Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T11:19:26.185Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cefc4a6b19e4ce1364e15"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 4575e9d] Update from dashboard - Tue 01/06/2026 13:19:29.66\n 64 files changed, 9936 insertions(+), 6064 deletions(-)\n delete mode 100644 backups/database/mongo-2026-01-04T23-18-18-379Z/activity_logs.json\n delete mode 100644 backups/database/mongo-2026-01-04T23-18-18-379Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-04T23-18-18-379Z/pushSubscriptions.json\n delete mode 100644 backups/database/mongo-2026-01-04T23-18-18-379Z/users.json\n delete mo",
+      "timestamp": "2026-01-06T11:19:32.695Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T11:19:32.696Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cf045a6b19e4ce1364e1e"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-lv25q6ok9-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-06T11:21:41.080Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T11:21:41.080Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cfa88a6b19e4ce1364ed9"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695cfa87a6b19e4ce1364ed6",
+    "userId": "695cfa87a6b19e4ce1364ed6",
+    "userEmail": "admin123@vipo.local",
+    "description": "התחברות למערכת: admin123@vipo.local (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-06T12:05:28.547Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T12:05:28.547Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cff72a6b19e4ce1364f77"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: ",
+      "timestamp": "2026-01-06T12:26:26.365Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T12:26:26.365Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cff7ca6b19e4ce1364f79"
+    },
+    "action": "update",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "עדכון מערכת באמצעות update-all.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Starting full pre-update routine ===\r\n\r\n[1/3] Running database backup...\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: ⚙️  enable debug logging with { debug: true }\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 documents to backu",
+      "timestamp": "2026-01-06T12:26:36.139Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T12:26:36.139Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695cff84a6b19e4ce1364f7a"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 12e8b6a] Update from dashboard - Tue 01/06/2026 14:26:41.36\n 67 files changed, 9828 insertions(+), 3178 deletions(-)\n create mode 100644 app/agent/share/[productId]/page.jsx\n delete mode 100644 backups/database/mongo-2026-01-05T20-35-15-105Z/activity_logs.json\n delete mode 100644 backups/database/mongo-2026-01-05T20-35-15-105Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-05T20-35-15-105Z/pushSubscriptions.json\n delete mode 100644 backups/data",
+      "timestamp": "2026-01-06T12:26:44.598Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T12:26:44.598Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d0040a6b19e4ce1364f89"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-n0gv8t9cn-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-06T12:29:52.809Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T12:29:52.809Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d0bdca6b19e4ce1365072"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 document",
+      "timestamp": "2026-01-06T13:19:24.635Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T13:19:24.635Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d0be2a6b19e4ce1365073"
+    },
+    "action": "update",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "עדכון מערכת באמצעות update-all.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Starting full pre-update routine ===\r\n\r\n[1/3] Running database backup...\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: ⚙️  suppress all logs with { quiet: true }\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 documents to backups\\da",
+      "timestamp": "2026-01-06T13:19:30.063Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T13:19:30.063Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d0be8a6b19e4ce1365074"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main e5ef861] Update from dashboard - Tue 01/06/2026 15:19:33.60\n 61 files changed, 8355 insertions(+), 257 deletions(-)\n create mode 100644 app/api/products/duplicate/route.js\n delete mode 100644 backups/database/mongo-2026-01-05T23-11-26-766Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-05T23-11-26-766Z/pushSubscriptions.json\n delete mode 100644 backups/database/mongo-2026-01-05T23-11-26-766Z/withdrawalRequests.json\n delete mode 100644 backups/d",
+      "timestamp": "2026-01-06T13:19:36.858Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T13:19:36.858Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d0c6aa6b19e4ce1365080"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-9yv4lfmh0-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-06T13:21:46.406Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T13:21:46.406Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d706fb1ae325e74b9d6fe"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 1d0472f] Update from dashboard - Tue 01/06/2026 22:28:27.51\n 216 files changed, 96913 insertions(+), 658 deletions(-)\n delete mode 100644 backups/database/mongo-2026-01-05T23-51-56-624Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-05T23-51-56-624Z/withdrawalRequests.json\n delete mode 100644 backups/database/mongo-2026-01-05T23-52-01-973Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-05T23-52-01-973Z/withdrawalRequests.json\n r",
+      "timestamp": "2026-01-06T20:28:31.512Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T20:28:31.512Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d70f0b1ae325e74b9d703"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-fb946qyvz-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-06T20:30:40.502Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T20:30:40.503Z"
+    }
   }
 ]

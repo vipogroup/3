@@ -155,12 +155,14 @@ export async function GET(req) {
 
     const items = fs.readdirSync(backupsDir, { withFileTypes: true });
     const backups = items
-      .filter(item => item.isDirectory() && item.name.startsWith('mongo-'))
+      .filter(item => item.isDirectory() && (item.name.startsWith('mongo-') || item.name.startsWith('full-')))
       .map(item => {
         const fullPath = path.join(backupsDir, item.name);
+        const isFull = item.name.startsWith('full-');
         
-        // Parse date from folder name (mongo-2025-12-31T15-47-00-767Z)
-        const dateMatch = item.name.match(/mongo-(\d{4})-(\d{2})-(\d{2})T(\d{2})-(\d{2})-(\d{2})/);
+        // Parse date from folder name (mongo-2025-12-31T15-47-00-767Z or full-2025-12-31T15-47-00-767Z)
+        const prefix = isFull ? 'full-' : 'mongo-';
+        const dateMatch = item.name.match(new RegExp(`${prefix}(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2})-(\\d{2})-(\\d{2})`));
         let dateStr = 'לא ידוע';
         if (dateMatch) {
           const [, year, month, day, hour, minute] = dateMatch;
@@ -171,7 +173,9 @@ export async function GET(req) {
           name: item.name,
           date: dateStr,
           size: formatBytes(getDirectorySize(fullPath)),
-          path: fullPath
+          path: fullPath,
+          type: isFull ? 'full' : 'database',
+          hasZip: isFull && fs.existsSync(path.join(fullPath, 'full-backup.zip'))
         };
       })
       .sort((a, b) => b.name.localeCompare(a.name)) // Sort newest first
@@ -280,6 +284,148 @@ export async function POST(req) {
         collectionsCount: collections.length,
         totalDocs,
         cleanedBackups: cleanupResult.cleaned
+      });
+    }
+
+    if (action === 'fullBackup') {
+      // גיבוי מלא - קוד + DB + הגדרות - יוצר ZIP להורדה
+      const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+      
+      if (!isLocal) {
+        return NextResponse.json({ error: 'גיבוי מלא זמין רק בסביבה מקומית' }, { status: 400 });
+      }
+
+      const archiver = (await import('archiver')).default;
+      const { getDb } = await import('@/lib/db');
+      const db = await getDb();
+
+      // יצירת ZIP בזיכרון
+      const archive = archiver('zip', { zlib: { level: 5 } });
+      const chunks = [];
+
+      // Promise לסיום
+      const archivePromise = new Promise((resolve, reject) => {
+        archive.on('data', (chunk) => chunks.push(chunk));
+        archive.on('end', () => resolve());
+        archive.on('error', (err) => reject(err));
+      });
+      
+      // 1. גיבוי מסד נתונים
+      const collections = await db.listCollections().toArray();
+      const dbBackup = { collections: {}, meta: { date: new Date().toISOString(), collectionsCount: collections.length } };
+      
+      for (const col of collections) {
+        const docs = await db.collection(col.name).find({}).toArray();
+        dbBackup.collections[col.name] = docs;
+        dbBackup.meta[col.name] = docs.length;
+      }
+      
+      archive.append(JSON.stringify(dbBackup, null, 2), { name: 'database-backup.json' });
+
+      // 2. קובץ הגדרות סביבה
+      const envPath = path.join(process.cwd(), '.env.local');
+      if (fs.existsSync(envPath)) {
+        const envContent = fs.readFileSync(envPath, 'utf8');
+        archive.append(envContent, { name: 'env-backup.txt' });
+      }
+
+      // 3. קובץ README עם הוראות
+      const readme = `# VIPO Full Backup
+תאריך גיבוי: ${new Date().toLocaleString('he-IL')}
+
+## תוכן הגיבוי:
+- database-backup.json - גיבוי מסד נתונים (${collections.length} קולקציות)
+- env-backup.txt - משתני סביבה
+
+## הוראות שחזור:
+
+### שלב 1: שכפול הקוד
+git clone https://github.com/vipogroup/vipo-agents-test.git
+cd vipo-agents-test
+
+### שלב 2: התקנה
+npm install
+
+### שלב 3: הגדרת משתני סביבה
+- העתק את env-backup.txt ל-.env.local
+- עדכן MONGODB_URI לכתובת החדשה
+- עדכן NEXTAUTH_URL לדומיין החדש
+
+### שלב 4: שחזור מסד נתונים
+- הפעל npm run dev
+- היכנס ל-/admin/backups
+- שחזר מקובץ database-backup.json
+
+### שלב 5: העלאה ל-Vercel
+vercel --prod
+
+## שירותים חיצוניים נדרשים:
+- MongoDB Atlas (מסד נתונים)
+- Vercel (אחסון)
+- Cloudinary (תמונות)
+- PayPlus (סליקה)
+- Twilio (SMS)
+- Google OAuth (התחברות)
+`;
+      archive.append(readme, { name: 'README.txt' });
+
+      // 4. הוספת קבצי קוד חשובים (לא כל הפרויקט - רק קבצי קונפיגורציה)
+      const configFiles = ['package.json', 'next.config.mjs', 'tailwind.config.js', 'vercel.json'];
+      for (const file of configFiles) {
+        const filePath = path.join(process.cwd(), file);
+        if (fs.existsSync(filePath)) {
+          const content = fs.readFileSync(filePath, 'utf8');
+          archive.append(content, { name: `config/${file}` });
+        }
+      }
+
+      // סיום הארכיון והמתנה
+      archive.finalize();
+      await archivePromise;
+      
+      const zipBuffer = Buffer.concat(chunks);
+
+      // שמירת ה-ZIP גם בתיקיית הגיבויים
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const backupDir = path.join(process.cwd(), 'backups', 'database', `full-${timestamp}`);
+      
+      if (!fs.existsSync(backupDir)) {
+        fs.mkdirSync(backupDir, { recursive: true });
+      }
+      
+      // שמירת ה-ZIP
+      const zipPath = path.join(backupDir, 'full-backup.zip');
+      fs.writeFileSync(zipPath, zipBuffer);
+      
+      // שמירת ה-JSON בנפרד (לשחזור מהיר)
+      const dbJsonPath = path.join(backupDir, 'database-backup.json');
+      fs.writeFileSync(dbJsonPath, JSON.stringify(dbBackup, null, 2));
+      
+      // שמירת מידע על הגיבוי
+      const infoPath = path.join(backupDir, 'backup-info.json');
+      fs.writeFileSync(infoPath, JSON.stringify({
+        type: 'full',
+        date: new Date().toISOString(),
+        collectionsCount: collections.length,
+        zipSize: zipBuffer.length,
+        files: ['full-backup.zip', 'database-backup.json']
+      }, null, 2));
+
+      // לוג פעילות
+      await logAdminActivity({
+        action: 'backup',
+        entity: 'system',
+        userId: user.userId,
+        userEmail: user.email,
+        description: 'גיבוי מלא (קוד + DB + הגדרות)',
+        metadata: { type: 'fullBackup', collectionsCount: collections.length, size: zipBuffer.length, folder: `full-${timestamp}` }
+      });
+
+      return new Response(zipBuffer, {
+        headers: {
+          'Content-Type': 'application/zip',
+          'Content-Disposition': `attachment; filename="vipo-full-backup-${new Date().toISOString().split('T')[0]}.zip"`
+        }
       });
     }
 
@@ -512,15 +658,55 @@ export async function POST(req) {
     }
 
     if (action === 'server') {
-      // Local server - not applicable in Vercel
-      return NextResponse.json({ 
-        success: true, 
-        message: 'להפעלה מחדש של השרת (יסגור שרת קיים ויפתח חדש):',
-        commands: [
-          'backups\\database\\restart-server.cmd'
-        ],
-        info: 'הסקריפט יבדוק אם יש שרת פעיל על פורט 3001, יסגור אותו ויפעיל שרת חדש.\n\nאו ידנית:\n1. netstat -aon | findstr :3001\n2. taskkill /PID <מספר> /F\n3. npm run dev'
-      });
+      const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+      
+      if (!isLocal) {
+        return NextResponse.json({ 
+          error: 'הפעלת שרת זמינה רק בסביבה מקומית' 
+        }, { status: 400 });
+      }
+
+      // הפעלת סקריפט Auto-Restart
+      try {
+        const scriptPath = path.join(process.cwd(), 'backups', 'database', 'Start-VIPO-Auto-Restart.cmd');
+        
+        if (!fs.existsSync(scriptPath)) {
+          return NextResponse.json({ 
+            error: 'סקריפט ההפעלה לא נמצא',
+            path: scriptPath
+          }, { status: 404 });
+        }
+
+        // הפעלה בחלון נפרד - עם גרשיים לנתיבים עם רווחים
+        const { spawn } = require('child_process');
+        spawn('cmd', ['/c', 'start', '""', `"${scriptPath}"`], {
+          detached: true,
+          stdio: 'ignore',
+          shell: true
+        }).unref();
+
+        await logAdminActivity({
+          action: 'server',
+          entity: 'system',
+          userId: user.userId,
+          userEmail: user.email,
+          description: 'הפעלת שרת עם Auto-Restart',
+          metadata: { script: 'Start-VIPO-Auto-Restart.cmd' }
+        });
+
+        return NextResponse.json({ 
+          success: true, 
+          message: '✅ סקריפט Auto-Restart הופעל!\n\nהשרת יסגור כל שרת קיים על פורט 3001 ויפעיל שרת חדש.\nבנוסף, הוא יפעיל מחדש אוטומטית כשיש שינויים בקוד.',
+          info: 'חלון PowerShell חדש נפתח עם השרת.'
+        });
+      } catch (error) {
+        console.error('[Server] Error:', error);
+        return NextResponse.json({ 
+          success: true, 
+          message: 'להפעלה ידנית, לחץ פעמיים על:\nbackups\\database\\Start-VIPO-Auto-Restart.cmd',
+          error: error.message
+        });
+      }
     }
 
     if (action === 'restore') {
@@ -600,6 +786,227 @@ export async function POST(req) {
         success: true, 
         message: `שחזור הושלם בהצלחה! שוחזרו ${restoredCollections.length} קולקציות.`,
         restored: restoredCollections
+      });
+    }
+
+    // שחזור מגיבוי מקומי בלבד (ללא Deploy)
+    if (action === 'restoreFromLocal') {
+      const { backupName } = body;
+      
+      if (!backupName) {
+        return NextResponse.json({ error: 'חסר שם גיבוי' }, { status: 400 });
+      }
+
+      const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+      
+      if (!isLocal) {
+        return NextResponse.json({ 
+          error: 'שחזור מגיבוי מקומי זמין רק בסביבת פיתוח' 
+        }, { status: 400 });
+      }
+
+      const backupDir = path.join(process.cwd(), 'backups', 'database', backupName);
+      
+      if (!fs.existsSync(backupDir)) {
+        return NextResponse.json({ error: `גיבוי לא נמצא: ${backupName}` }, { status: 404 });
+      }
+
+      const { getDb } = await import('@/lib/db');
+      const db = await getDb();
+      
+      const restoredCollections = [];
+      const errors = [];
+      
+      const files = fs.readdirSync(backupDir).filter(f => f.endsWith('.json'));
+      
+      for (const file of files) {
+        const collectionName = file.replace('.json', '');
+        try {
+          const filePath = path.join(backupDir, file);
+          const fileContent = fs.readFileSync(filePath, 'utf8');
+          const docs = JSON.parse(fileContent);
+          
+          const collection = db.collection(collectionName);
+          await collection.deleteMany({});
+          
+          if (docs && docs.length > 0) {
+            const { ObjectId } = require('mongodb');
+            const processedDocs = docs.map(doc => {
+              const processed = { ...doc };
+              if (processed._id && typeof processed._id === 'object' && processed._id.$oid) {
+                processed._id = new ObjectId(processed._id.$oid);
+              } else if (processed._id && typeof processed._id === 'string' && processed._id.length === 24) {
+                try {
+                  processed._id = new ObjectId(processed._id);
+                } catch (e) {}
+              }
+              return processed;
+            });
+            
+            await collection.insertMany(processedDocs);
+          }
+          
+          restoredCollections.push({
+            name: collectionName,
+            count: docs?.length || 0
+          });
+        } catch (err) {
+          console.error(`Error restoring ${collectionName}:`, err);
+          errors.push({ collection: collectionName, error: err.message });
+        }
+      }
+
+      await logAdminActivity({
+        action: 'restore',
+        entity: 'system',
+        userId: user.userId,
+        userEmail: user.email,
+        description: `שחזור מגיבוי ${backupName}`,
+        metadata: { 
+          type: 'restoreFromLocal',
+          backupName,
+          collectionsRestored: restoredCollections.length,
+          errors: errors.length
+        }
+      });
+
+      return NextResponse.json({ 
+        success: true, 
+        message: `שחזור מגיבוי "${backupName}" הושלם בהצלחה!`,
+        restored: restoredCollections,
+        errors: errors.length > 0 ? errors : undefined
+      });
+    }
+
+    // שחזור מגיבוי מקומי והעלאה ל-Vercel
+    if (action === 'restoreAndDeploy') {
+      const { backupName } = body;
+      
+      if (!backupName) {
+        return NextResponse.json({ error: 'חסר שם גיבוי' }, { status: 400 });
+      }
+
+      const isLocal = !process.env.VERCEL && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+      
+      if (!isLocal) {
+        return NextResponse.json({ 
+          error: 'שחזור מגיבוי מקומי זמין רק בסביבת פיתוח' 
+        }, { status: 400 });
+      }
+
+      const backupDir = path.join(process.cwd(), 'backups', 'database', backupName);
+      
+      if (!fs.existsSync(backupDir)) {
+        return NextResponse.json({ error: `גיבוי לא נמצא: ${backupName}` }, { status: 404 });
+      }
+
+      // שלב 1: שחזור מסד הנתונים
+      const { getDb } = await import('@/lib/db');
+      const db = await getDb();
+      
+      const restoredCollections = [];
+      const errors = [];
+      
+      // קריאת כל קבצי ה-JSON בתיקיית הגיבוי
+      const files = fs.readdirSync(backupDir).filter(f => f.endsWith('.json'));
+      
+      for (const file of files) {
+        const collectionName = file.replace('.json', '');
+        try {
+          const filePath = path.join(backupDir, file);
+          const fileContent = fs.readFileSync(filePath, 'utf8');
+          const docs = JSON.parse(fileContent);
+          
+          const collection = db.collection(collectionName);
+          
+          // מחיקת נתונים קיימים
+          await collection.deleteMany({});
+          
+          // הכנסת נתוני הגיבוי
+          if (docs && docs.length > 0) {
+            // טיפול ב-ObjectId
+            const { ObjectId } = require('mongodb');
+            const processedDocs = docs.map(doc => {
+              const processed = { ...doc };
+              if (processed._id && typeof processed._id === 'object' && processed._id.$oid) {
+                processed._id = new ObjectId(processed._id.$oid);
+              } else if (processed._id && typeof processed._id === 'string' && processed._id.length === 24) {
+                try {
+                  processed._id = new ObjectId(processed._id);
+                } catch (e) {
+                  // Keep as string if not valid ObjectId
+                }
+              }
+              return processed;
+            });
+            
+            await collection.insertMany(processedDocs);
+          }
+          
+          restoredCollections.push({
+            name: collectionName,
+            count: docs?.length || 0
+          });
+        } catch (err) {
+          console.error(`Error restoring ${collectionName}:`, err);
+          errors.push({ collection: collectionName, error: err.message });
+        }
+      }
+
+      // שלב 2: Git commit & push
+      let gitResult = '';
+      try {
+        const cwd = process.cwd();
+        await execAsync('git add .', { cwd });
+        await execAsync(`git commit -m "Restore from backup: ${backupName}" --allow-empty`, { cwd });
+        const { stdout: pushOutput } = await execAsync('git push origin main', { cwd, timeout: 60000 });
+        gitResult = pushOutput;
+      } catch (gitErr) {
+        console.error('[RestoreAndDeploy] Git error:', gitErr.message);
+        gitResult = gitErr.message;
+      }
+
+      // שלב 3: Deploy ל-Vercel
+      let deployResult = '';
+      const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL;
+      
+      if (deployHookUrl) {
+        try {
+          const deployRes = await fetch(deployHookUrl, { method: 'POST' });
+          if (deployRes.ok) {
+            deployResult = 'Deploy triggered successfully';
+          }
+        } catch (deployErr) {
+          deployResult = deployErr.message;
+        }
+      } else {
+        deployResult = 'No deploy hook configured - deploy manually from Vercel';
+      }
+
+      // לוג פעילות
+      await logAdminActivity({
+        action: 'restore',
+        entity: 'system',
+        userId: user.userId,
+        userEmail: user.email,
+        description: `שחזור מגיבוי ${backupName} והעלאה ל-Vercel`,
+        metadata: { 
+          type: 'restoreAndDeploy',
+          backupName,
+          collectionsRestored: restoredCollections.length,
+          errors: errors.length,
+          gitResult: gitResult.substring(0, 200),
+          deployResult
+        }
+      });
+
+      return NextResponse.json({ 
+        success: true, 
+        message: `שחזור מגיבוי "${backupName}" הושלם והועלה ל-Vercel!`,
+        restored: restoredCollections,
+        errors: errors.length > 0 ? errors : undefined,
+        gitResult,
+        deployUrl: 'https://vercel.com/vipos-projects-0154d019/vipo-agents-test/deployments'
       });
     }
 

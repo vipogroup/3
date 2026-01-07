@@ -36,20 +36,25 @@
   },
   {
     "_id": {
-      "$oid": "695ce189e06ce2731c9da8b1"
+      "$oid": "695cfa87a6b19e4ce1364ed6"
     },
-    "fullName": "שבו מרים צפורה",
-    "phone": "0533858881",
-    "email": "m0533858881@gmail.com",
-    "passwordHash": "$2a$10$AWX7oTfCMjGAq.xNpyDQt.3XcABRn1P6kKaThD8QD55i.AnOmdn1K",
-    "role": "customer",
+    "fullName": "מוביל שרת ",
+    "phone": "0533858882",
+    "email": "admin123@vipo.local",
+    "passwordHash": "$2a$10$0ujqznQA5CuwFV26OYUgSOeUmd2.gblrujpR.ucscCFoxojemRc3K",
+    "role": "agent",
     "isActive": true,
     "createdAt": {
-      "$date": "2026-01-06T10:18:49.218Z"
+      "$date": "2026-01-06T12:05:27.165Z"
     },
     "updatedAt": {
-      "$date": "2026-01-06T10:18:49.218Z"
+      "$date": "2026-01-06T12:05:40.892Z"
     },
-    "showPushButtons": false
+    "commissionPercent": 12,
+    "couponCode": "mvbyl-shrt-001",
+    "couponSequence": 1,
+    "couponSlug": "mvbyl-shrt",
+    "couponStatus": "active",
+    "discountPercent": 10
   }
 ]

@@ -1,6 +1,6 @@
 param(
   [string]$ProjectPath = (Resolve-Path "$PSScriptRoot/.."),
-  [string]$DevCommand = "pnpm dev",
+  [string]$DevCommand = "npm run dev",
   [int]$DebounceSeconds = 2,
   [string[]]$WatchExtensions = @(
     'js','jsx','ts','tsx','mjs','cjs','json','md','mdx','css','scss','sass','less','env','html'
@@ -18,10 +18,50 @@ $ProjectPath = (Resolve-Path $ProjectPath).Path
 $script:ServerProcess = $null
 $script:LastTrigger = Get-Date '2000-01-01'
 
+function Kill-ExistingServerOnPort {
+  param([int]$Port = 3001)
+  
+  Write-Host "Checking for existing server on port $Port..." -ForegroundColor Yellow
+  
+  try {
+    # שיטה 1: netstat
+    $netstatOutput = netstat -ano 2>$null | Select-String ":$Port\s"
+    foreach ($line in $netstatOutput) {
+      if ($line -match '\s+(\d+)\s*$') {
+        $processId = $matches[1]
+        if ($processId -and $processId -ne '0') {
+          Write-Host "Killing process $processId on port $Port (netstat)" -ForegroundColor Red
+          Start-Process -FilePath "taskkill" -ArgumentList "/PID", $processId, "/F", "/T" -NoNewWindow -Wait -ErrorAction SilentlyContinue
+        }
+      }
+    }
+    
+    # שיטה 2: Get-NetTCPConnection (יותר אמין)
+    $tcpConnections = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue
+    foreach ($conn in $tcpConnections) {
+      if ($conn.OwningProcess -and $conn.OwningProcess -ne 0) {
+        Write-Host "Killing process $($conn.OwningProcess) on port $Port (TCP)" -ForegroundColor Red
+        Stop-Process -Id $conn.OwningProcess -Force -ErrorAction SilentlyContinue
+      }
+    }
+    
+    # המתנה לסגירה
+    Start-Sleep -Seconds 2
+    Write-Host "Port $Port should be free now" -ForegroundColor Green
+    
+  } catch {
+    Write-Host "Note: $($_.Exception.Message)" -ForegroundColor DarkYellow
+  }
+}
+
 function Start-Server {
   if ($script:ServerProcess -and -not $script:ServerProcess.HasExited) {
     return
   }
+
+  # סגירת שרת קיים על הפורט (לא משנה מי הפעיל)
+  Kill-ExistingServerOnPort -Port 3001
+  Start-Sleep -Seconds 1
 
   Write-Host "Starting dev server: $DevCommand" -ForegroundColor Cyan
   $escapedPath = $ProjectPath.Replace("'", "''")

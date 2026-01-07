@@ -17,6 +17,13 @@ export default function ProfilePage() {
   const [formError, setFormError] = useState('');
   const [showAgentModal, setShowAgentModal] = useState(false);
   const [upgrading, setUpgrading] = useState(false);
+  
+  // Password change state
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [passwordData, setPasswordData] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   useEffect(() => {
     async function fetchUser() {
@@ -153,6 +160,56 @@ export default function ProfilePage() {
       setFormError(submitError.message || 'שמירת הפרופיל נכשלה');
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Handle password change
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    if (!passwordData.oldPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      setPasswordError('יש למלא את כל השדות');
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      setPasswordError('הסיסמה החדשה חייבת להכיל לפחות 6 תווים');
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordError('הסיסמאות אינן תואמות');
+      return;
+    }
+
+    setPasswordSaving(true);
+    try {
+      const res = await fetch('/api/users/me/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          oldPassword: passwordData.oldPassword,
+          newPassword: passwordData.newPassword,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'שינוי הסיסמה נכשל');
+      }
+
+      setPasswordSuccess('הסיסמה שונתה בהצלחה!');
+      setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+      setShowPasswordForm(false);
+      setTimeout(() => setPasswordSuccess(''), 3000);
+    } catch (err) {
+      console.error('Password change failed:', err);
+      setPasswordError(err.message || 'שגיאה בשינוי הסיסמה');
+    } finally {
+      setPasswordSaving(false);
     }
   };
 
@@ -563,6 +620,144 @@ export default function ProfilePage() {
             ) : (
               <p className="text-sm text-gray-600 text-center">
                 לחץ על כפתור העריכה כדי לעדכן את הפרטים שלך
+              </p>
+            )}
+          </div>
+
+          {/* Password Change Section */}
+          <div
+            className="rounded-2xl p-6 mt-6"
+            style={{
+              border: '2px solid transparent',
+              backgroundImage:
+                'linear-gradient(white, white), linear-gradient(135deg, #dc2626, #f97316)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+              boxShadow: '0 4px 15px rgba(220, 38, 38, 0.12)',
+            }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold" style={{ color: '#dc2626' }}>
+                🔐 שינוי סיסמה
+              </h2>
+              {!showPasswordForm && (
+                <button
+                  onClick={() => {
+                    setShowPasswordForm(true);
+                    setPasswordError('');
+                    setPasswordSuccess('');
+                  }}
+                  className="flex items-center gap-2 text-white font-medium px-4 py-2 rounded-lg transition-all duration-300"
+                  style={{ background: 'linear-gradient(135deg, #dc2626 0%, #f97316 100%)' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background =
+                      'linear-gradient(135deg, #f97316 0%, #dc2626 100%)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background =
+                      'linear-gradient(135deg, #dc2626 0%, #f97316 100%)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                    />
+                  </svg>
+                  שנה סיסמה
+                </button>
+              )}
+            </div>
+
+            {passwordSuccess && (
+              <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                {passwordSuccess}
+              </div>
+            )}
+            {passwordError && (
+              <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {passwordError}
+              </div>
+            )}
+
+            {showPasswordForm ? (
+              <form onSubmit={handlePasswordChange} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+                    סיסמה נוכחית
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordData.oldPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, oldPassword: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="הזן את הסיסמה הנוכחית"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+                    סיסמה חדשה
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="הזן סיסמה חדשה (לפחות 6 תווים)"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+                    אימות סיסמה חדשה
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="הזן שוב את הסיסמה החדשה"
+                  />
+                </div>
+                <div className="flex justify-end gap-3 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPasswordForm(false);
+                      setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+                      setPasswordError('');
+                    }}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                    disabled={passwordSaving}
+                  >
+                    בטל
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-all duration-300 disabled:opacity-50"
+                    style={{ background: 'linear-gradient(135deg, #dc2626 0%, #f97316 100%)' }}
+                    disabled={passwordSaving}
+                    onMouseEnter={(e) => {
+                      if (!passwordSaving)
+                        e.currentTarget.style.background =
+                          'linear-gradient(135deg, #f97316 0%, #dc2626 100%)';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!passwordSaving)
+                        e.currentTarget.style.background =
+                          'linear-gradient(135deg, #dc2626 0%, #f97316 100%)';
+                    }}
+                  >
+                    {passwordSaving ? 'משנה...' : 'שנה סיסמה'}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <p className="text-sm text-gray-600 text-center">
+                לחץ על הכפתור כדי לשנות את הסיסמה שלך
               </p>
             )}
           </div>

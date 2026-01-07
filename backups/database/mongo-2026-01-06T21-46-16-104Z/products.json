@@ -51,7 +51,7 @@
       "$date": "2025-12-01T04:34:52.101Z"
     },
     "updatedAt": {
-      "$date": "2026-01-05T23:48:38.785Z"
+      "$date": "2026-01-06T12:45:40.795Z"
     },
     "customFields": [],
     "sku": "5sds5d5sd5s",
@@ -112,14 +112,14 @@
       "$date": "2025-12-01T04:34:52.103Z"
     },
     "updatedAt": {
-      "$date": "2026-01-06T01:11:01.911Z"
+      "$date": "2026-01-06T12:45:42.596Z"
     },
     "customFields": [],
     "sku": "",
     "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
     "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
     "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
-    "isFeatured": true
+    "isFeatured": false
   },
   {
     "_id": {
@@ -180,9 +180,9 @@
       "$date": "2025-12-01T04:34:52.103Z"
     },
     "updatedAt": {
-      "$date": "2026-01-05T23:44:35.104Z"
+      "$date": "2026-01-06T12:45:45.291Z"
     },
-    "isFeatured": true
+    "isFeatured": false
   },
   {
     "_id": {
@@ -1648,6 +1648,73 @@
     },
     "updatedAt": {
       "$date": "2026-01-06T03:08:37.336Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695d02b6a6b19e4ce1364fa8"
+    },
+    "sku": "5sds5d5sd5s-COPY-222457",
+    "name": "אוזניות Bluetooth אלחוטיות (עותק)",
+    "description": "אוזניות אלחוטיות עם סאונד איכותי וביטול רעשים",
+    "fullDescription": "אוזניות Bluetooth מתקדמות עם טכנולוגיית ביטול רעשים אקטיבי, סוללה ל-30 שעות, וחיבור מהיר לכל המכשירים.",
+    "category": "אלקטרוניקה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 299,
+    "originalPrice": 1000.02,
+    "commission": 0,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": null,
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 54,
+    "groupCurrentQuantity": 15,
+    "groupPurchaseDetails": {
+      "closingDays": 30,
+      "shippingDays": 60,
+      "minQuantity": 54,
+      "currentQuantity": 15,
+      "totalDays": 90
+    },
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
+    "imageUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
+    "images": [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800",
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800"
+    ],
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    "imagePath": "",
+    "inStock": false,
+    "stockCount": 0,
+    "rating": 4.5,
+    "reviews": 234,
+    "features": [
+      "ביטול רעשים",
+      "30 שעות סוללה",
+      "Bluetooth 5.0",
+      "עמיד למים"
+    ],
+    "specs": "כגעגעגעגכעגע",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": false,
+    "isFeatured": false,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-06T12:40:22.457Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T12:40:22.457Z"
     },
     "__v": 0
   }
