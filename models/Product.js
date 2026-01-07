@@ -102,6 +102,11 @@ const ProductSchema = new mongoose.Schema(
       default: false,
       index: true
     },
+    position: {
+      type: Number,
+      default: null,
+      index: true
+    },
     archivedAt: { 
       type: Date, 
       default: null 

@@ -438,6 +438,7 @@ export async function GET(request) {
 
     const products = await Product.find(query)
       .populate({ path: 'catalogId', select: 'name slug image active' })
+      .sort({ position: 1, createdAt: -1 })
       .lean();
     const serialized = products.map((doc) => serializeProduct(doc));
     return NextResponse.json({ products: serialized }, { status: 200 });

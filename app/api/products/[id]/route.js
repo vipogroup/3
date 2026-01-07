@@ -122,6 +122,98 @@ export async function PUT(req, { params }) {
       update.isFeatured = body.isFeatured;
     }
 
+    // Handle position with auto-adjustment of other products (separated by purchase type)
+    if (body.position !== undefined) {
+      const newPosition = body.position === null ? null : Number(body.position);
+      
+      if (newPosition !== null && !Number.isNaN(newPosition) && newPosition > 0) {
+        // Get current product to know its old position and type
+        const currentProduct = await Product.findOne(buildProductQuery(params.id)).lean();
+        const oldPosition = currentProduct?.position;
+        const productType = body.purchaseType || currentProduct?.purchaseType || currentProduct?.type || 'regular';
+        const isGroupPurchase = productType === 'group';
+        
+        // Build filter for same purchase type
+        const typeFilter = isGroupPurchase 
+          ? { $or: [{ purchaseType: 'group' }, { type: 'group' }] }
+          : { $and: [{ purchaseType: { $ne: 'group' } }, { type: { $ne: 'group' } }] };
+        
+        console.log('[POSITION] Updating position for product:', currentProduct?.name, 'from', oldPosition, 'to', newPosition, 'type:', productType);
+        
+        // First, ensure all products of this type have a position assigned
+        // Get all products of same type without position
+        const productsWithoutPosition = await Product.find({
+          position: { $exists: false },
+          _id: { $ne: currentProduct._id },
+          ...typeFilter
+        }).lean();
+        
+        // Also get products with null position
+        const productsWithNullPosition = await Product.find({
+          position: null,
+          _id: { $ne: currentProduct._id },
+          ...typeFilter
+        }).lean();
+        
+        // Get highest current position for this type
+        const highestPositionProduct = await Product.findOne({
+          position: { $exists: true, $ne: null },
+          ...typeFilter
+        }).sort({ position: -1 }).lean();
+        
+        let nextPosition = (highestPositionProduct?.position || 0) + 1;
+        
+        // Assign positions to products without one
+        for (const prod of [...productsWithoutPosition, ...productsWithNullPosition]) {
+          await Product.updateOne(
+            { _id: prod._id },
+            { $set: { position: nextPosition++ } }
+          );
+        }
+        
+        // Now handle the position change
+        if (oldPosition !== newPosition) {
+          if (oldPosition && newPosition < oldPosition) {
+            // Moving up: shift products between newPosition and oldPosition-1 down by 1
+            await Product.updateMany(
+              { 
+                position: { $gte: newPosition, $lt: oldPosition },
+                _id: { $ne: currentProduct._id },
+                ...typeFilter
+              },
+              { $inc: { position: 1 } }
+            );
+          } else if (oldPosition && newPosition > oldPosition) {
+            // Moving down: shift products between oldPosition+1 and newPosition up by 1
+            await Product.updateMany(
+              { 
+                position: { $gt: oldPosition, $lte: newPosition },
+                _id: { $ne: currentProduct._id },
+                ...typeFilter
+              },
+              { $inc: { position: -1 } }
+            );
+          } else if (!oldPosition) {
+            // New position assignment: shift all products at newPosition and above down by 1
+            await Product.updateMany(
+              { 
+                position: { $gte: newPosition },
+                _id: { $ne: currentProduct._id },
+                ...typeFilter
+              },
+              { $inc: { position: 1 } }
+            );
+          }
+        }
+        
+        update.position = newPosition;
+        console.log('[POSITION] Position set to:', newPosition);
+      } else {
+        update.position = null;
+        console.log('[POSITION] Position cleared (set to null)');
+      }
+    }
+
     if (body.catalogId || body.catalogSlug) {
       let catalogDoc = null;
 

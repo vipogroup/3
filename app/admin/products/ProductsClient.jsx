@@ -10,7 +10,7 @@ export default function ProductsClient() {
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(() => new Set());
   const [openDropdownId, setOpenDropdownId] = useState(null);
-  const [sortField, setSortField] = useState(null);
+  const [sortField, setSortField] = useState('position');
   const [sortDirection, setSortDirection] = useState('asc');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
@@ -114,6 +114,11 @@ export default function ProductsClient() {
             aVal = a.category?.toLowerCase() || '';
             bVal = b.category?.toLowerCase() || '';
             break;
+          case 'position':
+            // Products with position come first, then by position number
+            aVal = a.position != null ? a.position : 99999;
+            bVal = b.position != null ? b.position : 99999;
+            break;
           default:
             return 0;
         }
@@ -159,7 +164,7 @@ export default function ProductsClient() {
     setFilterStatus('');
     setFilterStock('');
     setQuickFilter('');
-    setSortField(null);
+    setSortField('position');
     setSortDirection('asc');
   };
 
@@ -194,8 +199,11 @@ export default function ProductsClient() {
       case 'sku': currentValue = product.sku || ''; break;
       case 'name': currentValue = product.name || ''; break;
       case 'price': currentValue = String(product.price); break;
+      case 'originalPrice': currentValue = String(product.originalPrice || ''); break;
       case 'category': currentValue = product.category || ''; break;
       case 'stock': currentValue = String(product.stockCount ?? product.stock ?? 0); break;
+      case 'purchaseType': currentValue = product.purchaseType || product.type || 'regular'; break;
+      case 'position': currentValue = String(product.position ?? ''); break;
       default: currentValue = '';
     }
 
@@ -237,6 +245,34 @@ export default function ProductsClient() {
             return;
           }
           updateData.stockCount = stockNum;
+          break;
+        case 'originalPrice':
+          if (editValue === '' || editValue === null) {
+            updateData.originalPrice = null;
+          } else {
+            const origPriceNum = parseFloat(editValue);
+            if (isNaN(origPriceNum) || origPriceNum < 0) {
+              alert('מחיר מקורי לא תקין');
+              return;
+            }
+            updateData.originalPrice = origPriceNum;
+          }
+          break;
+        case 'purchaseType':
+          updateData.purchaseType = editValue;
+          updateData.type = editValue;
+          break;
+        case 'position':
+          if (editValue === '' || editValue === null) {
+            updateData.position = null;
+          } else {
+            const posNum = parseInt(editValue, 10);
+            if (isNaN(posNum) || posNum < 0) {
+              alert('מיקום לא תקין');
+              return;
+            }
+            updateData.position = posNum;
+          }
           break;
       }
 
@@ -809,6 +845,16 @@ export default function ProductsClient() {
                       </th>
                     )}
                     <th
+                      className="px-4 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-gray-50 transition-colors select-none"
+                      style={{ color: '#1e3a8a' }}
+                      onClick={() => handleSort('position')}
+                    >
+                      <span className="flex items-center justify-center gap-1">
+                        <SortIndicator field="position" />
+                        מיקום
+                      </span>
+                    </th>
+                    <th
                       className="px-6 py-4 text-right text-sm font-semibold cursor-pointer hover:bg-gray-50 transition-colors select-none"
                       style={{ color: '#1e3a8a' }}
                       onClick={() => handleSort('sku')}
@@ -837,6 +883,12 @@ export default function ProductsClient() {
                         <SortIndicator field="price" />
                         מחיר
                       </span>
+                    </th>
+                    <th
+                      className="px-6 py-4 text-right text-sm font-semibold select-none"
+                      style={{ color: '#1e3a8a' }}
+                    >
+                      מחיר מקורי
                     </th>
                     <th
                       className="px-6 py-4 text-right text-sm font-semibold cursor-pointer hover:bg-gray-50 transition-colors select-none"
@@ -886,7 +938,7 @@ export default function ProductsClient() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredAndSortedProducts.map((product) => (
+                  {filteredAndSortedProducts.map((product, index) => (
                     <tr
                       key={product._id}
                       className="border-b border-gray-100 transition-all"
@@ -906,6 +958,35 @@ export default function ProductsClient() {
                           />
                         </td>
                       )}
+                      <td className="px-4 py-4 text-center">
+                        {editingCell?.productId === product._id && editingCell?.field === 'position' ? (
+                          <input
+                            type="number"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onKeyDown={handleEditKeyDown}
+                            onBlur={saveInlineEdit}
+                            autoFocus
+                            min="1"
+                            className="w-16 px-2 py-1 border-2 border-cyan-500 rounded text-sm focus:outline-none text-center"
+                          />
+                        ) : (
+                          <span 
+                            onClick={() => startEditing(product._id, 'position', String(product.position || index + 1))}
+                            className="cursor-pointer hover:bg-cyan-50 px-3 py-1 rounded-full transition-colors font-semibold text-sm"
+                            style={{ 
+                              background: product.position 
+                                ? 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' 
+                                : '#f3f4f6', 
+                              color: product.position ? 'white' : '#374151',
+                              border: product.position ? 'none' : '1px dashed #9ca3af'
+                            }}
+                            title={product.position ? 'מיקום מוגדר - לחץ לעריכה' : 'מיקום אוטומטי - לחץ לקבוע מיקום'}
+                          >
+                            {product.position || index + 1}
+                          </span>
+                        )}
+                      </td>
                       <td className="px-6 py-4 text-gray-600 text-sm font-mono">
                         {editingCell?.productId === product._id && editingCell?.field === 'sku' ? (
                           <input
@@ -974,6 +1055,32 @@ export default function ProductsClient() {
                           </span>
                         )}
                       </td>
+                      <td className="px-6 py-4 text-gray-500">
+                        {editingCell?.productId === product._id && editingCell?.field === 'originalPrice' ? (
+                          <div className="flex items-center gap-1">
+                            <span>₪</span>
+                            <input
+                              type="number"
+                              value={editValue}
+                              onChange={(e) => setEditValue(e.target.value)}
+                              onKeyDown={handleEditKeyDown}
+                              onBlur={saveInlineEdit}
+                              autoFocus
+                              min="0"
+                              step="0.01"
+                              className="w-24 px-2 py-1 border-2 border-cyan-500 rounded text-sm focus:outline-none"
+                            />
+                          </div>
+                        ) : (
+                          <span 
+                            onClick={() => startEditing(product._id, 'originalPrice', String(product.originalPrice || ''))}
+                            className="cursor-pointer hover:bg-cyan-50 px-2 py-1 rounded transition-colors"
+                            title="לחץ לעריכה"
+                          >
+                            {product.originalPrice ? `₪${product.originalPrice}` : '—'}
+                          </span>
+                        )}
+                      </td>
                       <td className="px-6 py-4 text-gray-600">
                         {editingCell?.productId === product._id && editingCell?.field === 'category' ? (
                           <select
@@ -1028,15 +1135,31 @@ export default function ProductsClient() {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            product.purchaseType === 'group' || product.type === 'group'
-                              ? 'bg-orange-100 text-orange-700'
-                              : 'bg-blue-100 text-blue-700'
-                          }`}
-                        >
-                          {product.purchaseType === 'group' || product.type === 'group' ? 'קבוצתית' : 'רגילה'}
-                        </span>
+                        {editingCell?.productId === product._id && editingCell?.field === 'purchaseType' ? (
+                          <select
+                            value={editValue}
+                            onChange={(e) => { setEditValue(e.target.value); }}
+                            onBlur={saveInlineEdit}
+                            onKeyDown={handleEditKeyDown}
+                            autoFocus
+                            className="px-2 py-1 border-2 border-cyan-500 rounded text-sm focus:outline-none bg-white cursor-pointer"
+                          >
+                            <option value="regular">רגילה</option>
+                            <option value="group">קבוצתית</option>
+                          </select>
+                        ) : (
+                          <span
+                            onClick={() => startEditing(product._id, 'purchaseType', product.purchaseType || product.type || 'regular')}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer hover:opacity-80 transition-opacity ${
+                              product.purchaseType === 'group' || product.type === 'group'
+                                ? 'bg-orange-100 text-orange-700'
+                                : 'bg-blue-100 text-blue-700'
+                            }`}
+                            title="לחץ לעריכה"
+                          >
+                            {product.purchaseType === 'group' || product.type === 'group' ? 'קבוצתית' : 'רגילה'}
+                          </span>
+                        )}
                       </td>
                       <td className="px-6 py-4">
                         <span
