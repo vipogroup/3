@@ -21,7 +21,7 @@ export async function GET(req) {
         role: user.role || 'customer',
         name: user.fullName || user.email,
         showPushButtons: user.showPushButtons !== false,
-        permissions: user.permissions || [],
+        permissions: user.permissions,
       },
     });
   } catch (e) {
