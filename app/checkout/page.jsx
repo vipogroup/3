@@ -52,7 +52,26 @@ function CheckoutClient() {
     zipCode: '',
     paymentMethod: 'credit_card',
     agreeToTerms: false,
+    deliveryMethod: 'pickup', // 'pickup' or 'shipping'
   });
+
+  // Calculate max shipping price from cart items
+  const shippingPrice = useMemo(() => {
+    if (!items || items.length === 0) return 0;
+    let maxPrice = 0;
+    items.forEach((item) => {
+      if (item.shippingEnabled && item.shippingPrice > maxPrice) {
+        maxPrice = item.shippingPrice;
+      }
+    });
+    return maxPrice;
+  }, [items]);
+
+  // Check if any item supports shipping
+  const hasShippingOption = useMemo(() => {
+    if (!items || items.length === 0) return false;
+    return items.some((item) => item.shippingEnabled);
+  }, [items]);
   const [fieldErrors, setFieldErrors] = useState({});
   const [touchedFields, setTouchedFields] = useState({});
   const [autoCouponChecked, setAutoCouponChecked] = useState(false);
@@ -468,8 +487,13 @@ function CheckoutClient() {
 
   const grandTotal = useMemo(() => {
     if (!totals?.subtotal) return 0;
-    return Math.max(0, totals.subtotal - discountAmount);
-  }, [totals?.subtotal, discountAmount]);
+    const baseTotal = Math.max(0, totals.subtotal - discountAmount);
+    // Add shipping cost if shipping method is selected
+    if (formData.deliveryMethod === 'shipping' && shippingPrice > 0) {
+      return baseTotal + shippingPrice;
+    }
+    return baseTotal;
+  }, [totals?.subtotal, discountAmount, formData.deliveryMethod, shippingPrice]);
 
   const handleChange = (event) => {
     handleFieldChange(event);
@@ -505,6 +529,8 @@ function CheckoutClient() {
           zipCode: formData.zipCode,
         },
         paymentMethod: formData.paymentMethod,
+        deliveryMethod: formData.deliveryMethod,
+        shippingCost: formData.deliveryMethod === 'shipping' ? shippingPrice : 0,
         coupon: appliedCoupon
           ? {
               code: appliedCoupon.code,
@@ -975,6 +1001,82 @@ function CheckoutClient() {
 
               {(openSections[2] || expandAll) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Delivery Method Selection */}
+                  <div className="md:col-span-2 mb-4">
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      אופן קבלת ההזמנה *
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {/* Pickup Option */}
+                      <label
+                        className="flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all"
+                        style={{
+                          border: formData.deliveryMethod === 'pickup' 
+                            ? '2px solid #0891b2' 
+                            : '2px solid #e5e7eb',
+                          background: formData.deliveryMethod === 'pickup'
+                            ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'
+                            : 'white',
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name="deliveryMethod"
+                          value="pickup"
+                          checked={formData.deliveryMethod === 'pickup'}
+                          onChange={handleChange}
+                          className="w-5 h-5"
+                          style={{ accentColor: '#0891b2' }}
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <svg className="w-5 h-5" style={{ color: '#1e3a8a' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            <span className="font-bold" style={{ color: '#1e3a8a' }}>איסוף עצמי</span>
+                          </div>
+                          <p className="text-sm text-green-600 font-medium mt-1">חינם</p>
+                        </div>
+                      </label>
+
+                      {/* Shipping Option - only show if available */}
+                      {hasShippingOption && (
+                        <label
+                          className="flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all"
+                          style={{
+                            border: formData.deliveryMethod === 'shipping' 
+                              ? '2px solid #0891b2' 
+                              : '2px solid #e5e7eb',
+                            background: formData.deliveryMethod === 'shipping'
+                              ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'
+                              : 'white',
+                          }}
+                        >
+                          <input
+                            type="radio"
+                            name="deliveryMethod"
+                            value="shipping"
+                            checked={formData.deliveryMethod === 'shipping'}
+                            onChange={handleChange}
+                            className="w-5 h-5"
+                            style={{ accentColor: '#0891b2' }}
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <svg className="w-5 h-5" style={{ color: '#1e3a8a' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                              </svg>
+                              <span className="font-bold" style={{ color: '#1e3a8a' }}>משלוח עד הבית</span>
+                            </div>
+                            <p className="text-sm font-medium mt-1" style={{ color: '#0891b2' }}>
+                              +{shippingPrice.toLocaleString('he-IL')} ₪
+                            </p>
+                          </div>
+                        </label>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="md:col-span-2 relative">
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
                       כתובת מלאה *
@@ -1434,8 +1536,14 @@ function CheckoutClient() {
                 </div>
               )}
               <div className="flex justify-between">
-                <span>משלוח</span>
-                <span className="font-semibold text-green-600">חינם</span>
+                <span>
+                  {formData.deliveryMethod === 'shipping' ? 'משלוח עד הבית' : 'איסוף עצמי'}
+                </span>
+                <span className={`font-semibold ${formData.deliveryMethod === 'shipping' && shippingPrice > 0 ? '' : 'text-green-600'}`}>
+                  {formData.deliveryMethod === 'shipping' && shippingPrice > 0 
+                    ? `₪${shippingPrice.toLocaleString('he-IL')}` 
+                    : 'חינם'}
+                </span>
               </div>
               <div className="flex justify-between text-lg font-bold text-gray-900 border-t pt-3">
                 <span>{`סה"כ לתשלום`}</span>

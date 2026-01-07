@@ -55,6 +55,8 @@ export default function EditProductPage() {
 החלפה או החזר כספי תוך 14 יום
 תמיכה טכנית זמינה בטלפון ובמייל`,
     customFields: [],
+    shippingEnabled: false,
+    shippingPrice: '',
   });
   const [categories, setCategories] = useState(DEFAULT_PRODUCT_CATEGORIES);
   const [showAddCategory, setShowAddCategory] = useState(false);
@@ -167,6 +169,8 @@ export default function EditProductPage() {
 החלפה או החזר כספי תוך 14 יום
 תמיכה טכנית זמינה בטלפון ובמייל`,
           customFields: loadedProduct.customFields || [],
+          shippingEnabled: loadedProduct.shippingEnabled || false,
+          shippingPrice: loadedProduct.shippingPrice?.toString() || '',
         });
       } catch (err) {
         console.error('Failed to load product', err);
@@ -294,6 +298,8 @@ export default function EditProductPage() {
         whyChooseUs: formData.whyChooseUs || '',
         warranty: formData.warranty || '',
         customFields: formData.customFields.filter(f => f.title.trim() || f.content.trim()),
+        shippingEnabled: formData.shippingEnabled,
+        shippingPrice: formData.shippingEnabled ? (parseFloat(formData.shippingPrice) || 0) : 0,
       };
 
       if (payload.purchaseType === 'group' && payload.groupPurchaseDetails?.closingDays) {
@@ -753,6 +759,52 @@ export default function EditProductPage() {
                     className="w-5 h-5 text-purple-600 rounded focus:ring-blue-500"
                   />
                   <label className="mr-3 text-sm font-bold text-gray-900">במלאי</label>
+                </div>
+
+                {/* Shipping Options */}
+                <div className="md:col-span-2 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-xl">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                      </svg>
+                    </div>
+                    <h3 className="font-bold text-blue-900 text-lg">אפשרויות משלוח</h3>
+                  </div>
+                  
+                  <div className="flex items-center mb-4">
+                    <input
+                      type="checkbox"
+                      name="shippingEnabled"
+                      checked={formData.shippingEnabled}
+                      onChange={handleChange}
+                      className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                    />
+                    <label className="mr-3 text-sm font-bold text-gray-900">
+                      אפשר משלוח בתשלום (בנוסף לאיסוף עצמי)
+                    </label>
+                  </div>
+
+                  {formData.shippingEnabled && (
+                    <div className="mt-3 p-4 bg-white rounded-lg border border-blue-200">
+                      <label className="block text-sm font-bold text-blue-900 mb-2">
+                        מחיר משלוח (₪)
+                      </label>
+                      <input
+                        type="number"
+                        name="shippingPrice"
+                        value={formData.shippingPrice}
+                        onChange={handleChange}
+                        min="0"
+                        step="0.01"
+                        placeholder="לדוגמה: 35"
+                        className="w-full md:w-48 px-4 py-3 border-2 border-blue-300 rounded-xl focus:outline-none focus:border-blue-600"
+                      />
+                      <p className="text-xs text-gray-500 mt-2">
+                        הלקוח יוכל לבחור בין איסוף עצמי (חינם) למשלוח בתשלום
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

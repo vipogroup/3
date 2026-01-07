@@ -17,6 +17,8 @@ function normalizeItem(rawItem = {}) {
     image: rawItem.image || '',
     originalPrice: rawItem.originalPrice ? Number(rawItem.originalPrice) : null,
     quantity: quantity < 1 ? 1 : quantity,
+    shippingEnabled: rawItem.shippingEnabled || false,
+    shippingPrice: Number(rawItem.shippingPrice) || 0,
   };
 }
 
@@ -81,6 +83,8 @@ export function CartProvider({ children }) {
           originalPrice: product.originalPrice ?? null,
           image: product.image || '',
           quantity: qtyToAdd,
+          shippingEnabled: product.shippingEnabled || false,
+          shippingPrice: Number(product.shippingPrice) || 0,
         },
       ];
     });
