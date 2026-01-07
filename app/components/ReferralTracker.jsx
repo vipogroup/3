@@ -17,6 +17,10 @@ export default function ReferralTracker() {
       if (ref) {
         // Store in localStorage as fallback
         localStorage.setItem('referrerId', ref);
+        
+        // Store in cookie for auto-coupon at checkout
+        document.cookie = `autoCoupon=${encodeURIComponent(ref)}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+        
         console.log('Referral ID stored:', ref);
 
         // Check if we already logged this visit in this session

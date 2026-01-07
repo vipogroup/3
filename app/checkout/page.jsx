@@ -411,12 +411,29 @@ function CheckoutClient() {
 
     async function applyAutoCoupon() {
       try {
+        // First try API (reads from cookie)
         const res = await fetch('/api/referral/auto-coupon', { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = await res.json().catch(() => ({}));
-        const autoCode = data?.coupon;
-        if (autoCode && !cancelled) {
-          await handleApplyCoupon(autoCode);
+        if (res.ok) {
+          const data = await res.json().catch(() => ({}));
+          const autoCode = data?.coupon;
+          if (autoCode && !cancelled) {
+            setCouponInput(autoCode);
+            await handleApplyCoupon(autoCode);
+            return;
+          }
+        }
+        
+        // Fallback: read from localStorage (referrerId)
+        if (!cancelled) {
+          try {
+            const storedRef = localStorage.getItem('referrerId');
+            if (storedRef) {
+              setCouponInput(storedRef);
+              await handleApplyCoupon(storedRef);
+            }
+          } catch (e) {
+            console.log('localStorage not available');
+          }
         }
       } catch (error) {
         console.error('Auto coupon fetch failed:', error);
