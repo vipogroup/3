@@ -10,12 +10,265 @@ export default function ProductsClient() {
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(() => new Set());
   const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [sortField, setSortField] = useState(null);
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterSaleType, setFilterSaleType] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [filterStock, setFilterStock] = useState('');
+  const [quickFilter, setQuickFilter] = useState('');
+  const [editingCell, setEditingCell] = useState(null); // { productId, field }
+  const [editValue, setEditValue] = useState('');
 
   const selectedCount = selectedProducts.size;
+
+  // Get unique categories for filter
+  const categories = useMemo(() => {
+    const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+    return cats.sort((a, b) => a.localeCompare(b, 'he'));
+  }, [products]);
+
+  // Filter and sort products
+  const filteredAndSortedProducts = useMemo(() => {
+    let result = [...products];
+    
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.trim().toLowerCase();
+      result = result.filter(p => 
+        p.name?.toLowerCase().includes(query) ||
+        p.sku?.toLowerCase().includes(query) ||
+        p.category?.toLowerCase().includes(query) ||
+        p.description?.toLowerCase().includes(query)
+      );
+    }
+    
+    // Category filter
+    if (filterCategory) {
+      result = result.filter(p => p.category === filterCategory);
+    }
+    
+    // Sale type filter
+    if (filterSaleType) {
+      if (filterSaleType === 'group') {
+        result = result.filter(p => p.purchaseType === 'group' || p.type === 'group');
+      } else {
+        result = result.filter(p => p.purchaseType !== 'group' && p.type !== 'group');
+      }
+    }
+    
+    // Status filter
+    if (filterStatus) {
+      result = result.filter(p => filterStatus === 'active' ? p.active : !p.active);
+    }
+    
+    // Stock filter
+    if (filterStock) {
+      if (filterStock === 'out') {
+        result = result.filter(p => (p.stockCount ?? p.stock ?? 0) === 0);
+      } else if (filterStock === 'low') {
+        result = result.filter(p => {
+          const stock = p.stockCount ?? p.stock ?? 0;
+          return stock > 0 && stock <= 10;
+        });
+      } else if (filterStock === 'in') {
+        result = result.filter(p => (p.stockCount ?? p.stock ?? 0) > 10);
+      }
+    }
+    
+    // Quick filters
+    if (quickFilter) {
+      if (quickFilter === 'outOfStock') {
+        result = result.filter(p => (p.stockCount ?? p.stock ?? 0) === 0);
+      } else if (quickFilter === 'featured') {
+        result = result.filter(p => p.isFeatured);
+      } else if (quickFilter === 'inactive') {
+        result = result.filter(p => !p.active);
+      }
+    }
+    
+    // Sort
+    if (sortField) {
+      result.sort((a, b) => {
+        let aVal, bVal;
+        
+        switch (sortField) {
+          case 'name':
+            aVal = a.name?.toLowerCase() || '';
+            bVal = b.name?.toLowerCase() || '';
+            break;
+          case 'sku':
+            aVal = a.sku?.toLowerCase() || '';
+            bVal = b.sku?.toLowerCase() || '';
+            break;
+          case 'price':
+            aVal = parseFloat(a.price) || 0;
+            bVal = parseFloat(b.price) || 0;
+            break;
+          case 'stock':
+            aVal = a.stockCount ?? a.stock ?? 0;
+            bVal = b.stockCount ?? b.stock ?? 0;
+            break;
+          case 'category':
+            aVal = a.category?.toLowerCase() || '';
+            bVal = b.category?.toLowerCase() || '';
+            break;
+          default:
+            return 0;
+        }
+        
+        if (typeof aVal === 'string') {
+          const cmp = aVal.localeCompare(bVal, 'he');
+          return sortDirection === 'asc' ? cmp : -cmp;
+        }
+        
+        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+      });
+    }
+    
+    return result;
+  }, [products, searchQuery, filterCategory, filterSaleType, filterStatus, filterStock, quickFilter, sortField, sortDirection]);
+
   const allSelected = useMemo(() => {
-    if (!selectionMode || products.length === 0) return false;
-    return selectedProducts.size === products.length;
-  }, [selectionMode, products.length, selectedProducts]);
+    if (!selectionMode || filteredAndSortedProducts.length === 0) return false;
+    return selectedProducts.size === filteredAndSortedProducts.length;
+  }, [selectionMode, filteredAndSortedProducts.length, selectedProducts]);
+
+  // Handle sort click
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  // Sort indicator component
+  const SortIndicator = ({ field }) => {
+    if (sortField !== field) return <span className="text-gray-300 mr-1">⇅</span>;
+    return <span className="mr-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>;
+  };
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchQuery('');
+    setFilterCategory('');
+    setFilterSaleType('');
+    setFilterStatus('');
+    setFilterStock('');
+    setQuickFilter('');
+    setSortField(null);
+    setSortDirection('asc');
+  };
+
+  // Handle quick filter click
+  const handleQuickFilter = (filter) => {
+    setQuickFilter(prev => prev === filter ? '' : filter);
+  };
+
+  // Start inline editing
+  const startEditing = (productId, field, currentValue) => {
+    setEditingCell({ productId, field });
+    setEditValue(currentValue || '');
+  };
+
+  // Cancel editing
+  const cancelEditing = () => {
+    setEditingCell(null);
+    setEditValue('');
+  };
+
+  // Save inline edit
+  const saveInlineEdit = async () => {
+    if (!editingCell) return;
+    
+    const { productId, field } = editingCell;
+    const product = products.find(p => p._id === productId);
+    if (!product) return;
+
+    // Get current value based on field
+    let currentValue;
+    switch (field) {
+      case 'sku': currentValue = product.sku || ''; break;
+      case 'name': currentValue = product.name || ''; break;
+      case 'price': currentValue = String(product.price); break;
+      case 'category': currentValue = product.category || ''; break;
+      case 'stock': currentValue = String(product.stockCount ?? product.stock ?? 0); break;
+      default: currentValue = '';
+    }
+
+    if (editValue === currentValue) {
+      cancelEditing();
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const updateData = {};
+      
+      switch (field) {
+        case 'sku':
+          updateData.sku = editValue;
+          break;
+        case 'name':
+          if (!editValue.trim()) {
+            alert('שם המוצר לא יכול להיות ריק');
+            return;
+          }
+          updateData.name = editValue.trim();
+          break;
+        case 'price':
+          const priceNum = parseFloat(editValue);
+          if (isNaN(priceNum) || priceNum < 0) {
+            alert('מחיר לא תקין');
+            return;
+          }
+          updateData.price = priceNum;
+          break;
+        case 'category':
+          updateData.category = editValue;
+          break;
+        case 'stock':
+          const stockNum = parseInt(editValue, 10);
+          if (isNaN(stockNum) || stockNum < 0) {
+            alert('מלאי לא תקין');
+            return;
+          }
+          updateData.stockCount = stockNum;
+          break;
+      }
+
+      const res = await fetch(`/api/products/${productId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updateData),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || 'שגיאה בעדכון');
+      }
+
+      await loadProducts();
+      cancelEditing();
+    } catch (error) {
+      console.error('Inline edit error:', error);
+      alert(error.message || 'שגיאה בעדכון');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle key press in edit mode
+  const handleEditKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      saveInlineEdit();
+    } else if (e.key === 'Escape') {
+      cancelEditing();
+    }
+  };
 
   useEffect(() => {
     loadProducts();
@@ -196,7 +449,7 @@ export default function ProductsClient() {
       return;
     }
 
-    setSelectedProducts(new Set(products.map((product) => product._id)));
+    setSelectedProducts(new Set(filteredAndSortedProducts.map((product) => product._id)));
   };
 
   const handleBulkDelete = async () => {
@@ -416,7 +669,129 @@ export default function ProductsClient() {
           </div>
         </div>
 
-        {products.length > 0 ? (
+        {/* Search and Filters */}
+        <div className="bg-white rounded-xl shadow-md p-4 mb-4">
+          <div className="flex flex-col gap-3">
+            {/* Search */}
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="חיפוש לפי שם, מקט, קטגוריה או תיאור..."
+                className="w-full px-4 py-2.5 pr-10 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none transition-colors text-sm"
+              />
+              <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            
+            {/* Filters Row */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Category Filter */}
+              <select
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className="px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm bg-white cursor-pointer"
+              >
+                <option value="">כל הקטגוריות</option>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+              
+              {/* Sale Type Filter */}
+              <select
+                value={filterSaleType}
+                onChange={(e) => setFilterSaleType(e.target.value)}
+                className="px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm bg-white cursor-pointer"
+              >
+                <option value="">סוג מכירה</option>
+                <option value="regular">רגילה</option>
+                <option value="group">קבוצתית</option>
+              </select>
+              
+              {/* Status Filter */}
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm bg-white cursor-pointer"
+              >
+                <option value="">כל הסטטוסים</option>
+                <option value="active">פעיל</option>
+                <option value="inactive">לא פעיל</option>
+              </select>
+              
+              {/* Stock Filter */}
+              <select
+                value={filterStock}
+                onChange={(e) => setFilterStock(e.target.value)}
+                className="px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-cyan-500 focus:outline-none text-sm bg-white cursor-pointer"
+              >
+                <option value="">מלאי</option>
+                <option value="in">במלאי (10+)</option>
+                <option value="low">מלאי נמוך (1-10)</option>
+                <option value="out">אזל מהמלאי</option>
+              </select>
+              
+              {/* Quick Filter Buttons */}
+              <div className="flex gap-1 mr-2">
+                <button
+                  onClick={() => handleQuickFilter('outOfStock')}
+                  className={`px-2 py-1 rounded-lg text-xs font-medium transition-all ${
+                    quickFilter === 'outOfStock' 
+                      ? 'bg-red-500 text-white' 
+                      : 'bg-red-50 text-red-600 hover:bg-red-100'
+                  }`}
+                >
+                  אזל מהמלאי
+                </button>
+                <button
+                  onClick={() => handleQuickFilter('featured')}
+                  className={`px-2 py-1 rounded-lg text-xs font-medium transition-all ${
+                    quickFilter === 'featured' 
+                      ? 'text-white' 
+                      : 'text-cyan-600 hover:bg-cyan-100'
+                  }`}
+                  style={quickFilter === 'featured' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : { background: 'rgba(8, 145, 178, 0.1)' }}
+                >
+                  מומלצים
+                </button>
+                <button
+                  onClick={() => handleQuickFilter('inactive')}
+                  className={`px-2 py-1 rounded-lg text-xs font-medium transition-all ${
+                    quickFilter === 'inactive' 
+                      ? 'bg-gray-600 text-white' 
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  לא פעילים
+                </button>
+              </div>
+              
+              {/* Clear Filters */}
+              {(searchQuery || filterCategory || filterSaleType || filterStatus || filterStock || quickFilter || sortField) && (
+                <button
+                  onClick={clearFilters}
+                  className="px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1"
+                  style={{ color: '#dc2626', border: '2px solid #dc2626' }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  נקה הכל
+                </button>
+              )}
+              
+              {/* Results count */}
+              <span className="text-sm text-gray-500 mr-auto">
+                {filteredAndSortedProducts.length} מוצרים {filteredAndSortedProducts.length !== products.length && `(מתוך ${products.length})`}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {filteredAndSortedProducts.length > 0 ? (
           <div className="bg-white rounded-lg sm:rounded-xl shadow-md overflow-hidden">
             {/* Desktop Table */}
             <div className="hidden md:block overflow-x-auto">
@@ -434,34 +809,54 @@ export default function ProductsClient() {
                       </th>
                     )}
                     <th
-                      className="px-6 py-4 text-right text-sm font-semibold"
+                      className="px-6 py-4 text-right text-sm font-semibold cursor-pointer hover:bg-gray-50 transition-colors select-none"
                       style={{ color: '#1e3a8a' }}
+                      onClick={() => handleSort('sku')}
                     >
-                      מק&#34;ט
+                      <span className="flex items-center gap-1">
+                        <SortIndicator field="sku" />
+                        מק&#34;ט
+                      </span>
                     </th>
                     <th
-                      className="px-6 py-4 text-right text-sm font-semibold"
+                      className="px-6 py-4 text-right text-sm font-semibold cursor-pointer hover:bg-gray-50 transition-colors select-none"
                       style={{ color: '#1e3a8a' }}
+                      onClick={() => handleSort('name')}
                     >
-                      שם המוצר
+                      <span className="flex items-center gap-1">
+                        <SortIndicator field="name" />
+                        שם המוצר
+                      </span>
                     </th>
                     <th
-                      className="px-6 py-4 text-right text-sm font-semibold"
+                      className="px-6 py-4 text-right text-sm font-semibold cursor-pointer hover:bg-gray-50 transition-colors select-none"
                       style={{ color: '#1e3a8a' }}
+                      onClick={() => handleSort('price')}
                     >
-                      מחיר
+                      <span className="flex items-center gap-1">
+                        <SortIndicator field="price" />
+                        מחיר
+                      </span>
                     </th>
                     <th
-                      className="px-6 py-4 text-right text-sm font-semibold"
+                      className="px-6 py-4 text-right text-sm font-semibold cursor-pointer hover:bg-gray-50 transition-colors select-none"
                       style={{ color: '#1e3a8a' }}
+                      onClick={() => handleSort('category')}
                     >
-                      קטגוריה
+                      <span className="flex items-center gap-1">
+                        <SortIndicator field="category" />
+                        קטגוריה
+                      </span>
                     </th>
                     <th
-                      className="px-6 py-4 text-right text-sm font-semibold"
+                      className="px-6 py-4 text-right text-sm font-semibold cursor-pointer hover:bg-gray-50 transition-colors select-none"
                       style={{ color: '#1e3a8a' }}
+                      onClick={() => handleSort('stock')}
                     >
-                      מלאי
+                      <span className="flex items-center gap-1">
+                        <SortIndicator field="stock" />
+                        מלאי
+                      </span>
                     </th>
                     <th
                       className="px-6 py-4 text-right text-sm font-semibold"
@@ -491,7 +886,7 @@ export default function ProductsClient() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {products.map((product) => (
+                  {filteredAndSortedProducts.map((product) => (
                     <tr
                       key={product._id}
                       className="border-b border-gray-100 transition-all"
@@ -511,22 +906,126 @@ export default function ProductsClient() {
                           />
                         </td>
                       )}
-                      <td className="px-6 py-4 text-gray-600 text-sm font-mono">{product.sku || '—'}</td>
-                      <td className="px-6 py-4 text-gray-900">{product.name}</td>
-                      <td className="px-6 py-4 text-gray-900">₪{product.price}</td>
-                      <td className="px-6 py-4 text-gray-600">{product.category}</td>
+                      <td className="px-6 py-4 text-gray-600 text-sm font-mono">
+                        {editingCell?.productId === product._id && editingCell?.field === 'sku' ? (
+                          <input
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onKeyDown={handleEditKeyDown}
+                            onBlur={saveInlineEdit}
+                            autoFocus
+                            className="w-full px-2 py-1 border-2 border-cyan-500 rounded text-sm focus:outline-none"
+                          />
+                        ) : (
+                          <span 
+                            onClick={() => startEditing(product._id, 'sku', product.sku)}
+                            className="cursor-pointer hover:bg-cyan-50 px-2 py-1 rounded transition-colors"
+                            title="לחץ לעריכה"
+                          >
+                            {product.sku || '—'}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-gray-900">
+                        {editingCell?.productId === product._id && editingCell?.field === 'name' ? (
+                          <input
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onKeyDown={handleEditKeyDown}
+                            onBlur={saveInlineEdit}
+                            autoFocus
+                            className="w-full px-2 py-1 border-2 border-cyan-500 rounded text-sm focus:outline-none"
+                          />
+                        ) : (
+                          <span 
+                            onClick={() => startEditing(product._id, 'name', product.name)}
+                            className="cursor-pointer hover:bg-cyan-50 px-2 py-1 rounded transition-colors"
+                            title="לחץ לעריכה"
+                          >
+                            {product.name}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-gray-900">
+                        {editingCell?.productId === product._id && editingCell?.field === 'price' ? (
+                          <div className="flex items-center gap-1">
+                            <span>₪</span>
+                            <input
+                              type="number"
+                              value={editValue}
+                              onChange={(e) => setEditValue(e.target.value)}
+                              onKeyDown={handleEditKeyDown}
+                              onBlur={saveInlineEdit}
+                              autoFocus
+                              min="0"
+                              step="0.01"
+                              className="w-24 px-2 py-1 border-2 border-cyan-500 rounded text-sm focus:outline-none"
+                            />
+                          </div>
+                        ) : (
+                          <span 
+                            onClick={() => startEditing(product._id, 'price', String(product.price))}
+                            className="cursor-pointer hover:bg-cyan-50 px-2 py-1 rounded transition-colors"
+                            title="לחץ לעריכה"
+                          >
+                            ₪{product.price}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-gray-600">
+                        {editingCell?.productId === product._id && editingCell?.field === 'category' ? (
+                          <select
+                            value={editValue}
+                            onChange={(e) => { setEditValue(e.target.value); }}
+                            onBlur={saveInlineEdit}
+                            onKeyDown={handleEditKeyDown}
+                            autoFocus
+                            className="w-full px-2 py-1 border-2 border-cyan-500 rounded text-sm focus:outline-none bg-white cursor-pointer"
+                          >
+                            <option value="">בחר קטגוריה</option>
+                            {categories.map(cat => (
+                              <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <span 
+                            onClick={() => startEditing(product._id, 'category', product.category)}
+                            className="cursor-pointer hover:bg-cyan-50 px-2 py-1 rounded transition-colors"
+                            title="לחץ לעריכה"
+                          >
+                            {product.category || '—'}
+                          </span>
+                        )}
+                      </td>
                       <td className="px-6 py-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            (product.stockCount ?? product.stock ?? 0) > 10
-                              ? 'bg-green-100 text-green-700'
-                              : (product.stockCount ?? product.stock ?? 0) > 0
-                              ? 'bg-amber-100 text-amber-700'
-                              : 'bg-red-100 text-red-700'
-                          }`}
-                        >
-                          {product.stockCount ?? product.stock ?? 0}
-                        </span>
+                        {editingCell?.productId === product._id && editingCell?.field === 'stock' ? (
+                          <input
+                            type="number"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onKeyDown={handleEditKeyDown}
+                            onBlur={saveInlineEdit}
+                            autoFocus
+                            min="0"
+                            className="w-20 px-2 py-1 border-2 border-cyan-500 rounded text-sm focus:outline-none"
+                          />
+                        ) : (
+                          <span
+                            onClick={() => startEditing(product._id, 'stock', String(product.stockCount ?? product.stock ?? 0))}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer hover:opacity-80 transition-opacity ${
+                              (product.stockCount ?? product.stock ?? 0) > 10
+                                ? 'bg-green-100 text-green-700'
+                                : (product.stockCount ?? product.stock ?? 0) > 0
+                                ? 'bg-amber-100 text-amber-700'
+                                : 'bg-red-100 text-red-700'
+                            }`}
+                            title="לחץ לעריכה"
+                          >
+                            {product.stockCount ?? product.stock ?? 0}
+                          </span>
+                        )}
                       </td>
                       <td className="px-6 py-4">
                         <span
@@ -680,7 +1179,7 @@ export default function ProductsClient() {
             {/* Mobile Cards */}
             <div className="md:hidden p-4">
               <div className="grid grid-cols-2 gap-3">
-                {products.map((product) => (
+                {filteredAndSortedProducts.map((product) => (
                   <div
                     key={product._id}
                     className="p-3 rounded-lg border-2 border-gray-200 bg-white"
