@@ -761,14 +761,44 @@ export default function UserHeader() {
                   <div className="border-t border-gray-200 pt-1">
                     {/* Install App Button - moved to menu */}
                     <button
-                      onClick={() => {
-                        if (window.deferredPrompt) {
-                          window.deferredPrompt.prompt();
-                        } else {
-                          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                          if (isIOS) {
-                            alert('להתקנת האפליקציה: לחץ על כפתור ״שתף״ ובחר ״הוסף למסך הבית״');
+                      onClick={async () => {
+                        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+                        
+                        // Check if already installed
+                        if (isStandalone) {
+                          alert('האפליקציה כבר מותקנת!');
+                          return;
+                        }
+                        
+                        // Try using the PWA install prompt (works on Android/Chrome)
+                        if (window.deferredPwaPrompt) {
+                          try {
+                            window.deferredPwaPrompt.prompt();
+                            const { outcome } = await window.deferredPwaPrompt.userChoice;
+                            if (outcome === 'accepted') {
+                              window.deferredPwaPrompt = null;
+                            }
+                            return;
+                          } catch (err) {
+                            console.warn('PWA prompt failed:', err);
                           }
+                        }
+                        
+                        // Alternative: try using the global helper function
+                        if (window.requestPwaInstallPrompt) {
+                          const result = await window.requestPwaInstallPrompt();
+                          if (result.outcome !== 'unavailable') {
+                            return;
+                          }
+                        }
+                        
+                        // Fallback instructions based on platform
+                        if (isIOS) {
+                          alert('להתקנת האפליקציה באייפון:\n\n1. לחץ על כפתור השיתוף (החץ למעלה) בתחתית המסך\n2. גלול ובחר ״הוסף למסך הבית״\n3. לחץ ״הוסף״');
+                        } else {
+                          // Android or other platforms
+                          alert('להתקנת האפליקציה:\n\n1. לחץ על תפריט הדפדפן (3 נקודות למעלה)\n2. בחר ״התקן אפליקציה״ או ״הוסף למסך הבית״');
                         }
                       }}
                       className="flex items-center gap-2 w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
