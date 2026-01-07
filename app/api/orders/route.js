@@ -11,6 +11,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
 import { pushToUsers } from '@/lib/pushSender';
+import { getCurrentTenant, isSuperAdmin } from '@/lib/tenant';
 
 async function ordersCollection() {
   const db = await getDb();
@@ -39,8 +40,14 @@ export async function GET(req) {
     const filter = {};
     const criteria = [];
 
-    if (user.role === 'admin') {
-      // no additional filter
+    // Multi-Tenant: Filter by tenant
+    const tenant = await getCurrentTenant(req);
+    if (tenant) {
+      criteria.push({ tenantId: tenant._id });
+    }
+
+    if (user.role === 'admin' || user.role === 'super_admin' || user.role === 'business_admin') {
+      // Admin sees all orders (filtered by tenant if applicable)
     } else if (user.role === 'agent') {
       if (!ObjectId.isValid(user.id)) {
         return NextResponse.json({ error: 'invalid_agent_id' }, { status: 400 });
@@ -392,6 +399,10 @@ export async function POST(req) {
     // Commission hold period: 30 days for regular, 100 days for group purchases
     const holdDays = orderType === 'group' ? 100 : 30;
     const commissionAvailableAt = new Date(now.getTime() + holdDays * 24 * 60 * 60 * 1000);
+
+    // Multi-Tenant: Get tenant from request
+    const tenant = await getCurrentTenant(req);
+    const tenantId = tenant?._id || null;
     
     const orderDoc = {
       items,
@@ -406,6 +417,8 @@ export async function POST(req) {
       createdBy: me._id,
       status: 'pending',
       orderType,
+      // Multi-Tenant: Associate order with tenant
+      ...(tenantId && { tenantId }),
       commissionSettled: false,
       commissionStatus: 'pending',
       commissionAvailableAt: finalCommissionAmount > 0 ? commissionAvailableAt : null,

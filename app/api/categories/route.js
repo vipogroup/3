@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import Category from '@/models/Category';
 import { requireAdminApi } from '@/lib/auth/server';
+import { getCurrentTenant } from '@/lib/tenant';
 
 const DEFAULT_CATEGORIES = [
   'אביזרי מחשב',
@@ -13,11 +14,18 @@ const DEFAULT_CATEGORIES = [
 ];
 
 // GET - Get all categories
-export async function GET() {
+export async function GET(req) {
   try {
     await connectMongo();
     
-    const categories = await Category.find({ type: 'product', active: true })
+    // Multi-Tenant: Filter by tenant
+    const tenant = await getCurrentTenant(req);
+    const filter = { type: 'product', active: true };
+    if (tenant) {
+      filter.tenantId = tenant._id;
+    }
+    
+    const categories = await Category.find(filter)
       .sort({ sortOrder: 1, name: 1 })
       .lean();
     

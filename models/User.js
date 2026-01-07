@@ -16,12 +16,20 @@ import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     fullName: { type: String, required: true, trim: true },
     phone: { type: String, sparse: true, unique: true, trim: true }, // Optional for OAuth users
     email: { type: String, sparse: true, index: true, trim: true, lowercase: true },
     role: {
       type: String,
-      enum: ['admin', 'agent', 'customer'],
+      enum: ['super_admin', 'business_admin', 'admin', 'agent', 'customer'],
       default: 'customer',
       required: true,
     },

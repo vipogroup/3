@@ -7,6 +7,7 @@ import { escapeRegex } from '@/lib/utils/sanitize';
 import { hashPassword } from '@/lib/auth/hash';
 import { verify as verifyJwt } from '@/lib/auth/createToken';
 import { getToken as getNextAuthToken } from 'next-auth/jwt';
+import { getCurrentTenant } from '@/lib/tenant';
 
 function getLegacyToken(req) {
   return req.cookies.get('auth_token')?.value || req.cookies.get('token')?.value || '';
@@ -84,6 +85,12 @@ export async function GET(req) {
     // בניית פילטר חיפוש
     const filter = {};
     
+    // Multi-Tenant: Filter by tenant
+    const tenant = await getCurrentTenant(req);
+    if (tenant) {
+      filter.tenantId = tenant._id;
+    }
+    
     // חיפוש לפי טלפון, מייל או שם
     if (search) {
       const safeSearch = escapeRegex(search);
@@ -95,7 +102,7 @@ export async function GET(req) {
     }
     
     // פילטר לפי תפקיד
-    if (roleFilter && ['admin', 'agent', 'customer'].includes(roleFilter)) {
+    if (roleFilter && ['admin', 'business_admin', 'super_admin', 'agent', 'customer'].includes(roleFilter)) {
       filter.role = roleFilter;
     }
 
@@ -133,13 +140,13 @@ export async function POST(req) {
     }
 
     const body = await req.json();
-    const { fullName, email, phone, role, password } = body || {};
+    const { fullName, email, phone, role, password, tenantId } = body || {};
 
     if (!fullName || (!email && !phone) || !role || !password) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
     }
 
-    if (!['admin', 'agent'].includes(role)) {
+    if (!['admin', 'super_admin', 'business_admin', 'agent'].includes(role)) {
       return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
     }
 
@@ -170,6 +177,12 @@ export async function POST(req) {
       createdAt: now,
       updatedAt: now,
     };
+
+    // Multi-Tenant: Add tenantId for business_admin users
+    if (tenantId && (role === 'business_admin' || role === 'agent')) {
+      const { ObjectId } = await import('mongodb');
+      doc.tenantId = new ObjectId(tenantId);
+    }
 
     const result = await col.insertOne(doc);
     const createdId = result.insertedId || doc._id;

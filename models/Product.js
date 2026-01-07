@@ -3,6 +3,14 @@ import mongoose from 'mongoose';
 
 const ProductSchema = new mongoose.Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     sku: { type: String, trim: true, index: true },
     legacyId: { type: String, index: true, unique: true, sparse: true },
     name: { type: String, required: true, trim: true },

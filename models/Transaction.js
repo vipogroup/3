@@ -4,6 +4,14 @@ const { Schema, models, model } = mongoose;
 
 const transactionSchema = new Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',

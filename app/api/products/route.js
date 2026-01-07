@@ -10,6 +10,7 @@ import Message from '@/models/Message';
 import { requireAdminApi } from '@/lib/auth/server';
 import { pushToTags } from '@/lib/pushSender';
 import { syncProductToPriority } from '@/lib/priority/productSyncService';
+import { getCurrentTenant, isSuperAdmin } from '@/lib/tenant';
 
 const SEED_PRODUCTS = [
   {
@@ -415,6 +416,12 @@ export async function GET(request) {
     const featuredOnly = searchParams.get('featured') === 'true';
     const query = {};
 
+    // Multi-Tenant: Filter by tenant
+    const tenant = await getCurrentTenant(request);
+    if (tenant) {
+      query.tenantId = tenant._id;
+    }
+
     if (catalogSlug) {
       query.catalogSlug = catalogSlug;
     }
@@ -455,6 +462,10 @@ export async function POST(request) {
 
     await connectMongo();
     const payload = await request.json();
+
+    // Multi-Tenant: Get tenant from user or request
+    const tenant = await getCurrentTenant(request);
+    const tenantId = tenant?._id || adminUser?.tenantId || null;
 
     if (!payload?.name || !payload?.description) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -506,6 +517,8 @@ export async function POST(request) {
       category: normalizedCategory,
       catalogId,
       catalogSlug,
+      // Multi-Tenant: Associate product with tenant
+      ...(tenantId && { tenantId }),
       price: Number(payload.price) || 0,
       originalPrice: payload.originalPrice !== undefined ? Number(payload.originalPrice) : null,
       commission:

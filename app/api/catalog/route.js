@@ -2,12 +2,20 @@ export const dynamic = 'force-dynamic';
 
 import { connectMongo } from '@/lib/mongoose';
 import Product from '@/models/Product';
+import { getCurrentTenant } from '@/lib/tenant';
 
-export async function GET() {
+export async function GET(req) {
   try {
     await connectMongo();
 
-    const products = await Product.find({}).sort({ sortOrder: 1 }).lean();
+    // Multi-Tenant: Filter by tenant
+    const tenant = await getCurrentTenant(req);
+    const filter = {};
+    if (tenant) {
+      filter.tenantId = tenant._id;
+    }
+
+    const products = await Product.find(filter).sort({ sortOrder: 1 }).lean();
 
     return new Response(JSON.stringify({ ok: true, products }), {
       status: 200,

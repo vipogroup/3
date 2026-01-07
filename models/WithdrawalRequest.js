@@ -7,6 +7,14 @@ import mongoose from 'mongoose';
 
 const WithdrawalRequestSchema = new mongoose.Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

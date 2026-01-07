@@ -2,6 +2,14 @@ import mongoose from 'mongoose';
 
 const MessageSchema = new mongoose.Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     senderRole: { type: String, enum: ['admin', 'agent', 'customer'], required: true },
     targetRole: {

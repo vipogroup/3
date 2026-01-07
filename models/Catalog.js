@@ -3,6 +3,14 @@ import { normalizeSlug } from '@/lib/slugify';
 
 const CatalogSchema = new mongoose.Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     name: { type: String, required: true, trim: true },
     slug: { type: String, required: true, trim: true, lowercase: true, unique: true },
     description: { type: String, default: '' },

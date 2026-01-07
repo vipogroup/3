@@ -68,6 +68,7 @@ export async function POST(req) {
         fullName: 1,
         email: 1,
         phone: 1,
+        tenantId: 1, // Multi-Tenant support
       },
     });
 
@@ -81,8 +82,16 @@ export async function POST(req) {
     }
 
     const userRole = user.role || 'customer';
-    const jwt = signJwt({ userId: String(user._id), role: userRole }, { expiresIn: rememberMe ? '7d' : '1d' });
-    const response = NextResponse.json({ success: true, role: userRole });
+    const jwtPayload = { 
+      userId: String(user._id), 
+      role: userRole,
+    };
+    // Multi-Tenant: Include tenantId in JWT if user belongs to a tenant
+    if (user.tenantId) {
+      jwtPayload.tenantId = String(user.tenantId);
+    }
+    const jwt = signJwt(jwtPayload, { expiresIn: rememberMe ? '7d' : '1d' });
+    const response = NextResponse.json({ success: true, role: userRole, tenantId: user.tenantId || null });
 
     const maxAge = rememberMe ? 60 * 60 * 24 * 7 : 60 * 60 * 24;
     setAuthCookie(response, jwt, {

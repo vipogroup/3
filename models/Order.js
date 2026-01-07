@@ -2,6 +2,14 @@ import mongoose from 'mongoose';
 
 const OrderSchema = new mongoose.Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     status: { type: String, default: 'pending' },
 
     // Referral tracking & commission basics

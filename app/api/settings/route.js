@@ -6,9 +6,12 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { verifyJWT } from '@/lib/auth';
 import { DEFAULT_SETTINGS, withDefaultSettings } from '@/lib/settingsDefaults';
+import { getTenantByHost, isSuperAdmin } from '@/lib/tenant';
+import { ObjectId } from 'mongodb';
 
 const SETTINGS_COLLECTION = 'settings';
 const SETTINGS_KEY = 'siteSettings';
+const TENANT_SETTINGS_KEY_PREFIX = 'tenantSettings_';
 
 function extractToken(req) {
   try {
@@ -79,14 +82,60 @@ export async function GET(req) {
   try {
     const db = await getDb();
     const collection = db.collection(SETTINGS_COLLECTION);
-
-    const doc = await collection.findOne({ key: SETTINGS_KEY });
-    const settings = withDefaultSettings(doc?.value || {});
+    
+    // Check for tenant-specific settings
+    const host = req.headers.get('host');
+    const tenant = await getTenantByHost(host);
+    
+    let settings;
+    let updatedAt = null;
+    
+    if (tenant) {
+      // Load tenant-specific settings from Tenant model
+      const tenantDoc = await db.collection('tenants').findOne({ _id: tenant._id });
+      if (tenantDoc) {
+        // Merge tenant branding/settings with defaults
+        settings = withDefaultSettings({
+          siteName: tenantDoc.name || DEFAULT_SETTINGS.siteName,
+          siteDescription: tenantDoc.seo?.description || DEFAULT_SETTINGS.siteDescription,
+          siteLogo: tenantDoc.branding?.logo || DEFAULT_SETTINGS.siteLogo,
+          siteFavicon: tenantDoc.branding?.favicon || DEFAULT_SETTINGS.siteFavicon,
+          primaryColor: tenantDoc.branding?.primaryColor || DEFAULT_SETTINGS.primaryColor,
+          secondaryColor: tenantDoc.branding?.secondaryColor || DEFAULT_SETTINGS.secondaryColor,
+          accentColor: tenantDoc.branding?.accentColor || DEFAULT_SETTINGS.accentColor,
+          contactEmail: tenantDoc.contact?.email || DEFAULT_SETTINGS.contactEmail,
+          contactPhone: tenantDoc.contact?.phone || DEFAULT_SETTINGS.contactPhone,
+          whatsappNumber: tenantDoc.contact?.whatsapp || DEFAULT_SETTINGS.whatsappNumber,
+          address: tenantDoc.contact?.address || DEFAULT_SETTINGS.address,
+          facebookUrl: tenantDoc.social?.facebook || DEFAULT_SETTINGS.facebookUrl,
+          instagramUrl: tenantDoc.social?.instagram || DEFAULT_SETTINGS.instagramUrl,
+          twitterUrl: tenantDoc.social?.twitter || DEFAULT_SETTINGS.twitterUrl,
+          linkedinUrl: tenantDoc.social?.linkedin || DEFAULT_SETTINGS.linkedinUrl,
+          enableRegistration: tenantDoc.features?.registration ?? DEFAULT_SETTINGS.enableRegistration,
+          enableGroupPurchase: tenantDoc.features?.groupPurchase ?? DEFAULT_SETTINGS.enableGroupPurchase,
+          enableNotifications: tenantDoc.features?.notifications ?? DEFAULT_SETTINGS.enableNotifications,
+          enableDarkMode: tenantDoc.features?.darkMode ?? DEFAULT_SETTINGS.enableDarkMode,
+          metaTitle: tenantDoc.seo?.title || DEFAULT_SETTINGS.metaTitle,
+          metaDescription: tenantDoc.seo?.description || DEFAULT_SETTINGS.metaDescription,
+          metaKeywords: tenantDoc.seo?.keywords || DEFAULT_SETTINGS.metaKeywords,
+          googleAnalyticsId: tenantDoc.seo?.googleAnalyticsId || DEFAULT_SETTINGS.googleAnalyticsId,
+        });
+        updatedAt = tenantDoc.updatedAt || null;
+      }
+    }
+    
+    // Fallback to global settings if no tenant or tenant settings not found
+    if (!settings) {
+      const doc = await collection.findOne({ key: SETTINGS_KEY });
+      settings = withDefaultSettings(doc?.value || {});
+      updatedAt = doc?.updatedAt || null;
+    }
 
     return NextResponse.json({
       ok: true,
       settings: sanitizeForClient(settings),
-      updatedAt: doc?.updatedAt || null,
+      updatedAt,
+      tenantId: tenant?._id || null,
     });
   } catch (error) {
     console.error('SETTINGS_GET_ERROR', error);
@@ -99,7 +148,9 @@ export async function POST(req) {
     const token = extractToken(req);
     const payload = verifyJWT(token);
 
-    if (!payload || (payload.role || payload.userRole) !== 'admin') {
+    // Check if user is admin (any type)
+    const userRole = payload?.role || payload?.userRole;
+    if (!payload || !['admin', 'business_admin', 'super_admin'].includes(userRole)) {
       return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 403 });
     }
 
@@ -115,11 +166,80 @@ export async function POST(req) {
       return NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 });
     }
 
-    const normalized = normalizeSettings(incoming);
-
     const db = await getDb();
-    const collection = db.collection(SETTINGS_COLLECTION);
     const now = new Date();
+    
+    // Check if user has tenantId (business admin)
+    const tenantId = payload.tenantId;
+    
+    if (tenantId) {
+      // Business admin - update tenant settings
+      const updateData = {
+        updatedAt: now,
+      };
+      
+      // Map settings to tenant schema
+      if (incoming.siteName) updateData.name = incoming.siteName;
+      if (incoming.siteLogo || incoming.siteFavicon || incoming.primaryColor || incoming.secondaryColor || incoming.accentColor) {
+        updateData.branding = {
+          logo: incoming.siteLogo,
+          favicon: incoming.siteFavicon,
+          primaryColor: incoming.primaryColor,
+          secondaryColor: incoming.secondaryColor,
+          accentColor: incoming.accentColor,
+        };
+      }
+      if (incoming.contactEmail || incoming.contactPhone || incoming.whatsappNumber || incoming.address) {
+        updateData.contact = {
+          email: incoming.contactEmail,
+          phone: incoming.contactPhone,
+          whatsapp: incoming.whatsappNumber,
+          address: incoming.address,
+        };
+      }
+      if (incoming.facebookUrl || incoming.instagramUrl || incoming.twitterUrl || incoming.linkedinUrl) {
+        updateData.social = {
+          facebook: incoming.facebookUrl,
+          instagram: incoming.instagramUrl,
+          twitter: incoming.twitterUrl,
+          linkedin: incoming.linkedinUrl,
+        };
+      }
+      if (incoming.metaTitle || incoming.metaDescription || incoming.metaKeywords || incoming.googleAnalyticsId) {
+        updateData.seo = {
+          title: incoming.metaTitle,
+          description: incoming.metaDescription,
+          keywords: incoming.metaKeywords,
+          googleAnalyticsId: incoming.googleAnalyticsId,
+        };
+      }
+      if (incoming.enableRegistration !== undefined || incoming.enableGroupPurchase !== undefined || 
+          incoming.enableNotifications !== undefined || incoming.enableDarkMode !== undefined) {
+        updateData.features = {
+          registration: incoming.enableRegistration,
+          groupPurchase: incoming.enableGroupPurchase,
+          notifications: incoming.enableNotifications,
+          darkMode: incoming.enableDarkMode,
+        };
+      }
+      
+      await db.collection('tenants').updateOne(
+        { _id: new ObjectId(tenantId) },
+        { $set: updateData }
+      );
+      
+      const normalized = normalizeSettings(incoming);
+      return NextResponse.json({
+        ok: true,
+        settings: sanitizeForClient(normalized),
+        updatedAt: now,
+        tenantId,
+      });
+    }
+    
+    // Super admin - update global settings
+    const normalized = normalizeSettings(incoming);
+    const collection = db.collection(SETTINGS_COLLECTION);
 
     await collection.updateOne(
       { key: SETTINGS_KEY },
