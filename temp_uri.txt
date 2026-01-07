@@ -1,1 +1,0 @@
-mongodb+srv://vipogroup1_db_user:Vipo2025!StrongPass@cluster0.pfotx6u.mongodb.net/vipo?retryWrites=true&w=majority&appName=Cluster0

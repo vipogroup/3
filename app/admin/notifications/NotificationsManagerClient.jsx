@@ -467,7 +467,7 @@ export default function NotificationsManagerClient() {
     } finally {
       setSendingLive(false);
     }
-  }, [selectedTemplateData, selectedTemplate]);
+  }, [selectedTemplateData, selectedTemplate, scheduleForm.payloadOverrides?.titleOverride, scheduleForm.payloadOverrides?.bodyAppend]);
 
   const handleCreateTemplate = useCallback(async () => {
     if (!newTemplateForm.type.trim()) {

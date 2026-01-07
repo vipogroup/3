@@ -126,7 +126,7 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
         message: MESSAGES.generalError,
       }));
     }
-  }, []);
+  }, [allTags, consentVersion, role]);
 
   useEffect(() => {
     evaluateStatus();
