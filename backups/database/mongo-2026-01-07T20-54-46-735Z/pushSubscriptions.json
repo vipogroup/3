@@ -616,5 +616,251 @@
     "userObjectId": {
       "$oid": "692deea497ce1a2ba6d4e151"
     }
+  },
+  {
+    "_id": {
+      "$oid": "695cfab3c488370764604ff9"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/fTJ_47lYRVE:APA91bGfvTdLWsZIgtfkePJpgYFrbKBQ_xfhoRbtNNoDJ6sQd6txph8EO3a_UXOJybsC_dNXIU863yy2UGzAViv8XtIiyPign7FbxEZaPpwWktpmMEJaTGHeS7wza6U-EuIw83T-Azyg",
+    "consentAt": {
+      "$date": "2026-01-06T12:06:07.149Z"
+    },
+    "consentMeta": {
+      "source": "login_modal",
+      "role": "agent"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-06T12:06:11.993Z"
+    },
+    "ip": "79.177.157.200",
+    "keys": {
+      "p256dh": "BAujh2WvVE-aNk35owwzk7fgmUVY-FOaKGMRR2XYL3QHCLzqmPyRLwwaDnczEIgtU2WY2m0-IwOQXayfJSFln74",
+      "auth": "OcnMxslakPMeqaHkhkin8A"
+    },
+    "lastConsentAction": "accepted",
+    "revokedAt": null,
+    "role": "agent",
+    "tags": [
+      "agent"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-06T12:06:11.993Z"
+    },
+    "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
+    "userId": "695cfa87a6b19e4ce1364ed6",
+    "userObjectId": {
+      "$oid": "695cfa87a6b19e4ce1364ed6"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbaf7c488370764604ffa"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/eIZ-2NOKg3Y:APA91bE1zjpFGcnjT5cuu899eMbIAKULoP8N9bUXl2mOLDoEsTah3VyDNOCxl6kkeVLOj1M9jSvFOHAcIjr2W4Q49TVdDWFrREtX50UcXoxfeCT4fF_2fEIhF4eZvaBHZUcFLDtBx4YA",
+    "consentAt": {
+      "$date": "2026-01-07T01:46:27.940Z"
+    },
+    "consentMeta": {
+      "source": "header_menu",
+      "role": "admin"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-07T01:46:31.294Z"
+    },
+    "ip": "2a06:c701:7475:9500:b473:f3d1:9e28:f3fa",
+    "keys": {
+      "p256dh": "BJ10cvaPWfzOWMs07SlDo4Pp6V5xiNpE714hJEPDMXm-vPJ0u880sfcGsbAjEWsrkfPzXAJUqT1jJyVYMYey19o",
+      "auth": "cgyxhV3Sb5zjSLQidx8sQg"
+    },
+    "lastConsentAction": "accepted",
+    "revokedAt": null,
+    "role": "admin",
+    "tags": [
+      "admin"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-07T01:46:31.294Z"
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userObjectId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbbd0c488370764604ffb"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/eJzNM4y3j38:APA91bGKa4vbDrtgphoon3kV2lR_9REn2Iiq2zrsn1DXWlAQ4Q5SwybisJxQFO9nKDG-fYCpl0YpCQYVKrnz8F1H6P4wmAUNt-ISsCrd2kaFGWc86QOgMbamg5njvsK18AAaR__msHpA",
+    "consentAt": {
+      "$date": "2026-01-07T01:50:04.518Z"
+    },
+    "consentMeta": {
+      "source": "header_menu",
+      "role": "customer"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-07T01:50:08.014Z"
+    },
+    "ip": "79.177.157.200",
+    "keys": {
+      "p256dh": "BKBygtzybgK9fxSLOjIc-jFyaa5JbNyvjVInKEZIbimoqV02E44e8fmvQlkPDz34N7ulhoZCktiW2koYlP6HbM8",
+      "auth": "IXolEqJ-AHw1l-4YmRxoAg"
+    },
+    "lastConsentAction": "accepted",
+    "revokedAt": null,
+    "role": "customer",
+    "tags": [
+      "customer"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-07T01:50:08.014Z"
+    },
+    "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
+    "userId": "695db9f0cf7d0548762b4ca1",
+    "userObjectId": {
+      "$oid": "695db9f0cf7d0548762b4ca1"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbccac488370764604ffc"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/f6aFQhmkgoQ:APA91bE81RurZmbmQXqYjKveLL2zKudOIb2-26TbCqI-YoHYncAu9eKlTxqaXIDyowXM3Rrumtj-8MNPIOkilmrHLWlh75OqNIKTqeaybrbNLqtBVzt_h74SZRBjASJXJPV1dW_UAArN",
+    "consentAt": {
+      "$date": "2026-01-07T01:54:12Z"
+    },
+    "consentMeta": {
+      "source": "login_modal",
+      "role": "customer"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-07T01:54:18.159Z"
+    },
+    "ip": "79.177.157.200",
+    "keys": {
+      "p256dh": "BEkU5_HdUKvlvy-zdqGFQJLYTIrbWeqarCokUUa4RAkoN4gf6j2U-yqQvbGIy1F0O4r6UTuqY0saCvzaBBwlZRg",
+      "auth": "b7jg4cqJk5oQX5TpqHDvkw"
+    },
+    "lastConsentAction": "accepted",
+    "revokedAt": null,
+    "role": "customer",
+    "tags": [
+      "customer"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-07T01:54:18.159Z"
+    },
+    "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
+    "userId": "695dbc3bcf7d0548762b4cea",
+    "userObjectId": {
+      "$oid": "695dbc3bcf7d0548762b4cea"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbd91c488370764604ffd"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/f86hYnMAUOo:APA91bFqJDX7yQtdaZFA1BEo3hiOeT_bwrwXpvFHtUTMe13_90UNKAZVYEV7dw9HbGgnz_esx3EvAmT-1HTLSI6unKC07RdjJ54f7xU-61b8w32d9WWQJ69mdzs-umz3JUWA35Vsfdne",
+    "consentAt": {
+      "$date": "2026-01-07T01:57:33.688Z"
+    },
+    "consentMeta": {
+      "source": "registration",
+      "role": "customer"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-07T01:57:37.437Z"
+    },
+    "ip": "79.177.157.200",
+    "keys": {
+      "p256dh": "BGkPrCb7tadtRtzV6IPtl16-_jMIlKZrS9XtxcwRsflPqm2LjDvgrVdJeiysTlUCN2I6d28xabP2xq-9KEJInpE",
+      "auth": "bhN9AEmBwqlsswtxCUlNUQ"
+    },
+    "lastConsentAction": "accepted",
+    "revokedAt": null,
+    "role": "customer",
+    "tags": [
+      "customer"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-07T01:57:37.437Z"
+    },
+    "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
+    "userId": "695dbd8ccf7d0548762b4d1a",
+    "userObjectId": {
+      "$oid": "695dbd8ccf7d0548762b4d1a"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695eb35fefefb52696a3806f"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/dy9KInCrqJQ:APA91bHXuz9pHcYLQhI-hQE9QfxCYi10z3GYXL7XrRlzPjsuZb44q5FsgH9Mjggy6qRnMMngRIdxBy-Z1Tc5N8Vw56xZexzdGOvQktDj7HX22R8s84pw83bDidveolWj1UywPaPJUjOo",
+    "consentAt": {
+      "$date": "2026-01-07T19:26:21.625Z"
+    },
+    "consentMeta": {
+      "source": "header_menu",
+      "role": "admin"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-07T19:26:23.750Z"
+    },
+    "ip": "127.0.0.1",
+    "keys": {
+      "p256dh": "BNPHHGEv2EufIGVpAiL2gHqVmIDh2sIbG5VqpIfBSH4V1hFZARwwevFbmtnRpZy3Yp0UkzZBkvgB7Do7OtQ9Zac",
+      "auth": "dQiO7g5d5KehSANotdhjmQ"
+    },
+    "lastConsentAction": "accepted",
+    "revokedAt": null,
+    "role": "admin",
+    "tags": [
+      "admin"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-07T19:26:23.750Z"
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userObjectId": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ec135efefb52696a38071"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/cwCv7VJrpmA:APA91bG7Cte2mDnVgfv5jjJpVc5imGFaCM4tGok-9BtbKpSuwE7k1uZj1kL7tJfoU-8yT3kCuQt-y5GRMToMlhV2K5ypyl0uFCwO-zCjTVPxU69KQzBocaUdkCYYnXPcYmYd2axgGJHB",
+    "consentAt": {
+      "$date": "2026-01-07T20:25:25.410Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T20:25:25.410Z"
+    },
+    "ip": "127.0.0.1",
+    "keys": {
+      "p256dh": "BGLT6ZHpVQVNYfpYld_1IrbAdodUk2ssmwDkPRbt7fqJsoggsnl54S6sIIq_s29KHK61tM3WJYXSxFAn2TiYcjI",
+      "auth": "DIyzdO3AcToYQ0XcinXjew"
+    },
+    "lastConsentAction": "accepted",
+    "role": "business_admin",
+    "tags": [
+      "customer"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-07T20:25:25.410Z"
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "userId": "695ec06ff249ef0c1fb6b6e1",
+    "userObjectId": {
+      "$oid": "695ec06ff249ef0c1fb6b6e1"
+    }
   }
 ]

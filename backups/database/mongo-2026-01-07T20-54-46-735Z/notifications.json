@@ -1494,5 +1494,93 @@
       "$date": "2026-01-06T10:32:55.913Z"
     },
     "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695cfa87a6b19e4ce1364ed7"
+    },
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: admin123@vipo.local",
+    "payload": {
+      "userId": {
+        "$oid": "695cfa87a6b19e4ce1364ed6"
+      },
+      "email": "admin123@vipo.local",
+      "fullName": "מוביל שרת "
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-06T12:05:27.198Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T12:05:27.198Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695db9f0cf7d0548762b4ca6"
+    },
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: m0533858881@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "695db9f0cf7d0548762b4ca1"
+      },
+      "email": "m0533858881@gmail.com",
+      "fullName": "מרים חדש"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-07T01:42:08.868Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-07T01:42:08.868Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695dbc3bcf7d0548762b4ceb"
+    },
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: m0533858881@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "695dbc3bcf7d0548762b4cea"
+      },
+      "email": "m0533858881@gmail.com",
+      "fullName": "מרים חדש"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-07T01:51:55.136Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-07T01:51:55.136Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695dbd8ccf7d0548762b4d1b"
+    },
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: m0533858881@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "695dbd8ccf7d0548762b4d1a"
+      },
+      "email": "m0533858881@gmail.com",
+      "fullName": "מרים חדש"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-07T01:57:32.158Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-07T01:57:32.158Z"
+    },
+    "__v": 0
   }
 ]

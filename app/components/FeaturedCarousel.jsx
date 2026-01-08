@@ -61,14 +61,14 @@ export default function FeaturedCarousel() {
 
   if (loading) {
     return (
-      <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, transform: 'translateY(25px)', marginBottom: '0', minHeight: '380px' }}>
+      <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, marginTop: '60px', marginBottom: '0', minHeight: '420px' }}>
         <div className="text-center mb-2 md:mb-4">
-          <h2 className="text-xl font-bold drop-shadow-lg" style={{ color: '#1e3a8a' }}>
+          <h2 className="text-xl font-bold drop-shadow-lg" style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}>
             מוצרים במחיר מפעל
           </h2>
           <div 
             className="h-1 w-16 mx-auto mt-2 rounded-full"
-            style={{ background: 'linear-gradient(90deg, rgba(30, 58, 138, 0.3) 0%, #0891b2 50%, rgba(30, 58, 138, 0.3) 100%)' }}
+            style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.3) 0%, #ffffff 50%, rgba(255,255,255,0.3) 100%)' }}
           />
         </div>
         <div className="animate-pulse flex justify-center gap-4 overflow-hidden">
@@ -89,7 +89,7 @@ export default function FeaturedCarousel() {
     const total = products.length;
     const anglePerItem = 360 / total;
     const rotation = (index - currentIndex) * anglePerItem;
-    const radius = 180; // Distance from center
+    const radius = 220; // Distance from center
     
     // Convert to radians
     const radians = (rotation * Math.PI) / 180;
@@ -110,15 +110,15 @@ export default function FeaturedCarousel() {
   };
 
   return (
-    <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, transform: 'translateY(25px)', marginBottom: '0', minHeight: '380px' }}>
+    <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, marginTop: '60px', marginBottom: '0', minHeight: '420px' }}>
       {/* Section Header */}
       <div className="text-center mb-2 md:mb-4">
-        <h2 className="text-xl font-bold drop-shadow-lg" style={{ color: '#1e3a8a' }}>
+        <h2 className="text-xl font-bold drop-shadow-lg" style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}>
           מוצרים במחיר מפעל
         </h2>
         <div 
           className="h-1 w-16 mx-auto mt-2 rounded-full"
-          style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.5) 0%, #ffffff 50%, rgba(255,255,255,0.5) 100%)' }}
+          style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.3) 0%, #ffffff 50%, rgba(255,255,255,0.3) 100%)' }}
         />
       </div>
 
@@ -127,7 +127,7 @@ export default function FeaturedCarousel() {
         className="relative mx-auto"
         style={{ 
           perspective: '1000px',
-          height: '280px',
+          height: '320px',
           maxWidth: '100%',
         }}
         onMouseEnter={() => setIsPaused(true)}
@@ -148,8 +148,8 @@ export default function FeaturedCarousel() {
               className="absolute"
               style={{
                 ...getCardStyle(index),
-                left: '-64px', // Half of card width (w-32 = 128px)
-                top: '-120px', // Half of card height
+                left: '-80px', // Half of card width (w-40 = 160px)
+                top: '-140px', // Half of card height
               }}
             >
               <FeaturedProductCard 
@@ -216,7 +216,7 @@ function FeaturedProductCard({ product, user }) {
 
   return (
     <div
-      className="flex-shrink-0 w-32 rounded-xl overflow-hidden group flex flex-col transition-all duration-300"
+      className="flex-shrink-0 w-40 rounded-xl overflow-hidden group flex flex-col transition-all duration-300"
       style={{
         border: '2px solid transparent',
         backgroundImage: 'linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), linear-gradient(135deg, #1e3a8a, #0891b2)',

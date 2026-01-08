@@ -1,0 +1,61 @@
+[
+  {
+    "_id": {
+      "$oid": "695ec005f249ef0c1fb6b6d9"
+    },
+    "name": "Stainless steel",
+    "slug": "stainless",
+    "domain": null,
+    "subdomain": null,
+    "ownerId": null,
+    "status": "pending",
+    "platformCommissionRate": 5,
+    "branding": {
+      "logo": null,
+      "favicon": null,
+      "primaryColor": "#3B82F6",
+      "secondaryColor": "#1E40AF",
+      "accentColor": "#10B981"
+    },
+    "contact": {
+      "email": null,
+      "phone": null,
+      "whatsapp": null,
+      "address": null
+    },
+    "social": {},
+    "seo": {},
+    "features": {
+      "registration": true,
+      "groupPurchase": true,
+      "notifications": true,
+      "darkMode": false,
+      "agentSystem": true,
+      "coupons": true
+    },
+    "agentSettings": {
+      "defaultCommissionPercent": 12,
+      "defaultDiscountPercent": 10,
+      "commissionHoldDays": 30,
+      "groupPurchaseHoldDays": 100
+    },
+    "billing": {
+      "pendingBalance": 0,
+      "totalPaid": 0,
+      "lastPaymentAt": null,
+      "paymentMethod": null,
+      "bankDetails": {}
+    },
+    "stats": {
+      "totalSales": 0,
+      "totalOrders": 0,
+      "totalProducts": 0,
+      "totalAgents": 0,
+      "totalCustomers": 0
+    },
+    "createdAt": {
+      "$date": "2026-01-07T20:20:21.479Z"
+    },
+    "createdBy": "692deea497ce1a2ba6d4e151"
+  }
+]

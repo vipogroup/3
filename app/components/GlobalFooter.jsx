@@ -61,7 +61,7 @@ export default function GlobalFooter() {
               <div className="stat-item">
                 <i className="fa-solid fa-globe"></i>
                 <div>
-                  <span className="stat-number">ישראל + סין</span>
+                  <span className="stat-number" style={{whiteSpace: 'nowrap'}}>ישראל + סין</span>
                   <span className="stat-label">נוכחות בינלאומית</span>
                 </div>
               </div>
@@ -86,37 +86,57 @@ export default function GlobalFooter() {
       {/* Footer & Contact Section */}
       <footer id="contact" className="footer">
         <div className="container">
-          <div className="footer-main">
-            <div className="footer-brand-section">
-              <h2 className="footer-brand">קונים חכם</h2>
-              <p className="footer-tagline">רכישה קבוצתית חכמה וחסכונית</p>
-            </div>
-            
-            <div className="footer-contact-grid">
-              <a href="tel:+972587009938" className="footer-contact-item">
-                <i className="fa-solid fa-phone"></i>
-                <span>058-700-9938</span>
-              </a>
-              <a href="mailto:vipo.m1985@gmail.com" className="footer-contact-item">
-                <i className="fa-solid fa-envelope"></i>
-                <span>vipo.m1985@gmail.com</span>
-              </a>
-              <div className="footer-contact-item">
-                <i className="fa-solid fa-map-marker-alt"></i>
-                <span>ז&apos;בוטינסקי 5, באר יעקב</span>
+          <div className="footer-brand-section" style={{textAlign: 'center', marginBottom: '30px'}}>
+            <h2 className="footer-brand">VIPO GROUP</h2>
+            <p className="footer-tagline">רכישה קבוצתית חכמה וחסכונית</p>
+          </div>
+          
+          <div className="footer-main" style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '30px'}}>
+            {/* יצירת קשר - ימין */}
+            <div className="footer-contact" style={{flex: '1', minWidth: '200px'}}>
+              <h3 style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}}>יצירת קשר</h3>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                <a href="tel:+972587009938" className="footer-contact-item">
+                  <i className="fa-solid fa-phone"></i>
+                  <span>058-700-9938</span>
+                </a>
+                <a href="mailto:vipo.m1985@gmail.com" className="footer-contact-item">
+                  <i className="fa-solid fa-envelope"></i>
+                  <span>vipo.m1985@gmail.com</span>
+                </a>
+                <div className="footer-contact-item">
+                  <i className="fa-solid fa-map-marker-alt"></i>
+                  <span>ז&apos;בוטינסקי 5, באר יעקב</span>
+                </div>
+                <div className="footer-contact-item">
+                  <i className="fa-solid fa-clock"></i>
+                  <span>א׳-ה׳ 09:00-18:00</span>
+                </div>
               </div>
             </div>
             
-            <div className="footer-social">
-              <a href="#" aria-label="פייסבוק"><i className="fa-brands fa-facebook-f"></i></a>
-              <a href="https://www.instagram.com/vipoconnect?igsh=MWdpdTZlbTMxMnNxcw%3D%3D&utm_source=qr" target="_blank" aria-label="אינסטגרם"><i className="fa-brands fa-instagram"></i></a>
-              <a href="#" aria-label="טוויטר"><i className="fa-brands fa-twitter"></i></a>
-              <a href="#" aria-label="לינקדאין"><i className="fa-brands fa-linkedin-in"></i></a>
+            {/* קישורי ניווט - שמאל */}
+            <div className="footer-nav" style={{flex: '1', minWidth: '200px'}}>
+              <h3 style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}}>ניווט מהיר</h3>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                <a href="/" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-home"></i> דף הבית</a>
+                <a href="/shop" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-store"></i> חנות</a>
+                <a href="/#how-it-works" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-cogs"></i> איך זה עובד</a>
+                <a href="/#faq" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-question-circle"></i> שאלות נפוצות</a>
+                <a href="/#about-vipo" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-users"></i> מי אנחנו</a>
+              </div>
             </div>
           </div>
           
+          <div className="footer-social" style={{textAlign: 'center', margin: '30px 0'}}>
+            <a href="#" aria-label="פייסבוק"><i className="fa-brands fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/vipoconnect?igsh=MWdpdTZlbTMxMnNxcw%3D%3D&utm_source=qr" target="_blank" aria-label="אינסטגרם"><i className="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="טוויטר"><i className="fa-brands fa-twitter"></i></a>
+            <a href="#" aria-label="לינקדאין"><i className="fa-brands fa-linkedin-in"></i></a>
+          </div>
+          
           <div className="footer-bottom">
-            <p>&copy; 2025 קונים חכם | ע.מ. 036517548</p>
+            <p>&copy; 2025 VIPO GROUP | ע.מ. 036517548</p>
             <div className="footer-links">
               <a href="/terms">תנאי שימוש</a>
               <a href="/privacy">מדיניות פרטיות</a>

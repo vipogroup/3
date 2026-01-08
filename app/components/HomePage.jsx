@@ -281,6 +281,7 @@ export default function HomePage() {
     ticket: <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M22 10V6c0-1.11-.9-2-2-2H4c-1.1 0-1.99.89-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2zm-2-1.46c-1.19.69-2 1.99-2 3.46s.81 2.77 2 3.46V18H4v-2.54c1.19-.69 2-1.99 2-3.46 0-1.48-.8-2.77-1.99-3.46L4 6h16v2.54z"/></svg>,
     whatsapp: <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>,
     chevronDown: <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>,
+    copy: <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>,
   };
 
   return (
@@ -290,13 +291,13 @@ export default function HomePage() {
         .hero::before {
           background: linear-gradient(
             to bottom,
-            rgba(13, 60, 97, 0.5) 0%,
-            rgba(13, 60, 97, 0.45) 16.67%,
-            rgba(13, 60, 97, 0.4) 33.33%,
-            rgba(13, 60, 97, 0.35) 50%,
-            rgba(13, 60, 97, 0.3) 66.67%,
-            rgba(13, 60, 97, 0.25) 83.33%,
-            rgba(13, 60, 97, 0.2) 100%
+            rgba(13, 60, 97, 0.8) 0%,
+            rgba(13, 60, 97, 0.75) 16.67%,
+            rgba(13, 60, 97, 0.7) 33.33%,
+            rgba(13, 60, 97, 0.65) 50%,
+            rgba(13, 60, 97, 0.6) 66.67%,
+            rgba(13, 60, 97, 0.55) 83.33%,
+            rgba(13, 60, 97, 0.5) 100%
           ) !important;
         }
         
@@ -305,6 +306,11 @@ export default function HomePage() {
             margin-top: -60px !important;
             padding-top: 60px !important;
           }
+        }
+        
+        .cta-buttons {
+          flex-direction: column !important;
+          align-items: center !important;
         }
       `}</style>
       {/* Hero Section */}
@@ -321,6 +327,7 @@ export default function HomePage() {
                 onMouseMove={handleMagneticMove}
                 onMouseLeave={handleMagneticLeave}
               >
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" style={{marginLeft: '8px'}}><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
                 למוצרים במחיר מפעל
               </Link>
               <a 
@@ -396,12 +403,8 @@ export default function HomePage() {
               <div className="participants">200-500 משתתפים</div>
               <div className="price">₪1,350</div>
             </div>
-            <div className="price-row">
-              <div className="participants">500-1000 משתתפים</div>
-              <div className="price">₪1,200</div>
-            </div>
             <div className="price-row highlight">
-              <div className="participants">1000-5000 משתתפים</div>
+              <div className="participants">500+ משתתפים</div>
               <div className="price">₪1,150</div>
             </div>
           </div>
@@ -413,7 +416,7 @@ export default function HomePage() {
         <div className="container">
           <div className="info-box reveal-on-scroll delay-1">
             <div className="info-icon">
-              <span style={{color: '#1e3a8a'}}>{svgIcons.shield}</span>
+              <span style={{color: '#ffffff'}}>{svgIcons.shield}</span>
             </div>
             <h2>שאנחנו מאוחדים אנחנו חזקים</h2>
             <p>מצטרפים ורוכשים ב-50% יותר זול ממחיר השוק בישראל ואם הצלחנו להיות מאוחדים וצרפנו חברים ומשפחה אז נקבל עוד הנחה רק ככה ננצח ביחד את יוקר המחייה</p>
@@ -454,7 +457,7 @@ export default function HomePage() {
               <div className="copy-link-container">
                 <input type="text" id="referral-link" value="VIPO-123456" readOnly />
                 <button className="btn btn-copy" aria-label="העתק קוד קופון אישי" onClick={handleCopyCode}>
-                  {svgIcons.ticket}
+                  {svgIcons.copy}
                 </button>
               </div>
               <div className={`copy-tooltip ${copyTooltipVisible ? 'show' : ''}`}>לחצו כדי להעתיק את הקוד</div>
@@ -584,7 +587,7 @@ export default function HomePage() {
               <div className="stat-item">
                 <i className="fa-solid fa-globe"></i>
                 <div>
-                  <span className="stat-number">ישראל + סין</span>
+                  <span className="stat-number" style={{whiteSpace: 'nowrap'}}>ישראל + סין</span>
                   <span className="stat-label">נוכחות בינלאומית</span>
                 </div>
               </div>
@@ -609,37 +612,57 @@ export default function HomePage() {
       {/* Footer & Contact Section */}
       <footer id="contact" className="footer">
         <div className="container">
-          <div className="footer-main">
-            <div className="footer-brand-section">
-              <h2 className="footer-brand">קונים חכם</h2>
-              <p className="footer-tagline">רכישה קבוצתית חכמה וחסכונית</p>
-            </div>
-            
-            <div className="footer-contact-grid">
-              <a href="tel:+972587009938" className="footer-contact-item">
-                <i className="fa-solid fa-phone"></i>
-                <span>058-700-9938</span>
-              </a>
-              <a href="mailto:vipo.m1985@gmail.com" className="footer-contact-item">
-                <i className="fa-solid fa-envelope"></i>
-                <span>vipo.m1985@gmail.com</span>
-              </a>
-              <div className="footer-contact-item">
-                <i className="fa-solid fa-map-marker-alt"></i>
-                <span>ז&apos;בוטינסקי 5, באר יעקב</span>
+          <div className="footer-brand-section" style={{textAlign: 'center', marginBottom: '30px'}}>
+            <h2 className="footer-brand">VIPO GROUP</h2>
+            <p className="footer-tagline">רכישה קבוצתית חכמה וחסכונית</p>
+          </div>
+          
+          <div className="footer-main" style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '30px'}}>
+            {/* יצירת קשר - ימין */}
+            <div className="footer-contact" style={{flex: '1', minWidth: '200px'}}>
+              <h3 style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}}>יצירת קשר</h3>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                <a href="tel:+972587009938" className="footer-contact-item">
+                  <i className="fa-solid fa-phone"></i>
+                  <span>058-700-9938</span>
+                </a>
+                <a href="mailto:vipo.m1985@gmail.com" className="footer-contact-item">
+                  <i className="fa-solid fa-envelope"></i>
+                  <span>vipo.m1985@gmail.com</span>
+                </a>
+                <div className="footer-contact-item">
+                  <i className="fa-solid fa-map-marker-alt"></i>
+                  <span>ז&apos;בוטינסקי 5, באר יעקב</span>
+                </div>
+                <div className="footer-contact-item">
+                  <i className="fa-solid fa-clock"></i>
+                  <span>א׳-ה׳ 09:00-18:00</span>
+                </div>
               </div>
             </div>
             
-            <div className="footer-social">
-              <a href="#" aria-label="פייסבוק"><i className="fa-brands fa-facebook-f"></i></a>
-              <a href="https://www.instagram.com/vipoconnect?igsh=MWdpdTZlbTMxMnNxcw%3D%3D&utm_source=qr" target="_blank" aria-label="אינסטגרם"><i className="fa-brands fa-instagram"></i></a>
-              <a href="#" aria-label="טוויטר"><i className="fa-brands fa-twitter"></i></a>
-              <a href="#" aria-label="לינקדאין"><i className="fa-brands fa-linkedin-in"></i></a>
+            {/* קישורי ניווט - שמאל */}
+            <div className="footer-nav" style={{flex: '1', minWidth: '200px'}}>
+              <h3 style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}}>ניווט מהיר</h3>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                <a href="/" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-home"></i> דף הבית</a>
+                <a href="/shop" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-store"></i> חנות</a>
+                <a href="#how-it-works" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-cogs"></i> איך זה עובד</a>
+                <a href="#faq" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-question-circle"></i> שאלות נפוצות</a>
+                <a href="#about-vipo" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-users"></i> מי אנחנו</a>
+              </div>
             </div>
           </div>
           
+          <div className="footer-social" style={{textAlign: 'center', margin: '30px 0'}}>
+            <a href="#" aria-label="פייסבוק"><i className="fa-brands fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/vipoconnect?igsh=MWdpdTZlbTMxMnNxcw%3D%3D&utm_source=qr" target="_blank" aria-label="אינסטגרם"><i className="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="טוויטר"><i className="fa-brands fa-twitter"></i></a>
+            <a href="#" aria-label="לינקדאין"><i className="fa-brands fa-linkedin-in"></i></a>
+          </div>
+          
           <div className="footer-bottom">
-            <p>&copy; 2025 קונים חכם | ע.מ. 036517548</p>
+            <p>&copy; 2025 VIPO GROUP | ע.מ. 036517548</p>
             <div className="footer-links">
               <a href="/terms">תנאי שימוש</a>
               <a href="/privacy">מדיניות פרטיות</a>
