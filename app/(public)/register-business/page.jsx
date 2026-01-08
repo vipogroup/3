@@ -116,9 +116,17 @@ export default function RegisterBusinessPage() {
         }),
       });
 
-      const data = await res.json();
+      // Try to parse JSON response
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        // If JSON parsing fails, it's a server error
+        throw new Error('שגיאת שרת - נסה שוב מאוחר יותר');
+      }
       
       if (!res.ok) {
+        // Show the specific error from API
         throw new Error(data.error || 'שגיאה ברישום העסק');
       }
 
@@ -130,7 +138,8 @@ export default function RegisterBusinessPage() {
       }, 3000);
       
     } catch (err) {
-      setError(err.message);
+      // Display the error message to user
+      setError(err.message || 'שגיאה לא צפויה - נסה שוב');
     } finally {
       setLoading(false);
     }
