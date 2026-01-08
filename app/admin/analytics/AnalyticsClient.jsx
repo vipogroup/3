@@ -16,6 +16,17 @@ export default function AnalyticsClient() {
   const [dateTo, setDateTo] = useState('');
   const [filterApplied, setFilterApplied] = useState(false);
 
+  const safeFetch = async (url) => {
+    const res = await fetch(url, { credentials: 'include' });
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch {
+      console.error('Invalid JSON from', url, ':', text.substring(0, 200));
+      return { error: 'Invalid response from server' };
+    }
+  };
+
   const fetchData = async (fromDate = '', toDate = '') => {
     setLoading(true);
     setError(null);
@@ -27,9 +38,9 @@ export default function AnalyticsClient() {
     
     try {
       const [overviewRes, productRes, agentRes] = await Promise.all([
-        fetch(`/api/admin/reports/overview${q}`, { credentials: 'include' }).then((r) => r.json()),
-        fetch(`/api/admin/reports/by-product${q}`, { credentials: 'include' }).then((r) => r.json()),
-        fetch(`/api/admin/reports/by-agent${q}`, { credentials: 'include' }).then((r) => r.json()),
+        safeFetch(`/api/admin/reports/overview${q}`),
+        safeFetch(`/api/admin/reports/by-product${q}`),
+        safeFetch(`/api/admin/reports/by-agent${q}`),
       ]);
       
       if (overviewRes.error) {
@@ -42,7 +53,7 @@ export default function AnalyticsClient() {
       setByAgent(agentRes.items || []);
       
       // Fetch recent orders for activity feed
-      const ordersRes = await fetch('/api/orders?limit=5&sort=-createdAt', { credentials: 'include' }).then(r => r.json()).catch(() => ({ orders: [] }));
+      const ordersRes = await safeFetch('/api/orders?limit=5&sort=-createdAt').catch(() => ({ orders: [] }));
       setRecentActivity(ordersRes.orders || []);
     } catch (err) {
       console.error('Reports fetch error:', err);

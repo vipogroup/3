@@ -23,10 +23,21 @@ export default function ReportsClient() {
     setLoading(true);
     setError(null);
     
+    const safeFetch = async (url) => {
+      const res = await fetch(url, { credentials: 'include' });
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch {
+        console.error('Invalid JSON from', url, ':', text.substring(0, 200));
+        return { error: 'Invalid response from server' };
+      }
+    };
+
     Promise.all([
-      fetch(`/api/admin/reports/overview${q}`, { credentials: 'include' }).then((r) => r.json()),
-      fetch(`/api/admin/reports/by-product${q}`, { credentials: 'include' }).then((r) => r.json()),
-      fetch(`/api/admin/reports/by-agent${q}`, { credentials: 'include' }).then((r) => r.json()),
+      safeFetch(`/api/admin/reports/overview${q}`),
+      safeFetch(`/api/admin/reports/by-product${q}`),
+      safeFetch(`/api/admin/reports/by-agent${q}`),
     ])
       .then(([overviewRes, productRes, agentRes]) => {
         // Check for API errors
