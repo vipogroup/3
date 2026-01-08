@@ -3,17 +3,17 @@ export const revalidate = 0;
 export const runtime = 'nodejs';
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth/server';
-import UsersList from '@/components/admin/UsersList';
+import AdminUsersGrouped from '@/app/components/admin/AdminUsersGrouped';
 
 export default async function UsersPage() {
   await requireAdmin();
 
   return (
-    <div className="min-h-screen bg-white p-8">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-8" dir="rtl">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1
-            className="text-3xl font-bold"
+            className="text-2xl sm:text-3xl font-bold"
             style={{
               background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
               WebkitBackgroundClip: 'text',
@@ -34,7 +34,7 @@ export default async function UsersPage() {
             חזרה
           </Link>
         </div>
-        <UsersList />
+        <AdminUsersGrouped />
       </div>
     </div>
   );
