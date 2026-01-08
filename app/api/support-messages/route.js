@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/dbConnect';
 import mongoose from 'mongoose';
 
 // Support Message Schema
@@ -21,7 +21,7 @@ const SupportMessage = mongoose.models.SupportMessage || mongoose.model('Support
 // POST - Create new support message
 export async function POST(request) {
   try {
-    await connectDB();
+    await dbConnect();
     
     const body = await request.json();
     const { message, source, conversation } = body;
@@ -73,7 +73,7 @@ export async function POST(request) {
 // GET - Get all support messages (admin only)
 export async function GET(request) {
   try {
-    await connectDB();
+    await dbConnect();
 
     // Check admin auth
     const cookieHeader = request.headers.get('cookie') || '';

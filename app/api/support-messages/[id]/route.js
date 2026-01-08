@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/dbConnect';
 import mongoose from 'mongoose';
 
 const SupportMessage = mongoose.models.SupportMessage;
@@ -7,7 +7,7 @@ const SupportMessage = mongoose.models.SupportMessage;
 // GET - Get single message
 export async function GET(request, { params }) {
   try {
-    await connectDB();
+    await dbConnect();
     
     const { id } = params;
     const message = await SupportMessage.findById(id).lean();
@@ -25,7 +25,7 @@ export async function GET(request, { params }) {
 // PATCH - Update message (mark as read, reply, close)
 export async function PATCH(request, { params }) {
   try {
-    await connectDB();
+    await dbConnect();
 
     // Check admin auth
     const cookieHeader = request.headers.get('cookie') || '';
@@ -74,7 +74,7 @@ export async function PATCH(request, { params }) {
 // DELETE - Delete message
 export async function DELETE(request, { params }) {
   try {
-    await connectDB();
+    await dbConnect();
 
     // Check admin auth
     const cookieHeader = request.headers.get('cookie') || '';
