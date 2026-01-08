@@ -174,14 +174,10 @@ export default function OrdersPage() {
               {orders.map((order) => (
                 <div
                   key={order._id}
-                  className="bg-white rounded-xl p-6 transition-all hover:shadow-lg"
+                  className="bg-white rounded-2xl p-6 transition-all hover:shadow-xl hover:-translate-y-1"
                   style={{
-                    border: '2px solid transparent',
-                    backgroundImage:
-                      'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                    backgroundOrigin: 'border-box',
-                    backgroundClip: 'padding-box, border-box',
-                    boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
+                    border: '3px solid #0891b2',
+                    boxShadow: '0 4px 20px rgba(8, 145, 178, 0.2)',
                   }}
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
