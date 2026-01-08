@@ -222,7 +222,7 @@ export default function MessagesClient({ currentUser }) {
             <p className="text-sm text-gray-500">ניהול תקשורת בין מנהלים לסוכנים ולקוחות</p>
           </div>
           <Link
-            href="/products"
+            href="/shop"
             className="text-sm font-semibold px-3 py-2 rounded-lg"
             style={{
               background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.12) 0%, rgba(8, 145, 178, 0.12) 100%)',

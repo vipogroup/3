@@ -149,7 +149,7 @@ export default function OrdersPage() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">אין הזמנות עדיין</h2>
                 <p className="text-gray-600 mb-6">התחל לקנות מוצרים כדי לראות את ההזמנות שלך כאן</p>
                 <Link
-                  href="/products"
+                  href="/shop"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all shadow-md"
                   style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                   onMouseEnter={(e) => {

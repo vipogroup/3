@@ -1,0 +1,99 @@
+[
+  {
+    "_id": {
+      "$oid": "69589427e477e3a74af1ff7d"
+    },
+    "name": "אביזרי מחשב",
+    "type": "product",
+    "active": true,
+    "sortOrder": 0,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-01-03T03:59:35.065Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-03T03:59:35.065Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69589427e477e3a74af1ff7e"
+    },
+    "name": "אודיו",
+    "type": "product",
+    "active": true,
+    "sortOrder": 1,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-01-03T03:59:35.074Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-03T03:59:35.074Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69589427e477e3a74af1ff7f"
+    },
+    "name": "מסכים",
+    "type": "product",
+    "active": true,
+    "sortOrder": 2,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-01-03T03:59:35.074Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-03T03:59:35.074Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69589427e477e3a74af1ff80"
+    },
+    "name": "ריהוט",
+    "type": "product",
+    "active": true,
+    "sortOrder": 3,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-01-03T03:59:35.074Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-03T03:59:35.074Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69589427e477e3a74af1ff81"
+    },
+    "name": "רכישה קבוצתית",
+    "type": "product",
+    "active": true,
+    "sortOrder": 4,
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-01-03T03:59:35.074Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-03T03:59:35.074Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f7c70986b9f1f76624d4c"
+    },
+    "tenantId": null,
+    "name": "נירוסטה",
+    "type": "product",
+    "active": true,
+    "sortOrder": 0,
+    "createdAt": {
+      "$date": "2026-01-08T09:44:16.106Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T09:44:16.106Z"
+    },
+    "__v": 0
+  }
+]

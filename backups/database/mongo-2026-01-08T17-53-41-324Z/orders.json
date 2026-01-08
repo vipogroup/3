@@ -1,0 +1,66 @@
+[
+  {
+    "_id": {
+      "$oid": "695fd493a7345f7c38073900"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "692def013a64c7c8757a270b"
+        },
+        "name": "מקלדת מכנית RGB מקצועית",
+        "quantity": 1,
+        "unitPrice": 499,
+        "totalPrice": 499,
+        "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 499,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 499
+    },
+    "totalAmount": 499,
+    "discountAmount": 0,
+    "createdBy": "695fcdfda7345f7c380737e2",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": null,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2026-01-08T16:00:19.877Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T16:00:22.897Z"
+    },
+    "customer": {
+      "fullName": "מאים י",
+      "email": "miriamshabo22@gmail.com",
+      "phone": "0533858881",
+      "address": "מי",
+      "city": "יו",
+      "zipCode": "35679"
+    },
+    "paymentMethod": "credit_card",
+    "deliveryMethod": "pickup",
+    "shippingCost": 0,
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": {
+        "$date": "2026-01-08T16:00:22.897Z"
+      }
+    }
+  }
+]

@@ -965,32 +965,6 @@ function ProductCard({
             unoptimized
           />
 
-          {/* Icons Container - Top Left */}
-          <div className="absolute top-2 left-2 flex gap-1.5">
-            {/* Share Button - Only for agents */}
-            {(user?.role === 'agent' || user?.role === 'admin') && (
-              <button
-                type="button"
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push(`/agent/share/${product._id}`); }}
-                className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                }}
-                aria-label="שתף מוצר"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="#0891b2"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                </svg>
-              </button>
-            )}
-          </div>
 
           {/* Discount Badge */}
           {discountPercent > 0 && (
@@ -1091,51 +1065,72 @@ function ProductCard({
           </div>
         )}
 
-        {/* Add to Cart Button */}
-        <div className="mt-auto">
-        {!addedToCart?.[product._id] ? (
-          <button
-            type="button"
-            onClick={() => {
-              addItem(product, 1);
-              setAddedToCart((prev) => ({ ...prev, [product._id]: true }));
-            }}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-bold transition-all duration-300 text-white"
-            style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              boxShadow: '0 4px 15px rgba(8, 145, 178, 0.3)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(8, 145, 178, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 15px rgba(8, 145, 178, 0.3)';
-            }}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            הוסף לסל
-          </button>
-        ) : (
-          <Link
-            href="/cart"
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-300"
-            style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              color: 'white',
-            }}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            מעבר לסל
-          </Link>
-        )}
+        {/* Add to Cart + Share Buttons */}
+        <div className="mt-auto flex gap-2">
+          {/* Share Button - Only for agents */}
+          {(user?.role === 'agent' || user?.role === 'admin') && (
+            <button
+              type="button"
+              onClick={() => router.push(`/agent/share/${product._id}`)}
+              className="flex items-center justify-center p-2.5 rounded-lg transition-all duration-200 hover:scale-110"
+              style={{
+                background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
+                boxShadow: '0 2px 8px rgba(8, 145, 178, 0.3)',
+              }}
+              aria-label="שתף מוצר"
+            >
+              <svg className="w-4 h-4 -rotate-45" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+              </svg>
+            </button>
+          )}
+          
+          {/* Add to Cart */}
+          <div className="flex-1">
+          {!addedToCart?.[product._id] ? (
+            <button
+              type="button"
+              onClick={() => {
+                addItem(product, 1);
+                setAddedToCart((prev) => ({ ...prev, [product._id]: true }));
+              }}
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-bold transition-all duration-300 text-white"
+              style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                boxShadow: '0 4px 15px rgba(8, 145, 178, 0.3)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(8, 145, 178, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 15px rgba(8, 145, 178, 0.3)';
+              }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              הוסף לסל
+            </button>
+          ) : (
+            <Link
+              href="/cart"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-300"
+              style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                color: 'white',
+              }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              מעבר לסל
+            </Link>
+          )}
+          </div>
         </div>
 
         {/* Admin Buttons */}

@@ -143,7 +143,7 @@ function CheckoutSuccessContent() {
 
           <div className="flex flex-col md:flex-row gap-3 justify-center">
             <Link
-              href="/products"
+              href="/shop"
               className="px-6 py-3 rounded-2xl text-white font-semibold shadow-lg"
               style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))' }}
             >

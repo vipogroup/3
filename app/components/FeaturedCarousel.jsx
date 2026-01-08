@@ -203,32 +203,6 @@ function FeaturedProductCard({ product, user }) {
             unoptimized
           />
 
-          {/* Icons Container - Top Left */}
-          <div className="absolute top-1 left-1 flex gap-1 z-10">
-            {/* Share Button - Only for agents */}
-            {(user?.role === 'agent' || user?.role === 'admin') && (
-              <button
-                type="button"
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push(`/agent/share/${product._id}`); }}
-                className="w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                }}
-                aria-label="שתף מוצר"
-              >
-                <svg
-                  className="w-3 h-3"
-                  fill="none"
-                  stroke="#0891b2"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                </svg>
-              </button>
-            )}
-          </div>
 
           {/* Discount Badge */}
           {discountPercent > 0 && (

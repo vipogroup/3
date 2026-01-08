@@ -221,7 +221,7 @@ export default function CartPage() {
           <h1 className="text-2xl font-bold text-gray-900">הסל שלך ריק</h1>
           <p className="text-gray-500">התחל להוסיף מוצרים</p>
           <Link
-            href="/products"
+            href="/shop"
             className="inline-block text-white font-medium px-6 py-3 rounded-lg transition-all duration-300"
             style={{
               background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
@@ -402,89 +402,145 @@ export default function CartPage() {
               </span>
             </div>
 
-            {/* Table Header */}
-            <div className="hidden sm:grid sm:grid-cols-12 gap-2 px-3 py-2 text-xs text-gray-500 font-medium border-b">
-              <div className="col-span-1"></div>
-              <div className="col-span-5">מוצר</div>
-              <div className="col-span-2 text-center">כמות</div>
-              <div className="col-span-3 text-center">מחיר</div>
-              <div className="col-span-1"></div>
-            </div>
 
-            {items.map((item) => (
-              <div
-                key={item.productId}
-                className="grid grid-cols-12 gap-2 items-center px-3 py-2 rounded-lg transition-all"
-                style={{
-                  background: selectedItems[item.productId] ? '#ffffff' : '#f9fafb',
-                  borderRight: selectedItems[item.productId] ? '3px solid #0891b2' : '3px solid transparent',
-                  opacity: selectedItems[item.productId] ? 1 : 0.6,
-                }}
-              >
-                {/* Checkbox */}
-                <div className="col-span-1 flex justify-center">
-                  <input
-                    type="checkbox"
-                    checked={selectedItems[item.productId] || false}
-                    onChange={() => toggleItemSelection(item.productId)}
-                    className="w-4 h-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 cursor-pointer"
-                  />
-                </div>
+            {items.map((item) => {
+              const hasDiscount = item.originalPrice && item.originalPrice > item.price;
+              const itemSaving = hasDiscount ? (item.originalPrice - item.price) * item.quantity : 0;
+              
+              return (
+                <div
+                  key={item.productId}
+                  className="rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+                  style={{
+                    background: 'white',
+                    border: '2px solid transparent',
+                    backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                    backgroundOrigin: 'border-box',
+                    backgroundClip: 'padding-box, border-box',
+                    opacity: selectedItems[item.productId] ? 1 : 0.6,
+                  }}
+                >
+                  <div className="p-4">
+                    {/* Top Row: Checkbox, Image, Info, Delete */}
+                    <div className="flex gap-3">
+                      {/* Checkbox */}
+                      <div className="flex items-start pt-1">
+                        <input
+                          type="checkbox"
+                          checked={selectedItems[item.productId] || false}
+                          onChange={() => toggleItemSelection(item.productId)}
+                          className="w-5 h-5 rounded-lg border-2 border-cyan-500 text-cyan-600 focus:ring-cyan-500 cursor-pointer"
+                        />
+                      </div>
 
-                {/* Product Info */}
-                <div className="col-span-5 flex items-center gap-3">
-                  <Image
-                    src={item.image || 'https://placehold.co/50x50?text=VIPO'}
-                    alt={item.name || 'Product'}
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 object-cover rounded flex-shrink-0"
-                  />
-                  <span className="text-base font-semibold text-gray-900 line-clamp-2">{item.name}</span>
-                </div>
+                      {/* Product Image */}
+                      <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
+                        <Image
+                          src={item.image || 'https://placehold.co/80x80?text=VIPO'}
+                          alt={item.name || 'Product'}
+                          width={80}
+                          height={80}
+                          className="w-full h-full object-cover"
+                          unoptimized
+                        />
+                        {hasDiscount && (
+                          <div 
+                            className="absolute top-1 right-1 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-lg"
+                            style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)' }}
+                          >
+                            -{Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)}%
+                          </div>
+                        )}
+                      </div>
 
-                {/* Quantity */}
-                <div className="col-span-2 flex justify-center">
-                  <div className="flex items-center border border-gray-200 rounded text-sm">
-                    <button
-                        type="button"
-                        onClick={() => decrementItem(item.productId)}
-                        className="w-6 h-6 flex items-center justify-center hover:bg-gray-100"
-                      >
-                        -
-                      </button>
-                      <span className="w-6 text-center text-xs border-x border-gray-200">
-                        {item.quantity}
-                      </span>
+                      {/* Product Info */}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-gray-900 text-sm line-clamp-2 mb-1">{item.name}</p>
+                        <div className="flex items-center gap-2">
+                          <span 
+                            className="text-lg font-black"
+                            style={{ 
+                              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                              WebkitBackgroundClip: 'text',
+                              WebkitTextFillColor: 'transparent',
+                            }}
+                          >
+                            {formatCurrency(item.price)}
+                          </span>
+                          {hasDiscount && (
+                            <span className="text-xs text-gray-400 line-through">
+                              {formatCurrency(item.originalPrice)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Delete Button */}
                       <button
                         type="button"
-                        onClick={() => incrementItem(item.productId)}
-                        className="w-6 h-6 flex items-center justify-center hover:bg-gray-100"
+                        onClick={() => removeItem(item.productId)}
+                        className="p-2 h-fit text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                       >
-                        +
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
                       </button>
                     </div>
-                </div>
 
-                {/* Price */}
-                <div className="col-span-3 text-center">
-                  <span className="text-sm font-bold text-gray-900">{formatCurrency(item.price * item.quantity)}</span>
-                </div>
+                    {/* Bottom Row: Quantity & Total */}
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                      {/* Quantity Controls */}
+                      <div 
+                        className="flex items-center rounded-xl overflow-hidden"
+                        style={{
+                          border: '2px solid transparent',
+                          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                          backgroundOrigin: 'border-box',
+                          backgroundClip: 'padding-box, border-box',
+                        }}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => decrementItem(item.productId)}
+                          className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                        >
+                          <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                          </svg>
+                        </button>
+                        <span className="w-10 text-center text-sm font-bold text-gray-900 border-x border-gray-200">
+                          {item.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => incrementItem(item.productId)}
+                          className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                        >
+                          <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                        </button>
+                      </div>
 
-                {/* Delete */}
-                <div className="col-span-1 flex justify-center">
-                  <button
-                    type="button"
-                    onClick={() => removeItem(item.productId)}
-                    className="text-gray-400 hover:text-red-500 transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                      {/* Total Price */}
+                      <div className="text-left">
+                        <p className="text-xs text-gray-500">סה״כ</p>
+                        <p 
+                          className="text-lg font-black"
+                          style={{ 
+                            background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                          }}
+                        >
+                          {formatCurrency(item.price * item.quantity)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div
@@ -599,24 +655,57 @@ export default function CartPage() {
             </div>
 
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-gray-600">
-                <span>מוצרים נבחרים ({selectedTotals.totalQuantity}):</span>
-                <span className="font-medium text-gray-900">{formatCurrency(selectedTotals.subtotal)}</span>
-              </div>
+              {/* Original Price */}
+              {(() => {
+                const originalTotal = selectedItemsList.reduce((sum, item) => {
+                  const price = item.originalPrice || item.price;
+                  return sum + (price * item.quantity);
+                }, 0);
+                const productDiscount = selectedItemsList.reduce((sum, item) => {
+                  if (item.originalPrice && item.originalPrice > item.price) {
+                    return sum + (item.originalPrice - item.price) * item.quantity;
+                  }
+                  return sum;
+                }, 0);
+                
+                return (
+                  <>
+                    <div className="flex justify-between text-gray-600">
+                      <span>מחיר מקורי ({selectedTotals.totalQuantity} פריטים):</span>
+                      <span className="font-medium text-gray-900">{formatCurrency(originalTotal)}</span>
+                    </div>
+                    {productDiscount > 0 && (
+                      <div className="flex justify-between text-emerald-600">
+                        <span>הנחת מוצרים:</span>
+                        <span className="font-medium">-{formatCurrency(productDiscount)}</span>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
               {appliedCoupon && (
-                <div className="flex justify-between text-green-600">
-                  <span>הנחה ({appliedCoupon.code}):</span>
+                <div className="flex justify-between text-emerald-600">
+                  <span>הנחת קופון ({appliedCoupon.code}):</span>
                   <span className="font-medium">-{formatCurrency(discount)}</span>
                 </div>
               )}
               <div className="flex justify-between text-gray-600">
                 <span>משלוח:</span>
-                <span className="font-medium text-green-600">חינם</span>
+                <span className="font-medium text-emerald-600">חינם</span>
               </div>
             </div>
-            <div className="border-t pt-3 flex justify-between text-base font-bold text-gray-900">
-              <span>סה&quot;כ לתשלום:</span>
-              <span>{formatCurrency(finalTotal)}</span>
+            <div className="border-t pt-3 flex justify-between items-center">
+              <span className="text-base font-bold text-gray-900">סה&quot;כ לתשלום:</span>
+              <span 
+                className="text-2xl font-black"
+                style={{ 
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                {formatCurrency(finalTotal)}
+              </span>
             </div>
             <button
               type="button"
@@ -654,7 +743,7 @@ export default function CartPage() {
               {selectedItemsList.length === 0 ? 'בחר מוצרים לתשלום' : `המשך לתשלום (${selectedItemsList.length})`}
             </button>
             <Link
-              href="/products"
+              href="/shop"
               className="block w-full text-center font-medium py-3 rounded-lg transition-all duration-300"
               style={{
                 backgroundColor: 'white',
@@ -678,7 +767,19 @@ export default function CartPage() {
             </Link>
           </div>
         </div>
+
       </div>
+
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+      `}</style>
 
       {/* Upgrade to Agent Modal */}
       {showAgentModal && user?.role === 'customer' && (

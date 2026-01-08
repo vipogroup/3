@@ -1,0 +1,10 @@
+{
+  "type": "full",
+  "date": "2026-01-08T17:53:34.235Z",
+  "collectionsCount": 27,
+  "zipSize": 195725,
+  "files": [
+    "full-backup.zip",
+    "database-backup.json"
+  ]
+}

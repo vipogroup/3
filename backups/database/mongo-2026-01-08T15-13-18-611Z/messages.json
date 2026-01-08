@@ -1,0 +1,100 @@
+[
+  {
+    "_id": {
+      "$oid": "695c8ee33bc3dd7d2046990c"
+    },
+    "senderId": {
+      "$oid": "695c7e593bc3dd7d2046966b"
+    },
+    "senderRole": "agent",
+    "targetRole": "admin",
+    "targetUserId": null,
+    "message": "היי",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "695c7e593bc3dd7d2046966b"
+        },
+        "readAt": {
+          "$date": "2026-01-06T04:26:11.902Z"
+        },
+        "_id": {
+          "$oid": "695c8ee33bc3dd7d2046990d"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-01-06T04:26:12.014Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T04:26:12.014Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695f7c91986b9f1f76624d54"
+    },
+    "tenantId": null,
+    "senderId": {
+      "$oid": "695f535062acf71a6f9193ac"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: שולחן נירוסטה מקצועי 180×70×90 ס״מ – תעשייתי, חזק ועמיד",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "695f535062acf71a6f9193ac"
+        },
+        "readAt": {
+          "$date": "2026-01-08T09:44:49.148Z"
+        },
+        "_id": {
+          "$oid": "695f7c91986b9f1f76624d55"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-01-08T09:44:49.162Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T09:44:49.162Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695f7c98986b9f1f76624d58"
+    },
+    "tenantId": null,
+    "senderId": {
+      "$oid": "695f535062acf71a6f9193ac"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: שולחן נירוסטה מקצועי 180×70×90 ס״מ – תעשייתי, חזק ועמיד",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "695f535062acf71a6f9193ac"
+        },
+        "readAt": {
+          "$date": "2026-01-08T09:44:56.788Z"
+        },
+        "_id": {
+          "$oid": "695f7c98986b9f1f76624d59"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-01-08T09:44:56.800Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T09:44:56.800Z"
+    },
+    "__v": 0
+  }
+]

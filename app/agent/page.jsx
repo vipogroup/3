@@ -739,7 +739,7 @@ export default async function AgentPage() {
             <div className="text-center py-8 text-gray-500">
               <p>עדיין לא ביצעת הזמנות</p>
               <Link
-                href="/products"
+                href="/shop"
                 className="inline-block mt-3 px-4 py-2 rounded-lg text-white font-medium text-sm"
                 style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
               >

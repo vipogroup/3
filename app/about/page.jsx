@@ -363,7 +363,7 @@ export default function AboutPage() {
           {/* CTA */}
           <div className="text-center">
             <Link
-              href="/products"
+              href="/shop"
               className="inline-flex items-center gap-2 px-6 py-2.5 text-white font-bold rounded-lg text-sm transition-all hover:shadow-md hover:-translate-y-0.5"
               style={{ background: gradient }}
             >

@@ -10,6 +10,7 @@ import InstallPrompt from '@/app/components/InstallPrompt';
 import UpdateNotifier from '@/app/components/UpdateNotifier';
 import PushNotificationModal from '@/app/components/PushNotificationModal';
 import GlobalFooter from '@/app/components/GlobalFooter';
+import FloatingChatBot from '@/app/components/FloatingChatBot';
 import CookieConsent from '@/components/CookieConsent';
 import LoadingScreen from '@/app/components/LoadingScreen';
 import GoogleAnalytics from '@/app/components/GoogleAnalytics';
@@ -81,6 +82,7 @@ export default function RootLayout({ children }) {
             <UpdateNotifier />
             <PushNotificationModal />
             <CookieConsent />
+            <FloatingChatBot />
           </ThemeProvider>
         </CartProvider>
       </body>

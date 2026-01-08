@@ -70,7 +70,7 @@ function CheckoutCancelContent() {
               חזרה לסל הקניות
             </Link>
             <Link
-              href="/products"
+              href="/shop"
               className="px-6 py-3 rounded-2xl font-semibold border-2 transition-transform hover:scale-105"
               style={{ borderColor: '#1e3a8a', color: '#1e3a8a' }}
             >

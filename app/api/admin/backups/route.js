@@ -109,18 +109,36 @@ async function checkAdmin(req) {
   const legacyTokenMatch = cookieHeader.match(/token=([^;]+)/);
   const tokenValue = authTokenMatch?.[1] || legacyTokenMatch?.[1];
   
-  if (!tokenValue) return null;
-  
-  try {
-    const { jwtVerify } = await import('jose');
-    if (!process.env.JWT_SECRET) return null;
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-    const { payload } = await jwtVerify(decodeURIComponent(tokenValue), secret);
-    if (payload.role !== 'admin') return null;
-    return payload;
-  } catch {
-    return null;
+  // Try legacy JWT first
+  if (tokenValue) {
+    try {
+      const { jwtVerify } = await import('jose');
+      if (process.env.JWT_SECRET) {
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+        const { payload } = await jwtVerify(decodeURIComponent(tokenValue), secret);
+        if (payload.role === 'admin') return payload;
+      }
+    } catch {
+      // Try NextAuth
+    }
   }
+  
+  // Try NextAuth token
+  try {
+    const { getToken } = await import('next-auth/jwt');
+    const nextAuthToken = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    if (nextAuthToken?.role === 'admin') {
+      return {
+        userId: nextAuthToken.userId || nextAuthToken.sub,
+        email: nextAuthToken.email,
+        role: nextAuthToken.role
+      };
+    }
+  } catch {
+    // No valid token
+  }
+  
+  return null;
 }
 
 // GET - List backups
