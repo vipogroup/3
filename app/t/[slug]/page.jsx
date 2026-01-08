@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingCart, Phone, Mail, MapPin, Search, Filter, X, Plus, Minus, Check } from 'lucide-react';
+import { ShoppingCart, Phone, Mail, MapPin, Search, Filter, X, Plus, Minus, Check, User, LogIn } from 'lucide-react';
 
 export default function TenantStorePage() {
   const params = useParams();
@@ -167,21 +167,39 @@ export default function TenantStorePage() {
               </div>
             </div>
             
-            {/* Cart Button */}
-            <button 
-              onClick={() => setShowCart(true)}
-              className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-            >
-              <ShoppingCart className="w-6 h-6" />
-              {cartCount > 0 && (
-                <span 
-                  className="absolute -top-1 -right-1 w-5 h-5 text-white text-xs font-bold rounded-full flex items-center justify-center"
-                  style={{ background: secondaryColor }}
-                >
-                  {cartCount}
-                </span>
-              )}
-            </button>
+            {/* Login/Register & Cart Buttons */}
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/register?tenant=${slug}`}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white rounded-lg transition-all hover:opacity-90"
+                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+              >
+                <User className="w-4 h-4" />
+                <span className="hidden sm:inline">הרשמה</span>
+              </Link>
+              <Link
+                href={`/login?tenant=${slug}`}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium border rounded-lg hover:bg-gray-50 transition-all"
+                style={{ borderColor: primaryColor, color: primaryColor }}
+              >
+                <LogIn className="w-4 h-4" />
+                <span className="hidden sm:inline">התחברות</span>
+              </Link>
+              <button 
+                onClick={() => setShowCart(true)}
+                className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+              >
+                <ShoppingCart className="w-6 h-6" />
+                {cartCount > 0 && (
+                  <span 
+                    className="absolute -top-1 -right-1 w-5 h-5 text-white text-xs font-bold rounded-full flex items-center justify-center"
+                    style={{ background: secondaryColor }}
+                  >
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </header>

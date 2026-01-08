@@ -122,11 +122,12 @@ function RegisterPageContent() {
         throw new Error(verifyData.message || 'קוד שגוי');
       }
 
-      // Register user
+      // Register user with tenant if provided
+      const tenantSlug = searchParams.get('tenant');
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, phone, email, password, role }),
+        body: JSON.stringify({ fullName, phone, email, password, role, tenantSlug }),
       });
       const j = await res.json().catch(() => ({}));
       
@@ -183,10 +184,11 @@ function RegisterPageContent() {
 
     // הרשמה ישירה ללא אימות מייל (מבוטל זמנית)
     try {
+      const tenantSlug = searchParams.get('tenant');
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, phone, email, password, role }),
+        body: JSON.stringify({ fullName, phone, email, password, role, tenantSlug }),
       });
       const j = await res.json().catch(() => ({}));
       

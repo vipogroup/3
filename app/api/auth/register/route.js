@@ -50,7 +50,7 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    const { fullName, phone, email, password, role, referrerId } = body;
+    const { fullName, phone, email, password, role, referrerId, tenantSlug } = body;
     const normalizedPhone = normalizePhone(phone);
 
     // Validate required fields
@@ -82,6 +82,16 @@ export async function POST(req) {
 
     const db = await getDb();
     const users = db.collection('users');
+    const tenants = db.collection('tenants');
+
+    // Find tenant if tenantSlug provided
+    let tenantId = null;
+    if (tenantSlug) {
+      const tenant = await tenants.findOne({ slug: tenantSlug.toLowerCase() });
+      if (tenant) {
+        tenantId = tenant._id;
+      }
+    }
 
     // Check if user exists (by phone or email) - with specific error message
     const emailLower = email.toLowerCase().trim();
@@ -119,6 +129,7 @@ export async function POST(req) {
       isActive: true,
       createdAt: new Date(),
       updatedAt: new Date(),
+      ...(tenantId && { tenantId }), // Associate with tenant if provided
     };
 
     // Add referredBy if valid referrer exists
