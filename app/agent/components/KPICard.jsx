@@ -52,47 +52,75 @@ const HourglassIcon = () => (
   </svg>
 );
 
+const DiamondIcon = () => (
+  <svg
+    className="w-4 h-4 text-white"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M3 9l9 12 9-12-4-6H7l-4 6z" />
+    <path d="M3 9h18" />
+    <path d="M7 3l5 18 5-18" />
+  </svg>
+);
+
 const iconMap = {
   cart: CartIcon,
   bag: ShoppingBagIcon,
   wallet: WalletIcon,
   hourglass: HourglassIcon,
+  diamond: DiamondIcon,
 };
 
-export default function KPICard({ title, value, iconName }) {
+export default function KPICard({ title, value, iconName, highlight = false }) {
   const IconComponent = iconMap[iconName] || CartIcon;
 
-  return (
-    <div
-      className="rounded-xl p-4 transition-all duration-300"
-      style={{
+  // Highlight style for important cards like available balance
+  const highlightStyle = highlight
+    ? {
+        background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+        border: 'none',
+        boxShadow: '0 4px 15px rgba(8, 145, 178, 0.3)',
+      }
+    : {
         border: '2px solid transparent',
         backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
         boxShadow: '0 2px 10px rgba(8, 145, 178, 0.08)',
-      }}
+      };
+
+  return (
+    <div
+      className="rounded-xl p-4 transition-all duration-300"
+      style={highlightStyle}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-3px)';
-        e.currentTarget.style.boxShadow = '0 8px 20px rgba(8, 145, 178, 0.15)';
+        e.currentTarget.style.boxShadow = highlight
+          ? '0 8px 25px rgba(8, 145, 178, 0.4)'
+          : '0 8px 20px rgba(8, 145, 178, 0.15)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 2px 10px rgba(8, 145, 178, 0.08)';
+        e.currentTarget.style.boxShadow = highlight
+          ? '0 4px 15px rgba(8, 145, 178, 0.3)'
+          : '0 2px 10px rgba(8, 145, 178, 0.08)';
       }}
     >
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-semibold" style={{ color: '#1e3a8a' }}>
+        <span className={`text-xs font-semibold ${highlight ? 'text-white' : ''}`} style={highlight ? {} : { color: '#1e3a8a' }}>
           {title}
         </span>
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+          style={{ background: highlight ? 'rgba(255,255,255,0.2)' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
         >
           <IconComponent />
         </div>
       </div>
-      <p className="text-xl font-bold text-gray-900">{value}</p>
+      <p className={`text-xl font-bold ${highlight ? 'text-white' : 'text-gray-900'}`}>{value}</p>
     </div>
   );
 }

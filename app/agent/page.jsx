@@ -350,6 +350,9 @@ async function getAgentStats(agentId, originBaseUrl = null) {
   const baseUrl = (originBaseUrl || 'https://vipo-group.com').replace(/\/$/, '');
   const referralLink = `${baseUrl}/r/${encodeURIComponent(referralCode)}`;
 
+  // Available balance from user document
+  const availableBalance = agentDoc?.commissionBalance || 0;
+
   return {
     totalReferrals: totalReferralsBase,
     activeSales,
@@ -357,6 +360,7 @@ async function getAgentStats(agentId, originBaseUrl = null) {
     totalRevenue,
     totalCommission,
     pendingCommission,
+    availableBalance,
     level,
     xp,
     nextLevelXp,
@@ -427,6 +431,12 @@ export default async function AgentPage() {
       title: 'המתנה לתשלום',
       value: formatCurrency(stats.pendingCommission),
       iconName: 'hourglass',
+    },
+    {
+      title: 'יתרה למשיכה',
+      value: formatCurrency(stats.availableBalance),
+      iconName: 'diamond',
+      highlight: true,
     },
   ];
 
