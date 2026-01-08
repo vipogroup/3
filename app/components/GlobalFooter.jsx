@@ -35,7 +35,7 @@ export default function GlobalFooter() {
       {/* About VIPO Section */}
       <section id="about-vipo" className="about-vipo">
         <div className="container">
-          <h2 className="section-title">מי אנחנו</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>מי אנחנו</h2>
           <div className="about-content">
             <p className="about-intro">
               VIPO Group מובילה את תחום הרכישה הקבוצתית בישראל מאז 2018. אנו מחברים בין אלפי

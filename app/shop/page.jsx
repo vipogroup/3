@@ -6,7 +6,7 @@ import FeaturedCarousel from '@/app/components/FeaturedCarousel';
 export default function ShopPage() {
 
   return (
-    <div className="min-h-screen" style={{ background: '#f8f9fa' }}>
+    <div className="min-h-screen" style={{ background: '#ffffff' }}>
       {/* Hero Section */}
       <div 
         className="relative pt-8 pb-16 px-4"
@@ -14,33 +14,14 @@ export default function ShopPage() {
       >
         {/* VIPO Title */}
         <div className="text-center mb-8">
-          <div className="inline-block relative">
-            <h1 
-              className="text-5xl font-black text-white"
-              style={{ 
-                fontFamily: 'Poppins, sans-serif',
-                textShadow: '0 0 30px rgba(125, 211, 252, 0.6), 0 4px 8px rgba(0,0,0,0.2)',
-              }}
-            >
-              VIPO
-            </h1>
-            {/* Styled Underline */}
-            <div 
-              className="h-1 w-24 mx-auto mt-1.5 rounded-full"
-              style={{ 
-                background: 'linear-gradient(90deg, rgba(255,255,255,0.4) 0%, #ffffff 50%, rgba(255,255,255,0.4) 100%)',
-                boxShadow: '0 0 15px rgba(255, 255, 255, 0.5)',
-              }}
-            />
-          </div>
-          <p className="text-white/90 text-base mt-4 font-medium">נלחמים ביוקר המחיה - מוצרים במחירים משתלמים</p>
+          <p className="text-white/90 text-base font-medium">נלחמים ביוקר המחיה - מוצרים במחירים משתלמים</p>
         </div>
 
         {/* Selection Cards */}
         <div className="max-w-md mx-auto">
           <div className="grid grid-cols-2 gap-4">
             {/* Available Now Card */}
-            <Link href="/products?type=available" className="block group">
+            <Link href="/products?type=available" className="block group no-underline" style={{ textDecoration: 'none' }}>
               <div 
                 className="relative bg-white rounded-2xl p-4 text-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
                 style={{ boxShadow: '0 8px 32px rgba(8, 145, 178, 0.25)' }}
@@ -77,28 +58,28 @@ export default function ShopPage() {
             </Link>
 
             {/* Group Purchase Card */}
-            <Link href="/products?type=group" className="block group">
+            <Link href="/products?type=group" className="block group no-underline" style={{ textDecoration: 'none' }}>
               <div 
-                className="relative bg-gradient-to-br from-amber-400 to-orange-400 rounded-2xl p-4 text-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
-                style={{ boxShadow: '0 8px 32px rgba(251, 191, 36, 0.35)' }}
+                className="relative rounded-2xl p-4 text-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
+                style={{ background: '#fff7ed', boxShadow: '0 8px 32px rgba(251, 191, 36, 0.35)' }}
               >
                 {/* HOT Badge */}
-                <div className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-bold px-2 py-1 rounded-bl-lg animate-pulse">
+                <div className="absolute top-0 right-0 text-white text-[9px] font-bold px-2 py-1 rounded-bl-lg animate-pulse" style={{ background: '#d97706' }}>
                   עד 50% הנחה
                 </div>
                 
                 {/* Icon - People */}
-                <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-white/20 flex items-center justify-center">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <div className="w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center" style={{ background: 'rgba(251, 191, 36, 0.2)' }}>
+                  <svg className="w-7 h-7" style={{ color: '#d97706' }} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
                 
-                <h3 className="font-bold text-base mb-1" style={{ color: '#78350f' }}>רכישה קבוצתית</h3>
-                <p className="text-xs mb-3" style={{ color: '#92400e' }}>הצטרפו למילוי מכולה<br/>ותהנו מהנחות מטורפות!</p>
+                <h3 className="font-bold text-base mb-1" style={{ color: '#d97706' }}>רכישה קבוצתית</h3>
+                <p className="text-xs mb-3" style={{ color: '#d97706' }}>הצטרפו למילוי מכולה<br/>ותהנו מהנחות מטורפות!</p>
                 
                 {/* Button */}
-                <div className="bg-white px-4 py-2 rounded-full font-bold text-sm" style={{ color: '#d97706' }}>
+                <div className="bg-white px-4 py-2 rounded-full font-bold text-sm" style={{ color: '#d97706', border: '2px solid #d97706' }}>
                   לחץ כאן
                 </div>
               </div>
@@ -109,13 +90,13 @@ export default function ShopPage() {
         {/* Wave Divider */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 60" fill="none" className="w-full h-auto">
-            <path d="M0 60V30C240 10 480 0 720 10C960 20 1200 40 1440 30V60H0Z" fill="#f8f9fa"/>
+            <path d="M0 60V30C240 10 480 0 720 10C960 20 1200 40 1440 30V60H0Z" fill="#ffffff"/>
           </svg>
         </div>
       </div>
 
       {/* Products Section - New Carousel */}
-      <FeaturedCarousel />
+      <FeaturedCarousel darkBackground={false} />
 
     </div>
   );

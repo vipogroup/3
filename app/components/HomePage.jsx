@@ -309,8 +309,10 @@ export default function HomePage() {
         }
         
         .cta-buttons {
-          flex-direction: column !important;
+          flex-direction: row !important;
           align-items: center !important;
+          justify-content: center !important;
+          gap: 15px !important;
         }
       `}</style>
       {/* Hero Section */}
@@ -368,7 +370,7 @@ export default function HomePage() {
       {/* How It Works Section */}
       <section id="how-it-works" className="how-it-works reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title">איך זה עובד?</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>איך זה עובד?</h2>
           <div className="steps-container">
             {steps.map((step, index) => (
               <div className="step reveal-on-scroll" key={index}>
@@ -388,7 +390,7 @@ export default function HomePage() {
       {/* Price Table Section */}
       <section id="price-table" className="price-table reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title">המחיר יורד לפי כמות</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>המחיר יורד לפי כמות</h2>
           <div className="price-table-container">
             <div className="price-row">
               <div className="participants">50-100 משתתפים</div>
@@ -417,7 +419,7 @@ export default function HomePage() {
             <div className="info-icon">
               <span style={{color: '#ffffff'}}>{svgIcons.shield}</span>
             </div>
-            <h2>שאנחנו מאוחדים אנחנו חזקים</h2>
+            <h2 style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}>שאנחנו מאוחדים אנחנו חזקים</h2>
             <p>מצטרפים ורוכשים ב-50% יותר זול ממחיר השוק בישראל ואם הצלחנו להיות מאוחדים וצרפנו חברים ומשפחה אז נקבל עוד הנחה רק ככה ננצח ביחד את יוקר המחייה</p>
           </div>
         </div>
@@ -426,7 +428,7 @@ export default function HomePage() {
       {/* Referral Section */}
       <section id="referral" className="referral reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title">חבר מביא חבר</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>חבר מביא חבר</h2>
           <div className="referral-content">
             <div className="referral-info">
               <h3>שיתפת – הרווחת</h3>
@@ -478,7 +480,7 @@ export default function HomePage() {
       {/* Target Audience Section */}
       <section id="target-audience" className="target-audience reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title">למי זה מתאים</h2>
+          <h2 className="section-title" style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}>למי זה מתאים</h2>
           <div className="audience-grid">
             {audiences.map((item, index) => (
               <div className="audience-card reveal-on-scroll" key={index}>
@@ -496,7 +498,7 @@ export default function HomePage() {
       {/* FAQ Section */}
       <section id="faq" className="faq reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title">שאלות נפוצות</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>שאלות נפוצות</h2>
           <div className="faq-timeline">
             {faqs.map((faq, index) => (
               <div className="faq-item reveal-on-scroll" key={index}>
@@ -519,7 +521,7 @@ export default function HomePage() {
       {/* Testimonials Section */}
       <section id="testimonials" className="testimonials">
         <div className="container">
-          <h2 className="section-title">לקוחות מספרים</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>לקוחות מספרים</h2>
           <div className="testimonials-slider-wrapper">
             <div className="testimonials-slider">
               {testimonials.map((testimonial, index) => (
@@ -560,7 +562,7 @@ export default function HomePage() {
       {/* About VIPO Section */}
       <section id="about-vipo" className="about-vipo">
         <div className="container">
-          <h2 className="section-title">מי אנחנו</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>מי אנחנו</h2>
           <div className="about-content">
             <p className="about-intro">
               VIPO Group מובילה את תחום הרכישה הקבוצתית בישראל מאז 2018. אנו מחברים בין אלפי

@@ -19,43 +19,6 @@ export default function UserHeader() {
   const pathname = usePathname();
   const { totals, isEmpty } = useCartContext();
   const [adminNavItems, setAdminNavItems] = useState([]);
-  const [favoritesCount, setFavoritesCount] = useState(0);
-
-  // Load favorites count from localStorage
-  useEffect(() => {
-    const loadFavoritesCount = () => {
-      try {
-        const saved = localStorage.getItem('vipo_favorites');
-        if (saved) {
-          const favorites = JSON.parse(saved);
-          setFavoritesCount(favorites.length);
-        } else {
-          setFavoritesCount(0);
-        }
-      } catch (e) {
-        setFavoritesCount(0);
-      }
-    };
-    
-    loadFavoritesCount();
-    
-    // Listen for storage changes (when favorites are updated in other tabs/components)
-    const handleStorage = (e) => {
-      if (e.key === 'vipo_favorites') {
-        loadFavoritesCount();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorage);
-    
-    // Also poll every 2 seconds to catch same-tab updates
-    const interval = setInterval(loadFavoritesCount, 2000);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorage);
-      clearInterval(interval);
-    };
-  }, []);
 
   useEffect(() => {
     let ignore = false;
@@ -335,39 +298,6 @@ export default function UserHeader() {
               );
             })}
           </nav>
-
-          {/* Favorites / Wishlist */}
-          <Link
-            href="/favorites"
-            className="relative p-2 rounded-full transition-all duration-300"
-            style={{ color: pathname === '/favorites' ? '#1e3a8a' : '#4b5563' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#0891b2';
-              e.currentTarget.style.background = 'rgba(8, 145, 178, 0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = pathname === '/favorites' ? '#1e3a8a' : '#4b5563';
-              e.currentTarget.style.background = 'transparent';
-            }}
-            title="מועדפים"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
-            {favoritesCount > 0 && (
-              <span
-                className="absolute -top-1 -right-1 inline-flex items-center justify-center rounded-full text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1"
-                style={{ background: 'linear-gradient(135deg, #ef4444 0%, #f87171 100%)' }}
-              >
-                {Math.min(99, favoritesCount)}
-              </span>
-            )}
-          </Link>
 
           <Link
             href="/cart"

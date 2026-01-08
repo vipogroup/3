@@ -1,0 +1,114 @@
+[
+  {
+    "_id": {
+      "$oid": "692cf3df3a64c7c8757a2706"
+    },
+    "email": "admin@vipo.local",
+    "createdAt": {
+      "$date": "2025-12-01T01:48:15.157Z"
+    },
+    "isActive": true,
+    "password": "$2a$10$M4QeUHd9LoWBKZO6b1H73uubfKOAWToH2D2jqrrVpBuFSykCnSvuG",
+    "phone": "0501234567",
+    "role": "admin",
+    "updatedAt": {
+      "$date": "2025-12-06T02:46:02.840Z"
+    },
+    "passwordHash": "$2a$10$ARn6ryv2M/mTUBkJ1CjJLeBUFOKLozjX6abhLUXVcy3GtMGXg0JDi",
+    "fullName": "מנהל 02"
+  },
+  {
+    "_id": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "email": "m0587009938@gmail.com",
+    "passwordHash": "$2a$10$9ztYJEL8uI1DhL5uBByp7e6CgzXCjJB0y3Gxwt27RPMWWJ6Z09ZVO",
+    "fullName": "Admin",
+    "role": "admin",
+    "phone": "0587009938",
+    "createdAt": {
+      "$date": "2025-12-01T19:38:12.359Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-10T16:55:17.409Z"
+    },
+    "isActive": true
+  },
+  {
+    "_id": {
+      "$oid": "695cfa87a6b19e4ce1364ed6"
+    },
+    "fullName": "מוביל שרת ",
+    "phone": "0533858882",
+    "email": "admin123@vipo.local",
+    "passwordHash": "$2a$10$0ujqznQA5CuwFV26OYUgSOeUmd2.gblrujpR.ucscCFoxojemRc3K",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-06T12:05:27.165Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-06T12:05:40.892Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "mvbyl-shrt-001",
+    "couponSequence": 1,
+    "couponSlug": "mvbyl-shrt",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "695dbd8ccf7d0548762b4d1a"
+    },
+    "fullName": "מרים חדש",
+    "phone": "0533858881",
+    "email": "m0533858881@gmail.com",
+    "passwordHash": "$2a$10$5uxCMedv5lyb1c.pBP308uZnw.rj855Ug1gGAjlW4tb1.oSIUBvna",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-07T01:57:32.128Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-07T01:57:32.128Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695eb6b89bff2554bffd4319"
+    },
+    "fullName": "דניאל",
+    "email": "m0523004374@gmail.com",
+    "phone": "0523004374",
+    "role": "business_admin",
+    "passwordHash": "$2a$10$jkN1FXip6RpcxoMor39IROuZKuwYjlWT5DTwFMpiI20h7u1PjwCHy",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-07T19:40:40.906Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-07T19:40:40.906Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ec06ff249ef0c1fb6b6e1"
+    },
+    "fullName": "דניאל ",
+    "email": "m0507123331@gmail.com",
+    "phone": "0507123331",
+    "role": "business_admin",
+    "passwordHash": "$2a$10$sVkfirPk43.qxh.LW0gOB.fuTwmxJRGMBaiIHiWhgBXj0cdFXwWOO",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-07T20:22:07.882Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-07T20:22:07.882Z"
+    },
+    "tenantId": {
+      "$oid": "695ec005f249ef0c1fb6b6d9"
+    }
+  }
+]

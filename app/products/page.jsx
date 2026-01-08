@@ -266,12 +266,18 @@ function ProductsPageContent() {
             <div className="flex items-center gap-4">
               <Link 
                 href="/shop"
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all hover:opacity-80 no-underline"
+                style={{
+                  textDecoration: 'none',
+                  border: `1.5px solid ${typeFilter === 'group' ? '#d97706' : '#1e3a8a'}`,
+                  color: typeFilter === 'group' ? '#92400e' : '#1e3a8a',
+                  background: typeFilter === 'group' ? '#fef3c7' : '#dbeafe',
+                }}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
-                <span>חזרה לחנות</span>
+                <span className="text-sm font-medium">חזרה לחנות</span>
               </Link>
               <div className="h-6 w-px bg-gray-300"></div>
               <h1 
@@ -292,6 +298,25 @@ function ProductsPageContent() {
                 )}
                 {pageTitle}
               </h1>
+              
+              {/* Switch Button */}
+              <div className="mr-auto">
+                <Link
+                  href={typeFilter === 'group' ? '/products?type=available' : '/products?type=group'}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all hover:opacity-80 no-underline"
+                  style={{
+                    textDecoration: 'none',
+                    border: `1.5px solid ${typeFilter === 'group' ? '#1e3a8a' : '#d97706'}`,
+                    color: typeFilter === 'group' ? '#1e3a8a' : '#92400e',
+                    background: typeFilter === 'group' ? '#dbeafe' : '#fef3c7',
+                  }}
+                >
+                  <span className="text-sm font-medium">{typeFilter === 'group' ? 'זמינים עכשיו' : 'רכישה קבוצתית'}</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -905,51 +930,7 @@ function ProductCard({
     return () => clearInterval(interval);
   }, [product]);
 
-  const [isFavorite, setIsFavorite] = useState(false);
   const router = useRouter();
-
-  // Check if product is in favorites on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('vipo_favorites');
-      if (saved) {
-        const favorites = JSON.parse(saved);
-        setIsFavorite(favorites.some((item) => item._id === product._id));
-      }
-    } catch (e) {
-      console.error('Error loading favorites:', e);
-    }
-  }, [product._id]);
-
-  // Toggle favorite status
-  const toggleFavorite = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    try {
-      const saved = localStorage.getItem('vipo_favorites');
-      let favorites = saved ? JSON.parse(saved) : [];
-      
-      if (isFavorite) {
-        // Remove from favorites
-        favorites = favorites.filter((item) => item._id !== product._id);
-      } else {
-        // Add to favorites
-        favorites.push({
-          _id: product._id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          imageUrl: product.imageUrl,
-        });
-      }
-      
-      localStorage.setItem('vipo_favorites', JSON.stringify(favorites));
-      setIsFavorite(!isFavorite);
-    } catch (e) {
-      console.error('Error saving favorites:', e);
-    }
-  };
 
   return (
     <div
@@ -986,28 +967,6 @@ function ProductCard({
 
           {/* Icons Container - Top Left */}
           <div className="absolute top-2 left-2 flex gap-1.5">
-            {/* Heart/Favorites Button */}
-            <button
-              type="button"
-              onClick={toggleFavorite}
-              className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200"
-              style={{
-                background: isFavorite ? 'rgba(239, 68, 68, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-              }}
-              aria-label={isFavorite ? 'הסר ממועדפים' : 'הוסף למועדפים'}
-            >
-              <svg
-                className="w-4 h-4"
-                fill={isFavorite ? 'white' : 'none'}
-                stroke={isFavorite ? 'white' : '#6b7280'}
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
-
             {/* Share Button - Only for agents */}
             {(user?.role === 'agent' || user?.role === 'admin') && (
               <button

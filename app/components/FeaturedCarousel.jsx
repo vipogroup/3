@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-export default function FeaturedCarousel() {
+export default function FeaturedCarousel({ darkBackground = true }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -63,12 +63,12 @@ export default function FeaturedCarousel() {
     return (
       <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, marginTop: '60px', marginBottom: '0', minHeight: '420px' }}>
         <div className="text-center mb-2 md:mb-4">
-          <h2 className="text-xl font-bold drop-shadow-lg" style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}>
+          <h2 className="text-xl font-bold drop-shadow-lg" style={darkBackground ? { color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' } : { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             מוצרים במחיר מפעל
           </h2>
           <div 
             className="h-1 w-16 mx-auto mt-2 rounded-full"
-            style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.3) 0%, #ffffff 50%, rgba(255,255,255,0.3) 100%)' }}
+            style={{ background: darkBackground ? 'linear-gradient(90deg, rgba(255,255,255,0.3) 0%, #ffffff 50%, rgba(255,255,255,0.3) 100%)' : 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
           />
         </div>
         <div className="animate-pulse flex justify-center gap-4 overflow-hidden">
@@ -113,12 +113,12 @@ export default function FeaturedCarousel() {
     <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, marginTop: '60px', marginBottom: '0', minHeight: '420px' }}>
       {/* Section Header */}
       <div className="text-center mb-2 md:mb-4">
-        <h2 className="text-xl font-bold drop-shadow-lg" style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}>
+        <h2 className="text-xl font-bold drop-shadow-lg" style={darkBackground ? { color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' } : { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
           מוצרים במחיר מפעל
         </h2>
         <div 
           className="h-1 w-16 mx-auto mt-2 rounded-full"
-          style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.3) 0%, #ffffff 50%, rgba(255,255,255,0.3) 100%)' }}
+          style={{ background: darkBackground ? 'linear-gradient(90deg, rgba(255,255,255,0.3) 0%, #ffffff 50%, rgba(255,255,255,0.3) 100%)' : 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
         />
       </div>
 
@@ -166,53 +166,11 @@ export default function FeaturedCarousel() {
 }
 
 function FeaturedProductCard({ product, user }) {
-  const [isFavorite, setIsFavorite] = useState(false);
   const router = useRouter();
 
   const discountPercent = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
-
-  // Check if product is in favorites on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('vipo_favorites');
-      if (saved) {
-        const favorites = JSON.parse(saved);
-        setIsFavorite(favorites.some((item) => item._id === product._id));
-      }
-    } catch (e) {
-      console.error('Error loading favorites:', e);
-    }
-  }, [product._id]);
-
-  // Toggle favorite status
-  const toggleFavorite = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    try {
-      const saved = localStorage.getItem('vipo_favorites');
-      let favorites = saved ? JSON.parse(saved) : [];
-      
-      if (isFavorite) {
-        favorites = favorites.filter((item) => item._id !== product._id);
-      } else {
-        favorites.push({
-          _id: product._id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          imageUrl: product.imageUrl,
-        });
-      }
-      
-      localStorage.setItem('vipo_favorites', JSON.stringify(favorites));
-      setIsFavorite(!isFavorite);
-    } catch (e) {
-      console.error('Error saving favorites:', e);
-    }
-  };
 
   return (
     <div
@@ -247,28 +205,6 @@ function FeaturedProductCard({ product, user }) {
 
           {/* Icons Container - Top Left */}
           <div className="absolute top-1 left-1 flex gap-1 z-10">
-            {/* Heart/Favorites Button */}
-            <button
-              type="button"
-              onClick={toggleFavorite}
-              className="w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200"
-              style={{
-                background: isFavorite ? 'rgba(239, 68, 68, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-              }}
-              aria-label={isFavorite ? 'הסר ממועדפים' : 'הוסף למועדפים'}
-            >
-              <svg
-                className="w-3 h-3"
-                fill={isFavorite ? 'white' : 'none'}
-                stroke={isFavorite ? 'white' : '#6b7280'}
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
-
             {/* Share Button - Only for agents */}
             {(user?.role === 'agent' || user?.role === 'admin') && (
               <button

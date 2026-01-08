@@ -136,7 +136,18 @@ export default function AboutPage() {
             <Globe className="w-7 h-7" />
           </div>
           
-          <h1 className="text-2xl sm:text-3xl font-bold mb-3 opacity-0-start animate-fadeInDown delay-100">מי אנחנו</h1>
+          <h1
+            className="text-2xl sm:text-3xl font-bold mb-3 opacity-0-start animate-fadeInDown delay-100"
+            style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 6px 16px rgba(0,0,0,0.25))'
+            }}
+          >
+            מי אנחנו
+          </h1>
           
           <p className="text-sm sm:text-base leading-relaxed mb-3 opacity-0-start animate-fadeInUp delay-200">
             <span className="font-bold">VIPO Group</span> הוקמה בשנת 2018 מתוך הבנה פשוטה: הדרך לחיסכון אמיתי עוברת דרך קשר ישיר עם מקור הייצור.
