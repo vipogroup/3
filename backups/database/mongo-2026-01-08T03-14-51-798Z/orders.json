@@ -280,5 +280,82 @@
         "$date": "2026-01-06T01:33:16.842Z"
       }
     }
+  },
+  {
+    "_id": {
+      "$oid": "695f1c4da6fea62c2948ab24"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "692def013a64c7c8757a270b"
+        },
+        "name": "מקלדת מכנית RGB מקצועית",
+        "quantity": 1,
+        "unitPrice": 499,
+        "totalPrice": 499,
+        "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      },
+      {
+        "productId": {
+          "$oid": "692d1b537ac4faea85645f1f"
+        },
+        "name": "מטען אלחוטי מהיר",
+        "quantity": 1,
+        "unitPrice": 129,
+        "totalPrice": 129,
+        "image": "https://images.unsplash.com/photo-1572635196184-84e35138cf62?w=800",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 628,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 628
+    },
+    "totalAmount": 628,
+    "discountAmount": 0,
+    "createdBy": "695ec06ff249ef0c1fb6b6e1",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": null,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2026-01-08T02:54:05.440Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T02:54:08.335Z"
+    },
+    "customer": {
+      "fullName": "דניאל ע",
+      "email": "m0507123331@gmail.com",
+      "phone": "0507123331",
+      "address": "ת",
+      "city": "צ",
+      "zipCode": "12457"
+    },
+    "paymentMethod": "credit_card",
+    "deliveryMethod": "pickup",
+    "shippingCost": 0,
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": {
+        "$date": "2026-01-08T02:54:08.335Z"
+      }
+    }
   }
 ]

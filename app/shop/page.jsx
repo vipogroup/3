@@ -23,8 +23,8 @@ export default function ShopPage() {
             {/* Available Now Card */}
             <Link href="/products?type=available" className="block group no-underline" style={{ textDecoration: 'none' }}>
               <div 
-                className="relative bg-white rounded-2xl p-4 text-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
-                style={{ boxShadow: '0 8px 32px rgba(8, 145, 178, 0.25)' }}
+                className="relative rounded-2xl p-4 text-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
+                style={{ background: '#f0f9ff', boxShadow: '0 8px 32px rgba(8, 145, 178, 0.25)' }}
               >
                 {/* Badge */}
                 <div 
@@ -50,7 +50,7 @@ export default function ShopPage() {
                 {/* Button */}
                 <div 
                   className="text-white px-4 py-2 rounded-full font-bold text-sm"
-                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', border: '2px solid #1e3a8a' }}
                 >
                   לחץ כאן
                 </div>
@@ -79,7 +79,7 @@ export default function ShopPage() {
                 <p className="text-xs mb-3" style={{ color: '#d97706' }}>הצטרפו למילוי מכולה<br/>ותהנו מהנחות מטורפות!</p>
                 
                 {/* Button */}
-                <div className="bg-white px-4 py-2 rounded-full font-bold text-sm" style={{ color: '#d97706', border: '2px solid #d97706' }}>
+                <div className="px-4 py-2 rounded-full font-bold text-sm" style={{ background: 'rgba(251, 191, 36, 0.2)', color: '#d97706', border: '2px solid #d97706' }}>
                   לחץ כאן
                 </div>
               </div>
@@ -89,8 +89,8 @@ export default function ShopPage() {
 
         {/* Wave Divider */}
         <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 60" fill="none" className="w-full h-auto">
-            <path d="M0 60V30C240 10 480 0 720 10C960 20 1200 40 1440 30V60H0Z" fill="#ffffff"/>
+          <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto" preserveAspectRatio="none">
+            <path d="M0 120V80Q360 20 720 80T1440 80V120H0Z" fill="#ffffff"/>
           </svg>
         </div>
       </div>

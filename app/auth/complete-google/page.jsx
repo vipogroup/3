@@ -50,13 +50,13 @@ export default function CompleteGooglePage() {
           console.log('localStorage not available');
         }
 
-        // Redirect to products page
-        window.location.href = '/products';
+        // Redirect to home page
+        window.location.href = '/';
       } catch (e) {
         console.error('Complete Google error:', e);
         setError('שגיאה בהשלמת ההרשמה');
         // Still redirect after error
-        setTimeout(() => { window.location.href = '/products'; }, 2000);
+        setTimeout(() => { window.location.href = '/'; }, 2000);
       }
     }
 

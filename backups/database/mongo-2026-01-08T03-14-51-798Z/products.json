@@ -12,19 +12,13 @@
     "price": 299,
     "originalPrice": 1000.02,
     "commission": 0,
-    "type": "group",
-    "purchaseType": "group",
+    "type": "online",
+    "purchaseType": "regular",
     "groupEndDate": null,
-    "expectedDeliveryDays": 60,
-    "groupMinQuantity": 54,
-    "groupCurrentQuantity": 15,
-    "groupPurchaseDetails": {
-      "closingDays": 30,
-      "shippingDays": 60,
-      "minQuantity": 54,
-      "currentQuantity": 15,
-      "totalDays": 90
-    },
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": null,
+    "groupCurrentQuantity": null,
+    "groupPurchaseDetails": null,
     "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
     "imageUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
     "images": [
@@ -51,14 +45,15 @@
       "$date": "2025-12-01T04:34:52.101Z"
     },
     "updatedAt": {
-      "$date": "2026-01-06T12:45:40.795Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
     "customFields": [],
     "sku": "5sds5d5sd5s",
     "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
     "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
     "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
-    "isFeatured": true
+    "isFeatured": true,
+    "position": 26
   },
   {
     "_id": {
@@ -112,7 +107,7 @@
       "$date": "2025-12-01T04:34:52.103Z"
     },
     "updatedAt": {
-      "$date": "2026-01-06T12:45:42.596Z"
+      "$date": "2026-01-07T15:09:46.620Z"
     },
     "customFields": [],
     "sku": "",
@@ -180,9 +175,10 @@
       "$date": "2025-12-01T04:34:52.103Z"
     },
     "updatedAt": {
-      "$date": "2026-01-06T12:45:45.291Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "isFeatured": false
+    "isFeatured": false,
+    "position": 27
   },
   {
     "_id": {
@@ -243,9 +239,10 @@
       "$date": "2025-12-01T04:34:52.104Z"
     },
     "updatedAt": {
-      "$date": "2026-01-06T00:33:32.227Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "isFeatured": true
+    "isFeatured": true,
+    "position": 28
   },
   {
     "_id": {
@@ -306,9 +303,10 @@
       "$date": "2025-12-01T04:34:52.104Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:50.891Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "isFeatured": true
+    "isFeatured": true,
+    "position": 29
   },
   {
     "_id": {
@@ -369,9 +367,10 @@
       "$date": "2025-12-01T04:36:35.735Z"
     },
     "updatedAt": {
-      "$date": "2026-01-05T16:28:07.348Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "isFeatured": true
+    "isFeatured": true,
+    "position": 30
   },
   {
     "_id": {
@@ -432,9 +431,10 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:53.296Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "isFeatured": true
+    "isFeatured": true,
+    "position": 31
   },
   {
     "_id": {
@@ -495,9 +495,10 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2026-01-03T04:58:53.863Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "isFeatured": true
+    "isFeatured": true,
+    "position": 32
   },
   {
     "_id": {
@@ -558,8 +559,9 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2026-01-05T19:37:13.177Z"
-    }
+      "$date": "2026-01-07T15:38:38.489Z"
+    },
+    "position": 33
   },
   {
     "_id": {
@@ -597,7 +599,7 @@
     "videoUrl": "https://www.youtube.com/embed/tgbNymZ7vqY",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 77,
+    "stockCount": 76,
     "rating": 4.3,
     "reviews": 312,
     "features": [
@@ -620,8 +622,9 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2026-01-06T01:23:08.673Z"
-    }
+      "$date": "2026-01-08T02:54:05.440Z"
+    },
+    "position": 34
   },
   {
     "_id": {
@@ -682,8 +685,9 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.696Z"
-    }
+      "$date": "2026-01-07T15:38:38.489Z"
+    },
+    "position": 35
   },
   {
     "_id": {
@@ -744,8 +748,9 @@
       "$date": "2025-12-01T04:36:35.738Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.698Z"
-    }
+      "$date": "2026-01-07T15:38:38.489Z"
+    },
+    "position": 36
   },
   {
     "_id": {
@@ -806,8 +811,9 @@
       "$date": "2025-12-01T04:51:19.719Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.700Z"
-    }
+      "$date": "2026-01-07T15:38:38.489Z"
+    },
+    "position": 37
   },
   {
     "_id": {
@@ -868,8 +874,9 @@
       "$date": "2025-12-01T04:51:19.721Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.702Z"
-    }
+      "$date": "2026-01-07T15:38:38.489Z"
+    },
+    "position": 38
   },
   {
     "_id": {
@@ -930,8 +937,9 @@
       "$date": "2025-12-01T04:51:19.721Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.704Z"
-    }
+      "$date": "2026-01-07T15:38:38.489Z"
+    },
+    "position": 39
   },
   {
     "_id": {
@@ -992,8 +1000,9 @@
       "$date": "2025-12-01T04:51:19.722Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.706Z"
-    }
+      "$date": "2026-01-07T15:38:38.489Z"
+    },
+    "position": 40
   },
   {
     "_id": {
@@ -1054,8 +1063,9 @@
       "$date": "2025-12-01T04:51:19.722Z"
     },
     "updatedAt": {
-      "$date": "2025-12-01T04:52:42.708Z"
-    }
+      "$date": "2026-01-07T15:38:38.489Z"
+    },
+    "position": 41
   },
   {
     "_id": {
@@ -1112,9 +1122,10 @@
     "stockCount": 15,
     "type": "online",
     "updatedAt": {
-      "$date": "2025-12-18T20:09:35.344Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "videoUrl": ""
+    "videoUrl": "",
+    "position": 42
   },
   {
     "_id": {
@@ -1171,9 +1182,10 @@
     "stockCount": 18,
     "type": "online",
     "updatedAt": {
-      "$date": "2025-12-18T20:09:35.344Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "videoUrl": ""
+    "videoUrl": "",
+    "position": 43
   },
   {
     "_id": {
@@ -1230,9 +1242,10 @@
     "stockCount": 21,
     "type": "online",
     "updatedAt": {
-      "$date": "2026-01-06T01:33:14.535Z"
+      "$date": "2026-01-07T15:38:38.499Z"
     },
-    "videoUrl": ""
+    "videoUrl": "",
+    "position": 1
   },
   {
     "_id": {
@@ -1289,9 +1302,10 @@
     "stockCount": 12,
     "type": "online",
     "updatedAt": {
-      "$date": "2025-12-18T20:09:35.344Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "videoUrl": ""
+    "videoUrl": "",
+    "position": 44
   },
   {
     "_id": {
@@ -1345,12 +1359,13 @@
       "תאורה": "RGB מלאה",
       "חיבור": "USB-C"
     },
-    "stockCount": 17,
+    "stockCount": 16,
     "type": "online",
     "updatedAt": {
-      "$date": "2026-01-05T19:44:04.108Z"
+      "$date": "2026-01-08T02:54:05.440Z"
     },
-    "videoUrl": ""
+    "videoUrl": "",
+    "position": 45
   },
   {
     "_id": {
@@ -1407,9 +1422,10 @@
     "stockCount": 30,
     "type": "online",
     "updatedAt": {
-      "$date": "2025-12-18T20:09:35.344Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "videoUrl": ""
+    "videoUrl": "",
+    "position": 46
   },
   {
     "_id": {
@@ -1466,9 +1482,10 @@
     "stockCount": 40,
     "type": "online",
     "updatedAt": {
-      "$date": "2025-12-18T20:09:35.344Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "videoUrl": ""
+    "videoUrl": "",
+    "position": 47
   },
   {
     "_id": {
@@ -1525,9 +1542,10 @@
     "stockCount": 35,
     "type": "online",
     "updatedAt": {
-      "$date": "2025-12-18T20:09:35.345Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "videoUrl": ""
+    "videoUrl": "",
+    "position": 48
   },
   {
     "_id": {
@@ -1647,9 +1665,10 @@
       "$date": "2026-01-06T03:08:37.336Z"
     },
     "updatedAt": {
-      "$date": "2026-01-06T03:08:37.336Z"
+      "$date": "2026-01-07T15:38:38.489Z"
     },
-    "__v": 0
+    "__v": 0,
+    "position": 49
   },
   {
     "_id": {

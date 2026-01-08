@@ -9,7 +9,8 @@ export default function GlobalFooter() {
   // Check if we should hide the footer
   const isAdminPage = pathname?.startsWith('/admin');
   const isHomePage = pathname === '/';
-  const shouldHide = isAdminPage || isHomePage;
+  const isAboutPage = pathname === '/about';
+  const shouldHide = isAdminPage || isHomePage || isAboutPage;
 
   // Load homepage styles for footer
   useEffect(() => {
@@ -43,26 +44,26 @@ export default function GlobalFooter() {
               שקופה ומהירה – עד שהמוצר מגיע אליכם הביתה.
             </p>
 
-            <div className="about-stats">
-              <div className="stat-item">
-                <i className="fa-solid fa-user-check"></i>
+            <div className="about-stats" style={{maxWidth: '450px', gap: '10px', marginBottom: '20px'}}>
+              <div className="stat-item" style={{padding: '8px 6px', borderRadius: '8px'}}>
+                <i className="fa-solid fa-user-check" style={{fontSize: '1rem'}}></i>
                 <div>
-                  <span className="stat-number">+9,500</span>
-                  <span className="stat-label">לקוחות מרוצים</span>
+                  <span className="stat-number" style={{fontSize: '0.8rem'}}>+9,500</span>
+                  <span className="stat-label" style={{fontSize: '0.65rem'}}>לקוחות מרוצים</span>
                 </div>
               </div>
-              <div className="stat-item">
-                <i className="fa-solid fa-calendar"></i>
+              <div className="stat-item" style={{padding: '8px 6px', borderRadius: '8px'}}>
+                <i className="fa-solid fa-calendar" style={{fontSize: '1rem'}}></i>
                 <div>
-                  <span className="stat-number">2018</span>
-                  <span className="stat-label">שנת הקמה</span>
+                  <span className="stat-number" style={{fontSize: '0.8rem'}}>2018</span>
+                  <span className="stat-label" style={{fontSize: '0.65rem'}}>שנת הקמה</span>
                 </div>
               </div>
-              <div className="stat-item">
-                <i className="fa-solid fa-globe"></i>
+              <div className="stat-item" style={{padding: '8px 6px', borderRadius: '8px'}}>
+                <i className="fa-solid fa-globe" style={{fontSize: '1rem'}}></i>
                 <div>
-                  <span className="stat-number" style={{whiteSpace: 'nowrap'}}>ישראל + סין</span>
-                  <span className="stat-label">נוכחות בינלאומית</span>
+                  <span className="stat-number" style={{whiteSpace: 'nowrap', fontSize: '0.8rem'}}>ישראל + סין</span>
+                  <span className="stat-label" style={{fontSize: '0.65rem'}}>נוכחות בינלאומית</span>
                 </div>
               </div>
             </div>

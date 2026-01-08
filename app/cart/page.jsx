@@ -30,6 +30,49 @@ export default function CartPage() {
   const [showMarquee, setShowMarquee] = useState(true);
   const [showAgentModal, setShowAgentModal] = useState(false);
   const [upgrading, setUpgrading] = useState(false);
+  const [selectedItems, setSelectedItems] = useState({});
+
+  // Initialize selected items when items change
+  useEffect(() => {
+    const newSelected = {};
+    items.forEach(item => {
+      // Keep existing selection or default to true
+      newSelected[item.productId] = selectedItems[item.productId] !== undefined 
+        ? selectedItems[item.productId] 
+        : true;
+    });
+    setSelectedItems(newSelected);
+  }, [items.length]);
+
+  // Toggle item selection
+  const toggleItemSelection = (productId) => {
+    setSelectedItems(prev => ({
+      ...prev,
+      [productId]: !prev[productId]
+    }));
+  };
+
+  // Select/Deselect all
+  const toggleSelectAll = () => {
+    const allSelected = items.every(item => selectedItems[item.productId]);
+    const newSelected = {};
+    items.forEach(item => {
+      newSelected[item.productId] = !allSelected;
+    });
+    setSelectedItems(newSelected);
+  };
+
+  // Calculate totals for selected items only
+  const selectedItemsList = useMemo(() => 
+    items.filter(item => selectedItems[item.productId]),
+    [items, selectedItems]
+  );
+
+  const selectedTotals = useMemo(() => {
+    const subtotal = selectedItemsList.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalQuantity = selectedItemsList.reduce((sum, item) => sum + item.quantity, 0);
+    return { subtotal, totalQuantity };
+  }, [selectedItemsList]);
 
   useEffect(() => {
     async function fetchUser() {
@@ -52,15 +95,15 @@ export default function CartPage() {
   const formatCurrency = (value) =>
     `₪${value.toLocaleString('he-IL', { minimumFractionDigits: 0 })}`;
 
-  // Calculate discount using shared helper (consistent with Checkout)
+  // Calculate discount using shared helper (consistent with Checkout) - for SELECTED items only
   const discountPercent = appliedCoupon?.discountPercent || 0;
   const discount = useMemo(
-    () => calculateDiscount(totals.subtotal, discountPercent),
-    [totals.subtotal, discountPercent],
+    () => calculateDiscount(selectedTotals.subtotal, discountPercent),
+    [selectedTotals.subtotal, discountPercent],
   );
   const finalTotal = useMemo(
-    () => calculateTotal(totals.subtotal, discount),
-    [totals.subtotal, discount],
+    () => calculateTotal(selectedTotals.subtotal, discount),
+    [selectedTotals.subtotal, discount],
   );
 
   const handleApplyCoupon = useCallback( async (codeOverride) => {
@@ -344,78 +387,101 @@ export default function CartPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-3">
+          <div className="lg:col-span-2 space-y-2">
+            {/* Select All Header */}
+            <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-xs">
+              <input
+                type="checkbox"
+                checked={items.every(item => selectedItems[item.productId])}
+                onChange={toggleSelectAll}
+                className="w-4 h-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 cursor-pointer"
+              />
+              <span className="text-gray-600">בחר הכל</span>
+              <span className="text-gray-400 mr-auto">
+                {selectedItemsList.length}/{items.length}
+              </span>
+            </div>
+
+            {/* Table Header */}
+            <div className="hidden sm:grid sm:grid-cols-12 gap-2 px-3 py-2 text-xs text-gray-500 font-medium border-b">
+              <div className="col-span-1"></div>
+              <div className="col-span-5">מוצר</div>
+              <div className="col-span-2 text-center">כמות</div>
+              <div className="col-span-3 text-center">מחיר</div>
+              <div className="col-span-1"></div>
+            </div>
+
             {items.map((item) => (
               <div
                 key={item.productId}
-                className="rounded-lg p-4 flex gap-4 transition-all duration-300"
+                className="grid grid-cols-12 gap-2 items-center px-3 py-2 rounded-lg transition-all"
                 style={{
-                  border: '2px solid transparent',
-                  backgroundImage:
-                    'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-                  backgroundOrigin: 'border-box',
-                  backgroundClip: 'padding-box, border-box',
-                  boxShadow: '0 2px 10px rgba(8, 145, 178, 0.08)',
+                  background: selectedItems[item.productId] ? '#ffffff' : '#f9fafb',
+                  borderRight: selectedItems[item.productId] ? '3px solid #0891b2' : '3px solid transparent',
+                  opacity: selectedItems[item.productId] ? 1 : 0.6,
                 }}
               >
-                <Image
-                  src={item.image || 'https://placehold.co/120x120?text=VIPO'}
-                  alt={item.name || 'Product image'}
-                  width={100}
-                  height={100}
-                  className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md flex-shrink-0"
-                />
+                {/* Checkbox */}
+                <div className="col-span-1 flex justify-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedItems[item.productId] || false}
+                    onChange={() => toggleItemSelection(item.productId)}
+                    className="w-4 h-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 cursor-pointer"
+                  />
+                </div>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h2 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-2">
-                      {item.name}
-                    </h2>
+                {/* Product Info */}
+                <div className="col-span-5 flex items-center gap-3">
+                  <Image
+                    src={item.image || 'https://placehold.co/50x50?text=VIPO'}
+                    alt={item.name || 'Product'}
+                    width={48}
+                    height={48}
+                    className="w-12 h-12 object-cover rounded flex-shrink-0"
+                  />
+                  <span className="text-base font-semibold text-gray-900 line-clamp-2">{item.name}</span>
+                </div>
+
+                {/* Quantity */}
+                <div className="col-span-2 flex justify-center">
+                  <div className="flex items-center border border-gray-200 rounded text-sm">
                     <button
-                      type="button"
-                      onClick={() => removeItem(item.productId)}
-                      className="text-gray-400 hover:text-red-600 flex-shrink-0"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="text-base sm:text-lg font-bold text-gray-900">
-                      {formatCurrency(item.price * item.quantity)}
-                    </div>
-                    <div className="flex items-center border border-gray-300 rounded-md">
-                      <button
                         type="button"
                         onClick={() => decrementItem(item.productId)}
-                        className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 font-semibold"
+                        className="w-6 h-6 flex items-center justify-center hover:bg-gray-100"
                       >
                         -
                       </button>
-                      <span className="w-10 text-center text-sm font-medium border-x border-gray-300">
+                      <span className="w-6 text-center text-xs border-x border-gray-200">
                         {item.quantity}
                       </span>
                       <button
                         type="button"
                         onClick={() => incrementItem(item.productId)}
-                        className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 font-semibold"
+                        className="w-6 h-6 flex items-center justify-center hover:bg-gray-100"
                       >
                         +
                       </button>
                     </div>
-                  </div>
+                </div>
+
+                {/* Price */}
+                <div className="col-span-3 text-center">
+                  <span className="text-sm font-bold text-gray-900">{formatCurrency(item.price * item.quantity)}</span>
+                </div>
+
+                {/* Delete */}
+                <div className="col-span-1 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => removeItem(item.productId)}
+                    className="text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             ))}
@@ -534,8 +600,8 @@ export default function CartPage() {
 
             <div className="space-y-2 text-sm">
               <div className="flex justify-between text-gray-600">
-                <span>סכום ביניים:</span>
-                <span className="font-medium text-gray-900">{formatCurrency(totals.subtotal)}</span>
+                <span>מוצרים נבחרים ({selectedTotals.totalQuantity}):</span>
+                <span className="font-medium text-gray-900">{formatCurrency(selectedTotals.subtotal)}</span>
               </div>
               {appliedCoupon && (
                 <div className="flex justify-between text-green-600">
@@ -554,26 +620,38 @@ export default function CartPage() {
             </div>
             <button
               type="button"
-              onClick={() => router.push(appliedCoupon?.code ? `/checkout?coupon=${encodeURIComponent(appliedCoupon.code)}` : '/checkout')}
-              className="w-full text-white font-bold py-3 rounded-lg transition-all duration-300"
+              onClick={() => {
+                // Save selected items to localStorage for checkout
+                const selectedProductIds = Object.entries(selectedItems)
+                  .filter(([_, isSelected]) => isSelected)
+                  .map(([productId]) => productId);
+                localStorage.setItem('checkout_selected_items', JSON.stringify(selectedProductIds));
+                router.push(appliedCoupon?.code ? `/checkout?coupon=${encodeURIComponent(appliedCoupon.code)}` : '/checkout');
+              }}
+              disabled={selectedItemsList.length === 0}
+              className="w-full text-white font-bold py-3 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                boxShadow: '0 4px 12px rgba(8, 145, 178, 0.3)',
+                background: selectedItemsList.length === 0 ? '#9ca3af' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                boxShadow: selectedItemsList.length === 0 ? 'none' : '0 4px 12px rgba(8, 145, 178, 0.3)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background =
-                  'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(8, 145, 178, 0.4)';
+                if (selectedItemsList.length > 0) {
+                  e.currentTarget.style.background =
+                    'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(8, 145, 178, 0.4)';
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background =
-                  'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
+                if (selectedItemsList.length > 0) {
+                  e.currentTarget.style.background =
+                    'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
+                }
               }}
             >
-              המשך לתשלום
+              {selectedItemsList.length === 0 ? 'בחר מוצרים לתשלום' : `המשך לתשלום (${selectedItemsList.length})`}
             </button>
             <Link
               href="/products"

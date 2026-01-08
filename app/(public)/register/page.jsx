@@ -148,7 +148,7 @@ function RegisterPageContent() {
       setMsg('נרשמת בהצלחה!');
 
       if (loginRes.ok) {
-        setTimeout(() => router.push('/products'), 500);
+        setTimeout(() => router.push('/'), 500);
       } else {
         setTimeout(() => router.push('/login'), 1500);
       }
@@ -244,12 +244,12 @@ function RegisterPageContent() {
       console.error('Notification error:', err);
     }
     setShowNotificationModal(false);
-    router.push('/products');
+    router.push('/');
   };
 
   const handleSkipNotifications = () => {
     setShowNotificationModal(false);
-    router.push('/products');
+    router.push('/');
   };
 
   return (

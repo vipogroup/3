@@ -1878,5 +1878,1173 @@
     "createdAt": {
       "$date": "2026-01-06T12:29:52.809Z"
     }
+  },
+  {
+    "_id": {
+      "$oid": "695d0bdca6b19e4ce1365072"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 document",
+      "timestamp": "2026-01-06T13:19:24.635Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T13:19:24.635Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d0be2a6b19e4ce1365073"
+    },
+    "action": "update",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "עדכון מערכת באמצעות update-all.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Starting full pre-update routine ===\r\n\r\n[1/3] Running database backup...\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: ⚙️  suppress all logs with { quiet: true }\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ Saved 1 documents to backups\\da",
+      "timestamp": "2026-01-06T13:19:30.063Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T13:19:30.063Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d0be8a6b19e4ce1365074"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main e5ef861] Update from dashboard - Tue 01/06/2026 15:19:33.60\n 61 files changed, 8355 insertions(+), 257 deletions(-)\n create mode 100644 app/api/products/duplicate/route.js\n delete mode 100644 backups/database/mongo-2026-01-05T23-11-26-766Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-05T23-11-26-766Z/pushSubscriptions.json\n delete mode 100644 backups/database/mongo-2026-01-05T23-11-26-766Z/withdrawalRequests.json\n delete mode 100644 backups/d",
+      "timestamp": "2026-01-06T13:19:36.858Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T13:19:36.858Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d0c6aa6b19e4ce1365080"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-9yv4lfmh0-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-06T13:21:46.406Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T13:21:46.406Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d706fb1ae325e74b9d6fe"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 1d0472f] Update from dashboard - Tue 01/06/2026 22:28:27.51\n 216 files changed, 96913 insertions(+), 658 deletions(-)\n delete mode 100644 backups/database/mongo-2026-01-05T23-51-56-624Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-05T23-51-56-624Z/withdrawalRequests.json\n delete mode 100644 backups/database/mongo-2026-01-05T23-52-01-973Z/orders.json\n delete mode 100644 backups/database/mongo-2026-01-05T23-52-01-973Z/withdrawalRequests.json\n r",
+      "timestamp": "2026-01-06T20:28:31.512Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T20:28:31.512Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d70f0b1ae325e74b9d703"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-fb946qyvz-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-06T20:30:40.502Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T20:30:40.503Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d82a8b1ae325e74b9d790"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings",
+      "timestamp": "2026-01-06T21:46:16.471Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T21:46:16.471Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695d89a5b1ae325e74b9d7c8"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "עדכון גיבוי חירום",
+    "metadata": {
+      "type": "emergency",
+      "collectionsCount": 24,
+      "totalDocs": 630,
+      "timestamp": "2026-01-06T22:16:05.037Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-06T22:16:05.037Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695daff6b1ae325e74b9d922"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מלא (קוד + DB + הגדרות)",
+    "metadata": {
+      "type": "fullBackup",
+      "collectionsCount": 24,
+      "size": 188784,
+      "timestamp": "2026-01-07T00:59:34.581Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T00:59:34.581Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695db260b1ae325e74b9d936"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מלא (קוד + DB + הגדרות)",
+    "metadata": {
+      "type": "fullBackup",
+      "collectionsCount": 24,
+      "size": 188877,
+      "folder": "full-2026-01-07T01-09-52-489Z",
+      "timestamp": "2026-01-07T01:09:52.520Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:09:52.520Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695db2dcb1ae325e74b9d93c"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מלא (קוד + DB + הגדרות)",
+    "metadata": {
+      "type": "fullBackup",
+      "collectionsCount": 24,
+      "size": 188932,
+      "folder": "full-2026-01-07T01-11-56-908Z",
+      "timestamp": "2026-01-07T01:11:56.956Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:11:56.956Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695db6a8b1ae325e74b9d961"
+    },
+    "action": "server",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "הפעלת שרת עם Auto-Restart",
+    "metadata": {
+      "script": "Start-VIPO-Auto-Restart.cmd",
+      "timestamp": "2026-01-07T01:28:08.628Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:28:08.628Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695db6dcb1ae325e74b9d965"
+    },
+    "action": "server",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "הפעלת שרת עם Auto-Restart",
+    "metadata": {
+      "script": "Start-VIPO-Auto-Restart.cmd",
+      "timestamp": "2026-01-07T01:29:00.460Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:29:00.460Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695db734b1ae325e74b9d96d"
+    },
+    "action": "server",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "הפעלת שרת עם Auto-Restart",
+    "metadata": {
+      "script": "Start-VIPO-Auto-Restart.cmd",
+      "timestamp": "2026-01-07T01:30:28.098Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:30:28.098Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695db7b3b1ae325e74b9d975"
+    },
+    "action": "server",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "הפעלת שרת עם Auto-Restart",
+    "metadata": {
+      "script": "Start-VIPO-Auto-Restart.cmd",
+      "timestamp": "2026-01-07T01:32:35.025Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:32:35.025Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695db8cb67c049b88e35864e"
+    },
+    "action": "server",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "הפעלת שרת עם Auto-Restart",
+    "metadata": {
+      "script": "Start-VIPO-Auto-Restart.cmd",
+      "timestamp": "2026-01-07T01:37:15.846Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:37:15.846Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695db9f2cf7d0548762b4cb0"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695db9f0cf7d0548762b4ca1",
+    "userId": "695db9f0cf7d0548762b4ca1",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-07T01:42:10.214Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:42:10.214Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbac8cf7d0548762b4cc3"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "692deea497ce1a2ba6d4e151",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": "m0587009938@gmail.com",
+    "description": "התחברות למערכת: m0587009938@gmail.com (admin)",
+    "metadata": {
+      "role": "admin",
+      "rememberMe": true,
+      "timestamp": "2026-01-07T01:45:44.102Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:45:44.102Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbc3dcf7d0548762b4cee"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695dbc3bcf7d0548762b4cea",
+    "userId": "695dbc3bcf7d0548762b4cea",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-07T01:51:57.194Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:51:57.194Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbd8dcf7d0548762b4d1d"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695dbd8ccf7d0548762b4d1a",
+    "userId": "695dbd8ccf7d0548762b4d1a",
+    "userEmail": "m0533858881@gmail.com",
+    "description": "התחברות למערכת: m0533858881@gmail.com (customer)",
+    "metadata": {
+      "role": "customer",
+      "rememberMe": false,
+      "timestamp": "2026-01-07T01:57:33.503Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T01:57:33.503Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbe72cf7d0548762b4d36"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מלא (קוד + DB + הגדרות)",
+    "metadata": {
+      "type": "fullBackup",
+      "collectionsCount": 24,
+      "size": 190780,
+      "folder": "full-2026-01-07T02-01-22-643Z",
+      "timestamp": "2026-01-07T02:01:22.676Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T02:01:22.676Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbe8dcf7d0548762b4d3a"
+    },
+    "action": "server",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "הפעלת שרת עם Auto-Restart",
+    "metadata": {
+      "script": "Start-VIPO-Auto-Restart.cmd",
+      "timestamp": "2026-01-07T02:01:49.133Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T02:01:49.133Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbf30acebcd88b2a2b4d5"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "692deea497ce1a2ba6d4e151",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": "m0587009938@gmail.com",
+    "description": "התחברות למערכת: m0587009938@gmail.com (admin)",
+    "metadata": {
+      "role": "admin",
+      "rememberMe": true,
+      "timestamp": "2026-01-07T02:04:32.743Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T02:04:32.743Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dbfe6acebcd88b2a2b4e2"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 65f42b2] Update from dashboard - Wed 01/07/2026  4:07:30.13\n 50 files changed, 185870 insertions(+), 125 deletions(-)\n create mode 100644 app/admin/emergency-backup/page.jsx\n create mode 100644 app/api/admin/backups/download/route.js\n create mode 100644 app/api/admin/backups/upload/route.js\n create mode 100644 app/api/admin/emergency-backup/download/route.js\n create mode 100644 app/api/admin/emergency-backup/route.js\n create mode 100644 backups/database/Start-",
+      "timestamp": "2026-01-07T02:07:34.428Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T02:07:34.428Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dc077acebcd88b2a2b4ea"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-bde3ib2mp-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-07T02:09:59.254Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T02:09:59.254Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dc33facebcd88b2a2b510"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main d611219] Update from dashboard - Wed 01/07/2026  4:21:47.83\n 2 files changed, 26 insertions(+), 5 deletions(-)\n[ERROR] git push failed\r\n",
+      "timestamp": "2026-01-07T02:21:51.412Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T02:21:51.418Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dc3bfacebcd88b2a2b517"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-niseyratd-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-07T02:23:59.084Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T02:23:59.084Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dcb1b0ff8eae8be507e26"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 28aaf5a] Update from dashboard - Wed 01/07/2026  4:55:19.82\n 1 file changed, 37 insertions(+), 7 deletions(-)\n[ERROR] git push failed\r\n",
+      "timestamp": "2026-01-07T02:55:23.043Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T02:55:23.046Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dcc140ff8eae8be507e2f"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-ft9ttrffr-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-07T02:59:32.333Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T02:59:32.333Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dcee00ff8eae8be507e44"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 93c900a] Update from dashboard - Wed 01/07/2026  5:11:24.66\n 4 files changed, 219 insertions(+), 4 deletions(-)\n[ERROR] git push failed\r\n",
+      "timestamp": "2026-01-07T03:11:28.145Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T03:11:28.145Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dcf600ff8eae8be507e49"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-ck0x7rthm-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-07T03:13:36.032Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T03:13:36.032Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dd18f0ff8eae8be507e59"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main ca5a20f] Update from dashboard - Wed 01/07/2026  5:22:52.50\n 2 files changed, 7 insertions(+), 2 deletions(-)\n[ERROR] git push failed\r\n",
+      "timestamp": "2026-01-07T03:22:55.683Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T03:22:55.683Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695dd20f0ff8eae8be507e5e"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-fo9imhktg-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-07T03:25:03.346Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T03:25:03.346Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ddcff0ff8eae8be507ea8"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 3d64583] Update from dashboard - Wed 01/07/2026  6:11:40.15\n 1 file changed, 1 insertion(+), 1 deletion(-)\n[ERROR] git push failed\r\n",
+      "timestamp": "2026-01-07T04:11:43.293Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T04:11:43.293Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ddd800ff8eae8be507eae"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-9y5105262-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-07T04:13:52.016Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T04:13:52.016Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695e65cd0ff8eae8be508142"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 5ec9d3a] Update from dashboard - Wed 01/07/2026 15:55:22.25\n 1 file changed, 531 insertions(+), 32 deletions(-)\n[ERROR] git push failed\r\n",
+      "timestamp": "2026-01-07T13:55:25.822Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T13:55:25.822Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695e664d0ff8eae8be508147"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-2sanmxa2g-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-07T13:57:33.425Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T13:57:33.425Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695e7d8f0ff8eae8be508242"
+    },
+    "action": "server",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "הפעלת שרת עם Auto-Restart",
+    "metadata": {
+      "script": "Start-VIPO-Auto-Restart.cmd",
+      "timestamp": "2026-01-07T15:36:47.062Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T15:36:47.062Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695e7e0f0a0fa028c9602eb3"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 6da4a92] Update from dashboard - Wed 01/07/2026 17:38:52.04\n 4 files changed, 233 insertions(+), 12 deletions(-)\n[ERROR] git push failed\r\n",
+      "timestamp": "2026-01-07T15:38:55.559Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T15:38:55.560Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695e7e990a0fa028c9602eb9"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-p3i97rn92-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-07T15:41:13.765Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T15:41:13.765Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695e99f90a0fa028c9602f12"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 6c8a8c5] Update from dashboard - Wed 01/07/2026 19:37:57.34\n 19 files changed, 13 insertions(+), 288 deletions(-)\n delete mode 100644 __dbcheck.js\n delete mode 100644 __user_model_hits.txt\n delete mode 100644 cookies.txt\n delete mode 100644 login.res\n delete mode 100644 login.txt\n delete mode 100644 temp_admin_reports.html\n delete mode 100644 temp_db.txt\n delete mode 100644 temp_db_clean.txt\n delete mode 100644 temp_env.txt\n delete mode 100644 temp_env_value.t",
+      "timestamp": "2026-01-07T17:38:01.019Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T17:38:01.019Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695e9a740a0fa028c9602f17"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-7xh6fdxky-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-07T17:40:04.907Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T17:40:04.907Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ec107f249ef0c1fb6b6f8"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695ec06ff249ef0c1fb6b6e1",
+    "userId": "695ec06ff249ef0c1fb6b6e1",
+    "userEmail": "m0507123331@gmail.com",
+    "description": "התחברות למערכת: m0507123331@gmail.com (business_admin)",
+    "metadata": {
+      "role": "business_admin",
+      "rememberMe": true,
+      "timestamp": "2026-01-07T20:24:39.614Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T20:24:39.614Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ec3c3bd8ad81d4395ea37"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main fa8c0d2] Update from dashboard - Wed 01/07/2026 22:36:15.34\n 33 files changed, 2671 insertions(+), 26 deletions(-)\n create mode 100644 app/admin/tenants/TenantsClient.jsx\n create mode 100644 app/admin/tenants/dashboard/TenantDashboardClient.jsx\n create mode 100644 app/admin/tenants/dashboard/page.js\n create mode 100644 app/admin/tenants/page.js\n create mode 100644 app/api/admin/tenant-payments/route.js\n create mode 100644 app/api/admin/tenant-stats/route.js\n c",
+      "timestamp": "2026-01-07T20:36:19.571Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T20:36:19.571Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ec455bd8ad81d4395ea40"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-1vpp7fo4q-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-07T20:38:45.387Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T20:38:45.387Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ec817a6fea62c2948a3fb"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settin",
+      "timestamp": "2026-01-07T20:54:47.304Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T20:54:47.304Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695ec857a6fea62c2948a3fe"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מלא (קוד + DB + הגדרות)",
+    "metadata": {
+      "type": "fullBackup",
+      "collectionsCount": 25,
+      "size": 193666,
+      "folder": "full-2026-01-07T20-55-51-804Z",
+      "timestamp": "2026-01-07T20:55:51.836Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-07T20:55:51.836Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695efbbda6fea62c2948a858"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-kz7x8kad7-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-08T00:35:09.816Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T00:35:09.816Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695efd89a6fea62c2948a885"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection: settings\n   ↳ S",
+      "timestamp": "2026-01-08T00:42:49.160Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T00:42:49.160Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695efd8ca6fea62c2948a886"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מלא (קוד + DB + הגדרות)",
+    "metadata": {
+      "type": "fullBackup",
+      "collectionsCount": 25,
+      "size": 193841,
+      "folder": "full-2026-01-08T00-42-52-846Z",
+      "timestamp": "2026-01-08T00:42:52.878Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T00:42:52.878Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695efd97a6fea62c2948a889"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main ebbc100] Update from dashboard - Thu 01/08/2026  2:43:00.78\n 31 files changed, 48076 insertions(+), 85 deletions(-)\n create mode 100644 backups/database/full-2026-01-08T00-42-52-846Z/backup-info.json\n create mode 100644 backups/database/full-2026-01-08T00-42-52-846Z/database-backup.json\n rename backups/database/{mongo-2026-01-06T12-26-26-054Z => mongo-2026-01-08T00-42-48-697Z}/activity_logs.json (66%)\n rename backups/database/{mongo-2026-01-06T12-26-26-054Z =>",
+      "timestamp": "2026-01-08T00:43:03.828Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T00:43:03.828Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695efe31a6fea62c2948a891"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-r2w8vsunk-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-08T00:45:37.890Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T00:45:37.891Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695eff23a6fea62c2948a8a0"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-byq1sz01d-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-08T00:49:39.556Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T00:49:39.556Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f0e78a6fea62c2948aa29"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מלא (קוד + DB + הגדרות)",
+    "metadata": {
+      "type": "fullBackup",
+      "collectionsCount": 25,
+      "size": 194082,
+      "folder": "full-2026-01-08T01-55-04-540Z",
+      "timestamp": "2026-01-08T01:55:04.572Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T01:55:04.572Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f0e7fa6fea62c2948aa2a"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מסד נתונים באמצעות backup.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "Running database backup from C:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\r\n\n> vipo-agents@0.1.0 backup:db\n> node scripts/db/export-local.js\n\n[dotenv@17.2.3] injecting env (21) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }\n[dotenv@17.2.3] injecting env (4) from app\\.env.local -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }\n📦 Connecting to MongoDB...\n✅ Connected. Database: vipo\n➡️  Exporting collection",
+      "timestamp": "2026-01-08T01:55:11.134Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T01:55:11.134Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f0e86a6fea62c2948aa2b"
+    },
+    "action": "gitpush",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Push ל-GitHub באמצעות git-push.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Git Push to GitHub ===\r\n\r\n[main 439bff9] Update from dashboard - Thu 01/08/2026  3:55:15.05\n 37 files changed, 48278 insertions(+), 523 deletions(-)\n delete mode 100644 app/favorites/page.jsx\n create mode 100644 backups/database/full-2026-01-08T01-55-04-540Z/backup-info.json\n create mode 100644 backups/database/full-2026-01-08T01-55-04-540Z/database-backup.json\n rename backups/database/{mongo-2026-01-06T12-26-35-842Z => mongo-2026-01-08T01-55-10-745Z}/activity_logs.json (64%)\n rename backups",
+      "timestamp": "2026-01-08T01:55:18.694Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T01:55:18.694Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f13f6a6fea62c2948aa94"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695ec06ff249ef0c1fb6b6e1",
+    "userId": "695ec06ff249ef0c1fb6b6e1",
+    "userEmail": "m0507123331@gmail.com",
+    "description": "התחברות למערכת: m0507123331@gmail.com (business_admin)",
+    "metadata": {
+      "role": "business_admin",
+      "rememberMe": false,
+      "timestamp": "2026-01-08T02:18:30.602Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T02:18:30.602Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f1f03a6fea62c2948ab64"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "695ec06ff249ef0c1fb6b6e1",
+    "userId": "695ec06ff249ef0c1fb6b6e1",
+    "userEmail": "m0507123331@gmail.com",
+    "description": "התחברות למערכת: m0507123331@gmail.com (business_admin)",
+    "metadata": {
+      "role": "business_admin",
+      "rememberMe": false,
+      "timestamp": "2026-01-08T03:05:39.223Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T03:05:39.223Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f2042a6fea62c2948ab76"
+    },
+    "action": "login",
+    "entity": "auth",
+    "entityId": "692deea497ce1a2ba6d4e151",
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": "m0587009938@gmail.com",
+    "description": "התחברות למערכת: m0587009938@gmail.com (admin)",
+    "metadata": {
+      "role": "admin",
+      "rememberMe": true,
+      "timestamp": "2026-01-08T03:10:58.273Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T03:10:58.273Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f2084a6fea62c2948ab7f"
+    },
+    "action": "backup",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "גיבוי מלא (קוד + DB + הגדרות)",
+    "metadata": {
+      "type": "fullBackup",
+      "collectionsCount": 25,
+      "size": 194641,
+      "folder": "full-2026-01-08T03-12-03-986Z",
+      "timestamp": "2026-01-08T03:12:04.016Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T03:12:04.016Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f2104a6fea62c2948ab86"
+    },
+    "action": "deploy",
+    "entity": "system",
+    "entityId": null,
+    "userId": "692deea497ce1a2ba6d4e151",
+    "userEmail": null,
+    "description": "Deploy ל-Vercel באמצעות deploy-vercel.cmd",
+    "metadata": {
+      "type": "script",
+      "output": "=== Running Vercel production deploy ===\r\n\r\nhttps://vipo-agents-test-p7bjiht1c-vipos-projects-0154d019.vercel.app[SUCCESS] Vercel deploy finished\r\n",
+      "timestamp": "2026-01-08T03:14:12.188Z"
+    },
+    "createdAt": {
+      "$date": "2026-01-08T03:14:12.189Z"
+    }
   }
 ]

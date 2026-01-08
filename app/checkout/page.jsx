@@ -29,8 +29,38 @@ export default function CheckoutPage() {
 function CheckoutClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { items, totals, isEmpty, hydrated, clearCart } = useCartContext();
-  const isCartReady = !isEmpty && items.length > 0;
+  const { items, totals, isEmpty, hydrated, clearCart, removeItem } = useCartContext();
+  
+  // Filter items based on selected items from cart page
+  const [selectedProductIds, setSelectedProductIds] = useState(null);
+  
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('checkout_selected_items');
+      if (saved) {
+        setSelectedProductIds(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error('Error loading selected items:', e);
+    }
+  }, []);
+
+  // Filter to only selected items (or all if no selection saved)
+  const checkoutItems = useMemo(() => {
+    if (!selectedProductIds || selectedProductIds.length === 0) {
+      return items; // Show all items if no selection
+    }
+    return items.filter(item => selectedProductIds.includes(item.productId));
+  }, [items, selectedProductIds]);
+
+  // Recalculate totals for checkout items only
+  const checkoutTotals = useMemo(() => {
+    const subtotal = checkoutItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalQuantity = checkoutItems.reduce((sum, item) => sum + item.quantity, 0);
+    return { subtotal, totalQuantity };
+  }, [checkoutItems]);
+
+  const isCartReady = checkoutItems.length > 0;
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -57,21 +87,21 @@ function CheckoutClient() {
 
   // Calculate max shipping price from cart items
   const shippingPrice = useMemo(() => {
-    if (!items || items.length === 0) return 0;
+    if (!checkoutItems || checkoutItems.length === 0) return 0;
     let maxPrice = 0;
-    items.forEach((item) => {
+    checkoutItems.forEach((item) => {
       if (item.shippingEnabled && item.shippingPrice > maxPrice) {
         maxPrice = item.shippingPrice;
       }
     });
     return maxPrice;
-  }, [items]);
+  }, [checkoutItems]);
 
   // Check if any item supports shipping
   const hasShippingOption = useMemo(() => {
-    if (!items || items.length === 0) return false;
-    return items.some((item) => item.shippingEnabled);
-  }, [items]);
+    if (!checkoutItems || checkoutItems.length === 0) return false;
+    return checkoutItems.some((item) => item.shippingEnabled);
+  }, [checkoutItems]);
   const [fieldErrors, setFieldErrors] = useState({});
   const [touchedFields, setTouchedFields] = useState({});
   const [autoCouponChecked, setAutoCouponChecked] = useState(false);
@@ -481,19 +511,19 @@ function CheckoutClient() {
 
   const discountPercent = appliedCoupon?.discountPercent || 0;
   const discountAmount = useMemo(() => {
-    if (!totals?.subtotal || !discountPercent) return 0;
-    return Number(((totals.subtotal * discountPercent) / 100).toFixed(2));
-  }, [totals?.subtotal, discountPercent]);
+    if (!checkoutTotals?.subtotal || !discountPercent) return 0;
+    return Number(((checkoutTotals.subtotal * discountPercent) / 100).toFixed(2));
+  }, [checkoutTotals?.subtotal, discountPercent]);
 
   const grandTotal = useMemo(() => {
-    if (!totals?.subtotal) return 0;
-    const baseTotal = Math.max(0, totals.subtotal - discountAmount);
+    if (!checkoutTotals?.subtotal) return 0;
+    const baseTotal = Math.max(0, checkoutTotals.subtotal - discountAmount);
     // Add shipping cost if shipping method is selected
     if (formData.deliveryMethod === 'shipping' && shippingPrice > 0) {
       return baseTotal + shippingPrice;
     }
     return baseTotal;
-  }, [totals?.subtotal, discountAmount, formData.deliveryMethod, shippingPrice]);
+  }, [checkoutTotals?.subtotal, discountAmount, formData.deliveryMethod, shippingPrice]);
 
   const handleChange = (event) => {
     handleFieldChange(event);
@@ -516,7 +546,7 @@ function CheckoutClient() {
 
     try {
       const payload = {
-        items: items.map((item) => ({
+        items: checkoutItems.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
         })),
@@ -1453,7 +1483,7 @@ function CheckoutClient() {
               </div>
             </div>
             <div className="space-y-4">
-              {items.map((item) => (
+              {checkoutItems.map((item) => (
                 <div key={item.productId} className="flex gap-4 items-center">
                   <Image
                     src={item.image || 'https://placehold.co/80x80?text=VIPO'}
@@ -1527,7 +1557,7 @@ function CheckoutClient() {
             <div className="border-t pt-4 space-y-2 text-gray-700">
               <div className="flex justify-between">
                 <span>סכום ביניים</span>
-                <span className="font-semibold">₪{totals.subtotal.toLocaleString('he-IL')}</span>
+                <span className="font-semibold">₪{checkoutTotals.subtotal.toLocaleString('he-IL')}</span>
               </div>
               {discountAmount > 0 && (
                 <div className="flex justify-between text-green-600 font-semibold">

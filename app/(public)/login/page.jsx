@@ -91,19 +91,13 @@ function LoginPageContent() {
         localStorage.removeItem('vipo-login');
       }
 
-      setMsg('התחברת בהצלחה! מעביר לדשבורד...');
+      setMsg('התחברת בהצלחה! מעביר לדף הבית...');
       setLoading(false);
 
       // Add a longer delay to ensure cookie is properly set and synced
       setTimeout(() => {
-        let targetPath = '/dashboard';
-        if (data.role === 'customer') {
-          targetPath = '/products';
-        } else if (data.role === 'agent') {
-          targetPath = '/agent';
-        } else if (data.role === 'admin') {
-          targetPath = '/dashboard';
-        }
+        // Always redirect to home page after login
+        const targetPath = '/';
 
         // First update the cookie status
         fetch('/api/auth/me', { credentials: 'include' })
