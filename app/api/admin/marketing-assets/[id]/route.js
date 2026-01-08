@@ -6,6 +6,26 @@ import { ObjectId } from 'mongodb';
 import { requireAdminApi } from '@/lib/auth/server';
 import { updateMarketingAsset, deleteMarketingAsset } from '@/lib/marketing';
 import { getDb } from '@/lib/db';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
+
+// Helper: Check if user can access this asset
+async function canAccessAsset(admin, assetId) {
+  if (isSuperAdmin(admin)) return true;
+  if (!admin.tenantId) return false;
+  
+  const db = await getDb();
+  const asset = await db.collection('marketing_assets').findOne({ 
+    _id: new ObjectId(assetId) 
+  });
+  
+  if (!asset) return false;
+  
+  // Asset without tenantId = global (super admin only)
+  if (!asset.tenantId) return false;
+  
+  // Check ownership
+  return asset.tenantId.toString() === admin.tenantId.toString();
+}
 
 function validateUpdatePayload(payload) {
   const errors = {};
@@ -30,7 +50,13 @@ function validateUpdatePayload(payload) {
 
 export async function PATCH(req, { params }) {
   try {
-    await requireAdminApi(req);
+    const admin = await requireAdminApi(req);
+    
+    // Multi-Tenant: Check ownership
+    const canAccess = await canAccessAsset(admin, params.id);
+    if (!canAccess) {
+      return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
+    }
 
     const payload = await req.json().catch(() => ({}));
     const { valid, errors } = validateUpdatePayload(payload);
@@ -79,7 +105,13 @@ export async function PATCH(req, { params }) {
 
 export async function DELETE(req, { params }) {
   try {
-    await requireAdminApi(req);
+    const admin = await requireAdminApi(req);
+    
+    // Multi-Tenant: Check ownership
+    const canAccess = await canAccessAsset(admin, params.id);
+    if (!canAccess) {
+      return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
+    }
 
     const deleted = await deleteMarketingAsset(params.id);
     if (!deleted) {
@@ -102,7 +134,13 @@ export async function DELETE(req, { params }) {
 
 export async function GET(req, { params }) {
   try {
-    await requireAdminApi(req);
+    const admin = await requireAdminApi(req);
+    
+    // Multi-Tenant: Check ownership
+    const canAccess = await canAccessAsset(admin, params.id);
+    if (!canAccess) {
+      return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
+    }
 
     const db = await getDb();
     const asset = await db.collection('marketing_assets').findOne({ _id: new ObjectId(params.id) });

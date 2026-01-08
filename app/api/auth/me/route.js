@@ -22,6 +22,7 @@ export async function GET(req) {
         name: user.fullName || user.email,
         showPushButtons: user.showPushButtons !== false,
         permissions: user.permissions,
+        tenantId: user.tenantId ? String(user.tenantId) : null,
       },
     });
   } catch (e) {

@@ -8,6 +8,14 @@ const { Schema, models, model } = mongoose;
  */
 const priorityProductSchema = new Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     // קשר למוצר במערכת
     productId: {
       type: Schema.Types.ObjectId,

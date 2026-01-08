@@ -417,9 +417,23 @@ export async function GET(request) {
     const query = {};
 
     // Multi-Tenant: Filter by tenant
-    const tenant = await getCurrentTenant(request);
-    if (tenant) {
-      query.tenantId = tenant._id;
+    // Try to get tenant from logged-in user first (for business admins)
+    let tenantId = null;
+    try {
+      const adminUser = await requireAdminApi(request);
+      if (adminUser?.role === 'business_admin' && adminUser?.tenantId) {
+        tenantId = new ObjectId(adminUser.tenantId);
+      }
+    } catch {
+      // Not admin - try to get tenant from request (subdomain)
+      const tenant = await getCurrentTenant(request);
+      if (tenant) {
+        tenantId = tenant._id;
+      }
+    }
+    
+    if (tenantId) {
+      query.tenantId = tenantId;
     }
 
     if (catalogSlug) {

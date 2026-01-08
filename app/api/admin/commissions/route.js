@@ -6,6 +6,7 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 /**
  * GET /api/admin/commissions
@@ -30,8 +31,15 @@ export async function GET(req) {
     const from = searchParams.get('from');
     const to = searchParams.get('to');
 
+    // Multi-Tenant: Build tenant filter
+    const tenantFilter = {};
+    if (!isSuperAdmin(admin) && admin.tenantId) {
+      tenantFilter.tenantId = new ObjectId(admin.tenantId);
+    }
+
     // Build query for orders with commissions - only paid orders
     const query = { 
+      ...tenantFilter,
       commissionAmount: { $gt: 0 },
       status: { $in: ['paid', 'completed', 'shipped'] }  // Only show commissions for paid orders
     };
@@ -130,9 +138,10 @@ export async function GET(req) {
       };
     });
 
-    // Get agents summary (grouped by agent) - only paid orders
+    // Get agents summary (grouped by agent) - only paid orders (filtered by tenant)
     const agentsSummary = await ordersCol.aggregate([
       { $match: { 
+        ...tenantFilter,
         commissionAmount: { $gt: 0 },
         status: { $in: ['paid', 'completed', 'shipped'] }
       } },

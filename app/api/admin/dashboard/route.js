@@ -3,6 +3,7 @@ import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 // Force dynamic rendering - this route uses cookies/auth
 export const dynamic = 'force-dynamic';
@@ -26,12 +27,18 @@ export async function GET(req) {
     const products = db.collection('products');
     const referralLogs = db.collection('referral_logs');
 
-    // Get total counts
-    const totalUsers = await users.countDocuments();
-    const totalAgents = await users.countDocuments({ role: 'agent' });
-    const totalCustomers = await users.countDocuments({ role: 'customer' });
-    const totalOrders = await orders.countDocuments();
-    const totalProducts = await products.countDocuments();
+    // Multi-Tenant: Build filter based on user type
+    const tenantFilter = {};
+    if (!isSuperAdmin(admin) && admin.tenantId) {
+      tenantFilter.tenantId = new ObjectId(admin.tenantId);
+    }
+
+    // Get total counts (filtered by tenant for Business Admin)
+    const totalUsers = await users.countDocuments(tenantFilter);
+    const totalAgents = await users.countDocuments({ ...tenantFilter, role: 'agent' });
+    const totalCustomers = await users.countDocuments({ ...tenantFilter, role: 'customer' });
+    const totalOrders = await orders.countDocuments(tenantFilter);
+    const totalProducts = await products.countDocuments(tenantFilter);
 
     // Get new users (last 30 days)
     const thirtyDaysAgo = new Date();
@@ -39,7 +46,7 @@ export async function GET(req) {
 
     const newUsers = await users
       .find(
-        { createdAt: { $gte: thirtyDaysAgo } },
+        { ...tenantFilter, createdAt: { $gte: thirtyDaysAgo } },
         {
           projection: {
             fullName: 1,
@@ -82,7 +89,7 @@ export async function GET(req) {
     // Get agent commission stats
     const agentStats = await users
       .find(
-        { role: 'agent' },
+        { ...tenantFilter, role: 'agent' },
         {
           projection: {
             fullName: 1,
@@ -98,28 +105,28 @@ export async function GET(req) {
       .toArray();
 
     // Get total commissions paid
-    const totalCommissions = await orders
-      .aggregate([
-        {
-          $group: {
-            _id: null,
-            total: { $sum: '$commissionAmount' },
-          },
+    const commissionPipeline = [
+      ...(Object.keys(tenantFilter).length > 0 ? [{ $match: tenantFilter }] : []),
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$commissionAmount' },
         },
-      ])
-      .toArray();
+      },
+    ];
+    const totalCommissions = await orders.aggregate(commissionPipeline).toArray();
 
-    // Get product stats
-    const groupProducts = await products.countDocuments({ type: 'group' });
-    const onlineProducts = await products.countDocuments({ type: 'online' });
+    // Get product stats (filtered by tenant)
+    const groupProducts = await products.countDocuments({ ...tenantFilter, type: 'group' });
+    const onlineProducts = await products.countDocuments({ ...tenantFilter, type: 'online' });
 
-    // Get total clicks from referral logs
-    const totalClicks = await referralLogs.countDocuments({ action: 'click' });
+    // Get total clicks from referral logs (filtered by tenant)
+    const totalClicks = await referralLogs.countDocuments({ ...tenantFilter, action: 'click' });
 
-    // Get recent orders
+    // Get recent orders (filtered by tenant)
     const recentOrders = await orders
       .find(
-        {},
+        tenantFilter,
         {
           projection: {
             productName: 1,

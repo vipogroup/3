@@ -3,6 +3,7 @@ import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { getCurrentTenant } from '@/lib/tenant';
 
 export const dynamic = 'force-dynamic';
 
@@ -57,7 +58,7 @@ function resolveBaseUrl(req) {
 export async function GET(req) {
   try {
     const user = await requireAuthApi(req);
-    if (user.role !== 'agent' && user.role !== 'admin') {
+    if (user.role !== 'agent' && user.role !== 'admin' && user.role !== 'business_admin') {
       return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
     }
 
@@ -72,7 +73,7 @@ export async function GET(req) {
     let targetAgentId = null;
     if (user.role === 'agent') {
       targetAgentId = user.id;
-    } else if (user.role === 'admin') {
+    } else if (user.role === 'admin' || user.role === 'business_admin') {
       targetAgentId = (searchParams.get('agentId') || '').trim();
       if (!targetAgentId) {
         return NextResponse.json({ ok: false, error: 'agentId required' }, { status: 400 });
@@ -91,9 +92,14 @@ export async function GET(req) {
     const orders = db.collection('orders');
     const referralLogs = db.collection('referral_logs');
 
-    // Get agent
+    // Multi-Tenant: Get tenant filter
+    const tenant = await getCurrentTenant(req);
+    const tenantFilter = tenant ? { tenantId: tenant._id } : {};
+
+    // Get agent (with tenant filter if applicable)
+    const agentFilter = { _id: agentObjectId, role: 'agent', ...tenantFilter };
     const agent = await users.findOne(
-      { _id: agentObjectId, role: 'agent' },
+      agentFilter,
       {
         projection: {
           referralsCount: 1,
@@ -101,6 +107,7 @@ export async function GET(req) {
           commissionBalance: 1,
           fullName: 1,
           email: 1,
+          tenantId: 1,
         },
       },
     );
@@ -110,7 +117,11 @@ export async function GET(req) {
     }
 
     // Query for orders linked to this agent via refAgentId OR agentId (coupon)
-    const agentOrdersFilter = { $or: [{ refAgentId: agentObjectId }, { agentId: agentObjectId }] };
+    // Also filter by tenant if applicable
+    const agentOrdersFilter = { 
+      $or: [{ refAgentId: agentObjectId }, { agentId: agentObjectId }],
+      ...(tenant ? { tenantId: tenant._id } : (agent.tenantId ? { tenantId: agent.tenantId } : {}))
+    };
 
     // Get total sales
     const totalSales = await orders.countDocuments(agentOrdersFilter);

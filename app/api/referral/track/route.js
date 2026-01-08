@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { headers } from 'next/headers';
+import { getCurrentTenant } from '@/lib/tenant/tenantMiddleware';
 
 /**
  * POST /api/referral/track
@@ -23,22 +24,31 @@ export async function POST(req) {
     const users = db.collection('users');
     const referralLogs = db.collection('referral_logs');
 
+    // Multi-Tenant: Get current tenant
+    const tenant = await getCurrentTenant(req);
+
+    // Build base query with optional tenant filter
+    const baseQuery = { role: 'agent' };
+    if (tenant) {
+      baseQuery.tenantId = tenant._id;
+    }
+
     // Find agent by ref code - could be couponCode, referralId, or ObjectId
     let agent = null;
 
     // First try to find by couponCode
-    agent = await users.findOne({ couponCode: refCode, role: 'agent' });
+    agent = await users.findOne({ ...baseQuery, couponCode: refCode });
 
     // If not found, try referralId
     if (!agent) {
-      agent = await users.findOne({ referralId: refCode, role: 'agent' });
+      agent = await users.findOne({ ...baseQuery, referralId: refCode });
     }
 
     // If still not found, try as ObjectId
     if (!agent) {
       try {
         const objectId = new ObjectId(refCode);
-        agent = await users.findOne({ _id: objectId, role: 'agent' });
+        agent = await users.findOne({ ...baseQuery, _id: objectId });
       } catch {
         // Not a valid ObjectId, ignore
       }
@@ -56,7 +66,7 @@ export async function POST(req) {
     const userAgent = headersList.get('user-agent') || 'unknown';
     const referer = headersList.get('referer') || null;
 
-    // Create log document
+    // Create log document with tenantId
     const logDoc = {
       agentId: agent._id,
       refCode,
@@ -66,6 +76,8 @@ export async function POST(req) {
       url: url || null,
       action,
       createdAt: new Date(),
+      // Multi-Tenant: Add tenantId from agent
+      ...(agent.tenantId && { tenantId: agent.tenantId }),
     };
 
     await referralLogs.insertOne(logDoc);

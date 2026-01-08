@@ -2,6 +2,14 @@ import mongoose from 'mongoose';
 
 const GroupPurchaseSchema = new mongoose.Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     name: { type: String, required: true, trim: true },
     status: {
       type: String,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { refreshProductsFromApi } from '@/app/lib/products';
@@ -17,6 +17,8 @@ import MultiMediaUpload from '@/app/components/MultiMediaUpload';
 
 export default function EditProductPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const basePath = pathname?.startsWith('/business') ? '/business' : '/admin';
   const params = useParams();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -326,7 +328,7 @@ export default function EditProductPage() {
       window.dispatchEvent(new Event('productsUpdated'));
 
       alert('מוצר עודכן בהצלחה! השינויים יוחלו בכל הדפים.');
-      router.push('/admin/products');
+      router.push(`${basePath}/products`);
     } catch (error) {
       setError(error.message || 'שגיאה בעדכון המוצר');
     } finally {
@@ -357,7 +359,7 @@ export default function EditProductPage() {
           <div className="text-6xl mb-4">❌</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-4">{error}</h1>
           <Link
-            href="/admin/products"
+            href={`${basePath}/products`}
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition"
           >
             חזרה לרשימת מוצרים
@@ -376,7 +378,7 @@ export default function EditProductPage() {
             <p className="text-gray-600 mt-2">{formData.name}</p>
           </div>
           <Link
-            href="/admin/products"
+            href={`${basePath}/products`}
             className="bg-white text-blue-600 font-semibold px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition"
           >
             ← חזרה
@@ -1022,7 +1024,7 @@ export default function EditProductPage() {
                 {submitting ? 'שומר...' : '✓ שמור שינויים'}
               </button>
               <Link
-                href="/admin/products"
+                href={`${basePath}/products`}
                 className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold text-lg py-4 rounded-xl transition-all text-center"
               >
                 ביטול

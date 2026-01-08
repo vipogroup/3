@@ -19,7 +19,7 @@ async function ensureAdmin(req) {
   if (legacyToken) {
     try {
       const decoded = verifyJwt(legacyToken);
-      if (decoded?.role === 'admin') {
+      if (decoded?.role === 'admin' || decoded?.role === 'business_admin') {
         return decoded;
       }
     } catch (e) {
@@ -33,11 +33,12 @@ async function ensureAdmin(req) {
       req,
       secret: process.env.NEXTAUTH_SECRET,
     });
-    if (nextAuthToken?.role === 'admin') {
+    if (nextAuthToken?.role === 'admin' || nextAuthToken?.role === 'business_admin') {
       return {
         userId: nextAuthToken.userId || nextAuthToken.sub,
         email: nextAuthToken.email,
         role: nextAuthToken.role,
+        tenantId: nextAuthToken.tenantId,
       };
     }
   } catch (e) {
@@ -85,11 +86,19 @@ export async function GET(req) {
     // בניית פילטר חיפוש
     const filter = {};
     
-    // Multi-Tenant: Filter by tenant
-    const tenant = await getCurrentTenant(req);
-    if (tenant) {
-      filter.tenantId = tenant._id;
+    // Multi-Tenant: Filter by tenant from logged-in user
+    // Business admins can only see users from their own tenant
+    if (admin.role === 'business_admin' && admin.tenantId) {
+      const { ObjectId } = await import('mongodb');
+      filter.tenantId = new ObjectId(admin.tenantId);
+    } else if (admin.role !== 'admin') {
+      // Non-admin, non-business_admin - shouldn't happen but just in case
+      const tenant = await getCurrentTenant(req);
+      if (tenant) {
+        filter.tenantId = tenant._id;
+      }
     }
+    // Super admin (role === 'admin' without tenantId) sees all users
     
     // חיפוש לפי טלפון, מייל או שם
     if (search) {

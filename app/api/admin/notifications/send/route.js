@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,6 +41,9 @@ export async function POST(req) {
       return NextResponse.json({ ok: false, error: 'template_type_required' }, { status: 400 });
     }
 
+    // Multi-Tenant: Get tenantId from admin user (Business Admin sends only to their tenant)
+    const tenantId = !isSuperAdmin(admin) && admin.tenantId ? admin.tenantId : null;
+
     const result = await sendTemplateNotification({
       templateType,
       variables,
@@ -48,6 +52,7 @@ export async function POST(req) {
       audienceUserIds,
       payloadOverrides,
       dryRun,
+      tenantId, // Multi-Tenant: Pass tenantId to filter recipients
     });
 
     return NextResponse.json({ ok: true, result });

@@ -3,6 +3,14 @@ import mongoose from 'mongoose';
 
 const LevelRuleSchema = new mongoose.Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     name: {
       type: String,
       required: true,

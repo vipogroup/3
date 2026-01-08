@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { jwtVerify } from 'jose';
 
-const PROTECTED_ROUTES = ['/dashboard', '/admin', '/agent'];
+const PROTECTED_ROUTES = ['/dashboard', '/admin', '/agent', '/business'];
 
 /**
  * Validate legacy JWT token
@@ -19,10 +19,50 @@ async function validateLegacyToken(token) {
 }
 
 /**
+ * Get tenant from hostname
+ */
+function getTenantFromHost(host) {
+  if (!host) return null;
+  
+  const hostname = host.toLowerCase().split(':')[0];
+  const baseDomain = process.env.BASE_DOMAIN || 'vipo.co.il';
+  
+  // Skip main domain and localhost
+  if (hostname === baseDomain || hostname === 'localhost' || hostname === '127.0.0.1') {
+    return null;
+  }
+  
+  // Check for subdomain
+  if (hostname.endsWith(`.${baseDomain}`)) {
+    return hostname.replace(`.${baseDomain}`, '');
+  }
+  
+  // Custom domain - will need to lookup in DB (handled by API)
+  return { customDomain: hostname };
+}
+
+/**
  * Middleware that supports both legacy JWT cookies and NextAuth sessions
+ * Also handles multi-tenant domain detection
  */
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
+  const host = request.headers.get('host');
+  
+  // Multi-Tenant: Detect tenant from subdomain/domain
+  const tenantInfo = getTenantFromHost(host);
+  
+  // Create response with tenant header if detected
+  const response = NextResponse.next();
+  if (tenantInfo) {
+    if (typeof tenantInfo === 'string') {
+      // Subdomain tenant
+      response.headers.set('x-tenant-slug', tenantInfo);
+    } else if (tenantInfo.customDomain) {
+      // Custom domain tenant
+      response.headers.set('x-tenant-domain', tenantInfo.customDomain);
+    }
+  }
 
   // Check for legacy auth_token cookie and validate it
   const legacyToken = request.cookies.get('auth_token')?.value;
@@ -77,5 +117,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/dashboard/:path*', '/agent/:path*', '/login'],
+  matcher: ['/admin/:path*', '/dashboard/:path*', '/agent/:path*', '/business/:path*', '/login'],
 };

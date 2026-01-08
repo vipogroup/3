@@ -6,6 +6,7 @@ import { getDb } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/hash';
 import { verify as verifyJwt } from '@/lib/auth/createToken';
 import { generateAgentCoupon } from '@/lib/agents';
+import { getCurrentTenant } from '@/lib/tenant';
 
 function getToken(req) {
   return req.cookies.get('auth_token')?.value || req.cookies.get('token')?.value || '';
@@ -13,7 +14,7 @@ function getToken(req) {
 
 function ensureAdmin(req) {
   const decoded = verifyJwt(getToken(req));
-  if (!decoded || decoded.role !== 'admin') {
+  if (!decoded || (decoded.role !== 'admin' && decoded.role !== 'business_admin')) {
     return null;
   }
   return decoded;
@@ -38,7 +39,8 @@ function sortAndSlice(items, skip, limit) {
 
 export async function GET(req) {
   try {
-    if (!ensureAdmin(req)) {
+    const admin = ensureAdmin(req);
+    if (!admin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -50,14 +52,26 @@ export async function GET(req) {
     const db = await getDb();
     const col = db.collection('users');
     const projection = { passwordHash: 0, password: 0 };
-    const cursor = await col.find({ role: 'agent' }, { projection });
+    
+    // Multi-Tenant: Filter by tenant
+    const tenant = await getCurrentTenant(req);
+    const filter = { role: 'agent' };
+    if (tenant) {
+      filter.tenantId = tenant._id;
+    } else if (admin.tenantId) {
+      // Business admin - filter by their tenant
+      const { ObjectId } = await import('mongodb');
+      filter.tenantId = new ObjectId(admin.tenantId);
+    }
+    
+    const cursor = await col.find(filter, { projection });
 
     let agents;
     let total;
 
     if (typeof cursor.sort === 'function') {
       agents = await cursor.sort({ createdAt: -1 }).skip(skip).limit(limit).toArray();
-      total = await col.countDocuments({ role: 'agent' });
+      total = await col.countDocuments(filter);
     } else {
       const all = await cursor.toArray();
       total = all.length;
@@ -78,7 +92,8 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    if (!ensureAdmin(req)) {
+    const admin = ensureAdmin(req);
+    if (!admin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -101,6 +116,16 @@ export async function POST(req) {
       return NextResponse.json({ error: 'User already exists' }, { status: 409 });
     }
 
+    // Multi-Tenant: Get tenant from request or admin
+    const tenant = await getCurrentTenant(req);
+    let tenantId = null;
+    if (tenant) {
+      tenantId = tenant._id;
+    } else if (admin.tenantId) {
+      const { ObjectId } = await import('mongodb');
+      tenantId = new ObjectId(admin.tenantId);
+    }
+
     const passwordHash = await hashPassword(password);
     const now = new Date();
     const doc = {
@@ -112,6 +137,8 @@ export async function POST(req) {
       isActive: true,
       createdAt: now,
       updatedAt: now,
+      // Multi-Tenant: Associate agent with tenant
+      ...(tenantId && { tenantId }),
     };
 
     const insertResult = await col.insertOne(doc);

@@ -7,6 +7,7 @@ import LevelRule from '@/models/LevelRule';
 import BonusRule from '@/models/BonusRule';
 import AgentGoal from '@/models/AgentGoal';
 import { verify } from '@/lib/auth/createToken';
+import { getCurrentTenant } from '@/lib/tenant';
 
 export const dynamic = 'force-dynamic';
 
@@ -57,11 +58,18 @@ export async function GET(req) {
 
     // Filter sales based on user role
     let query = {};
+    
+    // Multi-Tenant: Filter by tenant
+    const tenant = await getCurrentTenant(req);
+    if (tenant) {
+      query.tenantId = tenant._id;
+    }
+    
     if (user.role === 'agent') {
       // Agents can only see their own sales
       query.agentId = new ObjectId(user.userId);
     }
-    // Admins can see all sales (no filter)
+    // Admins can see all sales (filtered by tenant if applicable)
 
     const sales = await Sale.find(query)
       .sort({ createdAt: -1 })

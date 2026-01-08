@@ -40,10 +40,16 @@ export async function GET(req) {
     const filter = {};
     const criteria = [];
 
-    // Multi-Tenant: Filter by tenant
-    const tenant = await getCurrentTenant(req);
-    if (tenant) {
-      criteria.push({ tenantId: tenant._id });
+    // Multi-Tenant: Filter by tenant from logged-in user
+    if (user.role === 'business_admin' && user.tenantId) {
+      // Business admin - filter by their tenant
+      criteria.push({ tenantId: new ObjectId(user.tenantId) });
+    } else {
+      // Try to get tenant from request (for subdomain-based tenants)
+      const tenant = await getCurrentTenant(req);
+      if (tenant) {
+        criteria.push({ tenantId: tenant._id });
+      }
     }
 
     if (user.role === 'admin' || user.role === 'super_admin' || user.role === 'business_admin') {

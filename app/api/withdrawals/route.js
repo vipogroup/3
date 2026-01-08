@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 /**
  * POST /api/withdrawals
@@ -166,7 +167,12 @@ export async function POST(req) {
     const snapshotBalance = lockedDoc.commissionBalance ?? 0;
     const snapshotOnHold = lockedDoc.commissionOnHold ?? 0;
 
-    // Create withdrawal request
+    // Multi-Tenant: Get tenantId
+    const db2 = await getDb();
+    const fullUser = await db2.collection('users').findOne({ _id: userObjectId });
+    const tenantId = fullUser?.tenantId || null;
+
+    // Create withdrawal request with tenantId
     const doc = {
       userId: userObjectId,
       amount,
@@ -179,6 +185,7 @@ export async function POST(req) {
       autoSettled: false,
       createdAt: new Date(),
       updatedAt: new Date(),
+      ...(tenantId && { tenantId }),
     };
 
     const result = await withdrawals.insertOne(doc);

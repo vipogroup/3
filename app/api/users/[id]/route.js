@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb';
 import { verifyJwt } from '@/src/lib/auth/createToken.js';
 import { getDb } from '@/lib/db';
 import { isSuperAdminUser, DEFAULT_ADMIN_PERMISSIONS } from '@/lib/superAdmins';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 async function usersCollection() {
   const dbo = await getDb();
@@ -16,20 +17,20 @@ function getToken(req) {
 
 async function ensureAdmin(req) {
   const decoded = verifyJwt(getToken(req));
-  if (decoded?.role !== 'admin') {
+  if (decoded?.role !== 'admin' && decoded?.role !== 'business_admin') {
     return null;
   }
   
-  // Hydrate user from DB to get current role and email
+  // Hydrate user from DB to get current role, email, and tenantId
   const db = await getDb();
   const usersCol = db.collection('users');
   const userId = decoded.userId || decoded.sub || decoded.id;
   const objectId = ObjectId.isValid(userId) ? new ObjectId(userId) : null;
   
   if (objectId) {
-    const user = await usersCol.findOne({ _id: objectId }, { projection: { email: 1, role: 1 } });
+    const user = await usersCol.findOne({ _id: objectId }, { projection: { email: 1, role: 1, tenantId: 1 } });
     if (user) {
-      return { ...decoded, email: user.email, role: user.role, _id: user._id };
+      return { ...decoded, email: user.email, role: user.role, _id: user._id, tenantId: user.tenantId };
     }
   }
   
@@ -100,6 +101,15 @@ export async function PATCH(req, { params }) {
     const existing = await col.findOne({ _id: objectId });
     if (!existing) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+    
+    // Multi-Tenant: Verify user belongs to admin's tenant
+    if (!isSuperAdmin(currentUser) && currentUser.tenantId) {
+      const userTenantId = existing.tenantId?.toString();
+      const adminTenantId = currentUser.tenantId?.toString();
+      if (userTenantId && userTenantId !== adminTenantId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     if (body.role) {
@@ -195,6 +205,15 @@ export async function DELETE(req, { params }) {
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+    
+    // Multi-Tenant: Verify user belongs to admin's tenant before deleting
+    if (!isSuperAdmin(decoded) && decoded.tenantId) {
+      const userTenantId = user.tenantId?.toString();
+      const adminTenantId = decoded.tenantId?.toString();
+      if (userTenantId && userTenantId !== adminTenantId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     const decodedId = String(decoded.userId || decoded.sub || decoded._id || '');

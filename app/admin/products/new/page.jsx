@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { refreshProductsFromApi } from '@/app/lib/products';
 import {
@@ -16,6 +16,8 @@ import MultiMediaUpload from '@/app/components/MultiMediaUpload';
 
 export default function NewProductPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const basePath = pathname?.startsWith('/business') ? '/business' : '/admin';
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -248,7 +250,7 @@ export default function NewProductPage() {
       window.dispatchEvent(new Event('productsUpdated'));
 
       alert('מוצר נוצר בהצלחה! המוצר יופיע בכל הדפים.');
-      router.push('/admin/products');
+      router.push(`${basePath}/products`);
     } catch (error) {
       console.error('Submission error:', error);
       setError(error.message || 'שגיאה ביצירת המוצר');
@@ -274,7 +276,7 @@ export default function NewProductPage() {
             הוסף מוצר חדש
           </h1>
           <Link
-            href="/admin/products"
+            href={`${basePath}/products`}
             className="font-semibold px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl shadow-md transition-all text-xs sm:text-sm"
             style={{
               background: 'white',
@@ -1060,7 +1062,7 @@ export default function NewProductPage() {
                 {submitting ? 'יוצר מוצר...' : 'צור מוצר'}
               </button>
               <Link
-                href="/admin/products"
+                href={`${basePath}/products`}
                 className="flex-1 font-bold text-base sm:text-lg py-3 sm:py-4 rounded-lg sm:rounded-xl transition-all text-center"
                 style={{
                   background: 'white',

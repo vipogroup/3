@@ -1,10 +1,12 @@
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
 
 import { getDb } from '@/lib/db';
 import { requireAdminApi } from '@/lib/auth/server';
 import { createMarketingAsset } from '@/lib/marketing';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 function validatePayload(payload) {
   const errors = {};
@@ -29,10 +31,17 @@ function validatePayload(payload) {
 
 export async function GET(req) {
   try {
-    await requireAdminApi(req);
+    const admin = await requireAdminApi(req);
 
     const db = await getDb();
-    const assets = await db.collection('marketing_assets').find({}).sort({ createdAt: -1 }).toArray();
+    
+    // Multi-Tenant: Filter by tenantId for business admins
+    const filter = {};
+    if (!isSuperAdmin(admin) && admin.tenantId) {
+      filter.tenantId = new ObjectId(admin.tenantId);
+    }
+    
+    const assets = await db.collection('marketing_assets').find(filter).sort({ createdAt: -1 }).toArray();
 
     const items = assets.map((asset) => ({
       id: asset._id?.toString() ?? null,
@@ -76,7 +85,8 @@ export async function POST(req) {
       return NextResponse.json({ ok: false, error: 'validation_error', details: errors }, { status: 400 });
     }
 
-    const asset = await createMarketingAsset({
+    // Multi-Tenant: Add tenantId for business admins
+    const assetData = {
       title: payload.title.trim(),
       type: payload.type,
       mediaUrl: payload.mediaUrl.trim(),
@@ -85,7 +95,13 @@ export async function POST(req) {
       target: payload.target ?? { type: 'products' },
       isActive: payload.isActive !== false,
       tags: payload.tags ?? [],
-    });
+    };
+    
+    if (!isSuperAdmin(admin) && admin.tenantId) {
+      assetData.tenantId = new ObjectId(admin.tenantId);
+    }
+    
+    const asset = await createMarketingAsset(assetData);
 
     return NextResponse.json({
       ok: true,

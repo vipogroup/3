@@ -7,6 +7,7 @@ import Product from '@/models/Product';
 import Catalog from '@/models/Catalog';
 import { requireAdminApi } from '@/lib/auth/server';
 import { updateProductInPriority, deactivateProductInPriority } from '@/lib/priority/productSyncService';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 function buildProductQuery(id) {
   const conditions = [];
@@ -30,9 +31,24 @@ export async function GET(_req, { params }) {
 export async function PUT(req, { params }) {
   try {
     // Admin-only: update product
-    await requireAdminApi(req);
+    const admin = await requireAdminApi(req);
 
     await connectMongo();
+    
+    // Multi-Tenant: Verify product belongs to admin's tenant
+    const existingProduct = await Product.findOne(buildProductQuery(params.id)).lean();
+    if (!existingProduct) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+    
+    if (!isSuperAdmin(admin) && admin.tenantId) {
+      const productTenantId = existingProduct.tenantId?.toString();
+      const adminTenantId = admin.tenantId?.toString();
+      if (productTenantId && productTenantId !== adminTenantId) {
+        return NextResponse.json({ error: 'Forbidden - Product belongs to another tenant' }, { status: 403 });
+      }
+    }
+    
     const body = await req.json();
     const update = {};
 
@@ -270,9 +286,24 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     // Admin-only: delete product
-    await requireAdminApi(req);
+    const admin = await requireAdminApi(req);
 
     await connectMongo();
+    
+    // Multi-Tenant: Verify product belongs to admin's tenant before deleting
+    const existingProduct = await Product.findOne(buildProductQuery(params.id)).lean();
+    if (!existingProduct) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+    
+    if (!isSuperAdmin(admin) && admin.tenantId) {
+      const productTenantId = existingProduct.tenantId?.toString();
+      const adminTenantId = admin.tenantId?.toString();
+      if (productTenantId && productTenantId !== adminTenantId) {
+        return NextResponse.json({ error: 'Forbidden - Product belongs to another tenant' }, { status: 403 });
+      }
+    }
+    
     const res = await Product.findOneAndDelete(buildProductQuery(params.id));
     if (!res) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 

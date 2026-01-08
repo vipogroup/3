@@ -58,7 +58,7 @@ export async function GET(req) {
     }
 
     // Check if user is admin
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'business_admin') {
       return NextResponse.json(
         {
           ok: false,

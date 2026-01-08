@@ -8,6 +8,14 @@ const { Schema, models, model } = mongoose;
  */
 const integrationSyncMapSchema = new Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     // קשר להזמנה במערכת
     orderId: {
       type: Schema.Types.ObjectId,

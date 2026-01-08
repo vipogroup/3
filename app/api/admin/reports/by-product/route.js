@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth/server';
 import { getByProduct } from '@/lib/reports';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +18,10 @@ export async function GET(req) {
     const { searchParams } = req.nextUrl || new URL(req.url, 'http://localhost');
     const from = searchParams.get('from');
     const to = searchParams.get('to');
-    const items = await getByProduct({ from, to });
+    
+    // Multi-Tenant: Pass tenantId for Business Admin
+    const tenantId = !isSuperAdmin(admin) && admin.tenantId ? admin.tenantId : null;
+    const items = await getByProduct({ from, to, tenantId });
     return NextResponse.json({ success: true, items, error: null });
   } catch (error) {
     const status = error?.status || 500;

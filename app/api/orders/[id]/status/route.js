@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 
 import { getDb } from '@/lib/db';
 import { verifyJwt } from '@/src/lib/auth/createToken.js';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 const ALLOWED_STATUSES = ['new', 'qualified', 'paid', 'shipped', 'delivered', 'canceled'];
 const NEXT_ALLOWED = {
@@ -22,13 +23,23 @@ async function ordersCollection() {
   return col;
 }
 
+async function getFullUser(decoded) {
+  if (!decoded?.userId) return null;
+  const db = await getDb();
+  const user = await db.collection('users').findOne({ _id: new ObjectId(decoded.userId) });
+  return user ? { ...decoded, ...user, _id: user._id } : decoded;
+}
+
 export async function POST(req, { params }) {
   try {
-    const token = req.cookies.get('token')?.value || '';
+    const token = req.cookies.get('token')?.value || req.cookies.get('auth_token')?.value || '';
     const decoded = verifyJwt(token);
-    if (decoded?.role !== 'admin') {
+    if (!decoded || (decoded.role !== 'admin' && decoded.role !== 'business_admin')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // Get full user with tenantId
+    const user = await getFullUser(decoded);
 
     const { id } = params || {};
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
@@ -42,6 +53,15 @@ export async function POST(req, { params }) {
     const col = await ordersCollection();
     const order = await col.findOne({ _id: new ObjectId(id) });
     if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+    // Multi-Tenant: Verify order belongs to user's tenant
+    if (!isSuperAdmin(user) && user.tenantId) {
+      const orderTenantId = order.tenantId?.toString();
+      const userTenantId = user.tenantId?.toString();
+      if (orderTenantId && orderTenantId !== userTenantId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+    }
 
     // Allow cancel from any state, otherwise only forward transitions
     const curr = order.status || 'new';

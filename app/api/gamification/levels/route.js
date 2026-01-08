@@ -3,32 +3,43 @@ import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import LevelRule from '@/models/LevelRule';
 import { verify } from '@/lib/auth/createToken';
+import { getDb } from '@/lib/db';
+import { ObjectId } from 'mongodb';
+import { 
+  getCurrentTenant, 
+  isSuperAdmin, 
+  withTenantQuery,
+  resolveTenantId
+} from '@/lib/tenant/tenantMiddleware';
 
 export const dynamic = 'force-dynamic';
 
 // Helper function to get user from request
 async function getUserFromRequest(req) {
-  const token = req.cookies.get('token')?.value || '';
+  const token = req.cookies.get('token')?.value || req.cookies.get('auth_token')?.value || '';
   const payload = verify(token);
   if (!payload || !payload.userId || !payload.role) {
     return null;
   }
-  return {
-    userId: payload.userId,
-    role: payload.role,
-  };
+  
+  // Get full user with tenantId
+  const db = await getDb();
+  const user = await db.collection('users').findOne({ _id: new ObjectId(payload.userId) });
+  return user;
 }
 
 // Check if user is admin
 async function isAdmin(req) {
   const user = await getUserFromRequest(req);
-  return user && user.role === 'admin';
+  return user && (user.role === 'admin' || user.role === 'business_admin');
 }
 
 export async function GET(req) {
   try {
+    const user = await getUserFromRequest(req);
+    
     // Check if user is admin
-    if (!(await isAdmin(req))) {
+    if (!user || (user.role !== 'admin' && user.role !== 'business_admin')) {
       return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
     }
 
@@ -38,8 +49,16 @@ export async function GET(req) {
     const url = new URL(req.url);
     const includeAll = url.searchParams.get('all') === '1';
 
-    // Build query
-    const query = includeAll ? {} : { isActive: true };
+    // Build query with tenant filter
+    let query = includeAll ? {} : { isActive: true };
+    
+    // Multi-Tenant: Filter by tenant (Super Admin sees all)
+    query = await withTenantQuery({ 
+      user, 
+      request: req, 
+      query, 
+      allowGlobal: isSuperAdmin(user) 
+    });
 
     // Fetch level rules
     const levelRules = await LevelRule.find(query).sort({ sortOrder: 1 }).lean();
@@ -53,8 +72,10 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
+    const user = await getUserFromRequest(req);
+    
     // Check if user is admin
-    if (!(await isAdmin(req))) {
+    if (!user || (user.role !== 'admin' && user.role !== 'business_admin')) {
       return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
     }
 
@@ -87,7 +108,10 @@ export async function POST(req) {
 
     await connectMongo();
 
-    // Create new level rule
+    // Multi-Tenant: Get tenantId for the new rule
+    const tenantId = await resolveTenantId(user, req);
+
+    // Create new level rule with tenantId
     const levelRule = await LevelRule.create({
       name: name.trim(),
       minSalesAmount,
@@ -96,6 +120,7 @@ export async function POST(req) {
       badgeColor,
       sortOrder,
       isActive,
+      ...(tenantId && { tenantId: new ObjectId(tenantId) }),
     });
 
     return NextResponse.json(levelRule, { status: 201 });

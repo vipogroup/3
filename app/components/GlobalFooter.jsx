@@ -10,7 +10,8 @@ export default function GlobalFooter() {
   const isAdminPage = pathname?.startsWith('/admin');
   const isHomePage = pathname === '/';
   const isAboutPage = pathname === '/about';
-  const shouldHide = isAdminPage || isHomePage || isAboutPage;
+  const isRegisterBusinessPage = pathname === '/register-business';
+  const shouldHide = isAdminPage || isHomePage || isAboutPage || isRegisterBusinessPage;
 
   // Load homepage styles for footer
   useEffect(() => {

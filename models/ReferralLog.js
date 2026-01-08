@@ -5,6 +5,14 @@ import mongoose from 'mongoose';
  */
 const ReferralLogSchema = new mongoose.Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     agentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

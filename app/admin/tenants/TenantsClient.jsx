@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Building2, Plus, Search, Edit, Trash2, Eye, Check, X, RefreshCw, UserPlus, ExternalLink } from 'lucide-react';
+import { Building2, Plus, Search, Edit, Trash2, Eye, Check, X, RefreshCw, UserPlus, ExternalLink, LayoutDashboard, Copy, Link2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function TenantsClient() {
+  const router = useRouter();
   const [tenants, setTenants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -12,6 +14,15 @@ export default function TenantsClient() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTenant, setEditingTenant] = useState(null);
   const [showAdminModal, setShowAdminModal] = useState(null); // tenant for which to create admin
+  const [registrationUrl, setRegistrationUrl] = useState('/register-business');
+  const [copied, setCopied] = useState(false);
+
+  // Set registration URL on client side only
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setRegistrationUrl(`${window.location.origin}/register-business`);
+    }
+  }, []);
 
   const loadTenants = useCallback(async () => {
     setLoading(true);
@@ -87,6 +98,29 @@ export default function TenantsClient() {
     }
   };
 
+  // Enter tenant dashboard as super admin
+  const handleEnterDashboard = async (tenantId) => {
+    try {
+      // Set impersonation cookie/session
+      const res = await fetch('/api/admin/impersonate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ tenantId }),
+      });
+      
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'שגיאה בכניסה לדשבורד');
+      }
+      
+      // Navigate to business dashboard
+      router.push('/business');
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   const getStatusBadge = (status) => {
     const styles = {
       active: 'bg-green-100 text-green-800',
@@ -108,58 +142,81 @@ export default function TenantsClient() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto" dir="rtl">
+    <div className="p-3 sm:p-6 max-w-7xl mx-auto" dir="rtl">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Building2 className="w-8 h-8 text-blue-600" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Building2 className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">ניהול עסקים</h1>
-            <p className="text-gray-500 text-sm">Multi-Tenant Management</p>
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">ניהול עסקים</h1>
+            <p className="text-gray-500 text-xs sm:text-sm hidden sm:block">Multi-Tenant Management</p>
           </div>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          עסק חדש
-        </button>
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          {/* Registration Link */}
+          <div className="flex items-center gap-1 sm:gap-2 bg-green-50 border border-green-200 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2">
+            <Link2 className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+            <span className="text-xs sm:text-sm text-green-700 font-medium hidden sm:inline">קישור הרשמה:</span>
+            <code className="text-xs bg-white px-1 sm:px-2 py-0.5 sm:py-1 rounded border text-gray-600 max-w-[120px] sm:max-w-none truncate">
+              {registrationUrl}
+            </code>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(registrationUrl);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+              className={`p-1 sm:p-1.5 rounded transition-colors ${copied ? 'text-green-700 bg-green-100' : 'text-green-600 hover:bg-green-100'}`}
+              title="העתק קישור"
+            >
+              {copied ? <Check className="w-3 h-3 sm:w-4 sm:h-4" /> : <Copy className="w-3 h-3 sm:w-4 sm:h-4" />}
+            </button>
+          </div>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
+          >
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            עסק חדש
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-        <div className="flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[200px]">
+      <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 mb-4 sm:mb-6">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+          <div className="flex-1 min-w-0">
             <div className="relative">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="חיפוש לפי שם, slug או דומיין..."
+                placeholder="חיפוש..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pr-10 pl-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pr-9 sm:pr-10 pl-3 sm:pl-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
               />
             </div>
           </div>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">כל הסטטוסים</option>
-            <option value="active">פעיל</option>
-            <option value="pending">ממתין</option>
-            <option value="inactive">לא פעיל</option>
-            <option value="suspended">מושהה</option>
-          </select>
-          <button
-            onClick={loadTenants}
-            className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50"
-          >
-            <RefreshCw className="w-4 h-4" />
-            רענון
-          </button>
+          <div className="flex gap-2">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="flex-1 sm:flex-none px-2 sm:px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+            >
+              <option value="">כל הסטטוסים</option>
+              <option value="active">פעיל</option>
+              <option value="pending">ממתין</option>
+              <option value="inactive">לא פעיל</option>
+              <option value="suspended">מושהה</option>
+            </select>
+            <button
+              onClick={loadTenants}
+              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 border rounded-lg hover:bg-gray-50"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span className="hidden sm:inline">רענון</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -177,8 +234,8 @@ export default function TenantsClient() {
         </div>
       ) : (
         /* Tenants Table */
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <table className="w-full">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden overflow-x-auto">
+          <table className="w-full min-w-[700px]">
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="text-right px-4 py-3 text-sm font-medium text-gray-600">עסק</th>
@@ -245,12 +302,19 @@ export default function TenantsClient() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEnterDashboard(tenant._id)}
+                          className="p-2 text-cyan-600 hover:bg-cyan-50 rounded-lg"
+                          title="כניסה לדשבורד עסק"
+                        >
+                          <LayoutDashboard className="w-4 h-4" />
+                        </button>
                         <a
                           href={`/t/${tenant.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-                          title="פתח עסק"
+                          title="פתח אתר עסק"
                         >
                           <ExternalLink className="w-4 h-4" />
                         </a>

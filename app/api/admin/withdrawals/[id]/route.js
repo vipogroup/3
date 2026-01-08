@@ -9,6 +9,7 @@ import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { processWithdrawalViaPriority, completeWithdrawal } from '@/lib/priority/agentPayoutService.js';
 import { isPriorityConfigured } from '@/lib/priority/client.js';
 import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 const ACTIONS = ['approve', 'reject', 'complete', 'pay_via_priority', 'delete'];
 
@@ -64,6 +65,15 @@ export async function GET(req, { params }) {
     const doc = await withdrawals.findOne({ _id: withdrawalId });
     if (!doc) {
       return NextResponse.json({ error: 'Withdrawal not found' }, { status: 404 });
+    }
+    
+    // Multi-Tenant: Verify withdrawal belongs to admin's tenant
+    if (!isSuperAdmin(admin) && admin.tenantId) {
+      const withdrawalTenantId = doc.tenantId?.toString();
+      const adminTenantId = admin.tenantId?.toString();
+      if (withdrawalTenantId && withdrawalTenantId !== adminTenantId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     const userDoc = await users
@@ -125,6 +135,15 @@ export async function PATCH(req, { params }) {
     const existing = await withdrawals.findOne({ _id: withdrawalId });
     if (!existing) {
       return NextResponse.json({ error: 'Withdrawal not found' }, { status: 404 });
+    }
+    
+    // Multi-Tenant: Verify withdrawal belongs to admin's tenant
+    if (!isSuperAdmin(admin) && admin.tenantId) {
+      const withdrawalTenantId = existing.tenantId?.toString();
+      const adminTenantId = admin.tenantId?.toString();
+      if (withdrawalTenantId && withdrawalTenantId !== adminTenantId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     const now = new Date();

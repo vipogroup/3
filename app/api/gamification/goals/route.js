@@ -4,26 +4,27 @@ import { ObjectId } from 'mongodb';
 import { connectMongo } from '@/lib/mongoose';
 import AgentGoal from '@/models/AgentGoal';
 import { verify } from '@/lib/auth/createToken';
+import { getDb } from '@/lib/db';
+import { 
+  isSuperAdmin, 
+  withTenantQuery,
+  resolveTenantId
+} from '@/lib/tenant/tenantMiddleware';
 
 export const dynamic = 'force-dynamic';
 
 // Helper function to get user from request
 async function getUserFromRequest(req) {
-  const token = req.cookies.get('token')?.value || '';
+  const token = req.cookies.get('token')?.value || req.cookies.get('auth_token')?.value || '';
   const payload = verify(token);
   if (!payload || !payload.userId || !payload.role) {
     return null;
   }
-  return {
-    userId: payload.userId,
-    role: payload.role,
-  };
-}
-
-// Check if user is admin
-async function isAdmin(req) {
-  const user = await getUserFromRequest(req);
-  return user && user.role === 'admin';
+  
+  // Get full user with tenantId
+  const db = await getDb();
+  const user = await db.collection('users').findOne({ _id: new ObjectId(payload.userId) });
+  return user;
 }
 
 export async function GET(req) {
@@ -64,21 +65,29 @@ export async function GET(req) {
       // User can only see their own goals
       query.agentId = new ObjectId(user.userId);
     } else if (agentId) {
-      // Admin can see any agent's goals
-      if (user.role !== 'admin') {
+      // Admin/Business Admin can see any agent's goals (within their tenant)
+      if (user.role !== 'admin' && user.role !== 'business_admin') {
         return NextResponse.json(
           { error: "Forbidden: Admin access required to view other agents' goals" },
           { status: 403 },
         );
       }
       query.agentId = new ObjectId(agentId);
-    } else if (user.role !== 'admin') {
+    } else if (user.role !== 'admin' && user.role !== 'business_admin') {
       // Non-admin users can only see their own goals
       query.agentId = new ObjectId(user.userId);
     }
 
+    // Multi-Tenant: Add tenant filter (Super Admin sees all)
+    const tenantQuery = await withTenantQuery({ 
+      user, 
+      request: req, 
+      query, 
+      allowGlobal: isSuperAdmin(user) 
+    });
+
     // Fetch goals
-    const goals = await AgentGoal.find(query)
+    const goals = await AgentGoal.find(tenantQuery)
       .sort({ year: -1, month: -1 })
       .populate('agentId', 'fullName')
       .lean();
@@ -92,8 +101,10 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
+    const user = await getUserFromRequest(req);
+    
     // Check if user is admin
-    if (!(await isAdmin(req))) {
+    if (!user || (user.role !== 'admin' && user.role !== 'business_admin')) {
       return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
     }
 
@@ -151,7 +162,10 @@ export async function POST(req) {
       );
     }
 
-    // Create new goal
+    // Multi-Tenant: Get tenantId for the new goal
+    const tenantId = await resolveTenantId(user, req);
+
+    // Create new goal with tenantId
     const goal = await AgentGoal.create({
       agentId,
       month,
@@ -160,6 +174,7 @@ export async function POST(req) {
       targetDeals,
       bonusOnHit,
       isActive,
+      ...(tenantId && { tenantId: new ObjectId(tenantId) }),
     });
 
     return NextResponse.json(goal, { status: 201 });

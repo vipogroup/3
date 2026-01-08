@@ -5,6 +5,8 @@ import { getDb } from '@/lib/db';
 import { requireAdminApi } from '@/lib/auth/server';
 import { NextResponse } from 'next/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
+import { ObjectId } from 'mongodb';
 
 /**
  * GET /api/admin/transactions
@@ -35,6 +37,12 @@ export async function GET(req) {
 
     // Build query - read from orders collection
     const query = {};
+    
+    // Multi-Tenant: Filter by tenantId for business admins
+    if (!isSuperAdmin(admin) && admin.tenantId) {
+      query.tenantId = new ObjectId(admin.tenantId);
+    }
+    
     if (status) query.status = status;
     if (since) query.createdAt = { $gte: new Date(since) };
 

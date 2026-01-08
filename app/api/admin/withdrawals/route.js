@@ -2,9 +2,11 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 const ALLOWED_STATUSES = ['pending', 'approved', 'rejected', 'completed'];
 
@@ -36,7 +38,13 @@ export async function GET(req) {
     const limit = Math.min(parsePositiveInt(searchParams.get('limit'), 20), 100);
     const skip = (page - 1) * limit;
 
-    const query = {};
+    // Multi-Tenant: Build tenant filter
+    const tenantFilter = {};
+    if (!isSuperAdmin(admin) && admin.tenantId) {
+      tenantFilter.tenantId = new ObjectId(admin.tenantId);
+    }
+
+    const query = { ...tenantFilter };
     if (status && ALLOWED_STATUSES.includes(status)) {
       query.status = status;
     }
@@ -66,9 +74,10 @@ export async function GET(req) {
     const items = await withdrawals.aggregate(pipeline).toArray();
     const total = await withdrawals.countDocuments(query);
 
-    // Stats: pending count/amount, completed this month
+    // Stats: pending count/amount, completed this month (filtered by tenant)
     const grouped = await withdrawals
       .aggregate([
+        { $match: tenantFilter },
         { $group: { _id: '$status', count: { $sum: 1 }, amount: { $sum: '$amount' } } },
       ])
       .toArray();
@@ -79,6 +88,7 @@ export async function GET(req) {
       .aggregate([
         {
           $match: {
+            ...tenantFilter,
             status: 'completed',
             processedAt: { $gte: startOfMonth },
           },

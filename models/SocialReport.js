@@ -67,6 +67,14 @@ const crawlDataSchema = new mongoose.Schema({
 }, { _id: false });
 
 const socialReportSchema = new mongoose.Schema({
+  // === Multi-Tenant ===
+  tenantId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Tenant', 
+    default: null,
+    index: true,
+  },
+  
   // Report identification
   reportId: { type: String, required: true, unique: true },
   scanId: { type: String }, // Link to system scan if applicable

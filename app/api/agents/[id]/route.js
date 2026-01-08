@@ -11,7 +11,7 @@ function getToken(req) {
 
 function ensureAdmin(req) {
   const decoded = verifyJwt(getToken(req));
-  if (!decoded || decoded.role !== 'admin') {
+  if (!decoded || (decoded.role !== 'admin' && decoded.role !== 'business_admin')) {
     return null;
   }
   return decoded;

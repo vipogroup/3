@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 
 import { getDb } from '@/lib/db';
 import { requireAuthApi } from '@/lib/auth/server';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 async function ordersCollection() {
   const db = await getDb();
@@ -44,7 +45,7 @@ export async function GET(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     const user = await requireAuthApi(req);
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'business_admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -52,6 +53,19 @@ export async function DELETE(req, { params }) {
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
     const col = await ordersCollection();
+    
+    // Multi-Tenant: Verify order belongs to admin's tenant before deleting
+    const order = await col.findOne({ _id: new ObjectId(id) });
+    if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    
+    if (!isSuperAdmin(user) && user.tenantId) {
+      const orderTenantId = order.tenantId?.toString();
+      const userTenantId = user.tenantId?.toString();
+      if (orderTenantId && orderTenantId !== userTenantId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+    }
+    
     const result = await col.deleteOne({ _id: new ObjectId(id) });
     if (result.deletedCount === 0) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -68,7 +82,7 @@ export async function DELETE(req, { params }) {
 export async function PUT(req, { params }) {
   try {
     const user = await requireAuthApi(req);
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'business_admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -78,6 +92,15 @@ export async function PUT(req, { params }) {
     const col = await ordersCollection();
     const order = await col.findOne({ _id: new ObjectId(id) });
     if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    
+    // Multi-Tenant: Verify order belongs to admin's tenant
+    if (!isSuperAdmin(user) && user.tenantId) {
+      const orderTenantId = order.tenantId?.toString();
+      const userTenantId = user.tenantId?.toString();
+      if (orderTenantId && orderTenantId !== userTenantId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+    }
 
     const body = await req.json();
     const { status } = body;

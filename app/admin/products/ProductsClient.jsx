@@ -2,9 +2,12 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { refreshProductsFromApi, getProducts } from '@/app/lib/products';
 
 export default function ProductsClient() {
+  const pathname = usePathname();
+  const basePath = pathname?.startsWith('/business') ? '/business' : '/admin';
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
@@ -672,7 +675,7 @@ export default function ProductsClient() {
               </>
             )}
             <Link
-              href="/admin/products/new"
+              href={`${basePath}/products/new`}
               className="text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all shadow-lg flex items-center gap-2 text-xs sm:text-sm"
               style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
               onMouseEnter={(e) => {
@@ -1223,7 +1226,7 @@ export default function ProductsClient() {
                               }}
                             >
                               <Link
-                                href={`/admin/products/${product._id}/edit`}
+                                href={`${basePath}/products/${product._id}/edit`}
                                 className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right transition-colors"
                                 style={{ color: '#1e3a8a' }}
                                 onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'}
@@ -1364,7 +1367,7 @@ export default function ProductsClient() {
                       )}
                       <div className="flex gap-1 flex-wrap">
                         <Link
-                          href={`/admin/products/${product._id}/edit`}
+                          href={`${basePath}/products/${product._id}/edit`}
                           className="flex-1 text-center text-white font-medium px-2 py-1.5 rounded text-xs min-w-[60px]"
                           style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                         >
@@ -1451,7 +1454,7 @@ export default function ProductsClient() {
             </h3>
             <p className="text-gray-600 mb-6">התחל בהוספת המוצר הראשון שלך</p>
             <Link
-              href="/admin/products/new"
+              href={`${basePath}/products/new`}
               className="inline-flex items-center gap-2 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-lg"
               style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
               onMouseEnter={(e) => {

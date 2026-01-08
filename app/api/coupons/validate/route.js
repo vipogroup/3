@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import User from '@/models/User';
+import { getCurrentTenant } from '@/lib/tenant/tenantMiddleware';
 
 export async function POST(request) {
   try {
@@ -15,13 +16,25 @@ export async function POST(request) {
 
     await connectMongo();
 
+    // Multi-Tenant: Get current tenant
+    const tenant = await getCurrentTenant(request);
+
     const code = rawCode.toLowerCase();
     // Escape regex special characters to prevent ReDoS
     const escapedCode = code.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const agent = await User.findOne({
+    
+    // Build query with optional tenant filter
+    const query = {
       couponCode: { $regex: new RegExp(`^${escapedCode}$`, 'i') },
       role: 'agent',
-    })
+    };
+    
+    // If tenant exists, filter by tenant
+    if (tenant) {
+      query.tenantId = tenant._id;
+    }
+    
+    const agent = await User.findOne(query)
       .lean()
       .exec();
 
@@ -39,6 +52,7 @@ export async function POST(request) {
           agentId: String(agent._id),
           agentName: agent.fullName ?? '',
           status: agent.couponStatus,
+          tenantId: agent.tenantId ? String(agent.tenantId) : null,
         },
       },
       { status: 200 },

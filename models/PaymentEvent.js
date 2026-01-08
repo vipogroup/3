@@ -8,6 +8,14 @@ const { Schema, models, model } = mongoose;
  */
 const paymentEventSchema = new Schema(
   {
+    // === Multi-Tenant ===
+    tenantId: { 
+      type: Schema.Types.ObjectId, 
+      ref: 'Tenant', 
+      default: null,
+      index: true,
+    },
+    
     // Idempotency key - מונע עיבוד כפול של אותו אירוע
     eventId: {
       type: String,

@@ -2,11 +2,12 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { requireAuthApi } from '@/lib/auth/server';
+import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 export async function PUT(req, { params }) {
   try {
     const user = await requireAuthApi(req);
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'business_admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -24,6 +25,20 @@ export async function PUT(req, { params }) {
 
     const db = await getDb();
     const ordersCol = db.collection('orders');
+
+    // Multi-Tenant: Verify order belongs to user's tenant
+    const order = await ordersCol.findOne({ _id: new ObjectId(orderId) });
+    if (!order) {
+      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    }
+    
+    if (!isSuperAdmin(user) && user.tenantId) {
+      const orderTenantId = order.tenantId?.toString();
+      const userTenantId = user.tenantId?.toString();
+      if (orderTenantId && orderTenantId !== userTenantId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+    }
 
     const result = await ordersCol.updateOne(
       { _id: new ObjectId(orderId) },

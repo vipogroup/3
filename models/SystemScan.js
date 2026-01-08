@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 
 const systemScanSchema = new mongoose.Schema({
+  // === Multi-Tenant ===
+  tenantId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Tenant', 
+    default: null,
+    index: true,
+  },
+  
   // Scan identification
   scanId: {
     type: String,

@@ -91,13 +91,28 @@ function LoginPageContent() {
         localStorage.removeItem('vipo-login');
       }
 
-      setMsg('התחברת בהצלחה! מעביר לדף הבית...');
       setLoading(false);
+
+      // Determine redirect path based on role and tenantId
+      let targetPath = '/';
+      if (data.role === 'business_admin' || (data.tenantId && data.role !== 'admin')) {
+        // Business admin - redirect to business dashboard
+        targetPath = '/business';
+        setMsg('התחברת בהצלחה! מעביר לדשבורד העסק...');
+      } else if (data.role === 'admin' || data.role === 'super_admin') {
+        // Super admin - redirect to admin dashboard
+        targetPath = '/admin';
+        setMsg('התחברת בהצלחה! מעביר לדשבורד הניהול...');
+      } else if (data.role === 'agent') {
+        // Agent - redirect to agent dashboard
+        targetPath = '/agent';
+        setMsg('התחברת בהצלחה! מעביר לדשבורד הסוכן...');
+      } else {
+        setMsg('התחברת בהצלחה! מעביר לדף הבית...');
+      }
 
       // Add a longer delay to ensure cookie is properly set and synced
       setTimeout(() => {
-        // Always redirect to home page after login
-        const targetPath = '/';
 
         // First update the cookie status
         fetch('/api/auth/me', { credentials: 'include' })
