@@ -5,6 +5,7 @@ import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function GET(req) {
   try {
