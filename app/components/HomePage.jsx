@@ -327,7 +327,7 @@ export default function HomePage() {
                 onMouseMove={handleMagneticMove}
                 onMouseLeave={handleMagneticLeave}
               >
-                למוצרים במחיר מפעל
+                צפו במוצרים
               </Link>
               <a 
                 href="#video-section" 
