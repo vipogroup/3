@@ -11,7 +11,8 @@ export async function GET(req) {
     const admin = await requireAdminApi(req);
     
     // Only super admins can see users grouped by tenant
-    if (!isSuperAdmin(admin.email)) {
+    // isSuperAdmin expects user object, not email
+    if (!isSuperAdmin(admin)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

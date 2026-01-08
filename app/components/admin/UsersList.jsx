@@ -21,6 +21,12 @@ export default function UsersList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [openDropdownId, setOpenDropdownId] = useState(null);
+  
+  // Tenant users state
+  const [activeTab, setActiveTab] = useState('system'); // 'system' | 'tenants'
+  const [tenantGroups, setTenantGroups] = useState([]);
+  const [loadingTenants, setLoadingTenants] = useState(false);
+  const [expandedTenants, setExpandedTenants] = useState({});
 
   const getCurrentUser = useCallback(async () => {
     try {
@@ -64,10 +70,43 @@ export default function UsersList() {
     }
   }, []);
 
+  const fetchTenantUsers = useCallback(async () => {
+    try {
+      setLoadingTenants(true);
+      const res = await fetch('/api/admin/users-by-tenant');
+      if (!res.ok) {
+        if (res.status === 403) {
+          // Not super admin, hide tenants tab
+          return;
+        }
+        throw new Error('Failed to fetch tenant users');
+      }
+      const data = await res.json();
+      setTenantGroups(data.tenantGroups || []);
+    } catch (err) {
+      console.error('Failed to fetch tenant users:', err);
+    } finally {
+      setLoadingTenants(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchUsers(searchQuery, roleFilter);
     getCurrentUser();
   }, [fetchUsers, getCurrentUser, searchQuery, roleFilter]);
+
+  useEffect(() => {
+    if (isSuperAdminUser && activeTab === 'tenants') {
+      fetchTenantUsers();
+    }
+  }, [isSuperAdminUser, activeTab, fetchTenantUsers]);
+
+  const toggleTenantExpand = (tenantId) => {
+    setExpandedTenants(prev => ({
+      ...prev,
+      [tenantId]: !prev[tenantId]
+    }));
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -323,7 +362,46 @@ export default function UsersList() {
 
   return (
     <div>
-      {/* Header */}
+      {/* Main Tabs - System vs Tenants */}
+      {isSuperAdminUser && (
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-2 mb-4">
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setActiveTab('system')}
+              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
+                activeTab === 'system'
+                  ? 'text-white shadow-md'
+                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+              }`}
+              style={activeTab === 'system' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+              </svg>
+              משתמשי מערכת ({users.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('tenants')}
+              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
+                activeTab === 'tenants'
+                  ? 'text-white shadow-md'
+                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+              }`}
+              style={activeTab === 'tenants' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              משתמשי עסקים ({tenantGroups.reduce((sum, g) => sum + g.users.length, 0)})
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Header - Only show for system users tab */}
+      {activeTab === 'system' && (
       <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-3 sm:p-4 mb-4">
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
@@ -396,6 +474,7 @@ export default function UsersList() {
           )}
         </div>
       </div>
+      )}
 
       {error && (
         <div className="bg-red-50 border-2 border-red-200 text-red-700 px-6 py-4 rounded-xl mb-6 font-medium">
@@ -403,7 +482,8 @@ export default function UsersList() {
         </div>
       )}
 
-      {/* Desktop Table & Mobile Cards */}
+      {/* Desktop Table & Mobile Cards - System Users */}
+      {activeTab === 'system' && (
       <div className="bg-white rounded-lg sm:rounded-xl shadow-md overflow-hidden">
         {/* Desktop Table */}
         <div className="hidden md:block overflow-x-auto">
@@ -799,6 +879,131 @@ export default function UsersList() {
           </div>
         )}
       </div>
+      )}
+
+      {/* Tenant Users Section */}
+      {activeTab === 'tenants' && (
+        <div className="space-y-4">
+          {loadingTenants ? (
+            <div className="bg-white rounded-xl p-8 text-center">
+              <div
+                className="animate-spin rounded-full h-10 w-10 mx-auto mb-4"
+                style={{
+                  border: '4px solid rgba(8, 145, 178, 0.2)',
+                  borderTopColor: '#0891b2',
+                }}
+              ></div>
+              <p className="text-gray-600">טוען משתמשי עסקים...</p>
+            </div>
+          ) : tenantGroups.length === 0 ? (
+            <div className="bg-white rounded-xl p-8 text-center">
+              <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              <p className="text-gray-500">אין עסקים במערכת</p>
+            </div>
+          ) : (
+            tenantGroups.map((group) => (
+              <div
+                key={group.tenant._id}
+                className="bg-white rounded-xl overflow-hidden"
+                style={{
+                  border: '2px solid transparent',
+                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  boxShadow: '0 4px 15px rgba(8, 145, 178, 0.1)',
+                }}
+              >
+                {/* Tenant Header */}
+                <button
+                  type="button"
+                  onClick={() => toggleTenantExpand(group.tenant._id)}
+                  className="w-full px-4 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold"
+                      style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                    >
+                      {group.tenant.name?.charAt(0) || 'W'}
+                    </div>
+                    <div className="text-right">
+                      <h3 className="font-semibold text-gray-900">{group.tenant.name}</h3>
+                      <p className="text-sm text-gray-500">
+                        {group.users.length} משתמשים • 
+                        <span className={`mr-1 px-2 py-0.5 rounded-full text-xs ${
+                          group.tenant.status === 'active' ? 'bg-green-100 text-green-700' :
+                          group.tenant.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-red-100 text-red-700'
+                        }`}>
+                          {group.tenant.status === 'active' ? 'פעיל' : 
+                           group.tenant.status === 'pending' ? 'ממתין' : 'מושהה'}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                  <svg
+                    className={`w-5 h-5 text-gray-400 transition-transform ${expandedTenants[group.tenant._id] ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {/* Tenant Users List */}
+                {expandedTenants[group.tenant._id] && (
+                  <div className="border-t border-gray-100">
+                    {group.users.length === 0 ? (
+                      <p className="px-4 py-6 text-center text-gray-500 text-sm">אין משתמשים בעסק זה</p>
+                    ) : (
+                      <div className="divide-y divide-gray-100">
+                        {group.users.map((user) => {
+                          const roleOption = roleOptions.find((r) => r.value === user.role);
+                          return (
+                            <div key={user._id} className="px-4 py-3 flex items-center justify-between hover:bg-gray-50">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-600">
+                                  {user.fullName?.charAt(0) || user.email?.charAt(0) || '?'}
+                                </div>
+                                <div>
+                                  <p className="font-medium text-gray-900 text-sm">{user.fullName || user.email}</p>
+                                  <p className="text-xs text-gray-500">{user.email}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className={`px-2 py-1 text-xs rounded-full ${roleOption?.color || 'bg-gray-100 text-gray-700'}`}>
+                                  {roleOption?.label || user.role}
+                                </span>
+                                {user.phone && (
+                                  <a
+                                    href={buildWhatsAppUrl(user.phone, `היי ${user.fullName || ''}`)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-1.5 rounded-lg text-white"
+                                    style={{ background: '#25D366' }}
+                                    title="WhatsApp"
+                                  >
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                                    </svg>
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      )}
 
       {/* Info Box */}
       <div
