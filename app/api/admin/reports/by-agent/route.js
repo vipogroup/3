@@ -1,11 +1,11 @@
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 import { NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth/server';
 import { getByAgent } from '@/lib/reports';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
-
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 export async function GET(req) {
   try {
