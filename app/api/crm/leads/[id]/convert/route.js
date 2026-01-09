@@ -1,20 +1,16 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import { connectMongo } from '@/lib/mongoose';
 import Lead from '@/models/Lead';
 import User from '@/models/User';
-import { verifyAuth } from '@/lib/auth/requireAuth';
-import { getTenantId } from '@/lib/tenantContext';
+import { requireAuthApi } from '@/lib/auth/server';
+import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // POST /api/crm/leads/[id]/convert - Convert lead to customer
 export async function POST(request, { params }) {
   try {
-    const user = await verifyAuth(request);
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    await connectDB();
-    const tenantId = getTenantId(user);
+    const user = await requireAuthApi(request);
+    await connectMongo();
+    const tenantId = await resolveTenantId(user, request);
     const { id } = await params;
 
     const lead = await Lead.findOne({ _id: id, tenantId });

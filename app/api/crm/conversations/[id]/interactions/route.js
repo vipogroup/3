@@ -1,19 +1,15 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import { connectMongo } from '@/lib/mongoose';
 import Conversation from '@/models/Conversation';
-import { verifyAuth } from '@/lib/auth/requireAuth';
-import { getTenantId } from '@/lib/tenantContext';
+import { requireAuthApi } from '@/lib/auth/server';
+import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // POST /api/crm/conversations/[id]/interactions - Add interaction
 export async function POST(request, { params }) {
   try {
-    const user = await verifyAuth(request);
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    await connectDB();
-    const tenantId = getTenantId(user);
+    const user = await requireAuthApi(request);
+    await connectMongo();
+    const tenantId = await resolveTenantId(user, request);
     const { id } = await params;
     const body = await request.json();
 

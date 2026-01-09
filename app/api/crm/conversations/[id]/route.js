@@ -1,19 +1,15 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import { connectMongo } from '@/lib/mongoose';
 import Conversation from '@/models/Conversation';
-import { verifyAuth } from '@/lib/auth/requireAuth';
-import { getTenantId } from '@/lib/tenantContext';
+import { requireAuthApi } from '@/lib/auth/server';
+import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // GET /api/crm/conversations/[id] - Get single conversation
 export async function GET(request, { params }) {
   try {
-    const user = await verifyAuth(request);
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    await connectDB();
-    const tenantId = getTenantId(user);
+    const user = await requireAuthApi(request);
+    await connectMongo();
+    const tenantId = await resolveTenantId(user, request);
     const { id } = await params;
 
     const conversation = await Conversation.findOne({ _id: id, tenantId })
@@ -37,13 +33,9 @@ export async function GET(request, { params }) {
 // PATCH /api/crm/conversations/[id] - Update conversation
 export async function PATCH(request, { params }) {
   try {
-    const user = await verifyAuth(request);
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    await connectDB();
-    const tenantId = getTenantId(user);
+    const user = await requireAuthApi(request);
+    await connectMongo();
+    const tenantId = await resolveTenantId(user, request);
     const { id } = await params;
     const body = await request.json();
 

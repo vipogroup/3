@@ -1,19 +1,15 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import { connectMongo } from '@/lib/mongoose';
 import Conversation from '@/models/Conversation';
-import { verifyAuth } from '@/lib/auth/requireAuth';
-import { getTenantId } from '@/lib/tenantContext';
+import { requireAuthApi } from '@/lib/auth/server';
+import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // GET /api/crm/conversations - List conversations (Inbox)
 export async function GET(request) {
   try {
-    const user = await verifyAuth(request);
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    await connectDB();
-    const tenantId = getTenantId(user);
+    const user = await requireAuthApi(request);
+    await connectMongo();
+    const tenantId = await resolveTenantId(user, request);
     
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
@@ -69,13 +65,9 @@ export async function GET(request) {
 // POST /api/crm/conversations - Create conversation
 export async function POST(request) {
   try {
-    const user = await verifyAuth(request);
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    await connectDB();
-    const tenantId = getTenantId(user);
+    const user = await requireAuthApi(request);
+    await connectMongo();
+    const tenantId = await resolveTenantId(user, request);
     const body = await request.json();
 
     const conversation = await Conversation.create({

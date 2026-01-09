@@ -1,20 +1,16 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import { connectMongo } from '@/lib/mongoose';
 import Lead from '@/models/Lead';
 import User from '@/models/User';
-import { verifyAuth } from '@/lib/auth/requireAuth';
-import { getTenantId } from '@/lib/tenantContext';
+import { requireAuthApi } from '@/lib/auth/server';
+import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // GET /api/crm/leads/[id] - Get single lead
 export async function GET(request, { params }) {
   try {
-    const user = await verifyAuth(request);
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    await connectDB();
-    const tenantId = getTenantId(user);
+    const user = await requireAuthApi(request);
+    await connectMongo();
+    const tenantId = await resolveTenantId(user, request);
     const { id } = await params;
 
     const lead = await Lead.findOne({ _id: id, tenantId })
@@ -37,13 +33,9 @@ export async function GET(request, { params }) {
 // PATCH /api/crm/leads/[id] - Update lead
 export async function PATCH(request, { params }) {
   try {
-    const user = await verifyAuth(request);
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    await connectDB();
-    const tenantId = getTenantId(user);
+    const user = await requireAuthApi(request);
+    await connectMongo();
+    const tenantId = await resolveTenantId(user, request);
     const { id } = await params;
     const body = await request.json();
 
@@ -67,13 +59,9 @@ export async function PATCH(request, { params }) {
 // DELETE /api/crm/leads/[id] - Delete lead
 export async function DELETE(request, { params }) {
   try {
-    const user = await verifyAuth(request);
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    await connectDB();
-    const tenantId = getTenantId(user);
+    const user = await requireAuthApi(request);
+    await connectMongo();
+    const tenantId = await resolveTenantId(user, request);
     const { id } = await params;
 
     const lead = await Lead.findOneAndDelete({ _id: id, tenantId });
