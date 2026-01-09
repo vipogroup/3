@@ -490,10 +490,9 @@ function TenantModal({ tenant, onClose, onSave }) {
             <input
               type="text"
               value={formData.slug}
-              onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+              onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/^-+|-+$/g, '') })}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 font-mono"
               required
-              disabled={isEdit}
               placeholder="my-business"
             />
           </div>

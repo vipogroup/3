@@ -7,10 +7,6 @@ import {
   Truck,
   ShieldCheck,
   Megaphone,
-  Building2,
-  Home,
-  ShoppingCart,
-  Landmark,
   Wallet,
   Link2,
   BarChart3,
@@ -18,9 +14,6 @@ import {
   Mail,
   MessageCircle,
   Clock,
-  MapPin,
-  Facebook,
-  Instagram,
   ChevronLeft,
   Users,
   Package,
@@ -137,14 +130,7 @@ export default function AboutPage() {
           </div>
           
           <h1
-            className="text-2xl sm:text-3xl font-bold mb-3 opacity-0-start animate-fadeInDown delay-100"
-            style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 6px 16px rgba(0,0,0,0.25))'
-            }}
+            className="text-2xl sm:text-3xl font-bold mb-3 opacity-0-start animate-fadeInDown delay-100 text-white"
           >
             מי אנחנו
           </h1>
@@ -523,127 +509,7 @@ export default function AboutPage() {
           
         </div>
         
-        {/* Wave SVG to Footer */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
-            <defs>
-              <linearGradient id="footerWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#1e3a8a" />
-                <stop offset="100%" stopColor="#0891b2" />
-              </linearGradient>
-            </defs>
-            <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="url(#footerWaveGradient)"/>
-          </svg>
-        </div>
       </section>
-
-      {/* Footer - Full Content */}
-      <footer className="relative overflow-hidden w-full" style={{ background: gradient }}>
-        {/* Decorative Graphics */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-white/5" />
-          <div className="absolute top-1/3 -left-10 w-24 h-24 rounded-full bg-white/5" />
-          <div className="absolute bottom-1/4 right-1/4 w-3 h-3 rounded-full bg-white/10" />
-          <div className="absolute top-1/2 left-1/3 w-2 h-2 rounded-full bg-white/10" />
-        </div>
-
-        <div className="relative max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
-          {/* Main Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-5">
-            {/* Logo & Description */}
-            <div className="col-span-2">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-lg font-bold text-white">VIPO Group</span>
-              </div>
-              <p className="text-white/70 text-[10px] sm:text-xs mb-3 max-w-xs">
-                מובילים את מהפכת הסחר החכם בישראל. מחברים לקוחות למפעלים בעולם.
-              </p>
-              {/* Social Icons */}
-              <div className="flex items-center gap-2">
-                {[
-                  { href: 'https://facebook.com/vipogroup', icon: Facebook },
-                  { href: 'https://instagram.com/vipogroup', icon: Instagram },
-                  { href: 'https://wa.me/972587009938', icon: MessageCircle },
-                ].map((social, idx) => (
-                  <a 
-                    key={idx}
-                    href={social.href} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center transition-all hover:bg-white/20 hover:scale-105"
-                  >
-                    <social.icon className="w-4 h-4 text-white" />
-                  </a>
-                ))}
-              </div>
-            </div>
-            
-            {/* Quick Links */}
-            <div>
-              <h4 className="font-bold text-white mb-2 text-xs">קישורים</h4>
-              <ul className="space-y-1.5">
-                {[
-                  { href: '/', label: 'עמוד הבית' },
-                  { href: '/products', label: 'מוצרים' },
-                  { href: '/about', label: 'אודות' },
-                  { href: '/join', label: 'סוכנים' },
-                  { href: '/contact', label: 'צרו קשר' },
-                ].map((link) => (
-                  <li key={link.href}>
-                    <Link 
-                      href={link.href} 
-                      className="text-white/70 hover:text-white text-[10px] sm:text-xs transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            {/* Contact Info */}
-            <div>
-              <h4 className="font-bold text-white mb-2 text-xs">יצירת קשר</h4>
-              <ul className="space-y-2 text-[10px] sm:text-xs">
-                <li>
-                  <a href="mailto:info@vipo.com" className="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors">
-                    <Mail className="w-3.5 h-3.5" style={{ color: colors.accent }} />
-                    <span>info@vipo.com</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="tel:050-1234567" className="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors">
-                    <Phone className="w-3.5 h-3.5" style={{ color: colors.accent }} />
-                    <span>050-1234567</span>
-                  </a>
-                </li>
-                <li className="flex items-center gap-1.5 text-white/70">
-                  <Clock className="w-3.5 h-3.5" style={{ color: colors.accent }} />
-                  <span>א׳-ה׳ 09:00-18:00</span>
-                </li>
-                <li className="flex items-center gap-1.5 text-white/70">
-                  <MapPin className="w-3.5 h-3.5" style={{ color: colors.accent }} />
-                  <span>תל אביב, ישראל</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom */}
-          <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-2 text-[10px] sm:text-xs">
-            <p className="text-white/50">
-              © {new Date().getFullYear()} VIPO Group. כל הזכויות שמורות.
-            </p>
-            <div className="flex gap-3">
-              <Link href="/terms" className="text-white/50 hover:text-white transition-colors">תנאי שימוש</Link>
-              <Link href="/privacy" className="text-white/50 hover:text-white transition-colors">פרטיות</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

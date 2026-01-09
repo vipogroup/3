@@ -2,6 +2,8 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { requireAuthApi } from '@/lib/auth/server';
+import { getDb } from '@/lib/db';
+import { ObjectId } from 'mongodb';
 
 export async function GET(req) {
   try {
@@ -9,6 +11,24 @@ export async function GET(req) {
     
     if (!user) {
       return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
+    }
+
+    // Get tenant slug if user has tenantId
+    let tenantSlug = null;
+    if (user.tenantId) {
+      try {
+        const db = await getDb();
+        const tenantObjectId = ObjectId.isValid(user.tenantId) ? new ObjectId(user.tenantId) : null;
+        if (tenantObjectId) {
+          const tenant = await db.collection('tenants').findOne(
+            { _id: tenantObjectId },
+            { projection: { slug: 1 } }
+          );
+          tenantSlug = tenant?.slug || null;
+        }
+      } catch (e) {
+        console.error('Error fetching tenant slug:', e);
+      }
     }
 
     return NextResponse.json({
@@ -23,6 +43,7 @@ export async function GET(req) {
         showPushButtons: user.showPushButtons !== false,
         permissions: user.permissions,
         tenantId: user.tenantId ? String(user.tenantId) : null,
+        tenantSlug: tenantSlug,
       },
     });
   } catch (e) {

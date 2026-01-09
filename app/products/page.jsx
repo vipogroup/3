@@ -27,6 +27,7 @@ function ProductsPageContent() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [showMarquee, setShowMarquee] = useState(true);
   const [showAgentModal, setShowAgentModal] = useState(false);
+  const [showGroupInfoModal, setShowGroupInfoModal] = useState(false);
   const [upgrading, setUpgrading] = useState(false);
   const [addedToCart, setAddedToCart] = useState({});
   const { addItem } = useCartContext();
@@ -280,24 +281,36 @@ function ProductsPageContent() {
                 <span className="text-sm font-medium">חזרה לחנות</span>
               </Link>
               <div className="h-6 w-px bg-gray-300"></div>
-              <h1 
-                className="text-xl font-bold"
-                style={{ 
-                  color: typeFilter === 'group' ? '#f59e0b' : '#1e3a8a',
-                }}
-              >
+              <div className="flex flex-col">
+                <h1 
+                  className="text-xl font-bold"
+                  style={{ 
+                    color: typeFilter === 'group' ? '#f59e0b' : '#1e3a8a',
+                  }}
+                >
+                  {typeFilter === 'group' && (
+                    <svg className="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  )}
+                  {typeFilter === 'available' && (
+                    <svg className="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                    </svg>
+                  )}
+                  {pageTitle}
+                </h1>
+                {/* Info Link - Only for group purchase */}
                 {typeFilter === 'group' && (
-                  <svg className="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
+                  <button
+                    onClick={() => setShowGroupInfoModal(true)}
+                    className="text-xs underline hover:no-underline transition-all text-right"
+                    style={{ color: '#92400e' }}
+                  >
+                    מה זה רכישה קבוצתית?
+                  </button>
                 )}
-                {typeFilter === 'available' && (
-                  <svg className="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                  </svg>
-                )}
-                {pageTitle}
-              </h1>
+              </div>
               
               {/* Switch Button */}
               <div className="mr-auto">
@@ -493,6 +506,129 @@ function ProductsPageContent() {
                 אולי מאוחר יותר
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Group Purchase Info Modal */}
+      {showGroupInfoModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-2xl font-bold" style={{ color: '#d97706' }}>מה זה רכישה קבוצתית?</h3>
+              <button
+                onClick={() => setShowGroupInfoModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* Intro */}
+            <div className="mb-4 p-4 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%)', border: '1px solid rgba(217, 119, 6, 0.2)' }}>
+              <p className="text-gray-700 leading-relaxed text-center">
+                <strong style={{ color: '#92400e' }}>רכישה קבוצתית</strong> היא הדרך החכמה לקנות מוצרים איכותיים במחירים נמוכים משמעותית!
+                <br />
+                כשהרבה אנשים קונים יחד, אנחנו מזמינים כמויות גדולות ישירות מהמפעל - וכולם נהנים מהחיסכון.
+              </p>
+              <div className="flex justify-center gap-6 mt-4 text-sm">
+                <div className="flex items-center gap-2" style={{ color: '#16a34a' }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>עד 50% חיסכון</span>
+                </div>
+                <div className="flex items-center gap-2" style={{ color: '#16a34a' }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>ישירות מהמפעל</span>
+                </div>
+                <div className="flex items-center gap-2" style={{ color: '#16a34a' }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>ללא סיכון</span>
+                </div>
+              </div>
+            </div>
+
+            {/* How it works title */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)' }}>
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h4 className="text-xl font-bold" style={{ color: '#92400e' }}>איך זה עובד?</h4>
+            </div>
+
+            <div className="space-y-3">
+              {/* Step 1 */}
+              <div className="flex gap-4 items-start p-4 rounded-xl" style={{ background: 'rgba(251, 191, 36, 0.08)' }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold" style={{ background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)' }}>
+                  1
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg" style={{ color: '#92400e' }}>בחירת מוצר</h4>
+                  <p className="text-sm text-gray-600 mt-1">בוחרים מוצרים במחיר מפעל מהמערכת שלנו - עד 50% יותר זול ממחיר השוק</p>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="flex gap-4 items-start p-4 rounded-xl" style={{ background: 'rgba(251, 191, 36, 0.08)' }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold" style={{ background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)' }}>
+                  2
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg" style={{ color: '#92400e' }}>הצטרפות לקבוצה</h4>
+                  <p className="text-sm text-gray-600 mt-1">מצטרפים לקבוצת הרכישה. בתום ה-30 יום ההזמנה עוברת למפעל לייצור</p>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="flex gap-4 items-start p-4 rounded-xl" style={{ background: 'rgba(251, 191, 36, 0.08)' }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold" style={{ background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)' }}>
+                  3
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg" style={{ color: '#92400e' }}>שיתוף</h4>
+                  <p className="text-sm text-gray-600 mt-1">משתפים את החברים ומשפחה כדי להגדיל את הקבוצה. <strong style={{ color: '#1e3a8a' }}>הפכו לסוכן</strong> כדי לקבל קישור אישי ו-10% עמלה על כל רכישה שהגיעה מהשיתוף שלכם!</p>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="flex gap-4 items-start p-4 rounded-xl" style={{ background: 'rgba(251, 191, 36, 0.08)' }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold" style={{ background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)' }}>
+                  4
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg" style={{ color: '#92400e' }}>המחיר יורד</h4>
+                  <p className="text-sm text-gray-600 mt-1">ככל שיותר חברים מצטרפים, המחיר יורד לכולם</p>
+                </div>
+              </div>
+
+              {/* Step 5 */}
+              <div className="flex gap-4 items-start p-4 rounded-xl" style={{ background: 'rgba(251, 191, 36, 0.08)' }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold" style={{ background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)' }}>
+                  5
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg" style={{ color: '#92400e' }}>סגירת קבוצה</h4>
+                  <p className="text-sm text-gray-600 mt-1">בסיום ההרשמה מקבלים הודעה שמתחילים בייצור ועדכון על זמני הגעה</p>
+                </div>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => setShowGroupInfoModal(false)}
+              className="w-full mt-6 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90"
+              style={{ background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)' }}
+            >
+              הבנתי, בואו נתחיל!
+            </button>
           </div>
         </div>
       )}

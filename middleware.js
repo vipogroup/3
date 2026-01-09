@@ -90,7 +90,7 @@ export async function middleware(request) {
   if (pathname === '/login') {
     if (isAuthenticated) {
       const url = request.nextUrl.clone();
-      url.pathname = '/dashboard';
+      url.pathname = '/';
       return NextResponse.redirect(url);
     }
     // Clear invalid legacy token if it exists but is not valid

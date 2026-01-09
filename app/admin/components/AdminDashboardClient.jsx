@@ -629,6 +629,10 @@ export default function AdminDashboardClient() {
                 <span className="text-sm font-medium text-gray-900">ניהול הזמנות</span>
               </Link>
               )}
+              <Link href="/my-orders" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <CartIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <span className="text-sm font-medium text-gray-900">ההזמנות שלי</span>
+              </Link>
               {canAccess(ADMIN_PERMISSIONS.EDIT_PRODUCTS) && (
               <Link href="/admin/products/new" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
                 <PlusCircleIcon className="w-5 h-5" style={{ color: '#0891b2' }} />

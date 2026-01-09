@@ -15,7 +15,7 @@ export async function GET(req, context) {
   const code = params?.code;
   
   if (!code) {
-    return NextResponse.redirect(new URL('/products', req.url));
+    return NextResponse.redirect(new URL('/shop', req.url));
   }
 
   // Log the click to referral_logs
@@ -61,7 +61,7 @@ export async function GET(req, context) {
 
   // Use request URL origin for redirect
   const url = new URL(req.url);
-  const redirectUrl = new URL('/products', url.origin);
+  const redirectUrl = new URL('/shop', url.origin);
   
   const response = NextResponse.redirect(redirectUrl);
 

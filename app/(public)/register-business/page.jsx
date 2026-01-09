@@ -33,7 +33,8 @@ export default function RegisterBusinessPage() {
       .toLowerCase()
       .replace(/[^\w\s-]/g, '')
       .replace(/\s+/g, '-')
-      .replace(/-+/g, '-');
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
   };
 
   const handleBusinessNameChange = (value) => {

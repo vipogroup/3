@@ -61,15 +61,48 @@ export async function GET(req) {
 
     const userObjectId = normalizeObjectId(user.id);
 
-    if (user.role === 'admin') {
+    const isSystemAdmin = user.role === 'admin' || user.role === 'super_admin';
+    const isBusinessAdmin = user.role === 'business_admin';
+
+    if (isSystemAdmin) {
       if (participantId && participantObjectId) {
+        // Admin viewing specific user's conversation
         query = {
           $or: [
             { senderId: participantObjectId },
             { targetUserId: participantObjectId },
           ],
         };
+      } else {
+        // Admin viewing their own messages - only messages targeted to admin role
+        // NOT messages targeted to business_admin (those go to business owners)
+        query = {
+          $or: [
+            { senderId: userObjectId },
+            { targetUserId: userObjectId },
+            { targetRole: 'admin' },
+            { targetRole: 'all' },
+          ],
+        };
       }
+    } else if (isBusinessAdmin && user.tenantId) {
+      // Business admin sees messages from their tenant's customers
+      // Support both ObjectId and String tenantId in messages
+      const tenantObjectId = normalizeObjectId(user.tenantId);
+      const tenantString = String(user.tenantId);
+      console.log('[MESSAGES_GET] Business admin query:', { 
+        userId: user.id, 
+        tenantId: user.tenantId,
+        tenantObjectId: tenantObjectId ? String(tenantObjectId) : null 
+      });
+      query = {
+        $or: [
+          { senderId: userObjectId },
+          { targetUserId: userObjectId },
+          { tenantId: tenantObjectId, targetRole: 'business_admin' },
+          { tenantId: tenantString, targetRole: 'business_admin' },
+        ],
+      };
     } else {
       if (!userObjectId) {
         return NextResponse.json({ error: 'user_id_invalid' }, { status: 400 });
@@ -133,6 +166,8 @@ export async function POST(req) {
     const user = await requireAuthApi(req);
     await connectMongo();
 
+    console.log('[MESSAGES_POST] User:', { id: user.id, role: user.role, tenantId: user.tenantId });
+
     const body = await req.json().catch(() => ({}));
     const text = String(body?.message || '').trim();
     if (!text) {
@@ -150,9 +185,11 @@ export async function POST(req) {
     let targetRole = 'admin';
     let targetUserId = null;
 
-    const isAdmin = user.role === 'admin';
+    const isSystemAdmin = user.role === 'admin' || user.role === 'super_admin';
+    const isBusinessAdmin = user.role === 'business_admin';
+    let tenantId = null;
 
-    if (isAdmin) {
+    if (isSystemAdmin || isBusinessAdmin) {
       const requestedRole = body?.targetRole || 'all';
       if (!ADMIN_ALLOWED_TARGETS.includes(requestedRole)) {
         return NextResponse.json({ error: 'invalid_target_role' }, { status: 400 });
@@ -168,16 +205,33 @@ export async function POST(req) {
       } else {
         targetUserId = null;
       }
+      // Business admin messages are tenant-scoped
+      if (isBusinessAdmin && user.tenantId) {
+        tenantId = normalizeObjectId(user.tenantId);
+      }
     } else {
-      targetRole = 'admin';
+      // Regular user - if they belong to a tenant, send to business_admin
+      if (user.tenantId) {
+        targetRole = 'business_admin';
+        tenantId = normalizeObjectId(user.tenantId);
+      } else {
+        targetRole = 'admin';
+      }
       targetUserId = null;
     }
 
+    // Ensure senderRole is valid
+    const validRoles = ['admin', 'super_admin', 'business_admin', 'agent', 'customer'];
+    const senderRole = validRoles.includes(user.role) ? user.role : 'customer';
+
+    console.log('[MESSAGES_POST] Creating message:', { senderRole, targetRole, tenantId: tenantId ? String(tenantId) : null });
+
     const messageDoc = await Message.create({
       senderId: senderObjectId,
-      senderRole: user.role,
+      senderRole,
       targetRole,
       targetUserId,
+      tenantId,
       message: text,
       readBy: [
         {
@@ -187,6 +241,7 @@ export async function POST(req) {
       ],
     });
 
+    console.log('[MESSAGES_POST] Message created:', messageDoc._id);
     notifyRecipients(messageDoc).catch(() => {});
 
     return NextResponse.json({

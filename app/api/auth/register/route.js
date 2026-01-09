@@ -87,9 +87,17 @@ export async function POST(req) {
     // Find tenant if tenantSlug provided
     let tenantId = null;
     if (tenantSlug) {
-      const tenant = await tenants.findOne({ slug: tenantSlug.toLowerCase() });
+      // Normalize slug - remove leading/trailing dashes
+      const normalizedSlug = tenantSlug.toLowerCase().trim().replace(/^-+|-+$/g, '');
+      const tenant = await tenants.findOne({ slug: normalizedSlug, status: 'active' });
       if (tenant) {
         tenantId = tenant._id;
+      } else {
+        // If tenant slug was provided but not found, return error
+        return NextResponse.json(
+          { ok: false, error: 'tenant not found', message: 'העסק לא נמצא או לא פעיל' },
+          { status: 404 },
+        );
       }
     }
 

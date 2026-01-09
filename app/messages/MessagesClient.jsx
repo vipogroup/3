@@ -6,6 +6,8 @@ import { useAdminMessageTargets } from './hooks/useAdminMessageTargets';
 
 const ROLE_LABELS = {
   admin: 'מנהל',
+  super_admin: 'מנהל ראשי',
+  business_admin: 'מנהל עסק',
   agent: 'סוכן',
   customer: 'לקוח',
   all: 'כולם',
@@ -40,7 +42,9 @@ export default function MessagesClient({ currentUser }) {
   const [replyContext, setReplyContext] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
 
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === 'admin' || currentUser?.role === 'super_admin';
+  const isBusinessAdmin = currentUser?.role === 'business_admin';
+  const canManageMessages = isAdmin || isBusinessAdmin;
   const { targets: knownTargets, activeTarget } = useAdminMessageTargets(
     messages,
     targetRole,
@@ -61,7 +65,7 @@ export default function MessagesClient({ currentUser }) {
     try {
       const params = new URLSearchParams();
       params.set('limit', String(limit));
-      if (isAdmin && targetRole === 'direct' && targetUserId.trim()) {
+      if (canManageMessages && targetRole === 'direct' && targetUserId.trim()) {
         params.set('userId', targetUserId.trim());
       }
 
@@ -78,7 +82,7 @@ export default function MessagesClient({ currentUser }) {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [isAdmin, limit, targetRole, targetUserId]);
+  }, [canManageMessages, limit, targetRole, targetUserId]);
 
   useEffect(() => {
     fetchMessages();
@@ -111,7 +115,7 @@ export default function MessagesClient({ currentUser }) {
 
     try {
       const payload = { message: text };
-      if (isAdmin) {
+      if (canManageMessages) {
         if (targetRole === 'direct') {
           const trimmed = targetUserId.trim();
           if (!trimmed) {
@@ -139,14 +143,14 @@ export default function MessagesClient({ currentUser }) {
       const data = await res.json();
       setMessages((prev) => (data.item ? [data.item, ...prev] : prev));
       setMessageText('');
-      if (isAdmin && targetRole === 'direct' && !replyContext) setTargetUserId('');
+      if (canManageMessages && targetRole === 'direct' && !replyContext) setTargetUserId('');
     } catch (err) {
       setError(err.message || 'שליחת ההודעה נכשלה');
     }
-  }, [isAdmin, messageText, targetRole, targetUserId, replyContext]);
+  }, [canManageMessages, messageText, targetRole, targetUserId, replyContext]);
 
   const resolvedTargetRole = useMemo(() => {
-    if (!isAdmin) return 'admin';
+    if (!canManageMessages) return isBusinessAdmin ? 'לקוחות העסק' : 'admin';
     if (targetRole === 'direct') {
       if (replyContext?.userId) {
         return `מענה אל ${ROLE_LABELS[replyContext.role] || replyContext.role} (${replyContext.userId})`;
@@ -154,13 +158,13 @@ export default function MessagesClient({ currentUser }) {
       return targetUserId.trim() ? `משתמש ${targetUserId.trim()}` : 'הודעה ישירה';
     }
     return ROLE_LABELS[targetRole] || targetRole;
-  }, [isAdmin, targetRole, targetUserId, replyContext]);
+  }, [canManageMessages, isBusinessAdmin, targetRole, targetUserId, replyContext]);
 
-  const canSend = messageText.trim().length > 0 && (!isAdmin || targetRole !== 'direct' || targetUserId.trim());
+  const canSend = messageText.trim().length > 0 && (!canManageMessages || targetRole !== 'direct' || targetUserId.trim());
 
   const handleReply = useCallback(
     (item) => {
-      if (!isAdmin) return;
+      if (!canManageMessages) return;
       const directTargetId = item.senderRole === 'admin' ? item.targetUserId : item.senderId;
       const directTargetRole = item.senderRole === 'admin' ? item.targetRole : item.senderRole;
       if (!directTargetId) {
@@ -176,7 +180,7 @@ export default function MessagesClient({ currentUser }) {
         role: directTargetRole,
       });
     },
-    [isAdmin],
+    [canManageMessages],
   );
 
   const clearReplyContext = useCallback(() => {
@@ -247,14 +251,14 @@ export default function MessagesClient({ currentUser }) {
               שליחת הודעה חדשה
             </h2>
             <p className="text-xs text-gray-500">
-              {isAdmin
+              {canManageMessages
                 ? `הודעה תישלח אל: ${resolvedTargetRole}`
                 : 'ההודעה תישלח ישירות למנהלים (לא ניתן לפנות ללקוחות או לסוכנים אחרים).'}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-3">
-            {isAdmin && (
+            {canManageMessages && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1">
@@ -339,7 +343,7 @@ export default function MessagesClient({ currentUser }) {
 
             {error && <p className="text-xs text-red-500">{error}</p>}
 
-            {isAdmin && replyContext && (
+            {canManageMessages && replyContext && (
               <div className="flex items-center justify-between text-xs text-sky-800 bg-sky-50 border border-sky-200 rounded-lg px-3 py-2">
                 <span>
                   מענה ל{ROLE_LABELS[replyContext.role] || replyContext.role} ({replyContext.userId})
@@ -413,7 +417,7 @@ export default function MessagesClient({ currentUser }) {
                 const isSender = currentUser?.id && item.senderId
                   ? String(item.senderId) === String(currentUser.id)
                   : false;
-                const canDelete = isAdmin || isSender;
+                const canDelete = canManageMessages || isSender;
                 const isDeleting = deletingId === item.id;
 
                 return (
@@ -436,7 +440,7 @@ export default function MessagesClient({ currentUser }) {
                       </span>
                       <span className="flex items-center gap-3">
                         <time>{formatDate(item.createdAt)}</time>
-                        {isAdmin && (item.senderRole !== 'admin' || item.targetUserId) && (
+                        {canManageMessages && (item.senderRole !== currentUser?.role || item.targetUserId) && (
                           <button
                             type="button"
                             onClick={() => handleReply(item)}

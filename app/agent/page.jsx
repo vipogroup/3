@@ -5,11 +5,10 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import CopyCouponButton from './components/CopyCouponButton';
-import KPICard from './components/KPICard';
 import ShareButton from './components/ShareButton';
 import AgentCommissionsClient from './components/AgentCommissionsClient';
-import ProductsGallery from './components/ProductsGallery';
 import StatisticsSection from './components/StatisticsSection';
+import OrdersAccordions from './components/OrdersAccordions';
 
 const TrophyIcon = ({ className = 'w-10 h-10' }) => (
   <svg
@@ -411,36 +410,6 @@ export default async function AgentPage() {
     { key: 'referrals', label: 'הפניות', color: 'bg-blue-600', formatter: formatNumber },
   ];
 
-  const kpiCards = [
-    {
-      title: 'מכירות פעילות',
-      value: formatNumber(stats.activeSales),
-      iconName: 'bag',
-    },
-    {
-      title: 'סה״כ הזמנות',
-      value: formatNumber(stats.totalSales),
-      iconName: 'cart',
-    },
-    {
-      title: 'סה״כ מכירות',
-      value: formatCurrency(stats.totalRevenue),
-      iconName: 'wallet',
-    },
-    {
-      title: 'המתנה לתשלום',
-      value: formatCurrency(stats.pendingCommission),
-      iconName: 'hourglass',
-    },
-    {
-      title: 'יתרה למשיכה',
-      value: formatCurrency(stats.availableBalance),
-      iconName: 'diamond',
-      highlight: true,
-    },
-  ];
-
-
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white">
       <div className="max-w-7xl mx-auto px-4 py-4">
@@ -463,291 +432,75 @@ export default async function AgentPage() {
           />
         </div>
 
-        {/* KPI Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          {kpiCards.map(({ title, value, iconName }) => (
-            <KPICard key={title} title={title} value={value} iconName={iconName} />
-          ))}
-        </div>
+        {/* Personal Link + Products Section */}
+        <section
+          className="rounded-xl overflow-hidden mb-6"
+          style={{
+            border: '2px solid transparent',
+            backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+            boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
+          }}
+        >
+          <div className="px-4 py-3 border-b border-gray-100">
+            <h3 className="text-base font-bold" style={{ color: '#1e3a8a' }}>הקישור האישי שלך</h3>
+            <p className="text-[11px] text-gray-500">שתף את הקישור - ההנחה כבר מובנית בו!</p>
+          </div>
+          <div className="p-3 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2 min-w-0">
+                <p className="text-xs font-mono text-gray-600 truncate" dir="ltr">{stats.referralLink || '-'}</p>
+              </div>
+              <CopyCouponButton code={stats.referralLink} label="העתק" variant="primary" />
+              <ShareButton link={stats.referralLink} />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2 min-w-0">
+                <p className="text-[10px] text-gray-400">קוד קופון</p>
+                <p
+                  className="text-sm font-bold tracking-wider"
+                  style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  {stats.referralCode?.toUpperCase() || '-'}
+                </p>
+              </div>
+              <CopyCouponButton code={stats.referralCode} label="העתק" variant="outline" />
+            </div>
+            {/* Link to products */}
+            <Link
+              href="/agent/products"
+              className="flex items-center justify-center gap-2 mt-3 py-2.5 px-4 rounded-lg text-sm font-semibold text-white transition-all hover:shadow-lg hover:scale-[1.02]"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              <span>בחר מוצרים לשיתוף עם הקוד שלך</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </Link>
+          </div>
+        </section>
+
+        {/* Statistics Section */}
+        <section className="mb-6">
+          <StatisticsSection stats={stats} />
+        </section>
 
         {/* Commissions Section */}
         <section className="mb-6">
           <AgentCommissionsClient />
         </section>
 
-        {/* Products Gallery Section */}
-        <section
-          className="mb-6 rounded-xl p-5"
-          style={{
-            border: '2px solid transparent',
-            backgroundImage:
-              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-            backgroundOrigin: 'border-box',
-            backgroundClip: 'padding-box, border-box',
-            boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
-          }}
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold" style={{ color: '#1e3a8a' }}>
-              מוצרים לשיתוף
-            </h2>
-            <Link
-              href="/agent/products"
-              className="text-sm font-medium px-3 py-1.5 rounded-lg transition-colors"
-              style={{ color: '#0891b2', background: 'rgba(8, 145, 178, 0.1)' }}
-            >
-              לכל המוצרים
-            </Link>
-          </div>
-          <ProductsGallery couponCode={stats.referralCode} referralLink={stats.referralLink} />
-        </section>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Coupon Code Section */}
-          <section className="bg-white rounded-2xl shadow-lg overflow-hidden">
-            {/* Header with gradient */}
-            <div
-              className="px-5 py-4"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                  </svg>
-                </div>
-                <h2 className="text-lg font-bold text-white">קוד קופון שלך</h2>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-5">
-              {/* Share Link - Primary */}
-              <div className="mb-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-                  >
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                    </svg>
-                  </div>
-                  <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>לינק לשיתוף</span>
-                </div>
-                <div
-                  className="relative rounded-xl overflow-hidden p-4"
-                  style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%)', border: '2px solid rgba(8, 145, 178, 0.3)' }}
-                >
-                  <div
-                    className="rounded-lg p-3 text-sm font-mono bg-white mb-3 text-center"
-                    style={{ border: '1px solid #e2e8f0', color: '#1e3a8a' }}
-                  >
-                    {stats.referralLink || '-'}
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <CopyCouponButton code={stats.referralLink} label="העתק" successMessage="הלינק הועתק!" />
-                    <ShareButton link={stats.referralLink} />
-                  </div>
-                  <p className="text-xs text-gray-600 mt-3 flex items-center justify-center gap-2">
-                    <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>הלינק כולל את קוד הקופון - הלקוח יראה הנחה אוטומטית!</span>
-                  </p>
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div className="border-t border-gray-100 my-4" />
-
-              {/* Coupon Code Display - Secondary/Smaller */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-gray-400">קוד הקופון (לשימוש ידני)</span>
-                  <CopyCouponButton code={stats.referralCode} />
-                </div>
-                {stats.referralCode ? (
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="flex-1 text-center py-2 px-3 rounded-lg text-base font-bold tracking-wider"
-                      style={{ backgroundColor: '#f1f5f9', color: '#1e3a8a', border: '1px solid #e2e8f0' }}
-                    >
-                      {stats.referralCode.toUpperCase()}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-2 rounded-lg bg-gray-50 border border-dashed border-gray-200">
-                    <span className="text-gray-400 text-sm">לא הוגדר</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-          {/* Statistics Section - With Click-to-Toggle Descriptions */}
-          <StatisticsSection stats={stats} />
-        </div>
-
-        {/* Recent Orders Section */}
-        <section
-          className="mt-6 rounded-xl p-5"
-          style={{
-            border: '2px solid transparent',
-            backgroundImage:
-              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-            backgroundOrigin: 'border-box',
-            backgroundClip: 'padding-box, border-box',
-            boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
-          }}
-        >
-          <h2 className="text-lg font-bold mb-4" style={{ color: '#1e3a8a' }}>
-            הזמנות אחרונות
-          </h2>
-          {stats.recentOrders && stats.recentOrders.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
-                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>תאריך</th>
-                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>לקוח</th>
-                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>סכום</th>
-                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>עמלה</th>
-                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>סטטוס</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.recentOrders.map((order) => (
-                    <tr key={order._id} className="border-b" style={{ borderColor: 'rgba(8, 145, 178, 0.1)' }}>
-                      <td className="py-3 px-2 text-gray-700">
-                        {new Date(order.createdAt).toLocaleDateString('he-IL')}
-                      </td>
-                      <td className="py-3 px-2 text-gray-900 font-medium">{order.customerName}</td>
-                      <td className="py-3 px-2 text-gray-700">{formatCurrency(order.totalAmount)}</td>
-                      <td className="py-3 px-2 font-semibold" style={{ color: '#0891b2' }}>
-                        {formatCurrency(order.commissionAmount)}
-                      </td>
-                      <td className="py-3 px-2">
-                        <span
-                          className="px-2 py-1 text-xs font-medium rounded-full"
-                          style={{
-                            background:
-                              order.status === 'paid'
-                                ? 'rgba(16, 185, 129, 0.1)'
-                                : order.status === 'pending'
-                                ? 'rgba(245, 158, 11, 0.1)'
-                                : 'rgba(107, 114, 128, 0.1)',
-                            color:
-                              order.status === 'paid'
-                                ? '#059669'
-                                : order.status === 'pending'
-                                ? '#d97706'
-                                : '#6b7280',
-                            border: `1px solid ${
-                              order.status === 'paid'
-                                ? 'rgba(16, 185, 129, 0.3)'
-                                : order.status === 'pending'
-                                ? 'rgba(245, 158, 11, 0.3)'
-                                : 'rgba(107, 114, 128, 0.3)'
-                            }`,
-                          }}
-                        >
-                          {order.status === 'paid' ? 'שולם' : order.status === 'pending' ? 'ממתין' : order.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              <p>אין הזמנות עדיין</p>
-              <p className="text-sm mt-1">שתף את קוד הקופון שלך כדי להתחיל להרוויח!</p>
-            </div>
-          )}
-        </section>
-
-        {/* My Orders Section (Agent's own purchases) */}
-        <section
-          className="mt-6 rounded-xl p-5"
-          style={{
-            border: '2px solid transparent',
-            backgroundImage:
-              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-            backgroundOrigin: 'border-box',
-            backgroundClip: 'padding-box, border-box',
-            boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
-          }}
-        >
-          <h2 className="text-lg font-bold mb-4" style={{ color: '#1e3a8a' }}>
-            ההזמנות שלי
-          </h2>
-          {stats.myOrders && stats.myOrders.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b" style={{ borderColor: 'rgba(8, 145, 178, 0.2)' }}>
-                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>תאריך</th>
-                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>מוצרים</th>
-                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>סכום</th>
-                    <th className="text-right py-3 px-2 font-semibold" style={{ color: '#1e3a8a' }}>סטטוס</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.myOrders.map((order) => (
-                    <tr key={order._id} className="border-b" style={{ borderColor: 'rgba(8, 145, 178, 0.1)' }}>
-                      <td className="py-3 px-2 text-gray-700">
-                        {new Date(order.createdAt).toLocaleDateString('he-IL')}
-                      </td>
-                      <td className="py-3 px-2 text-gray-900 font-medium">{order.itemsCount} פריטים</td>
-                      <td className="py-3 px-2 text-gray-700">{formatCurrency(order.totalAmount)}</td>
-                      <td className="py-3 px-2">
-                        <span
-                          className="px-2 py-1 text-xs font-medium rounded-full"
-                          style={{
-                            background:
-                              order.status === 'paid'
-                                ? 'rgba(16, 185, 129, 0.1)'
-                                : order.status === 'pending'
-                                ? 'rgba(245, 158, 11, 0.1)'
-                                : 'rgba(107, 114, 128, 0.1)',
-                            color:
-                              order.status === 'paid'
-                                ? '#059669'
-                                : order.status === 'pending'
-                                ? '#d97706'
-                                : '#6b7280',
-                            border: `1px solid ${
-                              order.status === 'paid'
-                                ? 'rgba(16, 185, 129, 0.3)'
-                                : order.status === 'pending'
-                                ? 'rgba(245, 158, 11, 0.3)'
-                                : 'rgba(107, 114, 128, 0.3)'
-                            }`,
-                          }}
-                        >
-                          {order.status === 'paid' ? 'שולם' : order.status === 'pending' ? 'ממתין' : order.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              <p>עדיין לא ביצעת הזמנות</p>
-              <Link
-                href="/shop"
-                className="inline-block mt-3 px-4 py-2 rounded-lg text-white font-medium text-sm"
-                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-              >
-                לצפייה במוצרים
-              </Link>
-            </div>
-          )}
-        </section>
+        {/* Orders Accordions */}
+        <OrdersAccordions 
+          recentOrders={stats.recentOrders} 
+          myOrders={stats.myOrders}
+        />
       </div>
     </main>
   );

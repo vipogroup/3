@@ -11,10 +11,10 @@ const MessageSchema = new mongoose.Schema(
     },
     
     senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    senderRole: { type: String, enum: ['admin', 'agent', 'customer'], required: true },
+    senderRole: { type: String, enum: ['admin', 'super_admin', 'business_admin', 'agent', 'customer'], required: true },
     targetRole: {
       type: String,
-      enum: ['admin', 'agent', 'customer', 'all', 'direct'],
+      enum: ['admin', 'super_admin', 'business_admin', 'agent', 'customer', 'all', 'direct'],
       default: 'admin',
     },
     targetUserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },

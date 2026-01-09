@@ -31,7 +31,7 @@ export async function POST(req) {
     }
 
     const db = await getDb();
-    const normalizedSlug = slug.toLowerCase().trim();
+    const normalizedSlug = slug.toLowerCase().trim().replace(/^-+|-+$/g, '');
     const normalizedEmail = owner.email.toLowerCase().trim();
 
     // Check if slug already exists

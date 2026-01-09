@@ -37,7 +37,7 @@ const navItems = [
     ),
   },
   {
-    href: '/products',
+    href: '/shop',
     label: 'מוצרים',
     icon: (
       <svg className={iconWrapperClasses} fill="none" stroke="currentColor" viewBox="0 0 24 24">

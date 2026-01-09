@@ -13,12 +13,14 @@ export default function CompleteGooglePage() {
   useEffect(() => {
     async function completeRegistration() {
       try {
-        // Read phone and name from localStorage
+        // Read phone, name and tenant from localStorage
         let phone = null;
         let fullName = null;
+        let tenantSlug = null;
         try {
           phone = localStorage.getItem('pendingGooglePhone');
           fullName = localStorage.getItem('pendingGoogleName');
+          tenantSlug = localStorage.getItem('pendingGoogleTenant');
         } catch (e) {
           console.log('localStorage not available');
         }
@@ -27,7 +29,7 @@ export default function CompleteGooglePage() {
         const res = await fetch('/api/auth/complete-google', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone, fullName }),
+          body: JSON.stringify({ phone, fullName, tenantSlug }),
         });
 
         const data = await res.json();
@@ -46,12 +48,17 @@ export default function CompleteGooglePage() {
           localStorage.removeItem('pendingGooglePhone');
           localStorage.removeItem('pendingGoogleName');
           localStorage.removeItem('pendingGoogleRole');
+          localStorage.removeItem('pendingGoogleTenant');
         } catch (e) {
           console.log('localStorage not available');
         }
 
-        // Redirect to home page
-        window.location.href = '/';
+        // Redirect to tenant store or home page
+        if (tenantSlug) {
+          window.location.href = `/t/${tenantSlug}`;
+        } else {
+          window.location.href = '/';
+        }
       } catch (e) {
         console.error('Complete Google error:', e);
         setError('שגיאה בהשלמת ההרשמה');

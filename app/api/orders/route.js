@@ -406,9 +406,15 @@ export async function POST(req) {
     const holdDays = orderType === 'group' ? 100 : 30;
     const commissionAvailableAt = new Date(now.getTime() + holdDays * 24 * 60 * 60 * 1000);
 
-    // Multi-Tenant: Get tenant from request
-    const tenant = await getCurrentTenant(req);
-    const tenantId = tenant?._id || null;
+    // Multi-Tenant: Get tenant from user first, then from request
+    // Priority: 1) User's tenantId, 2) Request tenant (subdomain/header)
+    let tenantId = null;
+    if (me.tenantId) {
+      tenantId = new ObjectId(me.tenantId);
+    } else {
+      const tenant = await getCurrentTenant(req);
+      tenantId = tenant?._id || null;
+    }
     
     const orderDoc = {
       items,

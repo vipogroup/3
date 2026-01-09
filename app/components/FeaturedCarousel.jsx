@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-export default function FeaturedCarousel({ darkBackground = true }) {
+export default function FeaturedCarousel({ darkBackground = true, title = 'מוצרים במחיר מפעל' }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -64,7 +64,7 @@ export default function FeaturedCarousel({ darkBackground = true }) {
       <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, marginTop: '60px', marginBottom: '0', minHeight: '420px' }}>
         <div className="text-center mb-2 md:mb-4">
           <h2 className="text-xl font-bold drop-shadow-lg" style={darkBackground ? { color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' } : { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-            מוצרים במחיר מפעל
+            {title}
           </h2>
           <div 
             className="h-1 w-16 mx-auto mt-2 rounded-full"
@@ -114,7 +114,7 @@ export default function FeaturedCarousel({ darkBackground = true }) {
       {/* Section Header */}
       <div className="text-center mb-2 md:mb-4">
         <h2 className="text-xl font-bold drop-shadow-lg" style={darkBackground ? { color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' } : { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-          מוצרים במחיר מפעל
+          {title}
         </h2>
         <div 
           className="h-1 w-16 mx-auto mt-2 rounded-full"

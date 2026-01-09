@@ -42,7 +42,7 @@ export default function CheckoutPage() {
     const prod = getProductById(productId);
     if (!prod) {
       alert('מוצר לא נמצא');
-      router.push('/products');
+      router.push('/shop');
       return;
     }
     setProduct(prod);

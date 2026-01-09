@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingCart, Phone, Mail, MapPin, Search, Filter, X, Plus, Minus, Check, User, LogIn } from 'lucide-react';
+import { Search, Check, User, LogIn, Plus, Phone, Mail, MapPin } from 'lucide-react';
+import { useCartContext } from '@/app/context/CartContext';
 
 export default function TenantStorePage() {
   const params = useParams();
@@ -16,28 +17,27 @@ export default function TenantStorePage() {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [cart, setCart] = useState([]);
-  const [showCart, setShowCart] = useState(false);
   const [addedToCart, setAddedToCart] = useState(null);
+  const [user, setUser] = useState(null);
+  
+  // Use global cart context
+  const { addItem: addToGlobalCart } = useCartContext();
 
-  // Load cart from localStorage
+  // Check if user is logged in
   useEffect(() => {
-    const savedCart = localStorage.getItem(`cart_${slug}`);
-    if (savedCart) {
+    const checkUser = async () => {
       try {
-        setCart(JSON.parse(savedCart));
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user || null);
+        }
       } catch (e) {
-        console.error('Error loading cart:', e);
+        // Not logged in
       }
-    }
-  }, [slug]);
-
-  // Save cart to localStorage
-  useEffect(() => {
-    if (slug && cart.length >= 0) {
-      localStorage.setItem(`cart_${slug}`, JSON.stringify(cart));
-    }
-  }, [cart, slug]);
+    };
+    checkUser();
+  }, []);
 
   const loadData = useCallback(async () => {
     if (!slug) return;
@@ -81,41 +81,12 @@ export default function TenantStorePage() {
     return matchesSearch && matchesCategory;
   });
 
-  // Cart functions
+  // Add to global cart
   const addToCart = (product) => {
-    setCart(prev => {
-      const existing = prev.find(item => item._id === product._id);
-      if (existing) {
-        return prev.map(item => 
-          item._id === product._id 
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { ...product, quantity: 1 }];
-    });
+    addToGlobalCart(product, 1);
     setAddedToCart(product._id);
     setTimeout(() => setAddedToCart(null), 1500);
   };
-
-  const updateQuantity = (productId, delta) => {
-    setCart(prev => {
-      return prev.map(item => {
-        if (item._id === productId) {
-          const newQty = item.quantity + delta;
-          return newQty > 0 ? { ...item, quantity: newQty } : item;
-        }
-        return item;
-      }).filter(item => item.quantity > 0);
-    });
-  };
-
-  const removeFromCart = (productId) => {
-    setCart(prev => prev.filter(item => item._id !== productId));
-  };
-
-  const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   // Get branding colors
   const primaryColor = tenant?.branding?.primaryColor || '#1e3a8a';
@@ -169,36 +140,26 @@ export default function TenantStorePage() {
             
             {/* Login/Register & Cart Buttons */}
             <div className="flex items-center gap-2">
-              <Link
-                href={`/register?tenant=${slug}`}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white rounded-lg transition-all hover:opacity-90"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                <User className="w-4 h-4" />
-                <span className="hidden sm:inline">הרשמה</span>
-              </Link>
-              <Link
-                href={`/login?tenant=${slug}`}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium border rounded-lg hover:bg-gray-50 transition-all"
-                style={{ borderColor: primaryColor, color: primaryColor }}
-              >
-                <LogIn className="w-4 h-4" />
-                <span className="hidden sm:inline">התחברות</span>
-              </Link>
-              <button 
-                onClick={() => setShowCart(true)}
-                className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-              >
-                <ShoppingCart className="w-6 h-6" />
-                {cartCount > 0 && (
-                  <span 
-                    className="absolute -top-1 -right-1 w-5 h-5 text-white text-xs font-bold rounded-full flex items-center justify-center"
-                    style={{ background: secondaryColor }}
+              {!user && (
+                <>
+                  <Link
+                    href={`/register?tenant=${slug}`}
+                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white rounded-lg transition-all hover:opacity-90"
+                    style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
                   >
-                    {cartCount}
-                  </span>
-                )}
-              </button>
+                    <User className="w-4 h-4" />
+                    <span className="hidden sm:inline">הרשמה</span>
+                  </Link>
+                  <Link
+                    href={`/login?tenant=${slug}`}
+                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium border rounded-lg hover:bg-gray-50 transition-all"
+                    style={{ borderColor: primaryColor, color: primaryColor }}
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span className="hidden sm:inline">התחברות</span>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -354,88 +315,6 @@ export default function TenantStorePage() {
           {tenant?.name} © {new Date().getFullYear()} | מופעל על ידי VIPO
         </div>
       </footer>
-
-      {/* Cart Sidebar */}
-      {showCart && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setShowCart(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-full max-w-md bg-white shadow-xl">
-            <div className="flex flex-col h-full">
-              {/* Cart Header */}
-              <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="text-lg font-bold">סל הקניות ({cartCount})</h2>
-                <button onClick={() => setShowCart(false)} className="p-2 hover:bg-gray-100 rounded-lg">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Cart Items */}
-              <div className="flex-1 overflow-y-auto p-4">
-                {cart.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    הסל ריק
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {cart.map(item => (
-                      <div key={item._id} className="flex gap-3 p-3 bg-gray-50 rounded-lg">
-                        <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                          {item.image && (
-                            <Image src={item.image} alt={item.name} width={64} height={64} className="w-full h-full object-cover" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-sm line-clamp-1">{item.name}</h4>
-                          <p className="text-sm font-bold" style={{ color: primaryColor }}>₪{item.price}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <button 
-                              onClick={() => updateQuantity(item._id, -1)}
-                              className="w-6 h-6 flex items-center justify-center border rounded"
-                            >
-                              <Minus className="w-3 h-3" />
-                            </button>
-                            <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
-                            <button 
-                              onClick={() => updateQuantity(item._id, 1)}
-                              className="w-6 h-6 flex items-center justify-center border rounded"
-                            >
-                              <Plus className="w-3 h-3" />
-                            </button>
-                            <button 
-                              onClick={() => removeFromCart(item._id)}
-                              className="mr-auto text-red-500 text-xs hover:underline"
-                            >
-                              הסר
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Cart Footer */}
-              {cart.length > 0 && (
-                <div className="p-4 border-t">
-                  <div className="flex justify-between mb-4">
-                    <span className="font-medium">סה״כ:</span>
-                    <span className="text-xl font-bold" style={{ color: primaryColor }}>₪{cartTotal.toLocaleString()}</span>
-                  </div>
-                  <Link
-                    href={`/checkout?tenant=${slug}`}
-                    className="block w-full py-3 text-white text-center font-medium rounded-lg"
-                    style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-                    onClick={() => setShowCart(false)}
-                  >
-                    המשך לתשלום
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

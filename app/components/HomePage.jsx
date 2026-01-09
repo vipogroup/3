@@ -419,7 +419,7 @@ export default function HomePage() {
             <div className="info-icon">
               <span style={{color: '#ffffff'}}>{svgIcons.shield}</span>
             </div>
-            <h2 style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}>שאנחנו מאוחדים אנחנו חזקים</h2>
+            <h2 style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>שאנחנו מאוחדים אנחנו חזקים</h2>
             <p>מצטרפים ורוכשים ב-50% יותר זול ממחיר השוק בישראל ואם הצלחנו להיות מאוחדים וצרפנו חברים ומשפחה אז נקבל עוד הנחה רק ככה ננצח ביחד את יוקר המחייה</p>
           </div>
         </div>

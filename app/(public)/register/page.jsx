@@ -67,6 +67,10 @@ function RegisterPageContent() {
     try {
       localStorage.setItem('pendingGooglePhone', phone);
       localStorage.setItem('pendingGoogleRole', role);
+      const tenantSlug = searchParams.get('tenant');
+      if (tenantSlug) {
+        localStorage.setItem('pendingGoogleTenant', tenantSlug);
+      }
     } catch (e) {
       console.log('localStorage not available');
     }
@@ -149,7 +153,8 @@ function RegisterPageContent() {
       setMsg('נרשמת בהצלחה!');
 
       if (loginRes.ok) {
-        setTimeout(() => router.push('/'), 500);
+        const tenantSlug = searchParams.get('tenant');
+        setTimeout(() => router.push(tenantSlug ? `/t/${tenantSlug}` : '/'), 500);
       } else {
         setTimeout(() => router.push('/login'), 1500);
       }
@@ -246,12 +251,14 @@ function RegisterPageContent() {
       console.error('Notification error:', err);
     }
     setShowNotificationModal(false);
-    router.push('/');
+    const tenantSlug = searchParams.get('tenant');
+    router.push(tenantSlug ? `/t/${tenantSlug}` : '/');
   };
 
   const handleSkipNotifications = () => {
     setShowNotificationModal(false);
-    router.push('/');
+    const tenantSlug = searchParams.get('tenant');
+    router.push(tenantSlug ? `/t/${tenantSlug}` : '/');
   };
 
   return (

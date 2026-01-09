@@ -42,11 +42,12 @@ export async function POST(req) {
 
     const email = token.email.toLowerCase().trim();
     const body = await req.json();
-    const { phone, fullName } = body;
+    const { phone, fullName, tenantSlug } = body;
     const normalizedPhone = normalizePhone(phone);
 
     const db = await getDb();
     const users = db.collection('users');
+    const tenants = db.collection('tenants');
 
     // Find the user by email
     const user = await users.findOne({ email });
@@ -61,6 +62,16 @@ export async function POST(req) {
     const updateData = {
       updatedAt: new Date(),
     };
+
+    // Associate with tenant if provided and user doesn't have one
+    if (tenantSlug && !user.tenantId) {
+      const normalizedSlug = tenantSlug.toLowerCase().trim().replace(/^-+|-+$/g, '');
+      const tenant = await tenants.findOne({ slug: normalizedSlug, status: 'active' });
+      if (tenant) {
+        updateData.tenantId = tenant._id;
+        console.log('[COMPLETE_GOOGLE] Associating user with tenant:', email, normalizedSlug);
+      }
+    }
 
     // Update fullName if provided and different from current
     if (fullName && fullName.trim() && fullName.trim() !== user.fullName) {

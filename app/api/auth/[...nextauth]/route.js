@@ -151,7 +151,7 @@ const handler = NextAuth({
                 title: 'ברוכים הבאים ל-VIPO!',
                 body: `שלום ${newUserData.fullName || 'משתמש יקר'}, ההרשמה שלך הושלמה בהצלחה!`,
                 icon: '/icons/192.png',
-                url: '/products',
+                url: '/shop',
                 data: { type: 'welcome_user', userId: String(newUserId) },
               });
 

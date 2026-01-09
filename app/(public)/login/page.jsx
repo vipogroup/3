@@ -94,8 +94,9 @@ function LoginPageContent() {
       setLoading(false);
 
       // Determine redirect path based on role and tenantId
+      const tenantSlug = searchParams.get('tenant');
       let targetPath = '/';
-      if (data.role === 'business_admin' || (data.tenantId && data.role !== 'admin')) {
+      if (data.role === 'business_admin') {
         // Business admin - redirect to business dashboard
         targetPath = '/business';
         setMsg('התחברת בהצלחה! מעביר לדשבורד העסק...');
@@ -107,6 +108,10 @@ function LoginPageContent() {
         // Agent - redirect to agent dashboard
         targetPath = '/agent';
         setMsg('התחברת בהצלחה! מעביר לדשבורד הסוכן...');
+      } else if (tenantSlug) {
+        // Customer logging in from tenant store - redirect back to store
+        targetPath = `/t/${tenantSlug}`;
+        setMsg('התחברת בהצלחה! מעביר לחנות...');
       } else {
         setMsg('התחברת בהצלחה! מעביר לדף הבית...');
       }

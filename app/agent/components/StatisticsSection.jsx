@@ -4,12 +4,38 @@ import { useState } from 'react';
 
 const STAT_CONFIG = [
   {
-    key: 'totalCommission',
-    title: 'סה״כ עמלות',
-    description: 'סכום כל העמלות שצברת מהזמנות שהושלמו',
-    format: 'currency',
+    key: 'activeSales',
+    title: 'מכירות פעילות',
+    description: 'הזמנות שנמצאות כרגע בתהליך טיפול',
+    format: 'number',
+    gradient: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
+    textColor: '#7c3aed',
+    icon: (
+      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      </svg>
+    ),
+  },
+  {
+    key: 'totalSales',
+    title: 'סה״כ הזמנות',
+    description: 'כמות ההזמנות הכוללת שבוצעו דרך הלינק שלך',
+    format: 'number',
     gradient: 'linear-gradient(135deg, #1e3a8a, #0891b2)',
     textColor: '#1e3a8a',
+    icon: (
+      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+    ),
+  },
+  {
+    key: 'totalRevenue',
+    title: 'סה״כ מכירות',
+    description: 'סכום כל המכירות שנעשו דרך הקופון שלך',
+    format: 'currency',
+    gradient: 'linear-gradient(135deg, #0891b2, #06b6d4)',
+    textColor: '#0891b2',
     icon: (
       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -17,15 +43,15 @@ const STAT_CONFIG = [
     ),
   },
   {
-    key: 'pendingCommission',
-    title: 'ממתינות למשיכה',
-    description: 'עמלות שעדיין לא שולמו ומחכות להעברה',
+    key: 'availableBalance',
+    title: 'יתרה למשיכה',
+    description: 'סכום העמלות הזמין למשיכה מיידית',
     format: 'currency',
-    gradient: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
-    textColor: '#d97706',
+    gradient: 'linear-gradient(135deg, #10b981, #34d399)',
+    textColor: '#059669',
     icon: (
       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
       </svg>
     ),
   },
@@ -47,8 +73,8 @@ const STAT_CONFIG = [
     title: 'אחוז המרה',
     description: 'אחוז האנשים שקנו מתוך כל מי שלחץ על הלינק',
     format: 'percent',
-    gradient: 'linear-gradient(135deg, #10b981, #34d399)',
-    textColor: '#059669',
+    gradient: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+    textColor: '#d97706',
     icon: (
       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -148,7 +174,7 @@ export default function StatisticsSection({ stats }) {
         />
         <p className="text-xs text-gray-500 mt-2">לחץ על כרטיס לפרטים נוספים</p>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {STAT_CONFIG.map((config) => (
           <StatCard
             key={config.key}

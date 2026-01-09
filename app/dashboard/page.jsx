@@ -50,8 +50,10 @@ export default async function DashboardPage() {
     redirect('/admin');
   } else if (role === 'agent') {
     redirect('/agent');
+  } else if (role === 'business_admin') {
+    redirect('/business');
   } else {
-    // Customer or any other role - redirect to products
-    redirect('/products');
+    // Customer or any other role - redirect to shop
+    redirect('/shop');
   }
 }
