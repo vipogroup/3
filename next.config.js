@@ -5,6 +5,11 @@ const path = require('path');
 
 const nextConfig = {
   reactStrictMode: true,
+  
+  // Disable Suspense boundary requirement for useSearchParams (fixes Vercel build)
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 
   webpack: (config) => {
     config.resolve = config.resolve || {};
