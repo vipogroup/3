@@ -12,6 +12,7 @@ import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
 import { pushToUsers } from '@/lib/pushSender';
 import { getCurrentTenant, isSuperAdmin } from '@/lib/tenant';
+import { sendOrderToCRM } from '@/lib/webhooks/crmWebhook';
 
 async function ordersCollection() {
   const db = await getDb();
@@ -589,6 +590,27 @@ export async function POST(req) {
           error: commissionErr?.message,
         });
       }
+    }
+
+    // Send order to CRM system (creates lead + conversation)
+    try {
+      const productNames = items.map(item => item.name).join(', ');
+      await sendOrderToCRM({
+        orderId: String(orderId),
+        customerName: rest?.customer?.name || rest?.customerName || me?.fullName || 'לקוח',
+        customerPhone: rest?.customer?.phone || me?.phone,
+        customerEmail: rest?.customer?.email || me?.email,
+        productName: productNames,
+        productId: items[0]?.productId?.toString(),
+        amount: totalAmount,
+        agentId: refAgentId ? String(refAgentId) : null,
+        agentName: couponAgent?.fullName,
+        referralCode: couponCode || refSource,
+        status: 'pending',
+      });
+    } catch (crmErr) {
+      console.warn('CRM_WEBHOOK_FAILED:', crmErr?.message);
+      // Don't fail the order if CRM webhook fails
     }
 
     // Return both keys for compatibility with various tests
