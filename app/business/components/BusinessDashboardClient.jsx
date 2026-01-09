@@ -244,13 +244,20 @@ export default function BusinessDashboardClient() {
       }
       const userData = await userRes.json();
 
+      // Only allow business_admin or impersonating admin with tenantId
       if (userData.user.role !== 'business_admin' && userData.user.role !== 'admin') {
         router.push('/');
         return;
       }
 
+      // Admin must have tenantId (from impersonation) to access business dashboard
       if (!userData.user.tenantId) {
-        router.push('/login');
+        if (userData.user.role === 'admin') {
+          // Super admin without tenantId should go to admin dashboard
+          router.push('/admin');
+        } else {
+          router.push('/login');
+        }
         return;
       }
 

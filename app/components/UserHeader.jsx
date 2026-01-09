@@ -400,7 +400,7 @@ export default function UserHeader() {
           )}
 
           {/* Business Dashboard Icon - For business_admin OR when admin is impersonating */}
-          {user && (role === 'business_admin' || isImpersonating) && (
+          {user && (role === 'business_admin' || (role === 'admin' && isImpersonating)) && (
             <Link
               href="/business"
               className="relative p-2 rounded-full transition-all duration-300"
