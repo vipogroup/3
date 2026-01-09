@@ -118,7 +118,8 @@ export async function generateMetadata({ params, searchParams }) {
   const rawRef = extractParamValue(searchParams?.ref);
   const ref = normalizeReferralCode(rawRef);
 
-  const asset = id ? await fetchMarketingAsset(id) : null;
+  // Skip DB calls during build
+  const asset = null; // id ? await fetchMarketingAsset(id) : null;
   if (!asset) {
     return {
       title: FALLBACK_TITLE,
