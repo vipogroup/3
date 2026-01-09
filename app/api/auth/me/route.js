@@ -44,6 +44,9 @@ export async function GET(req) {
         permissions: user.permissions,
         tenantId: user.tenantId ? String(user.tenantId) : null,
         tenantSlug: tenantSlug,
+        // Impersonation support - pass through from JWT
+        impersonating: user.impersonating || false,
+        originalRole: user.originalRole || null,
       },
     });
   } catch (e) {
