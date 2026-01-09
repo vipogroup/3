@@ -130,7 +130,7 @@ export default function ShopPage() {
         <div className="max-w-md mx-auto">
           <div className="grid grid-cols-2 gap-4">
             {/* Available Now Card */}
-            <Link href="/products?type=available" className="block group no-underline" style={{ textDecoration: 'none' }}>
+            <Link href={user?.tenantSlug ? `/t/${user.tenantSlug}?type=available` : '/products?type=available'} className="block group no-underline" style={{ textDecoration: 'none' }}>
               <div 
                 className="relative rounded-2xl p-4 text-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
                 style={{ background: '#f0f9ff', boxShadow: '0 8px 32px rgba(8, 145, 178, 0.25)' }}
@@ -167,7 +167,7 @@ export default function ShopPage() {
             </Link>
 
             {/* Group Purchase Card */}
-            <Link href="/products?type=group" className="block group no-underline" style={{ textDecoration: 'none' }}>
+            <Link href={user?.tenantSlug ? `/t/${user.tenantSlug}?type=group` : '/products?type=group'} className="block group no-underline" style={{ textDecoration: 'none' }}>
               <div 
                 className="relative rounded-2xl p-4 text-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
                 style={{ background: '#fff7ed', boxShadow: '0 8px 32px rgba(251, 191, 36, 0.35)' }}

@@ -170,26 +170,47 @@ export async function GET(req) {
       { $sort: { totalCommissions: -1 } }
     ]).toArray();
 
-    // Enrich agents summary with user details
+    // Get completed withdrawals per agent
+    const withdrawalsCol = db.collection('withdrawalRequests');
+    const withdrawalsByAgent = await withdrawalsCol.aggregate([
+      { $match: { status: 'completed' } },
+      { $group: { _id: '$userId', totalWithdrawn: { $sum: '$amount' } } }
+    ]).toArray();
+    const withdrawalsMap = new Map(withdrawalsByAgent.map(w => [w._id.toString(), w.totalWithdrawn]));
+
+    // Enrich agents summary with user details and correct available balance
     const enrichedAgentsSummary = agentsSummary
       .filter(a => a._id)
       .map(a => {
         const agent = agentMap.get(a._id.toString());
+        const totalWithdrawn = withdrawalsMap.get(a._id.toString()) || 0;
+        const onHold = agent?.commissionOnHold || 0;
+        // Available for withdrawal = available commissions - withdrawn - on hold
+        const availableForWithdrawal = Math.max(0, a.availableAmount - totalWithdrawn - onHold);
+        
         return {
           agentId: a._id.toString(),
           fullName: agent?.fullName || 'לא ידוע',
           email: agent?.email || '',
           phone: agent?.phone || '',
           couponCode: agent?.couponCode || '',
-          currentBalance: agent?.commissionBalance || 0,
-          onHold: agent?.commissionOnHold || 0,
+          currentBalance: availableForWithdrawal, // Use calculated value instead of user document
+          onHold: onHold,
           totalEarned: a.totalCommissions,
           pendingAmount: a.pendingAmount,
           availableAmount: a.availableAmount,
-          claimedAmount: a.claimedAmount,
+          availableForWithdrawal: availableForWithdrawal,
+          claimedAmount: totalWithdrawn, // Use actual withdrawn amount
           ordersCount: a.ordersCount
         };
       });
+
+    // Calculate total withdrawn across all agents
+    const totalWithdrawnAll = withdrawalsByAgent.reduce((sum, w) => sum + w.totalWithdrawn, 0);
+    
+    // Correct the summary with actual withdrawal data
+    summary.totalClaimed = totalWithdrawnAll;
+    summary.actualAvailable = Math.max(0, summary.totalAvailable - totalWithdrawnAll);
 
     return NextResponse.json({
       ok: true,

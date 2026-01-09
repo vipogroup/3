@@ -294,35 +294,13 @@ export async function PATCH(req, { params }) {
         console.error('ADMIN_WITHDRAWAL_COMPLETE_USER_NOT_FOUND:', { userId: completedDoc.userId });
       }
 
-      // Mark orders as claimed up to the withdrawal amount
-      // This ensures the "available" balance decreases correctly
-      const ordersCollection = db.collection('orders');
-      let remainingAmount = completedDoc.amount;
-      
-      // Find available orders for this user, oldest first
-      const availableOrders = await ordersCollection.find({
-        $or: [{ agentId: completedDoc.userId }, { refAgentId: completedDoc.userId }],
-        commissionAmount: { $gt: 0 },
-        commissionStatus: { $in: ['available', 'pending'] },
-        status: { $in: ['paid', 'completed', 'shipped'] }
-      }).sort({ createdAt: 1 }).toArray();
+      // Note: We no longer mark orders as 'claimed' because the available balance
+      // is now calculated by subtracting completed withdrawals from available commissions.
+      // This prevents double-counting issues.
 
-      // Mark orders as claimed until we reach the withdrawal amount
-      for (const order of availableOrders) {
-        if (remainingAmount <= 0) break;
-        
-        await ordersCollection.updateOne(
-          { _id: order._id },
-          { $set: { commissionStatus: 'claimed', updatedAt: now } }
-        );
-        
-        remainingAmount -= Number(order.commissionAmount || 0);
-      }
-
-      console.log('ADMIN_WITHDRAWAL_COMPLETE_ORDERS_CLAIMED:', {
+      console.log('ADMIN_WITHDRAWAL_COMPLETE:', {
         userId: completedDoc.userId.toString(),
         withdrawalAmount: completedDoc.amount,
-        ordersMarkedClaimed: availableOrders.length,
       });
 
       // Send notification to agent about completed transfer

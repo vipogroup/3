@@ -71,6 +71,14 @@ function CheckoutSuccessContent() {
     };
   }, [order]);
 
+  // Determine the correct shop URL based on tenant
+  const shopUrl = useMemo(() => {
+    if (order?.tenantSlug) {
+      return `/t/${order.tenantSlug}`;
+    }
+    return '/shop';
+  }, [order]);
+
   return (
     <div className="min-h-screen bg-white py-12 px-4">
       <div className="max-w-2xl mx-auto">
@@ -143,7 +151,7 @@ function CheckoutSuccessContent() {
 
           <div className="flex flex-col md:flex-row gap-3 justify-center">
             <Link
-              href="/shop"
+              href={shopUrl}
               className="px-6 py-3 rounded-2xl text-white font-semibold shadow-lg"
               style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))' }}
             >

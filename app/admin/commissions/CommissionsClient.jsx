@@ -28,10 +28,10 @@ function exportToExcel(agentsSummary, commissions) {
   // Create agents summary CSV
   let csv = BOM;
   csv += 'סיכום עמלות לפי סוכן\n';
-  csv += 'שם סוכן,קופון,הזמנות,ממתין,זמין למשיכה,יתרה נוכחית,סה״כ הרוויח\n';
+  csv += 'שם סוכן,קופון,הזמנות,ממתין,זמין למשיכה,נמשך,סה״כ הרוויח\n';
   
   agentsSummary?.forEach(agent => {
-    csv += `"${agent.fullName}","${agent.couponCode || ''}",${agent.ordersCount},${agent.pendingAmount || 0},${agent.availableAmount || 0},${agent.currentBalance || 0},${agent.totalEarned || 0}\n`;
+    csv += `"${agent.fullName}","${agent.couponCode || ''}",${agent.ordersCount},${agent.pendingAmount || 0},${agent.availableForWithdrawal ?? agent.currentBalance ?? 0},${agent.claimedAmount || 0},${agent.totalEarned || 0}\n`;
   });
   
   csv += '\n\nפירוט עמלות\n';
@@ -335,7 +335,7 @@ export default function CommissionsClient() {
           >
             <p className="text-xs sm:text-sm text-gray-500 mb-1">זמין למשיכה</p>
             <p className="text-lg sm:text-2xl font-bold" style={{ color: '#16a34a' }}>
-              ₪{(summary?.totalAvailable || 0).toLocaleString()}
+              ₪{(summary?.actualAvailable ?? summary?.totalAvailable ?? 0).toLocaleString()}
             </p>
           </div>
           <div
@@ -481,7 +481,7 @@ export default function CommissionsClient() {
                     <th className="px-4 py-3 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>הזמנות</th>
                     <th className="px-4 py-3 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>ממתין</th>
                     <th className="px-4 py-3 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>זמין למשיכה</th>
-                    <th className="px-4 py-3 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>יתרה נוכחית</th>
+                    <th className="px-4 py-3 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>נמשך</th>
                     <th className="px-4 py-3 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>סה״כ הרוויח</th>
                     <th className="px-4 py-3 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>פעולות</th>
                   </tr>
@@ -513,10 +513,10 @@ export default function CommissionsClient() {
                           ₪{agent.pendingAmount?.toLocaleString() || 0}
                         </td>
                         <td className="px-4 py-3 text-center" style={{ color: '#16a34a' }}>
-                          ₪{agent.availableAmount?.toLocaleString() || 0}
+                          ₪{(agent.availableForWithdrawal ?? agent.currentBalance ?? 0).toLocaleString()}
                         </td>
                         <td className="px-4 py-3 text-center font-bold" style={{ color: '#1e3a8a' }}>
-                          ₪{agent.currentBalance?.toLocaleString() || 0}
+                          ₪{agent.claimedAmount?.toLocaleString() || 0}
                         </td>
                         <td className="px-4 py-3 text-center font-bold" style={{ color: '#0891b2' }}>
                           ₪{agent.totalEarned?.toLocaleString() || 0}
@@ -567,11 +567,11 @@ export default function CommissionsClient() {
                       </div>
                       <div>
                         <span className="text-gray-500">זמין:</span>
-                        <span className="mr-1" style={{ color: '#16a34a' }}>₪{agent.availableAmount?.toLocaleString() || 0}</span>
+                        <span className="mr-1" style={{ color: '#16a34a' }}>₪{(agent.availableForWithdrawal ?? agent.currentBalance ?? 0).toLocaleString()}</span>
                       </div>
                       <div>
-                        <span className="text-gray-500">יתרה:</span>
-                        <span className="mr-1 font-bold" style={{ color: '#1e3a8a' }}>₪{agent.currentBalance?.toLocaleString() || 0}</span>
+                        <span className="text-gray-500">נמשך:</span>
+                        <span className="mr-1 font-bold" style={{ color: '#1e3a8a' }}>₪{agent.claimedAmount?.toLocaleString() || 0}</span>
                       </div>
                     </div>
                     <div className="pt-2 border-t border-gray-100 flex justify-between items-center">

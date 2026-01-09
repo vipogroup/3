@@ -34,7 +34,18 @@ export async function GET(req, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    return NextResponse.json(order);
+    // If order has tenantId, fetch tenant slug for redirect purposes
+    let tenantSlug = null;
+    if (order.tenantId) {
+      const db = await getDb();
+      const tenant = await db.collection('tenants').findOne(
+        { _id: new ObjectId(order.tenantId) },
+        { projection: { slug: 1 } }
+      );
+      tenantSlug = tenant?.slug || null;
+    }
+
+    return NextResponse.json({ ...order, tenantSlug });
   } catch (e) {
     console.error(e);
     const status = e?.status || 500;
@@ -110,9 +121,17 @@ export async function PUT(req, { params }) {
       return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
     }
 
+    // Build update object
+    const updateSet = { status, updatedAt: new Date() };
+    
+    // When order is paid, mark commission as settled so it can be released by cron
+    if (status === 'paid' && order.commissionAmount > 0 && !order.commissionSettled) {
+      updateSet.commissionSettled = true;
+    }
+
     await col.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { status, updatedAt: new Date() } }
+      { $set: updateSet }
     );
 
     const updated = await col.findOne({ _id: new ObjectId(id) });

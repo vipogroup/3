@@ -85,7 +85,7 @@ async function processCommission(order, eventType) {
         $set: {
           commissionStatus: 'pending',
           commissionAvailableAt: availableAt,
-          commissionSettled: false,
+          commissionSettled: true, // Mark as settled so cron can release when date arrives
         },
       }
     );

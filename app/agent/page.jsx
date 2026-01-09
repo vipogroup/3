@@ -281,12 +281,12 @@ async function getAgentStats(agentId, originBaseUrl = null) {
   // Query for orders linked to this agent via refAgentId OR agentId (coupon)
   const agentOrdersFilter = { $or: [{ refAgentId: agentObjectId }, { agentId: agentObjectId }] };
 
-  const [totalSales, activeSales, totalsAgg, pendingAgg, clicksAgg] = await Promise.all([
+  const [totalSales, activeSales, totalsAgg, pendingAgg, availableAgg, clicksAgg] = await Promise.all([
     orders.countDocuments(agentOrdersFilter),
     orders.countDocuments({ ...agentOrdersFilter, status: { $in: ACTIVE_SALE_STATUSES } }),
     orders
       .aggregate([
-        { $match: agentOrdersFilter },
+        { $match: { ...agentOrdersFilter, commissionAmount: { $gt: 0 }, status: { $in: ['paid', 'completed', 'shipped'] } } },
         {
           $group: {
             _id: null,
@@ -302,6 +302,13 @@ async function getAgentStats(agentId, originBaseUrl = null) {
         { $group: { _id: null, pendingCommission: { $sum: '$commissionAmount' } } },
       ])
       .toArray(),
+    // Calculate available commissions (commissionStatus = 'available')
+    orders
+      .aggregate([
+        { $match: { ...agentOrdersFilter, commissionStatus: 'available', commissionAmount: { $gt: 0 } } },
+        { $group: { _id: null, availableCommission: { $sum: '$commissionAmount' } } },
+      ])
+      .toArray(),
     referralLogs
       .aggregate([
         { $match: { agentId: agentObjectId } },
@@ -313,8 +320,17 @@ async function getAgentStats(agentId, originBaseUrl = null) {
   const totalRevenue = totalsAgg[0]?.totalRevenue || 0;
   const totalCommission = totalsAgg[0]?.totalCommission || 0;
   const pendingCommission = pendingAgg[0]?.pendingCommission || 0;
+  const availableCommission = availableAgg[0]?.availableCommission || 0;
   const clicks = clicksAgg.find((c) => c._id === 'click')?.total || 0;
   const views = clicksAgg.find((c) => c._id === 'view')?.total || 0;
+
+  // Get total completed withdrawals to subtract from available
+  const withdrawals = db.collection('withdrawalRequests');
+  const completedWithdrawalsAgg = await withdrawals.aggregate([
+    { $match: { userId: agentObjectId, status: 'completed' } },
+    { $group: { _id: null, totalWithdrawn: { $sum: '$amount' } } },
+  ]).toArray();
+  const totalWithdrawn = completedWithdrawalsAgg[0]?.totalWithdrawn || 0;
 
   const monthlyWindow = new Date();
   monthlyWindow.setDate(monthlyWindow.getDate() - 30);
@@ -349,8 +365,9 @@ async function getAgentStats(agentId, originBaseUrl = null) {
   const baseUrl = (originBaseUrl || 'https://vipo-group.com').replace(/\/$/, '');
   const referralLink = `${baseUrl}/r/${encodeURIComponent(referralCode)}`;
 
-  // Available balance from user document
-  const availableBalance = agentDoc?.commissionBalance || 0;
+  // Available balance = available commissions minus completed withdrawals minus pending withdrawal requests
+  const commissionOnHold = Number(agentDoc?.commissionOnHold || 0);
+  const availableBalance = Math.max(0, availableCommission - totalWithdrawn - commissionOnHold);
 
   return {
     totalReferrals: totalReferralsBase,

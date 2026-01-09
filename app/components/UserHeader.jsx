@@ -197,10 +197,9 @@ export default function UserHeader() {
   }, [showAccountMenu]);
 
   const navItems = useMemo(() => {
-    // If user belongs to a tenant, link to their tenant store
-    const shopHref = user?.tenantSlug ? `/t/${user.tenantSlug}` : '/shop';
-    return [{ href: shopHref, label: 'מוצרים', icon: 'products' }];
-  }, [user?.tenantSlug]);
+    // Always link to main shop page
+    return [{ href: '/shop', label: 'מוצרים', icon: 'products' }];
+  }, []);
 
   // Hide header on clean registration pages
   if (pathname === '/register-business') {

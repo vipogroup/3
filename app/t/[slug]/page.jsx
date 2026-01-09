@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search, Check, User, LogIn, Plus, Phone, Mail, MapPin } from 'lucide-react';
@@ -9,7 +9,9 @@ import { useCartContext } from '@/app/context/CartContext';
 
 export default function TenantStorePage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = params?.slug;
+  const typeFilter = searchParams?.get('type'); // 'available' or 'group'
   
   const [tenant, setTenant] = useState(null);
   const [products, setProducts] = useState([]);
@@ -78,7 +80,16 @@ export default function TenantStorePage() {
       product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !selectedCategory || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    
+    // Filter by purchase type from URL parameter
+    let matchesType = true;
+    if (typeFilter === 'available') {
+      matchesType = product.purchaseType !== 'group';
+    } else if (typeFilter === 'group') {
+      matchesType = product.purchaseType === 'group';
+    }
+    
+    return matchesSearch && matchesCategory && matchesType;
   });
 
   // Add to global cart
@@ -227,29 +238,33 @@ export default function TenantStorePage() {
                 key={product._id} 
                 className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group"
               >
-                <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                  {product.image || product.imageUrl ? (
-                    <Image 
-                      src={product.image || product.imageUrl} 
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                  )}
-                  {product.originalPrice > product.price && (
-                    <span className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-xs font-bold rounded">
-                      מבצע
-                    </span>
-                  )}
-                </div>
+                <Link href={`/products/${product._id}`} className="block">
+                  <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                    {product.image || product.imageUrl ? (
+                      <Image 
+                        src={product.image || product.imageUrl} 
+                        alt={product.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+                    {product.originalPrice > product.price && (
+                      <span className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-xs font-bold rounded">
+                        מבצע
+                      </span>
+                    )}
+                  </div>
+                </Link>
                 <div className="p-3">
-                  <h3 className="font-medium text-gray-900 text-sm line-clamp-2 mb-1">{product.name}</h3>
+                  <Link href={`/products/${product._id}`}>
+                    <h3 className="font-medium text-gray-900 text-sm line-clamp-2 mb-1 hover:text-blue-600 transition-colors cursor-pointer">{product.name}</h3>
+                  </Link>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-lg font-bold" style={{ color: primaryColor }}>₪{product.price}</span>
                     {product.originalPrice > product.price && (

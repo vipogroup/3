@@ -92,6 +92,14 @@ export async function GET(req) {
 
     const commissionOnHold = Number(userDoc[0].commissionOnHold || 0);
 
+    // Get total completed withdrawals
+    const withdrawalsCollection = db.collection('withdrawalRequests');
+    const completedWithdrawalsAgg = await withdrawalsCollection.aggregate([
+      { $match: { userId: userId, status: 'completed' } },
+      { $group: { _id: null, totalWithdrawn: { $sum: '$amount' } } },
+    ]).toArray();
+    const totalWithdrawn = completedWithdrawalsAgg[0]?.totalWithdrawn || 0;
+
     let pendingCommissions = 0;
     let availableCommissions = 0;
     let claimedCommissions = 0;
@@ -176,8 +184,8 @@ export async function GET(req) {
       };
     });
 
-    // Available for withdrawal = available commissions minus what's already on hold (pending withdrawal requests)
-    const availableForWithdrawal = Math.max(0, availableCommissions - commissionOnHold);
+    // Available for withdrawal = available commissions minus completed withdrawals minus pending requests
+    const availableForWithdrawal = Math.max(0, availableCommissions - totalWithdrawn - commissionOnHold);
 
     return NextResponse.json({
       ok: true,

@@ -46,21 +46,8 @@ export async function POST(req) {
     }
     const userObjectId = new ObjectId(user.id);
 
-    // Prevent multiple pending/approved requests
-    const openRequest = await withdrawals.findOne({
-      userId: userObjectId,
-      status: { $in: ['pending', 'approved'] },
-    });
-    if (openRequest) {
-      return NextResponse.json(
-        {
-          error: 'קיימת בקשת משיכה פעילה. המתן לאישור מנהל לפני פתיחת בקשה נוספת.',
-          requestId: String(openRequest._id),
-          status: openRequest.status,
-        },
-        { status: 409 },
-      );
-    }
+    // Note: We allow multiple withdrawal requests as long as there's available balance.
+    // The balance calculation already accounts for amounts locked in pending requests (commissionOnHold).
 
     // Get user's current balance AND calculate available commissions from orders
     // This matches the calculation in /api/agent/commissions
