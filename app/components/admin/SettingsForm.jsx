@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { formatCurrencyILS } from '@/app/utils/date';
 import { useTheme } from '@/app/context/ThemeContext';
 import { getAllPresets, applyPreset } from '@/app/lib/themePresets';
@@ -219,6 +220,10 @@ function StepBadge({ index }) {
 }
 
 export default function SettingsForm() {
+  const pathname = usePathname();
+  const isBusinessPage = pathname?.startsWith('/business');
+  const backLink = isBusinessPage ? '/business' : '/admin';
+  
   const {
     settings: themeSettings,
     updateSettings,
@@ -314,7 +319,7 @@ export default function SettingsForm() {
               </p>
             </div>
             <Link
-              href="/admin"
+              href={backLink}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
               style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
