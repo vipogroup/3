@@ -33,3 +33,6 @@ scripts/register-*.js
 # OS files
 .DS_Store
 Thumbs.db
+
+# Separate projects
+vipo-crm
