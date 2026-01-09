@@ -387,31 +387,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Price Table Section */}
-      <section id="price-table" className="price-table reveal-on-scroll">
-        <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>המחיר יורד לפי כמות</h2>
-          <div className="price-table-container">
-            <div className="price-row">
-              <div className="participants">50-100 משתתפים</div>
-              <div className="price">₪1,850</div>
-            </div>
-            <div className="price-row">
-              <div className="participants">100-200 משתתפים</div>
-              <div className="price">₪1,600</div>
-            </div>
-            <div className="price-row">
-              <div className="participants">200-500 משתתפים</div>
-              <div className="price">₪1,350</div>
-            </div>
-            <div className="price-row highlight">
-              <div className="participants">500+ משתתפים</div>
-              <div className="price">₪1,150</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* No Commitment Section */}
       <section id="no-commitment" className="no-commitment reveal-on-scroll">
         <div className="container">

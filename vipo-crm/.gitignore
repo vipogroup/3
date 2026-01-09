@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.idea/
+.vscode/
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+prisma/dev.db
+prisma/dev.db-journal
+

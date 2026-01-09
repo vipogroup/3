@@ -1,0 +1,313 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// מערכת CRM רב-עסקית – סכמת נתונים מרכזית
+
+/// סוגי משתמשים במערכת
+enum UserRole {
+  SUPER_ADMIN
+  OWNER
+  MANAGER
+  STAFF
+}
+
+/// ערוצי התקשורת הנתמכים
+enum ConversationChannel {
+  SITE
+  WHATSAPP
+  PHONE
+  INTERNAL
+}
+
+/// סטטוס שיחה ב-Inbox
+enum ConversationStatus {
+  NEW
+  IN_PROGRESS
+  WAITING_CUSTOMER
+  FOLLOW_UP
+  CLOSED_WON
+  CLOSED_LOST
+}
+
+/// סטטוס ליד בתהליך המכירה
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CONVERTED
+  LOST
+}
+
+/// סטטוס משימה
+enum TaskStatus {
+  OPEN
+  DONE
+  OVERDUE
+  CANCELED
+}
+
+/// סוג משימה (לצורך דוחות וסינון)
+enum TaskType {
+  FOLLOW_UP
+  CALL
+  SEND_INFO
+  OTHER
+}
+
+/// סוג אינטראקציה / הודעה בשיחה
+enum InteractionType {
+  SITE_MESSAGE
+  WHATSAPP_NOTE
+  CALL_NOTE
+  INTERNAL_NOTE
+  SYSTEM_EVENT
+}
+
+/// מקור השיוך של ליד/לקוח לסוכן
+enum AttributionMethod {
+  LINK
+  COUPON
+  MANUAL
+}
+
+model Business {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  status      String   @default("active")
+  ownerUserId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users         User[]
+  agents        Agent[]
+  leads         Lead[]
+  customers     Customer[]
+  conversations Conversation[]
+  tasks         Task[]
+  attributions  Attribution[]
+  audits        AuditEvent[]
+  interactions  Interaction[]
+  owner         User?          @relation("BusinessOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+
+  /// הגדרות עסק – SLA, תבניות הודעה וכו' (JSON חופשי)
+  settings Json?
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  phone        String?
+  name         String
+  role         UserRole
+  locale       String?   @default("he-IL")
+  isActive     Boolean   @default(true)
+  passwordHash String
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  businessId String?
+  business   Business? @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  conversations        Conversation[] @relation("ConversationOwner")
+  tasks                Task[]         @relation("TaskOwner")
+  auditEvents          AuditEvent[]   @relation("AuditActor")
+  leadsOwned           Lead[]         @relation("LeadOwner")
+  customersOwned       Customer[]     @relation("CustomerOwner")
+  interactionsAuthored Interaction[]  @relation("InteractionCreator")
+  businessesOwned      Business[]     @relation("BusinessOwner")
+
+  @@index([businessId, role])
+}
+
+model Agent {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name        String
+  phone       String?
+  referralUrl String?
+  couponCode  String?
+  status      String   @default("active")
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  attributions  Attribution[]
+  conversations Conversation[] @relation("AgentConversations")
+
+  @@unique([businessId, couponCode])
+  @@index([businessId, status])
+}
+
+model Lead {
+  id              String     @id @default(cuid())
+  businessId      String
+  business        Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  ownerId         String?
+  owner           User?      @relation("LeadOwner", fields: [ownerId], references: [id])
+  status          LeadStatus @default(NEW)
+  source          String?
+  firstName       String?
+  lastName        String?
+  phone           String?
+  phoneNormalized String?
+  email           String?
+  tags            Json?
+  notes           String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  customer      Customer?      @relation("LeadCustomer")
+  conversations Conversation[]
+  tasks         Task[]
+  attributions  Attribution[]
+
+  @@unique([businessId, phoneNormalized])
+  @@index([businessId, status])
+  @@index([businessId, createdAt])
+}
+
+model Customer {
+  id              String   @id @default(cuid())
+  businessId      String
+  business        Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  leadId          String?  @unique
+  lead            Lead?    @relation("LeadCustomer", fields: [leadId], references: [id], onDelete: SetNull)
+  ownerId         String?
+  owner           User?    @relation("CustomerOwner", fields: [ownerId], references: [id])
+  firstName       String?
+  lastName        String?
+  phone           String?
+  phoneNormalized String?
+  email           String?
+  tags            Json?
+  address         Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  conversations Conversation[]
+  tasks         Task[]
+  attributions  Attribution[]
+
+  @@unique([businessId, phoneNormalized])
+  @@index([businessId, createdAt])
+}
+
+model Conversation {
+  id             String              @id @default(cuid())
+  businessId     String
+  business       Business            @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  channel        ConversationChannel
+  status         ConversationStatus  @default(NEW)
+  subject        String?
+  ownerId        String?
+  owner          User?               @relation("ConversationOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  leadId         String?
+  lead           Lead?               @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  customerId     String?
+  customer       Customer?           @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  agentId        String?
+  agent          Agent?              @relation("AgentConversations", fields: [agentId], references: [id], onDelete: SetNull)
+  nextFollowUpAt DateTime?
+  slaBreachedAt  DateTime?
+  closedAt       DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  messages Interaction[]
+  tasks    Task[]
+
+  @@index([businessId, status])
+  @@index([businessId, nextFollowUpAt])
+  @@index([businessId, ownerId])
+}
+
+model Interaction {
+  id             String          @id @default(cuid())
+  businessId     String
+  business       Business        @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  conversationId String
+  conversation   Conversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  type           InteractionType
+  direction      String? /// inbound/outbound/internal
+  body           String
+  metadata       Json?
+  createdById    String?
+  createdBy      User?           @relation("InteractionCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt      DateTime        @default(now())
+
+  @@index([businessId, conversationId])
+}
+
+model Task {
+  id             String        @id @default(cuid())
+  businessId     String
+  business       Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  ownerId        String?
+  owner          User?         @relation("TaskOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  leadId         String?
+  lead           Lead?         @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  customerId     String?
+  customer       Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  conversationId String?
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  title          String
+  description    String?
+  type           TaskType      @default(FOLLOW_UP)
+  status         TaskStatus    @default(OPEN)
+  dueAt          DateTime
+  completedAt    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([businessId, ownerId, status])
+  @@index([businessId, dueAt])
+}
+
+model Attribution {
+  id         String            @id @default(cuid())
+  businessId String
+  business   Business          @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  agentId    String
+  agent      Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  method     AttributionMethod
+  leadId     String?
+  lead       Lead?             @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  customerId String?
+  customer   Customer?         @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  notes      String?
+  createdAt  DateTime          @default(now())
+
+  @@index([businessId, agentId, createdAt])
+}
+
+model AuditEvent {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  actorId    String?
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+  entity     String
+  entityId   String
+  action     String
+  before     Json?
+  after      Json?
+  createdAt  DateTime @default(now())
+
+  @@index([businessId, entity, createdAt])
+}
