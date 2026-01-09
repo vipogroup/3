@@ -417,18 +417,22 @@ export async function GET(request) {
     const query = {};
 
     // Multi-Tenant: Filter by tenant
-    // Try to get tenant from logged-in user first (for business admins)
+    // Always try to get tenant from request first (URL param, subdomain, etc.)
     let tenantId = null;
-    try {
-      const adminUser = await requireAdminApi(request);
-      if (adminUser?.role === 'business_admin' && adminUser?.tenantId) {
-        tenantId = new ObjectId(adminUser.tenantId);
-      }
-    } catch {
-      // Not admin - try to get tenant from request (subdomain)
-      const tenant = await getCurrentTenant(request);
-      if (tenant) {
-        tenantId = tenant._id;
+    const tenant = await getCurrentTenant(request);
+    if (tenant) {
+      tenantId = tenant._id;
+    }
+    
+    // If no tenant from request, try to get from logged-in business_admin
+    if (!tenantId) {
+      try {
+        const adminUser = await requireAdminApi(request);
+        if (adminUser?.role === 'business_admin' && adminUser?.tenantId) {
+          tenantId = new ObjectId(adminUser.tenantId);
+        }
+      } catch {
+        // Not admin - that's ok, tenantId might already be set from request
       }
     }
     
