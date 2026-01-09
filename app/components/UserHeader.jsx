@@ -150,6 +150,7 @@ export default function UserHeader() {
   }, [pushEnabled, pushLoading, user]);
 
   const role = user?.role;
+  const isImpersonating = user?.impersonating || false;
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const menuRef = useRef(null);
 
@@ -375,8 +376,8 @@ export default function UserHeader() {
             </Link>
           )}
 
-          {/* Admin Dashboard Icon - Only for admins */}
-          {user && role === 'admin' && (
+          {/* Admin Dashboard Icon - Only for admins (not when impersonating) */}
+          {user && role === 'admin' && !isImpersonating && (
             <Link
               href="/admin"
               className="relative p-2 rounded-full transition-all duration-300"
@@ -398,8 +399,8 @@ export default function UserHeader() {
             </Link>
           )}
 
-          {/* Business Dashboard Icon - Only for business_admin */}
-          {user && role === 'business_admin' && (
+          {/* Business Dashboard Icon - For business_admin OR when admin is impersonating */}
+          {user && (role === 'business_admin' || isImpersonating) && (
             <Link
               href="/business"
               className="relative p-2 rounded-full transition-all duration-300"
