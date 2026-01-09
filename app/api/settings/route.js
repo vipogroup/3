@@ -180,6 +180,12 @@ export async function POST(req) {
     // Check if user has tenantId (business admin)
     const tenantId = payload.tenantId;
     
+    // SECURITY: business_admin MUST have tenantId - prevent them from editing global settings
+    if (userRole === 'business_admin' && !tenantId) {
+      console.warn('SECURITY: business_admin without tenantId tried to update settings');
+      return NextResponse.json({ ok: false, error: 'missing_tenant_id' }, { status: 403 });
+    }
+    
     if (tenantId) {
       // Business admin - update tenant settings
       const updateData = {
