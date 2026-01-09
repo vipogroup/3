@@ -4,8 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import FeaturedCarousel from './FeaturedCarousel';
+import { useSiteTexts, SiteTextsProvider } from '@/lib/useSiteTexts';
 
-export default function HomePage() {
+function HomePageContent() {
+  const { getText } = useSiteTexts();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -236,33 +238,33 @@ export default function HomePage() {
   };
 
   const steps = [
-    { icon: 'cart', title: 'בחירת מוצר', desc: 'בוחרים מוצרים במחיר מפעל מהמערכת שלנו עד 50% יותר זול ממחיר השוק' },
-    { icon: 'users', title: 'הצטרפות לקבוצה', desc: 'מצטרפים לקבוצת הרכישה בתום ה-30 יום ההזמנה עוברת למפעל לייצור' },
-    { icon: 'share', title: 'שיתוף', desc: 'משתפים את החברים ומשפחה כדי להגדיל את הקבוצה וגם מקבלים 10% עמלה על כל רכישה שהגיעה מהשיתוף שלכם' },
-    { icon: 'arrowDown', title: 'המחיר יורד', desc: 'ככל שיותר חברים מצטרפים, המחיר יורד לכולם' },
-    { icon: 'check', title: 'סגירת קבוצה', desc: 'בסיום ההרשמה מקבלים הודעה שמתחילים בייצור ועדכון על זמני הגעה' },
-    { icon: 'truck', title: 'תשלום ומשלוח', desc: 'עד 24 תשלומים ומשלוח עד הבית (יש איסוף עצמי)' },
+    { icon: 'cart', title: getText('HOME_HOW_STEP_1_TITLE', 'בחירת מוצר'), desc: getText('HOME_HOW_STEP_1_TEXT', 'בוחרים מוצרים במחיר מפעל מהמערכת שלנו עד 50% יותר זול ממחיר השוק') },
+    { icon: 'users', title: getText('HOME_HOW_STEP_2_TITLE', 'הצטרפות לקבוצה'), desc: getText('HOME_HOW_STEP_2_TEXT', 'מצטרפים לקבוצת הרכישה בתום ה-30 יום ההזמנה עוברת למפעל לייצור') },
+    { icon: 'share', title: getText('HOME_HOW_STEP_3_TITLE', 'שיתוף'), desc: getText('HOME_HOW_STEP_3_TEXT', 'משתפים את החברים ומשפחה כדי להגדיל את הקבוצה וגם מקבלים 10% עמלה על כל רכישה שהגיעה מהשיתוף שלכם') },
+    { icon: 'arrowDown', title: getText('HOME_HOW_STEP_4_TITLE', 'המחיר יורד'), desc: getText('HOME_HOW_STEP_4_TEXT', 'ככל שיותר חברים מצטרפים, המחיר יורד לכולם') },
+    { icon: 'check', title: getText('HOME_HOW_STEP_5_TITLE', 'סגירת קבוצה'), desc: getText('HOME_HOW_STEP_5_TEXT', 'בסיום ההרשמה מקבלים הודעה שמתחילים בייצור ועדכון על זמני הגעה') },
+    { icon: 'truck', title: getText('HOME_HOW_STEP_6_TITLE', 'תשלום ומשלוח'), desc: getText('HOME_HOW_STEP_6_TEXT', 'עד 24 תשלומים ומשלוח עד הבית (יש איסוף עצמי)') },
   ];
 
   const faqs = [
-    { q: 'האם יש התחייבות כספית?', a: 'לא, אין שום התחייבות כספית. התשלום רק לאחר סגירת הקבוצה ורק אם אתם מעוניינים.' },
-    { q: 'איך עובד "חבר מביא חבר"?', a: 'כל משתמש מקבל קישור אישי. כאשר חבר מזמין דרך הקישור שלכם, אתם מקבלים תגמול כספי בהתאם לעסקה – ללא צורך לרכוש בעצמכם.' },
-    { q: 'מה אם לא מצטרפים מספיק אנשים?', a: 'נמשיך לחכות או נציע לכם לרכוש במחיר הנוכחי. אתם לא מחויבים לרכוש.' },
-    { q: 'כיצד מתבצע המשלוח?', a: 'משלוח ישירות לכתובת שלכם. זמן אספקה: 7-14 ימי עסקים. עלות כלולה במחיר.' },
-    { q: 'האם יש אחריות על המוצרים?', a: 'כן, כל המוצרים עם אחריות מלאה של היבואן הרשמי בישראל.' },
+    { q: getText('HOME_FAQ_1_Q', 'האם יש התחייבות כספית?'), a: getText('HOME_FAQ_1_A', 'לא, אין שום התחייבות כספית. התשלום רק לאחר סגירת הקבוצה ורק אם אתם מעוניינים.') },
+    { q: getText('HOME_FAQ_2_Q', 'איך עובד "חבר מביא חבר"?'), a: getText('HOME_FAQ_2_A', 'כל משתמש מקבל קישור אישי. כאשר חבר מזמין דרך הקישור שלכם, אתם מקבלים תגמול כספי בהתאם לעסקה – ללא צורך לרכוש בעצמכם.') },
+    { q: getText('HOME_FAQ_3_Q', 'מה אם לא מצטרפים מספיק אנשים?'), a: getText('HOME_FAQ_3_A', 'נמשיך לחכות או נציע לכם לרכוש במחיר הנוכחי. אתם לא מחויבים לרכוש.') },
+    { q: getText('HOME_FAQ_4_Q', 'כיצד מתבצע המשלוח?'), a: getText('HOME_FAQ_4_A', 'משלוח ישירות לכתובת שלכם. זמן אספקה: 7-14 ימי עסקים. עלות כלולה במחיר.') },
+    { q: getText('HOME_FAQ_5_Q', 'האם יש אחריות על המוצרים?'), a: getText('HOME_FAQ_5_A', 'כן, כל המוצרים עם אחריות מלאה של היבואן הרשמי בישראל.') },
   ];
 
   const testimonials = [
-    { text: 'חסכתי 700 ₪ על מכונת כביסה!', author: 'מיכל כהן', location: 'תל אביב' },
-    { text: 'קיבלתי 300 ₪ מהפניות. מדהים!', author: 'יוסי לוי', location: 'חיפה' },
-    { text: 'חסכתי אלפי שקלים. שירות מעולה!', author: 'דני אברהם', location: 'ירושלים' },
+    { text: getText('HOME_TESTIMONIAL_1_TEXT', 'חסכתי 700 ₪ על מכונת כביסה!'), author: getText('HOME_TESTIMONIAL_1_AUTHOR', 'מיכל כהן'), location: getText('HOME_TESTIMONIAL_1_LOCATION', 'תל אביב') },
+    { text: getText('HOME_TESTIMONIAL_2_TEXT', 'קיבלתי 300 ₪ מהפניות. מדהים!'), author: getText('HOME_TESTIMONIAL_2_AUTHOR', 'יוסי לוי'), location: getText('HOME_TESTIMONIAL_2_LOCATION', 'חיפה') },
+    { text: getText('HOME_TESTIMONIAL_3_TEXT', 'חסכתי אלפי שקלים. שירות מעולה!'), author: getText('HOME_TESTIMONIAL_3_AUTHOR', 'דני אברהם'), location: getText('HOME_TESTIMONIAL_3_LOCATION', 'ירושלים') },
   ];
 
   const audiences = [
-    { icon: 'home', title: 'משפחות', desc: 'חיסכון משמעותי במוצרים לבית ולמשפחה' },
-    { icon: 'store', title: 'עסקים קטנים', desc: 'ציוד משרדי ומוצרים לעסק במחירים מוזלים' },
-    { icon: 'lightbulb', title: 'יזמים', desc: 'הזדמנות לרכישת מוצרים איכותיים בעלות נמוכה' },
-    { icon: 'building', title: 'מוסדות', desc: 'פתרונות רכש מרוכז למוסדות וארגונים' },
+    { icon: 'home', title: getText('HOME_TARGET_1_TITLE', 'משפחות'), desc: getText('HOME_TARGET_1_TEXT', 'חיסכון משמעותי במוצרים לבית ולמשפחה') },
+    { icon: 'store', title: getText('HOME_TARGET_2_TITLE', 'עסקים קטנים'), desc: getText('HOME_TARGET_2_TEXT', 'ציוד משרדי ומוצרים לעסק במחירים מוזלים') },
+    { icon: 'lightbulb', title: getText('HOME_TARGET_3_TITLE', 'יזמים'), desc: getText('HOME_TARGET_3_TEXT', 'הזדמנות לרכישת מוצרים איכותיים בעלות נמוכה') },
+    { icon: 'building', title: getText('HOME_TARGET_4_TITLE', 'מוסדות'), desc: getText('HOME_TARGET_4_TEXT', 'פתרונות רכש מרוכז למוסדות וארגונים') },
   ];
 
   // SVG icons for sections
@@ -320,7 +322,7 @@ export default function HomePage() {
         <div className="container">
           <div className="hero-content">
             <h1><span className="word">🇮🇱</span> <span className="word">ביחד</span> <span className="word">ננצח</span> <span className="word">🇮🇱</span><br/><span className="word" style={{fontSize: '0.55em'}}>נלחמים ביוקר המחייה</span></h1>
-            <p className="hero-subtitle">רכישה קבוצתית במחיר מפעל - ככה ננצח!</p>
+            <p className="hero-subtitle">{getText('HOME_HERO_SUBTITLE', 'רכישה קבוצתית במחיר מפעל - ככה ננצח!')}</p>
             <div className="cta-buttons">
               <Link 
                 href="/shop" 
@@ -329,7 +331,7 @@ export default function HomePage() {
                 onMouseMove={handleMagneticMove}
                 onMouseLeave={handleMagneticLeave}
               >
-                צפו במוצרים
+                {getText('HOME_HERO_CTA_PRIMARY', 'צפו במוצרים')}
               </Link>
               <a 
                 href="#video-section" 
@@ -343,7 +345,7 @@ export default function HomePage() {
                     window.scrollTo({ top, behavior: 'smooth' });
                   }
                 }}
-              >איך זה עובד?</a>
+              >{getText('HOME_HERO_CTA_SECONDARY', 'איך זה עובד?')}</a>
             </div>
           </div>
         </div>
@@ -362,7 +364,7 @@ export default function HomePage() {
                 הדפדפן שלך לא תומך בתגית וידאו.
               </video>
             </div>
-            <p className="video-caption">מעבירים את השליטה בחזרה לעם ונלחמים ביוקר המחייה</p>
+            <p className="video-caption">{getText('HOME_VIDEO_CAPTION', 'מעבירים את השליטה בחזרה לעם ונלחמים ביוקר המחייה')}</p>
           </div>
         </div>
       </section>
@@ -370,7 +372,7 @@ export default function HomePage() {
       {/* How It Works Section */}
       <section id="how-it-works" className="how-it-works reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>איך זה עובד?</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_HOW_TITLE', 'איך זה עובד?')}</h2>
           <div className="steps-container">
             {steps.map((step, index) => (
               <div className="step reveal-on-scroll" key={index}>
@@ -394,8 +396,8 @@ export default function HomePage() {
             <div className="info-icon">
               <span style={{color: '#ffffff'}}>{svgIcons.shield}</span>
             </div>
-            <h2 style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>שאנחנו מאוחדים אנחנו חזקים</h2>
-            <p>מצטרפים ורוכשים ב-50% יותר זול ממחיר השוק בישראל ואם הצלחנו להיות מאוחדים וצרפנו חברים ומשפחה אז נקבל עוד הנחה רק ככה ננצח ביחד את יוקר המחייה</p>
+            <h2 style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_TRUST_TITLE', 'שאנחנו מאוחדים אנחנו חזקים')}</h2>
+            <p>{getText('HOME_TRUST_TEXT', 'מצטרפים ורוכשים ב-50% יותר זול ממחיר השוק בישראל ואם הצלחנו להיות מאוחדים וצרפנו חברים ומשפחה אז נקבל עוד הנחה רק ככה ננצח ביחד את יוקר המחייה')}</p>
           </div>
         </div>
       </section>
@@ -403,11 +405,11 @@ export default function HomePage() {
       {/* Referral Section */}
       <section id="referral" className="referral reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>חבר מביא חבר</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_REFERRAL_TITLE', 'חבר מביא חבר')}</h2>
           <div className="referral-content">
             <div className="referral-info">
-              <h3>שיתפת – הרווחת</h3>
-              <p>קבלו תגמול כספי על כל רכישה שמתבצעת באמצעות קוד הקופון או שיתוף מוצר מהאזור האישי שלכם – ללא צורך לקנות בעצמכם 10% על כל רכישה</p>
+              <h3>{getText('HOME_REFERRAL_SUBTITLE', 'שיתפת – הרווחת')}</h3>
+              <p>{getText('HOME_REFERRAL_TEXT', 'קבלו תגמול כספי על כל רכישה שמתבצעת באמצעות קוד הקופון או שיתוף מוצר מהאזור האישי שלכם – ללא צורך לקנות בעצמכם 10% על כל רכישה')}</p>
             </div>
             <button 
               type="button"
@@ -415,7 +417,7 @@ export default function HomePage() {
               onClick={() => setReferralPanelOpen(!referralPanelOpen)}
               aria-expanded={referralPanelOpen}
             >
-              משתפים חברים – ומרוויחים בלי לקנות
+              {getText('HOME_REFERRAL_BUTTON', 'משתפים חברים – ומרוויחים בלי לקנות')}
             </button>
             <div className={`referral-info-panel ${referralPanelOpen ? 'open' : ''}`}>
               <h4>איך מרוויחים כסף בלי לרכוש בעצמכם?</h4>
@@ -426,7 +428,7 @@ export default function HomePage() {
               <hr className="referral-divider" />
               <p className="referral-summary">אין התחייבות אין צורך לקנות פשוט רק לשתף</p>
               <p className="referral-motto" style={{fontWeight: 'bold', marginTop: '10px'}}>רק ביחד נתאחד ונחזיר את השליטה לעם זאת לא שיטה זאת תנועה של עם אחד</p>
-              <Link href="/register" className="btn btn-primary referral-panel-cta">פתחו קוד קופון אישי</Link>
+              <Link href="/register" className="btn btn-primary referral-panel-cta">{getText('HOME_REFERRAL_CTA', 'פתחו קוד קופון אישי')}</Link>
             </div>
             <div className="referral-link-box">
               <label htmlFor="referral-link">קבל קוד קופון אישי:</label>
@@ -455,7 +457,7 @@ export default function HomePage() {
       {/* Target Audience Section */}
       <section id="target-audience" className="target-audience reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title" style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}>למי זה מתאים</h2>
+          <h2 className="section-title" style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}>{getText('HOME_TARGET_TITLE', 'למי זה מתאים')}</h2>
           <div className="audience-grid">
             {audiences.map((item, index) => (
               <div className="audience-card reveal-on-scroll" key={index}>
@@ -473,7 +475,7 @@ export default function HomePage() {
       {/* FAQ Section */}
       <section id="faq" className="faq reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>שאלות נפוצות</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_FAQ_TITLE', 'שאלות נפוצות')}</h2>
           <div className="faq-timeline">
             {faqs.map((faq, index) => (
               <div className="faq-item reveal-on-scroll" key={index}>
@@ -496,7 +498,7 @@ export default function HomePage() {
       {/* Testimonials Section */}
       <section id="testimonials" className="testimonials">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>לקוחות מספרים</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_TESTIMONIALS_TITLE', 'לקוחות מספרים')}</h2>
           <div className="testimonials-slider-wrapper">
             <div className="testimonials-slider">
               {testimonials.map((testimonial, index) => (
@@ -537,34 +539,32 @@ export default function HomePage() {
       {/* About VIPO Section */}
       <section id="about-vipo" className="about-vipo">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>מי אנחנו</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_ABOUT_TITLE', 'מי אנחנו')}</h2>
           <div className="about-content">
             <p className="about-intro">
-              VIPO Group מובילה את תחום הרכישה הקבוצתית בישראל מאז 2018. אנו מחברים בין אלפי
-              לקוחות פרטיים ועסקיים לספקים איכותיים בארץ ובעולם, מקצרים תהליכים ומוזילים עלויות בצורה חכמה,
-              שקופה ומהירה – עד שהמוצר מגיע אליכם הביתה.
+              {getText('HOME_ABOUT_TEXT', 'VIPO Group מובילה את תחום הרכישה הקבוצתית בישראל מאז 2018. אנו מחברים בין אלפי לקוחות פרטיים ועסקיים לספקים איכותיים בארץ ובעולם, מקצרים תהליכים ומוזילים עלויות בצורה חכמה, שקופה ומהירה – עד שהמוצר מגיע אליכם הביתה.')}
             </p>
 
             <div className="about-stats">
               <div className="stat-item">
                 <i className="fa-solid fa-user-check"></i>
                 <div>
-                  <span className="stat-number">+9,500</span>
-                  <span className="stat-label">לקוחות מרוצים</span>
+                  <span className="stat-number">{getText('HOME_ABOUT_STAT_1', '+9,500')}</span>
+                  <span className="stat-label">{getText('HOME_ABOUT_STAT_1_LABEL', 'לקוחות מרוצים')}</span>
                 </div>
               </div>
               <div className="stat-item">
                 <i className="fa-solid fa-calendar"></i>
                 <div>
-                  <span className="stat-number">2018</span>
-                  <span className="stat-label">שנת הקמה</span>
+                  <span className="stat-number">{getText('HOME_ABOUT_STAT_2', '2018')}</span>
+                  <span className="stat-label">{getText('HOME_ABOUT_STAT_2_LABEL', 'שנת הקמה')}</span>
                 </div>
               </div>
               <div className="stat-item">
                 <i className="fa-solid fa-globe"></i>
                 <div>
-                  <span className="stat-number" style={{whiteSpace: 'nowrap'}}>ישראל + סין</span>
-                  <span className="stat-label">נוכחות בינלאומית</span>
+                  <span className="stat-number" style={{whiteSpace: 'nowrap'}}>{getText('HOME_ABOUT_STAT_3', 'ישראל + סין')}</span>
+                  <span className="stat-label">{getText('HOME_ABOUT_STAT_3_LABEL', 'נוכחות בינלאומית')}</span>
                 </div>
               </div>
             </div>
@@ -589,8 +589,8 @@ export default function HomePage() {
       <footer id="contact" className="footer">
         <div className="container">
           <div className="footer-brand-section" style={{textAlign: 'center', marginBottom: '30px'}}>
-            <h2 className="footer-brand">VIPO GROUP</h2>
-            <p className="footer-tagline">רכישה קבוצתית חכמה וחסכונית</p>
+            <h2 className="footer-brand">{getText('FOOTER_COMPANY_NAME', 'VIPO GROUP')}</h2>
+            <p className="footer-tagline">{getText('FOOTER_TAGLINE', 'רכישה קבוצתית חכמה וחסכונית')}</p>
           </div>
           
           <div className="footer-main" style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '30px'}}>
@@ -598,21 +598,21 @@ export default function HomePage() {
             <div className="footer-contact" style={{flex: '1', minWidth: '200px'}}>
               <h3 style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}}>יצירת קשר</h3>
               <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                <a href="tel:+972587009938" className="footer-contact-item">
+                <a href={`tel:${getText('FOOTER_PHONE', '058-700-9938').replace(/-/g, '')}`} className="footer-contact-item">
                   <i className="fa-solid fa-phone"></i>
-                  <span>058-700-9938</span>
+                  <span>{getText('FOOTER_PHONE', '058-700-9938')}</span>
                 </a>
-                <a href="mailto:vipo.m1985@gmail.com" className="footer-contact-item">
+                <a href={`mailto:${getText('FOOTER_EMAIL', 'vipo.m1985@gmail.com')}`} className="footer-contact-item">
                   <i className="fa-solid fa-envelope"></i>
-                  <span>vipo.m1985@gmail.com</span>
+                  <span>{getText('FOOTER_EMAIL', 'vipo.m1985@gmail.com')}</span>
                 </a>
                 <div className="footer-contact-item">
                   <i className="fa-solid fa-map-marker-alt"></i>
-                  <span>ז&apos;בוטינסקי 5, באר יעקב</span>
+                  <span>{getText('FOOTER_ADDRESS', 'ז\'בוטינסקי 5, באר יעקב')}</span>
                 </div>
                 <div className="footer-contact-item">
                   <i className="fa-solid fa-clock"></i>
-                  <span>א׳-ה׳ 09:00-18:00</span>
+                  <span>{getText('FOOTER_HOURS', 'א׳-ה׳ 09:00-18:00')}</span>
                 </div>
               </div>
             </div>
@@ -638,7 +638,7 @@ export default function HomePage() {
           </div>
           
           <div className="footer-bottom">
-            <p>&copy; 2025 VIPO GROUP | ע.מ. 036517548</p>
+            <p>{getText('FOOTER_COPYRIGHT', '© 2025 VIPO GROUP | ע.מ. 036517548')}</p>
             <div className="footer-links">
               <a href="/terms">תנאי שימוש</a>
               <a href="/privacy">מדיניות פרטיות</a>
@@ -652,5 +652,14 @@ export default function HomePage() {
         <span style={{color: 'white'}}>{svgIcons.whatsapp}</span>
       </a>
     </div>
+  );
+}
+
+// Main export with provider wrapper
+export default function HomePage() {
+  return (
+    <SiteTextsProvider page="home">
+      <HomePageContent />
+    </SiteTextsProvider>
   );
 }

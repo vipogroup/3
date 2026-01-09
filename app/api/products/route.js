@@ -419,9 +419,11 @@ export async function GET(request) {
     // Multi-Tenant: Filter by tenant
     // Always try to get tenant from request first (URL param, subdomain, etc.)
     let tenantId = null;
+    let hasTenantContext = false;
     const tenant = await getCurrentTenant(request);
     if (tenant) {
       tenantId = tenant._id;
+      hasTenantContext = true;
     }
     
     // If no tenant from request, try to get from logged-in business_admin
@@ -430,14 +432,21 @@ export async function GET(request) {
         const adminUser = await requireAdminApi(request);
         if (adminUser?.role === 'business_admin' && adminUser?.tenantId) {
           tenantId = new ObjectId(adminUser.tenantId);
+          hasTenantContext = true;
         }
       } catch {
-        // Not admin - that's ok, tenantId might already be set from request
+        // Not admin - that's ok
       }
     }
     
-    if (tenantId) {
+    // Apply tenant filter:
+    // - If tenant context exists: show only products from that tenant
+    // - If no tenant context: show only global products (no tenantId)
+    if (hasTenantContext && tenantId) {
       query.tenantId = tenantId;
+    } else {
+      // No tenant context - show only global products (without tenantId)
+      query.tenantId = { $exists: false };
     }
 
     if (catalogSlug) {
