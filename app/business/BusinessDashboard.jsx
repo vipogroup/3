@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Building2, Package, ShoppingCart, Users, DollarSign,
-  Settings, TrendingUp, RefreshCw, Plus, Eye, Edit,
+  Sliders, TrendingUp, RefreshCw, Plus, Eye, Edit,
   BarChart3, Palette, Globe, Phone, Mail, MapPin,
-  ChevronLeft, AlertCircle, CheckCircle, Clock
+  ChevronLeft, AlertCircle, CheckCircle, Clock, Store
 } from 'lucide-react';
 
 export default function BusinessDashboard() {
@@ -176,7 +176,7 @@ export default function BusinessDashboard() {
             { id: 'overview', label: 'סקירה כללית', icon: BarChart3 },
             { id: 'products', label: 'מוצרים', icon: Package },
             { id: 'orders', label: 'הזמנות', icon: ShoppingCart },
-            { id: 'settings', label: 'הגדרות', icon: Settings },
+            { id: 'settings', label: 'הגדרות עסק', icon: Sliders },
           ].map((tab) => (
             <button
               key={tab.id}

@@ -1,0 +1,199 @@
+[
+  {
+    "_id": {
+      "$oid": "692cf3df3a64c7c8757a2706"
+    },
+    "email": "admin@vipo.local",
+    "createdAt": {
+      "$date": "2025-12-01T01:48:15.157Z"
+    },
+    "isActive": true,
+    "password": "$2a$10$M4QeUHd9LoWBKZO6b1H73uubfKOAWToH2D2jqrrVpBuFSykCnSvuG",
+    "phone": "0501234567",
+    "role": "admin",
+    "updatedAt": {
+      "$date": "2025-12-06T02:46:02.840Z"
+    },
+    "passwordHash": "$2a$10$ARn6ryv2M/mTUBkJ1CjJLeBUFOKLozjX6abhLUXVcy3GtMGXg0JDi",
+    "fullName": "מנהל 02"
+  },
+  {
+    "_id": {
+      "$oid": "692deea497ce1a2ba6d4e151"
+    },
+    "email": "m0587009938@gmail.com",
+    "passwordHash": "$2a$10$lgHkCrqAunqC0s8Xdm0x0e/.DdWVQo42hl9ECi6Oqb4hhxj9jhbSi",
+    "fullName": "ישראל",
+    "role": "admin",
+    "phone": "0587009938",
+    "createdAt": {
+      "$date": "2025-12-01T19:38:12.359Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T14:35:09.188Z"
+    },
+    "isActive": true,
+    "image": "https://lh3.googleusercontent.com/a/ACg8ocKlEEr9IghCHms0u85l_TpnFhmxb0OfvSccjrNtfdlFusI--w=s96-c",
+    "provider": "google",
+    "providerAccountId": "107129372780600575444"
+  },
+  {
+    "_id": {
+      "$oid": "695fcdfda7345f7c380737e2"
+    },
+    "fullName": "מאים",
+    "phone": "0533858881",
+    "email": "miriamshabo22@gmail.com",
+    "passwordHash": "$2a$10$.OCk3Oa8oGy7EbEw0ipvB.rktLd/hCM8ASqUJ6G22wvOnbZhBd4tq",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T15:32:13.712Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T15:32:29.281Z"
+    },
+    "commissionPercent": 12,
+    "couponCode": "maym-001",
+    "couponSequence": 1,
+    "couponSlug": "maym",
+    "couponStatus": "active",
+    "discountPercent": 10
+  },
+  {
+    "_id": {
+      "$oid": "6960088e2bf647e67405d724"
+    },
+    "fullName": "מנחם דחגח",
+    "phone": "0533858887",
+    "email": "m05071823331@gmail.com",
+    "passwordHash": "$2a$10$iyw.pwL9dOO5UHvGaF9FtePJTgk/478oIwMsz6NusVOW/31JERNE2",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T19:42:06.697Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T19:42:06.697Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6960436274e8fe0438e5e744"
+    },
+    "fullName": "בדיקת עסק חדש",
+    "email": "0523004374@gmail.com",
+    "phone": "0523004374",
+    "role": "business_admin",
+    "passwordHash": "$2a$10$HsbbakzOjUA488Jnke5uT..0NlbvV7Li8EFDo19fZpsoav//APa1q",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69605be374e8fe0438e5e91d"
+    },
+    "fullName": "לקוח חדש משתמש לעסק בדיקה",
+    "phone": "0552934803",
+    "email": "m0552934803@gmail.com",
+    "passwordHash": "$2a$10$zjmKGiqM/1llcc6BcCM/LeY9bfwQwXHWpnl1USWopuO2giXSZzboK",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-09T01:37:39.051Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T01:37:39.051Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "fullName": "לקוח עסק חדש ניסוי ",
+    "phone": "0552934802",
+    "email": "m0552934802@gmail.com",
+    "passwordHash": "$2a$10$tVRTbNEJEdiIwpNFq9kcDeuU.dxWnJK2i9YEB8QnVEOqKNY70MUA2",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-09T01:40:13.772Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:03:44.998Z"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "commissionPercent": 12,
+    "couponCode": "lkvch-ask-chdsh-nysvy-001",
+    "couponSequence": 1,
+    "couponSlug": "lkvch-ask-chdsh-nysvy",
+    "couponStatus": "active",
+    "discountPercent": 10,
+    "commissionBalance": 158,
+    "totalSales": 3,
+    "commissionOnHold": 0
+  },
+  {
+    "_id": {
+      "$oid": "69605fe8efefb52696a38077"
+    },
+    "email": "hareldror2021@gmail.com",
+    "commissionBalance": 0,
+    "createdAt": {
+      "$date": "2026-01-09T01:54:48.747Z"
+    },
+    "fullName": "Harel2021 Dror",
+    "image": "https://lh3.googleusercontent.com/a/ACg8ocLTNiw_tAzkxA2ev6JcXvsYQNQcn-buYHgQW8BMi3mgT3glMg=s96-c",
+    "isActive": true,
+    "onboardingCompletedAt": null,
+    "passwordHash": null,
+    "phone": "0524002552",
+    "provider": "google",
+    "providerAccountId": "116684218632189880703",
+    "referralCount": 0,
+    "referralsCount": 0,
+    "referredBy": null,
+    "role": "customer",
+    "updatedAt": {
+      "$date": "2026-01-09T01:54:53.504Z"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6961ade183b4e887b05901f4"
+    },
+    "email": "s0533858881@gmail.com",
+    "commissionBalance": 0,
+    "createdAt": {
+      "$date": "2026-01-10T01:39:45.255Z"
+    },
+    "fullName": "ישראל",
+    "image": "https://lh3.googleusercontent.com/a/ACg8ocIDJh5i9BjfUg_3AJt9vUHOkAMHv29TEa3ubswMxo8DkwWUYg=s96-c",
+    "isActive": true,
+    "onboardingCompletedAt": null,
+    "passwordHash": null,
+    "phone": "0524005285",
+    "provider": "google",
+    "providerAccountId": "111907946296705880998",
+    "referralCount": 0,
+    "referralsCount": 0,
+    "referredBy": null,
+    "role": "customer",
+    "updatedAt": {
+      "$date": "2026-01-10T01:39:51.154Z"
+    }
+  }
+]

@@ -24,6 +24,9 @@ export default function UserHeader() {
   // Get tenant from URL for login/register links
   const tenantParam = searchParams.get('tenant');
   const loginHref = tenantParam ? `/login?tenant=${tenantParam}` : '/login';
+  
+  // Check if we're on a tenant/business page
+  const isTenantPage = pathname?.startsWith('/t/');
 
   useEffect(() => {
     let ignore = false;
@@ -209,13 +212,15 @@ export default function UserHeader() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow-md"
+      className="fixed top-0 left-0 right-0 z-50 w-full shadow-md"
       style={{
         borderBottom: '2px solid transparent',
-        backgroundImage:
-          'linear-gradient(white, white), linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)',
+        backgroundImage: isTenantPage 
+          ? 'linear-gradient(#ecfeff, #ecfeff), linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)'
+          : 'linear-gradient(white, white), linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)',
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
+        backgroundColor: isTenantPage ? '#ecfeff' : 'white',
       }}
     >
       <div className="flex items-center justify-between px-4 py-3">
@@ -376,8 +381,8 @@ export default function UserHeader() {
             </Link>
           )}
 
-          {/* Admin Dashboard Icon - Only for admins (not when impersonating) */}
-          {user && role === 'admin' && !isImpersonating && (
+          {/* Admin Dashboard Icon - Only for admins (not when impersonating, not on tenant pages) */}
+          {user && role === 'admin' && !isImpersonating && !isTenantPage && (
             <Link
               href="/admin"
               className="relative p-2 rounded-full transition-all duration-300"
@@ -399,8 +404,8 @@ export default function UserHeader() {
             </Link>
           )}
 
-          {/* Business Dashboard Icon - For business_admin OR when admin is impersonating */}
-          {user && (role === 'business_admin' || (role === 'admin' && isImpersonating)) && (
+          {/* Business Dashboard Icon - For business_admin OR when admin is impersonating OR admin on tenant page */}
+          {user && (role === 'business_admin' || (role === 'admin' && isImpersonating) || (role === 'admin' && isTenantPage)) && (
             <Link
               href="/business"
               className="relative p-2 rounded-full transition-all duration-300"
@@ -416,7 +421,7 @@ export default function UserHeader() {
               title="דשבורד העסק שלי"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </Link>
           )}

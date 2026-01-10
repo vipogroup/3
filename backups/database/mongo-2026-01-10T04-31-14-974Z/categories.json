@@ -78,5 +78,22 @@
     "updatedAt": {
       "$date": "2026-01-03T03:59:35.074Z"
     }
+  },
+  {
+    "_id": {
+      "$oid": "695f7c70986b9f1f76624d4c"
+    },
+    "tenantId": null,
+    "name": "נירוסטה",
+    "type": "product",
+    "active": true,
+    "sortOrder": 0,
+    "createdAt": {
+      "$date": "2026-01-08T09:44:16.106Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T09:44:16.106Z"
+    },
+    "__v": 0
   }
 ]

@@ -20,14 +20,16 @@
       "p256dh": "BJrPqgt1kawp7wnkzf8FWdPIQOQtRKfiDpzVKG6MvCxE4Z4YBXv5aZhBu9lDbsWIKlYS_-FJ6xyDP5g2COb1Ot8",
       "auth": "QPYxO0pBKCcPjGKxtpwrtA"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:57.828Z"
+    },
     "role": "customer",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T00:20:23.195Z"
+      "$date": "2026-01-08T09:44:57.828Z"
     },
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
     "userId": "695be27773a32dbaab1e6d89",
@@ -56,14 +58,16 @@
       "p256dh": "BEy_A2aRiRc0MRw_Ed8iVWSG4xuwBbtt8_9wU_oix16RKYs2c3nG8kvTIqYwcTV8r6oozS3ATS-MWbs90MHWa1Y",
       "auth": "8Hy72OHWK1xC0u_IAsgd5A"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:56.771Z"
+    },
     "role": "agent",
     "tags": [
       "agent"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T00:31:39.055Z"
+      "$date": "2026-01-08T09:44:56.771Z"
     },
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
     "userId": "695badb073a32dbaab1e6a88",
@@ -92,14 +96,16 @@
       "p256dh": "BEDgsNjxrwvtI91qyI-IyIAN8vhJ4OAv-ruo4MVdXmVI31ZlySLZkEk2GBvfEMHGCcRbzhq8Xq2PoWFviuHztrw",
       "auth": "JArdVnEkEiJZabwTe1cdCw"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:56.775Z"
+    },
     "role": "agent",
     "tags": [
       "agent"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T02:52:56.580Z"
+      "$date": "2026-01-08T09:44:56.775Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695badb073a32dbaab1e6a88",
@@ -166,14 +172,16 @@
       "p256dh": "BCEe6NHqFqBM2nAh_BJ2yYcGP9A1bO3hJ9q6irscjeLOX3A65R97XHntIZWC0J0tSWdgwr5vqiOw8S9qud3WLeY",
       "auth": "lYJxOzE8wjDQPkUZmQIkTQ"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:56.776Z"
+    },
     "role": "agent",
     "tags": [
       "agent"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T03:16:23.903Z"
+      "$date": "2026-01-08T09:44:56.776Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695c7e593bc3dd7d2046966b",
@@ -202,14 +210,16 @@
       "p256dh": "BDxXn2e6ffL8fncxqPu0DnfMVPA9qtS5FMcrhHQf2ltvqmB7vDhjk-nWj1LFNkb4xkOiaFYOotHDIVE_wLm_c1k",
       "auth": "FmEh4KevwM0J06usiikX_A"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:56.777Z"
+    },
     "role": "agent",
     "tags": [
       "agent"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T03:25:47.307Z"
+      "$date": "2026-01-08T09:44:56.777Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695c7e593bc3dd7d2046966b",
@@ -238,14 +248,16 @@
       "p256dh": "BLD6Is0AULmHXtkjTgIg-LGyJFMfFOpG9e4dda3ST5RYOR2fU_ptTVL1Ya1LRGXKZSatLJCMapWNvnJh1SZhvM4",
       "auth": "EL3xE2oTQ0uzH9MiJcxS9Q"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:57.828Z"
+    },
     "role": "agent",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T03:28:14.422Z"
+      "$date": "2026-01-08T09:44:57.828Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695c7e593bc3dd7d2046966b",
@@ -274,14 +286,16 @@
       "p256dh": "BH5ViFzHbqGbFwui1eOSFgnFKbZLS04To6b0WNrPVFy0STZLl2xlmral8NAyT2iVntBYyJU6E3GanM8W13KQTIY",
       "auth": "aSuFmqfvYqSb9NJap_VHuA"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:57.827Z"
+    },
     "role": "customer",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T06:11:32.726Z"
+      "$date": "2026-01-08T09:44:57.827Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695ca78f3bc3dd7d20469d18",
@@ -310,14 +324,16 @@
       "p256dh": "BM1rhThvXtvoXgw7aUp2XLw8gC7qRMstuYZQNDLQJk6WM2BoSN8_bi0aGfavc-istzUespVMFEXyCOuzo03pWoQ",
       "auth": "Jy20FgW4gyak3-6a70IS3g"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:57.827Z"
+    },
     "role": "customer",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T06:47:33.838Z"
+      "$date": "2026-01-08T09:44:57.827Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695cb0003bc3dd7d20469e17",
@@ -346,14 +362,16 @@
       "p256dh": "BJ87Oh2Mlo4p2wjSKfzSObUrqXRoA04_oIVz2Juy0SPOLNN6ZwXfQcAWqdkneswhE7uhbUPYCxDfid98ePgWbJI",
       "auth": "Dg0sCS82nvd5T0syYyOvwA"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:57.826Z"
+    },
     "role": "agent",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T06:59:35.420Z"
+      "$date": "2026-01-08T09:44:57.826Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695cb0003bc3dd7d20469e17",
@@ -382,14 +400,16 @@
       "p256dh": "BNobebdx5VvM7-wJ002h9_I4ap2LfUKQ_DENLAe6rVYXtFjNHuPbxTphctjvJFrAPbMS70yl5O1_ds5sFQD1Tms",
       "auth": "jI71IGzpbuoreVGsgD65xA"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:56.776Z"
+    },
     "role": "agent",
     "tags": [
       "agent"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T07:02:41.667Z"
+      "$date": "2026-01-08T09:44:56.776Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695cb0003bc3dd7d20469e17",
@@ -456,14 +476,16 @@
       "p256dh": "BA6oZtIcLlPfqU7WkK9KZFB-72kHwzf6GjGJR9YnVawAIQkHIHQ7EPSaFlUqS-PeXWRt09gXvz7i01yH03VcyUY",
       "auth": "o_SlStqjJCmYzDTr4ZhH0A"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:57.829Z"
+    },
     "role": "customer",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T10:14:28.872Z"
+      "$date": "2026-01-08T09:44:57.829Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695cdfd4e06ce2731c9da872",
@@ -530,14 +552,16 @@
       "p256dh": "BCkKNBKrLp24gtdZYvrZe97qOyXrBnnuCOUT1Lo8miltmpLgBCTifEmgmAC_tpFh-1lJ0xXmLmJPHbPRk2W866Q",
       "auth": "j2crnlSi_CX4mID9d-0tXQ"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:58.308Z"
+    },
     "role": "customer",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T10:19:21.457Z"
+      "$date": "2026-01-08T09:44:58.308Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695ce189e06ce2731c9da8b1",
@@ -566,14 +590,16 @@
       "p256dh": "BB8ejTMrMBuZitICS8xAfRcm-HrL1YoKcMeqqCHxHeOr536rMC05ukKJuQuYc7E3WjCwqkGY3XqBe5yJPbQfIBU",
       "auth": "OGosAYMZFFFI4KOQEGi4Cg"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:58.305Z"
+    },
     "role": "customer",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T10:34:11.918Z"
+      "$date": "2026-01-08T09:44:58.305Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695ce189e06ce2731c9da8b1",
@@ -602,14 +628,16 @@
       "p256dh": "BKup-KXIIO44H3xDNRkzjV17mmi6b7AXaPR9VfQ8rmDe-LD-xXCOqcoils4XApbf17hfL9dxXmvukNTV0I0m0f0",
       "auth": "vMGz0JjYhkuLz2YL0D6KnA"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-09T00:20:23.303Z"
+    },
     "role": "admin",
     "tags": [
       "admin"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T10:36:40.033Z"
+      "$date": "2026-01-09T00:20:23.303Z"
     },
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
     "userId": "692deea497ce1a2ba6d4e151",
@@ -638,14 +666,16 @@
       "p256dh": "BAujh2WvVE-aNk35owwzk7fgmUVY-FOaKGMRR2XYL3QHCLzqmPyRLwwaDnczEIgtU2WY2m0-IwOQXayfJSFln74",
       "auth": "OcnMxslakPMeqaHkhkin8A"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:56.776Z"
+    },
     "role": "agent",
     "tags": [
       "agent"
     ],
     "updatedAt": {
-      "$date": "2026-01-06T12:06:11.993Z"
+      "$date": "2026-01-08T09:44:56.776Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695cfa87a6b19e4ce1364ed6",
@@ -710,14 +740,16 @@
       "p256dh": "BKBygtzybgK9fxSLOjIc-jFyaa5JbNyvjVInKEZIbimoqV02E44e8fmvQlkPDz34N7ulhoZCktiW2koYlP6HbM8",
       "auth": "IXolEqJ-AHw1l-4YmRxoAg"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:58.308Z"
+    },
     "role": "customer",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-07T01:50:08.014Z"
+      "$date": "2026-01-08T09:44:58.308Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695db9f0cf7d0548762b4ca1",
@@ -746,14 +778,16 @@
       "p256dh": "BEkU5_HdUKvlvy-zdqGFQJLYTIrbWeqarCokUUa4RAkoN4gf6j2U-yqQvbGIy1F0O4r6UTuqY0saCvzaBBwlZRg",
       "auth": "b7jg4cqJk5oQX5TpqHDvkw"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:58.307Z"
+    },
     "role": "customer",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-07T01:54:18.159Z"
+      "$date": "2026-01-08T09:44:58.307Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695dbc3bcf7d0548762b4cea",
@@ -782,14 +816,16 @@
       "p256dh": "BGkPrCb7tadtRtzV6IPtl16-_jMIlKZrS9XtxcwRsflPqm2LjDvgrVdJeiysTlUCN2I6d28xabP2xq-9KEJInpE",
       "auth": "bhN9AEmBwqlsswtxCUlNUQ"
     },
-    "lastConsentAction": "accepted",
-    "revokedAt": null,
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-08T09:44:58.306Z"
+    },
     "role": "customer",
     "tags": [
       "customer"
     ],
     "updatedAt": {
-      "$date": "2026-01-07T01:57:37.437Z"
+      "$date": "2026-01-08T09:44:58.306Z"
     },
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
     "userId": "695dbd8ccf7d0548762b4d1a",
@@ -861,6 +897,228 @@
     "userId": "695ec06ff249ef0c1fb6b6e1",
     "userObjectId": {
       "$oid": "695ec06ff249ef0c1fb6b6e1"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f53a1efefb52696a38072"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/d_xgzP_9tmo:APA91bHnRWaZC3czcN8szCKBlTAVtuurWM9CAyvUGUN2vDEdLBCMzw4jUQ701NADWlNoUAHPj_YPU79mQ9T0SoXQlc0gUb927qIpIf0uZoeBWnuukqF3OBvdeGFz4_SLoDB5uC2hySyN",
+    "consentAt": {
+      "$date": "2026-01-08T06:50:07.239Z"
+    },
+    "consentMeta": {
+      "source": "login_modal",
+      "role": "business_admin"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-08T06:50:09.565Z"
+    },
+    "ip": "127.0.0.1",
+    "keys": {
+      "p256dh": "BFdieEeke-jDIv8na4R0Qvvbqfe8slH-wucKVaPe8fMwzoEFvZ5jwQa-lk73bEs5nQIXBc73rSzcp87-etkf2PA",
+      "auth": "aBjXV37T1HZlGRaLxIoGeA"
+    },
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-09T02:58:29.593Z"
+    },
+    "role": "business_admin",
+    "tags": [
+      "business_admin"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-09T02:58:29.593Z"
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "userId": "695f535062acf71a6f9193ac",
+    "userObjectId": {
+      "$oid": "695f535062acf71a6f9193ac"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "696049cdefefb52696a38073"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/fqlgnX1Qhas:APA91bFUz0542wSivA1QqermkG1lvvr2AmtyFVhpU31lUTGgNij90V-1rNyDjCbLp0VyTLvYnBrB_THiKJnEKvkBzprfE69AHXJmoptLXIs4a7_9Ibe0zpEDznY0vRj4vC1eS_Qqk4yJ",
+    "consentAt": {
+      "$date": "2026-01-09T00:33:14.464Z"
+    },
+    "consentMeta": {
+      "source": "registration",
+      "role": "customer"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-09T00:20:29.817Z"
+    },
+    "ip": "127.0.0.1",
+    "keys": {
+      "p256dh": "BPu23rJWlotzysOb1XQ-8_RpPQue1gDoabog59OpG0KNSZD8cZHyp-EuOLdDL6jYLeYjHVdaSTh_H57uf8LbFfI",
+      "auth": "X751kaphGaLG473OiSK9wQ"
+    },
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-09T02:10:56.384Z"
+    },
+    "role": "customer",
+    "tags": [
+      "customer"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-09T02:10:56.384Z"
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "userId": "69604c9474e8fe0438e5e7e2",
+    "userObjectId": {
+      "$oid": "69604c9474e8fe0438e5e7e2"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69605be9efefb52696a38074"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/cdnScb6DHfM:APA91bGCUD6ipp0od70gx_CZGeHufAlMTQj2La2QweygpVoA9pn4XWriEV4Hktq5_Q6w8xRzx9a1SJycUNkLQEbcWoSJyZBwQB8WBr3AAOkJYYMM5Sg8aK9Nj1NYsm6BmUQaXTTSRGPq",
+    "consentAt": {
+      "$date": "2026-01-09T01:37:43.275Z"
+    },
+    "consentMeta": {
+      "source": "registration",
+      "role": "customer"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-09T01:37:45.732Z"
+    },
+    "ip": "127.0.0.1",
+    "keys": {
+      "p256dh": "BCsSAvOC7qOZzM23pNiEyfH3Egrduv9jf1K4Cigysrpy-_lptJLgjNAelhIfeRTE-EiWMpmUysF6Ao5nKzOGPDM",
+      "auth": "5_nlIqaDWUPqHS17kg6amg"
+    },
+    "lastConsentAction": "revoked",
+    "revokedAt": {
+      "$date": "2026-01-09T02:10:56.382Z"
+    },
+    "role": "customer",
+    "tags": [
+      "customer"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-09T02:10:56.382Z"
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "userId": "69605be374e8fe0438e5e91d",
+    "userObjectId": {
+      "$oid": "69605be374e8fe0438e5e91d"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69605c83efefb52696a38075"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/cGMA8TDLQ2Y:APA91bEfBKG0ZARChQQxTr3ieNZZZPh14XxFDWsJ0hcvY9zcd_jcrNJK_sAlnvgPbpzSUPx-zXApAwP9KqTejqcGet0RwBntDnQ1qKdqhD3dE4ifSYcfdw7ggjsx5qMf6PHyNFFgQdQw",
+    "consentAt": {
+      "$date": "2026-01-09T01:40:16.824Z"
+    },
+    "consentMeta": {
+      "source": "registration",
+      "role": "customer"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-09T01:40:19.119Z"
+    },
+    "ip": "127.0.0.1",
+    "keys": {
+      "p256dh": "BOcjU1L2C0xRakJtdLRU0pCF5UBLCtCt2QeM6Bf-1ZE7DxJnzBvZTGCjaNh3b3VTKBG1ELMCt-r58D97zuSxMvs",
+      "auth": "uM-ghc1SIEM1qZvqXAJJxg"
+    },
+    "lastConsentAction": "accepted",
+    "revokedAt": null,
+    "role": "customer",
+    "tags": [
+      "customer"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-09T01:40:19.119Z"
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "userId": "69605c7d74e8fe0438e5e93b",
+    "userObjectId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6960600befefb52696a38078"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/eqKjKAtRGG4:APA91bF3Nr-rifv_SKX14-3UyMKJ3AbXFsHY7KhK4zzgPmMmMJLcZz-iH9no4zxg_1adv13MUnpnzL47rh_zIX71VkG_1K01mM9JU9fTPOevbU2tVwPpqCLZsdOj1bAZCOpieG3rBMWK",
+    "consentAt": {
+      "$date": "2026-01-09T01:55:21.544Z"
+    },
+    "consentMeta": {
+      "source": "login_modal",
+      "role": "customer"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-09T01:55:23.919Z"
+    },
+    "ip": "127.0.0.1",
+    "keys": {
+      "p256dh": "BP3aa_uZh8gacHxXewZiLii9PZ-sPtKjRJtndpPME5AQ8A3hbYA__x-8ED8Jte0EAWC6gwwAW3qQaATmySDsfC0",
+      "auth": "Lym0yXlikNJNVpCPLywrwg"
+    },
+    "lastConsentAction": "accepted",
+    "revokedAt": null,
+    "role": "customer",
+    "tags": [
+      "customer"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-09T01:55:23.919Z"
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "userId": "69605fe8efefb52696a38077",
+    "userObjectId": {
+      "$oid": "69605fe8efefb52696a38077"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "696062f9efefb52696a38079"
+    },
+    "endpoint": "https://fcm.googleapis.com/fcm/send/cTXjEso9co4:APA91bE2j8b1tm_IfOeiP9ML9ypGRgX4tnLF_SPL8ZccBJDFFYwO4bWCFUEiIAqHEU6xKMEWmRd4GxKJTv7um6cYuqxeWUsz4AF7aCGUxMAsXs06VTTnnlAZHwUW35NP1zJe3z0t0FMs",
+    "consentAt": {
+      "$date": "2026-01-09T02:07:50.042Z"
+    },
+    "consentMeta": {
+      "source": "login_modal",
+      "role": "business_admin"
+    },
+    "consentVersion": "1.0",
+    "createdAt": {
+      "$date": "2026-01-09T02:07:53.787Z"
+    },
+    "ip": "127.0.0.1",
+    "keys": {
+      "p256dh": "BCvRxDymCWziwnt1yCT0oUVARJfbTOr1ox2PBHKtw2Lc7xq1AH_TYliBMHLZcDHgfQGambLR_UMmntnmL86Owik",
+      "auth": "kPJN6m1pEh-VyMoxIqVvEA"
+    },
+    "lastConsentAction": "accepted",
+    "revokedAt": null,
+    "role": "business_admin",
+    "tags": [
+      "business_admin"
+    ],
+    "updatedAt": {
+      "$date": "2026-01-09T02:07:53.787Z"
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "userId": "6960436274e8fe0438e5e744",
+    "userObjectId": {
+      "$oid": "6960436274e8fe0438e5e744"
     }
   }
 ]

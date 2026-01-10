@@ -5,9 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import FeaturedCarousel from './FeaturedCarousel';
 import { useSiteTexts, SiteTextsProvider } from '@/lib/useSiteTexts';
+import EditableTextField from './EditableTextField';
 
 function HomePageContent() {
-  const { getText } = useSiteTexts();
+  const { getText, editMode, canEdit, enableEditMode, disableEditMode } = useSiteTexts();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -18,6 +19,9 @@ function HomePageContent() {
   const magneticBtnRef = useRef(null);
   const productsContainerRef = useRef(null);
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
 
   // Fetch featured products from database
   useEffect(() => {
@@ -223,6 +227,18 @@ function HomePageContent() {
     setActiveFaq(activeFaq === index ? null : index);
   };
 
+  // Handle edit mode password submission
+  const handlePasswordSubmit = () => {
+    const success = enableEditMode(passwordInput);
+    if (success) {
+      setShowPasswordModal(false);
+      setPasswordInput('');
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+    }
+  };
+
   // Format price helper
   const formatPrice = (price) => {
     return `₪${Number(price).toLocaleString('he-IL')}`;
@@ -322,7 +338,12 @@ function HomePageContent() {
         <div className="container">
           <div className="hero-content">
             <h1><span className="word">🇮🇱</span> <span className="word">ביחד</span> <span className="word">ננצח</span> <span className="word">🇮🇱</span><br/><span className="word" style={{fontSize: '0.55em'}}>נלחמים ביוקר המחייה</span></h1>
-            <p className="hero-subtitle">{getText('HOME_HERO_SUBTITLE', 'רכישה קבוצתית במחיר מפעל - ככה ננצח!')}</p>
+            <EditableTextField 
+              textKey="HOME_HERO_SUBTITLE" 
+              fallback="רכישה קבוצתית במחיר מפעל - ככה ננצח!"
+              as="p"
+              className="hero-subtitle"
+            />
             <div className="cta-buttons">
               <Link 
                 href="/shop" 
@@ -364,7 +385,12 @@ function HomePageContent() {
                 הדפדפן שלך לא תומך בתגית וידאו.
               </video>
             </div>
-            <p className="video-caption">{getText('HOME_VIDEO_CAPTION', 'מעבירים את השליטה בחזרה לעם ונלחמים ביוקר המחייה')}</p>
+            <EditableTextField 
+              textKey="HOME_VIDEO_CAPTION" 
+              fallback="מעבירים את השליטה בחזרה לעם ונלחמים ביוקר המחייה"
+              as="p"
+              className="video-caption"
+            />
           </div>
         </div>
       </section>
@@ -372,19 +398,37 @@ function HomePageContent() {
       {/* How It Works Section */}
       <section id="how-it-works" className="how-it-works reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_HOW_TITLE', 'איך זה עובד?')}</h2>
+          <EditableTextField 
+            textKey="HOME_HOW_TITLE" 
+            fallback="איך זה עובד?"
+            as="h2"
+            className="section-title"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+          />
           <div className="steps-container">
-            {steps.map((step, index) => (
-              <div className="step reveal-on-scroll" key={index}>
-                <div className={`step-icon ${index === 0 ? 'floating-icon' : ''}`}>
-                  <span style={{color: 'white'}}>{svgIcons[step.icon]}</span>
+            {[1,2,3,4,5,6].map((num, index) => {
+              const icons = ['cart', 'users', 'share', 'arrowDown', 'check', 'truck'];
+              const fallbackTitles = ['בחירת מוצר', 'הצטרפות לקבוצה', 'שיתוף', 'המחיר יורד', 'סגירת קבוצה', 'תשלום ומשלוח'];
+              const fallbackDescs = [
+                'בוחרים מוצרים במחיר מפעל מהמערכת שלנו עד 50% יותר זול ממחיר השוק',
+                'מצטרפים לקבוצת הרכישה בתום ה-30 יום ההזמנה עוברת למפעל לייצור',
+                'משתפים את החברים ומשפחה כדי להגדיל את הקבוצה וגם מקבלים 10% עמלה על כל רכישה שהגיעה מהשיתוף שלכם',
+                'ככל שיותר חברים מצטרפים, המחיר יורד לכולם',
+                'בסיום ההרשמה מקבלים הודעה שמתחילים בייצור ועדכון על זמני הגעה',
+                'עד 24 תשלומים ומשלוח עד הבית (יש איסוף עצמי)'
+              ];
+              return (
+                <div className="step reveal-on-scroll" key={index}>
+                  <div className={`step-icon ${index === 0 ? 'floating-icon' : ''}`}>
+                    <span style={{color: 'white'}}>{svgIcons[icons[index]]}</span>
+                  </div>
+                  <div className="step-content">
+                    <EditableTextField textKey={`HOME_HOW_STEP_${num}_TITLE`} fallback={fallbackTitles[index]} as="h3" />
+                    <EditableTextField textKey={`HOME_HOW_STEP_${num}_TEXT`} fallback={fallbackDescs[index]} as="p" multiline />
+                  </div>
                 </div>
-                <div className="step-content">
-                  <h3>{step.title}</h3>
-                  <p>{step.desc}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -396,8 +440,18 @@ function HomePageContent() {
             <div className="info-icon">
               <span style={{color: '#ffffff'}}>{svgIcons.shield}</span>
             </div>
-            <h2 style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_TRUST_TITLE', 'שאנחנו מאוחדים אנחנו חזקים')}</h2>
-            <p>{getText('HOME_TRUST_TEXT', 'מצטרפים ורוכשים ב-50% יותר זול ממחיר השוק בישראל ואם הצלחנו להיות מאוחדים וצרפנו חברים ומשפחה אז נקבל עוד הנחה רק ככה ננצח ביחד את יוקר המחייה')}</p>
+            <EditableTextField 
+              textKey="HOME_TRUST_TITLE" 
+              fallback="שאנחנו מאוחדים אנחנו חזקים"
+              as="h2"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            />
+            <EditableTextField 
+              textKey="HOME_TRUST_TEXT" 
+              fallback="מצטרפים ורוכשים ב-50% יותר זול ממחיר השוק בישראל ואם הצלחנו להיות מאוחדים וצרפנו חברים ומשפחה אז נקבל עוד הנחה רק ככה ננצח ביחד את יוקר המחייה"
+              as="p"
+              multiline
+            />
           </div>
         </div>
       </section>
@@ -405,11 +459,26 @@ function HomePageContent() {
       {/* Referral Section */}
       <section id="referral" className="referral reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_REFERRAL_TITLE', 'חבר מביא חבר')}</h2>
+          <EditableTextField 
+            textKey="HOME_REFERRAL_TITLE" 
+            fallback="חבר מביא חבר"
+            as="h2"
+            className="section-title"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+          />
           <div className="referral-content">
             <div className="referral-info">
-              <h3>{getText('HOME_REFERRAL_SUBTITLE', 'שיתפת – הרווחת')}</h3>
-              <p>{getText('HOME_REFERRAL_TEXT', 'קבלו תגמול כספי על כל רכישה שמתבצעת באמצעות קוד הקופון או שיתוף מוצר מהאזור האישי שלכם – ללא צורך לקנות בעצמכם 10% על כל רכישה')}</p>
+              <EditableTextField 
+                textKey="HOME_REFERRAL_SUBTITLE" 
+                fallback="שיתפת – הרווחת"
+                as="h3"
+              />
+              <EditableTextField 
+                textKey="HOME_REFERRAL_TEXT" 
+                fallback="קבלו תגמול כספי על כל רכישה שמתבצעת באמצעות קוד הקופון או שיתוף מוצר מהאזור האישי שלכם – ללא צורך לקנות בעצמכם 10% על כל רכישה"
+                as="p"
+                multiline
+              />
             </div>
             <button 
               type="button"
@@ -457,17 +526,33 @@ function HomePageContent() {
       {/* Target Audience Section */}
       <section id="target-audience" className="target-audience reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title" style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}>{getText('HOME_TARGET_TITLE', 'למי זה מתאים')}</h2>
+          <EditableTextField 
+            textKey="HOME_TARGET_TITLE" 
+            fallback="למי זה מתאים"
+            as="h2"
+            className="section-title"
+            style={{ color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' }}
+          />
           <div className="audience-grid">
-            {audiences.map((item, index) => (
-              <div className="audience-card reveal-on-scroll" key={index}>
-                <div className="audience-icon">
-                  <span style={{color: '#1e3a8a'}}>{svgIcons[item.icon]}</span>
+            {[1,2,3,4].map((num, index) => {
+              const icons = ['home', 'store', 'lightbulb', 'building'];
+              const fallbackTitles = ['משפחות', 'עסקים קטנים', 'יזמים', 'מוסדות'];
+              const fallbackDescs = [
+                'חיסכון משמעותי במוצרים לבית ולמשפחה',
+                'ציוד משרדי ומוצרים לעסק במחירים מוזלים',
+                'הזדמנות לרכישת מוצרים איכותיים בעלות נמוכה',
+                'פתרונות רכש מרוכז למוסדות וארגונים'
+              ];
+              return (
+                <div className="audience-card reveal-on-scroll" key={index}>
+                  <div className="audience-icon">
+                    <span style={{color: '#1e3a8a'}}>{svgIcons[icons[index]]}</span>
+                  </div>
+                  <EditableTextField textKey={`HOME_TARGET_${num}_TITLE`} fallback={fallbackTitles[index]} as="h3" />
+                  <EditableTextField textKey={`HOME_TARGET_${num}_TEXT`} fallback={fallbackDescs[index]} as="p" className="audience-description" />
                 </div>
-                <h3>{item.title}</h3>
-                <p className="audience-description">{item.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -475,22 +560,44 @@ function HomePageContent() {
       {/* FAQ Section */}
       <section id="faq" className="faq reveal-on-scroll">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_FAQ_TITLE', 'שאלות נפוצות')}</h2>
+          <EditableTextField 
+            textKey="HOME_FAQ_TITLE" 
+            fallback="שאלות נפוצות"
+            as="h2"
+            className="section-title"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+          />
           <div className="faq-timeline">
-            {faqs.map((faq, index) => (
-              <div className="faq-item reveal-on-scroll" key={index}>
-                <div className="faq-number">{String(index + 1).padStart(2, '0')}</div>
-                <div className="faq-card">
-                  <button className="faq-question" onClick={() => toggleFaq(index)}>
-                    {faq.q}
-                    <i className={`fa-solid fa-chevron-down ${activeFaq === index ? 'rotated' : ''}`}></i>
-                  </button>
-                  <div className={`faq-answer ${activeFaq === index ? 'open' : ''}`}>
-                    <p>{faq.a}</p>
+            {[1,2,3,4,5].map((num, index) => {
+              const fallbackQuestions = [
+                'האם יש התחייבות כספית?',
+                'איך עובד "חבר מביא חבר"?',
+                'מה אם לא מצטרפים מספיק אנשים?',
+                'כיצד מתבצע המשלוח?',
+                'האם יש אחריות על המוצרים?'
+              ];
+              const fallbackAnswers = [
+                'לא, אין שום התחייבות כספית. התשלום רק לאחר סגירת הקבוצה ורק אם אתם מעוניינים.',
+                'כל משתמש מקבל קישור אישי. כאשר חבר מזמין דרך הקישור שלכם, אתם מקבלים תגמול כספי בהתאם לעסקה – ללא צורך לרכוש בעצמכם.',
+                'נמשיך לחכות או נציע לכם לרכוש במחיר הנוכחי. אתם לא מחויבים לרכוש.',
+                'משלוח ישירות לכתובת שלכם. זמן אספקה: 7-14 ימי עסקים. עלות כלולה במחיר.',
+                'כן, כל המוצרים עם אחריות מלאה של היבואן הרשמי בישראל.'
+              ];
+              return (
+                <div className="faq-item reveal-on-scroll" key={index}>
+                  <div className="faq-number">{String(index + 1).padStart(2, '0')}</div>
+                  <div className="faq-card">
+                    <button className="faq-question" onClick={() => toggleFaq(index)}>
+                      <EditableTextField textKey={`HOME_FAQ_${num}_Q`} fallback={fallbackQuestions[index]} as="span" />
+                      <i className={`fa-solid fa-chevron-down ${activeFaq === index ? 'rotated' : ''}`}></i>
+                    </button>
+                    <div className={`faq-answer ${activeFaq === index ? 'open' : ''}`}>
+                      <EditableTextField textKey={`HOME_FAQ_${num}_A`} fallback={fallbackAnswers[index]} as="p" multiline />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -498,33 +605,44 @@ function HomePageContent() {
       {/* Testimonials Section */}
       <section id="testimonials" className="testimonials">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_TESTIMONIALS_TITLE', 'לקוחות מספרים')}</h2>
+          <EditableTextField 
+            textKey="HOME_TESTIMONIALS_TITLE" 
+            fallback="לקוחות מספרים"
+            as="h2"
+            className="section-title"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+          />
           <div className="testimonials-slider-wrapper">
             <div className="testimonials-slider">
-              {testimonials.map((testimonial, index) => (
-                <div className={`testimonial-slide ${activeTestimonial === index ? 'active' : ''}`} key={index}>
-                  <div className="testimonial-compact">
-                    <div className="testimonial-avatar">
-                      <i className="fa-solid fa-user"></i>
-                    </div>
-                    <div className="testimonial-content">
-                      <div className="rating">
-                        {[...Array(5)].map((_, i) => (
-                          <i className="fa-solid fa-star" key={i}></i>
-                        ))}
+              {[1,2,3].map((num, index) => {
+                const fallbackTexts = ['חסכתי 700 ₪ על מכונת כביסה!', 'קיבלתי 300 ₪ מהפניות. מדהים!', 'חסכתי אלפי שקלים. שירות מעולה!'];
+                const fallbackAuthors = ['מיכל כהן', 'יוסי לוי', 'דני אברהם'];
+                const fallbackLocations = ['תל אביב', 'חיפה', 'ירושלים'];
+                return (
+                  <div className={`testimonial-slide ${activeTestimonial === index ? 'active' : ''}`} key={index}>
+                    <div className="testimonial-compact">
+                      <div className="testimonial-avatar">
+                        <i className="fa-solid fa-user"></i>
                       </div>
-                      <p className="testimonial-text">&ldquo;{testimonial.text}&rdquo;</p>
-                      <div className="testimonial-author">
-                        <strong>{testimonial.author}</strong> • <span>{testimonial.location}</span>
+                      <div className="testimonial-content">
+                        <div className="rating">
+                          {[...Array(5)].map((_, i) => (
+                            <i className="fa-solid fa-star" key={i}></i>
+                          ))}
+                        </div>
+                        <p className="testimonial-text">&ldquo;<EditableTextField textKey={`HOME_TESTIMONIAL_${num}_TEXT`} fallback={fallbackTexts[index]} as="span" />&rdquo;</p>
+                        <div className="testimonial-author">
+                          <strong><EditableTextField textKey={`HOME_TESTIMONIAL_${num}_AUTHOR`} fallback={fallbackAuthors[index]} as="span" /></strong> • <EditableTextField textKey={`HOME_TESTIMONIAL_${num}_LOCATION`} fallback={fallbackLocations[index]} as="span" />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             
             <div className="testimonial-dots">
-              {testimonials.map((_, index) => (
+              {[0,1,2].map((index) => (
                 <span 
                   className={`testimonial-dot ${activeTestimonial === index ? 'active' : ''}`} 
                   onClick={() => setActiveTestimonial(index)}
@@ -539,32 +657,42 @@ function HomePageContent() {
       {/* About VIPO Section */}
       <section id="about-vipo" className="about-vipo">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_ABOUT_TITLE', 'מי אנחנו')}</h2>
+          <EditableTextField 
+            textKey="HOME_ABOUT_TITLE" 
+            fallback="מי אנחנו"
+            as="h2"
+            className="section-title"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+          />
           <div className="about-content">
-            <p className="about-intro">
-              {getText('HOME_ABOUT_TEXT', 'VIPO Group מובילה את תחום הרכישה הקבוצתית בישראל מאז 2018. אנו מחברים בין אלפי לקוחות פרטיים ועסקיים לספקים איכותיים בארץ ובעולם, מקצרים תהליכים ומוזילים עלויות בצורה חכמה, שקופה ומהירה – עד שהמוצר מגיע אליכם הביתה.')}
-            </p>
+            <EditableTextField 
+              textKey="HOME_ABOUT_TEXT" 
+              fallback="VIPO Group מובילה את תחום הרכישה הקבוצתית בישראל מאז 2018. אנו מחברים בין אלפי לקוחות פרטיים ועסקיים לספקים איכותיים בארץ ובעולם, מקצרים תהליכים ומוזילים עלויות בצורה חכמה, שקופה ומהירה – עד שהמוצר מגיע אליכם הביתה."
+              as="p"
+              className="about-intro"
+              multiline
+            />
 
             <div className="about-stats">
               <div className="stat-item">
                 <i className="fa-solid fa-user-check"></i>
                 <div>
-                  <span className="stat-number">{getText('HOME_ABOUT_STAT_1', '+9,500')}</span>
-                  <span className="stat-label">{getText('HOME_ABOUT_STAT_1_LABEL', 'לקוחות מרוצים')}</span>
+                  <EditableTextField textKey="HOME_ABOUT_STAT_1" fallback="+9,500" as="span" className="stat-number" />
+                  <EditableTextField textKey="HOME_ABOUT_STAT_1_LABEL" fallback="לקוחות מרוצים" as="span" className="stat-label" />
                 </div>
               </div>
               <div className="stat-item">
                 <i className="fa-solid fa-calendar"></i>
                 <div>
-                  <span className="stat-number">{getText('HOME_ABOUT_STAT_2', '2018')}</span>
-                  <span className="stat-label">{getText('HOME_ABOUT_STAT_2_LABEL', 'שנת הקמה')}</span>
+                  <EditableTextField textKey="HOME_ABOUT_STAT_2" fallback="2018" as="span" className="stat-number" />
+                  <EditableTextField textKey="HOME_ABOUT_STAT_2_LABEL" fallback="שנת הקמה" as="span" className="stat-label" />
                 </div>
               </div>
               <div className="stat-item">
                 <i className="fa-solid fa-globe"></i>
                 <div>
-                  <span className="stat-number" style={{whiteSpace: 'nowrap'}}>{getText('HOME_ABOUT_STAT_3', 'ישראל + סין')}</span>
-                  <span className="stat-label">{getText('HOME_ABOUT_STAT_3_LABEL', 'נוכחות בינלאומית')}</span>
+                  <EditableTextField textKey="HOME_ABOUT_STAT_3" fallback="ישראל + סין" as="span" className="stat-number" style={{whiteSpace: 'nowrap'}} />
+                  <EditableTextField textKey="HOME_ABOUT_STAT_3_LABEL" fallback="נוכחות בינלאומית" as="span" className="stat-label" />
                 </div>
               </div>
             </div>
@@ -589,8 +717,18 @@ function HomePageContent() {
       <footer id="contact" className="footer">
         <div className="container">
           <div className="footer-brand-section" style={{textAlign: 'center', marginBottom: '30px'}}>
-            <h2 className="footer-brand">{getText('FOOTER_COMPANY_NAME', 'VIPO GROUP')}</h2>
-            <p className="footer-tagline">{getText('FOOTER_TAGLINE', 'רכישה קבוצתית חכמה וחסכונית')}</p>
+            <EditableTextField 
+              textKey="FOOTER_COMPANY_NAME" 
+              fallback="VIPO GROUP"
+              as="h2"
+              className="footer-brand"
+            />
+            <EditableTextField 
+              textKey="FOOTER_TAGLINE" 
+              fallback="רכישה קבוצתית חכמה וחסכונית"
+              as="p"
+              className="footer-tagline"
+            />
           </div>
           
           <div className="footer-main" style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '30px'}}>
@@ -598,21 +736,21 @@ function HomePageContent() {
             <div className="footer-contact" style={{flex: '1', minWidth: '200px'}}>
               <h3 style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}}>יצירת קשר</h3>
               <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                <a href={`tel:${getText('FOOTER_PHONE', '058-700-9938').replace(/-/g, '')}`} className="footer-contact-item">
+                <div className="footer-contact-item">
                   <i className="fa-solid fa-phone"></i>
-                  <span>{getText('FOOTER_PHONE', '058-700-9938')}</span>
-                </a>
-                <a href={`mailto:${getText('FOOTER_EMAIL', 'vipo.m1985@gmail.com')}`} className="footer-contact-item">
+                  <EditableTextField textKey="FOOTER_PHONE" fallback="058-700-9938" as="span" />
+                </div>
+                <div className="footer-contact-item">
                   <i className="fa-solid fa-envelope"></i>
-                  <span>{getText('FOOTER_EMAIL', 'vipo.m1985@gmail.com')}</span>
-                </a>
+                  <EditableTextField textKey="FOOTER_EMAIL" fallback="vipo.m1985@gmail.com" as="span" />
+                </div>
                 <div className="footer-contact-item">
                   <i className="fa-solid fa-map-marker-alt"></i>
-                  <span>{getText('FOOTER_ADDRESS', 'ז\'בוטינסקי 5, באר יעקב')}</span>
+                  <EditableTextField textKey="FOOTER_ADDRESS" fallback="ז'בוטינסקי 5, באר יעקב" as="span" />
                 </div>
                 <div className="footer-contact-item">
                   <i className="fa-solid fa-clock"></i>
-                  <span>{getText('FOOTER_HOURS', 'א׳-ה׳ 09:00-18:00')}</span>
+                  <EditableTextField textKey="FOOTER_HOURS" fallback="א׳-ה׳ 09:00-18:00" as="span" />
                 </div>
               </div>
             </div>
@@ -638,7 +776,7 @@ function HomePageContent() {
           </div>
           
           <div className="footer-bottom">
-            <p>{getText('FOOTER_COPYRIGHT', '© 2025 VIPO GROUP | ע.מ. 036517548')}</p>
+            <EditableTextField textKey="FOOTER_COPYRIGHT" fallback="© 2025 VIPO GROUP | ע.מ. 036517548" as="p" />
             <div className="footer-links">
               <a href="/terms">תנאי שימוש</a>
               <a href="/privacy">מדיניות פרטיות</a>
@@ -651,6 +789,115 @@ function HomePageContent() {
       <a href="https://chat.whatsapp.com/KP5UIdBHiKdGmOdyWeJySa?mode=ac_t" className="whatsapp-button" aria-label="צור קשר בוואטסאפ" target="_blank">
         <span style={{color: 'white'}}>{svgIcons.whatsapp}</span>
       </a>
+
+      {/* Edit Mode Button - Only for admin/business_admin */}
+      {canEdit && (
+        <button
+          onClick={() => editMode ? disableEditMode() : setShowPasswordModal(true)}
+          className="fixed bottom-20 left-4 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all hover:scale-105"
+          style={{
+            background: editMode 
+              ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' 
+              : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+            color: 'white',
+            fontWeight: '600',
+          }}
+        >
+          {editMode ? (
+            <>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              סיום עריכה
+            </>
+          ) : (
+            <>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              מצב עריכה
+            </>
+          )}
+        </button>
+      )}
+
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => {
+            setShowPasswordModal(false);
+            setPasswordInput('');
+            setPasswordError(false);
+          }}
+        >
+          <div 
+            className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+            dir="rtl"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold" style={{ color: '#1e3a8a' }}>כניסה למצב עריכה</h3>
+              <button 
+                onClick={() => {
+                  setShowPasswordModal(false);
+                  setPasswordInput('');
+                  setPasswordError(false);
+                }}
+                className="p-2 hover:bg-gray-100 rounded-full transition-all"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <p className="text-gray-600 text-sm mb-4">הזן סיסמה כדי לערוך טקסטים בדף הבית</p>
+            
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => {
+                setPasswordInput(e.target.value);
+                setPasswordError(false);
+              }}
+              onKeyDown={(e) => e.key === 'Enter' && handlePasswordSubmit()}
+              placeholder="סיסמה"
+              className={`w-full px-4 py-3 border-2 rounded-lg text-lg ${
+                passwordError ? 'border-red-500 bg-red-50' : 'border-gray-300'
+              }`}
+              autoFocus
+            />
+            
+            {passwordError && (
+              <p className="text-red-500 text-sm mt-2">סיסמה שגויה</p>
+            )}
+            
+            <button
+              onClick={handlePasswordSubmit}
+              className="w-full mt-4 px-4 py-3 rounded-lg text-white font-medium transition-all hover:opacity-90"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              כניסה
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Mode Indicator */}
+      {editMode && (
+        <div 
+          className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-full shadow-lg"
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', color: 'white' }}
+        >
+          <span className="flex items-center gap-2 text-sm font-medium">
+            <svg className="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            מצב עריכה פעיל - לחץ על טקסט לעריכה
+          </span>
+        </div>
+      )}
     </div>
   );
 }

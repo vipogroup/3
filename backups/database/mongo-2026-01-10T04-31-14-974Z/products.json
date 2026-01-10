@@ -91,7 +91,7 @@
     "videoUrl": "https://www.youtube.com/embed/jNQXAC9IVRw",
     "imagePath": "",
     "inStock": false,
-    "stockCount": -3,
+    "stockCount": -4,
     "rating": 4.7,
     "reviews": 156,
     "features": [
@@ -107,7 +107,7 @@
       "$date": "2025-12-01T04:34:52.103Z"
     },
     "updatedAt": {
-      "$date": "2026-01-07T15:09:46.620Z"
+      "$date": "2026-01-08T20:32:20.600Z"
     },
     "customFields": [],
     "sku": "",
@@ -599,7 +599,7 @@
     "videoUrl": "https://www.youtube.com/embed/tgbNymZ7vqY",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 77,
+    "stockCount": 76,
     "rating": 4.3,
     "reviews": 312,
     "features": [
@@ -622,7 +622,7 @@
       "$date": "2025-12-01T04:36:35.737Z"
     },
     "updatedAt": {
-      "$date": "2026-01-07T15:38:38.489Z"
+      "$date": "2026-01-08T02:54:05.440Z"
     },
     "position": 34
   },
@@ -1359,10 +1359,10 @@
       "תאורה": "RGB מלאה",
       "חיבור": "USB-C"
     },
-    "stockCount": 17,
+    "stockCount": 15,
     "type": "online",
     "updatedAt": {
-      "$date": "2026-01-07T15:38:38.489Z"
+      "$date": "2026-01-08T16:00:19.877Z"
     },
     "videoUrl": "",
     "position": 45
@@ -1645,7 +1645,7 @@
     "videoUrl": "",
     "imagePath": "",
     "inStock": true,
-    "stockCount": 5,
+    "stockCount": 4,
     "rating": 4.5,
     "reviews": 0,
     "features": [],
@@ -1665,7 +1665,7 @@
       "$date": "2026-01-06T03:08:37.336Z"
     },
     "updatedAt": {
-      "$date": "2026-01-07T15:38:38.489Z"
+      "$date": "2026-01-09T16:38:23.042Z"
     },
     "__v": 0,
     "position": 49
@@ -1734,6 +1734,612 @@
     },
     "updatedAt": {
       "$date": "2026-01-06T12:40:22.457Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695f7c90986b9f1f76624d52"
+    },
+    "tenantId": {
+      "$oid": "695f535062acf71a6f9193ad"
+    },
+    "sku": "ST-SS-1807090",
+    "name": "שולחן נירוסטה מקצועי 180×70×90 ס״מ – תעשייתי, חזק ועמיד",
+    "description": "Jddj",
+    "fullDescription": "Jddj",
+    "category": "נירוסטה",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767865466/vipo-products/1000663470_tngf1w.jpg",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767865466/vipo-products/1000663470_tngf1w.jpg",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767865466/vipo-products/1000663470_tngf1w.jpg"
+    ],
+    "videoUrl": "",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 7,
+    "rating": 4.5,
+    "reviews": 0,
+    "features": [],
+    "specs": "",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": false,
+    "position": null,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-08T09:44:48.668Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T09:46:38.965Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "696063af74e8fe0438e5ea47"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "sku": "5sds5d5sd5s-COPY-222457",
+    "name": "אוזניות Bluetooth אלחוטיות (עותק)",
+    "description": "עיעחכעיחח",
+    "fullDescription": "יחעיחיע",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767924549/vipo-products/Sweet_Hanukkah_Joy_fpotpu.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 9,
+    "rating": 4.5,
+    "reviews": 10,
+    "features": [
+      "עיעי",
+      "עיעי",
+      "עיעיע",
+      "עיעיע"
+    ],
+    "specs": "עיעיעי",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": true,
+    "position": null,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-09T02:10:55.770Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:24:47.046Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "696090c349cc153d5abc41ed"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "sku": "5sds5d5sd5s-COPY-222457-COPY-195329",
+    "name": "אוזניות Bluetooth אלחוטיות (עותק) (עותק)",
+    "description": "עיעחכעיחח",
+    "fullDescription": "יחעיחיע",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767924549/vipo-products/Sweet_Hanukkah_Joy_fpotpu.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 9,
+    "rating": 4.5,
+    "reviews": 10,
+    "features": [
+      "עיעי",
+      "עיעי",
+      "עיעיע",
+      "עיעיע"
+    ],
+    "specs": "עיעיעי",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": true,
+    "position": null,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-09T05:23:15.329Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:24:45.560Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "696090ca49cc153d5abc41f1"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "sku": "5sds5d5sd5s-COPY-222457-COPY-195329-COPY-202795",
+    "name": "אוזניות Bluetooth אלחוטיות (עותק) (עותק) (עותק)",
+    "description": "עיעחכעיחח",
+    "fullDescription": "יחעיחיע",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767924549/vipo-products/Sweet_Hanukkah_Joy_fpotpu.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 9,
+    "rating": 4.5,
+    "reviews": 10,
+    "features": [
+      "עיעי",
+      "עיעי",
+      "עיעיע",
+      "עיעיע"
+    ],
+    "specs": "עיעיעי",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": true,
+    "position": null,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-09T05:23:22.795Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:24:44.382Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "696090d149cc153d5abc41f5"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "sku": "5sds5d5sd5s-COPY-222457-COPY-195329-COPY-202795-COPY-209440",
+    "name": "אוזניות Bluetooth אלחוטיות (עותק) (עותק) (עותק) (עותק)",
+    "description": "עיעחכעיחח",
+    "fullDescription": "יחעיחיע",
+    "category": "ריהוט",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "online",
+    "purchaseType": "regular",
+    "groupEndDate": null,
+    "expectedDeliveryDays": null,
+    "groupMinQuantity": 1,
+    "groupCurrentQuantity": 0,
+    "groupPurchaseDetails": null,
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767924549/vipo-products/Sweet_Hanukkah_Joy_fpotpu.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 9,
+    "rating": 4.5,
+    "reviews": 10,
+    "features": [
+      "עיעי",
+      "עיעי",
+      "עיעיע",
+      "עיעיע"
+    ],
+    "specs": "עיעיעי",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": true,
+    "position": null,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-09T05:23:29.440Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:24:43.053Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "696091b049cc153d5abc422b"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "sku": "5sds5d5sd5s-COPY-222457",
+    "name": "אוזניות Bluetooth אלחוטיות (עותק)",
+    "description": "לחלחלחלחלחלחלחח",
+    "fullDescription": "חלחלחלחלחלחלחל",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": {
+      "$date": "2026-02-08T05:27:12.009Z"
+    },
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 54,
+    "groupCurrentQuantity": 10,
+    "groupPurchaseDetails": {
+      "closingDays": 30,
+      "shippingDays": 60,
+      "minQuantity": 54,
+      "currentQuantity": 10,
+      "totalDays": 90
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936365/vipo-products/image_14_ifoled.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936370/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_nsyrku.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936388/vipo-products/%D7%A9%D7%95%D7%9C%D7%97%D7%9F_%D7%A0%D7%99%D7%A8%D7%95%D7%A1%D7%98%D7%94_fjwico.jpg"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767936333/vipo-products/%D7%94%D7%A8%D7%95%D7%95%D7%97_%D7%9E%D7%A9%D7%99%D7%AA%D7%95%D7%A3_pnxqhb.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 10,
+    "rating": 4.5,
+    "reviews": 5,
+    "features": [
+      "יחיחיחיחיח",
+      "יחיחיחיחיחי",
+      "יחיחי",
+      "יחיחיחיחיחי"
+    ],
+    "specs": "חיחיחיחיחיחי",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": true,
+    "position": null,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-09T05:27:12.101Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:31:53.478Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "696091c549cc153d5abc4237"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "sku": "5sds5d5sd5s-COPY-222457-COPY-453939",
+    "name": "אוזניות Bluetooth אלחוטיות (עותק) (עותק)",
+    "description": "לחלחלחלחלחלחלחח",
+    "fullDescription": "חלחלחלחלחלחלחל",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": {
+      "$date": "2026-02-08T05:27:12.009Z"
+    },
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 54,
+    "groupCurrentQuantity": 10,
+    "groupPurchaseDetails": {
+      "closingDays": 30,
+      "shippingDays": 60,
+      "minQuantity": 54,
+      "currentQuantity": 10,
+      "totalDays": 90
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936365/vipo-products/image_14_ifoled.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936370/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_nsyrku.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936388/vipo-products/%D7%A9%D7%95%D7%9C%D7%97%D7%9F_%D7%A0%D7%99%D7%A8%D7%95%D7%A1%D7%98%D7%94_fjwico.jpg"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767936333/vipo-products/%D7%94%D7%A8%D7%95%D7%95%D7%97_%D7%9E%D7%A9%D7%99%D7%AA%D7%95%D7%A3_pnxqhb.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 10,
+    "rating": 4.5,
+    "reviews": 5,
+    "features": [
+      "יחיחיחיחיח",
+      "יחיחיחיחיחי",
+      "יחיחי",
+      "יחיחיחיחיחי"
+    ],
+    "specs": "חיחיחיחיחיחי",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": true,
+    "position": null,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-09T05:27:33.939Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:31:52.504Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "696091cc49cc153d5abc423c"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "sku": "5sds5d5sd5s-COPY-222457-COPY-453939-COPY-460401",
+    "name": "אוזניות Bluetooth אלחוטיות (עותק) (עותק) (עותק)",
+    "description": "לחלחלחלחלחלחלחח",
+    "fullDescription": "חלחלחלחלחלחלחל",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": {
+      "$date": "2026-02-08T05:27:12.009Z"
+    },
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 54,
+    "groupCurrentQuantity": 10,
+    "groupPurchaseDetails": {
+      "closingDays": 30,
+      "shippingDays": 60,
+      "minQuantity": 54,
+      "currentQuantity": 10,
+      "totalDays": 90
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936365/vipo-products/image_14_ifoled.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936370/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_nsyrku.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936388/vipo-products/%D7%A9%D7%95%D7%9C%D7%97%D7%9F_%D7%A0%D7%99%D7%A8%D7%95%D7%A1%D7%98%D7%94_fjwico.jpg"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767936333/vipo-products/%D7%94%D7%A8%D7%95%D7%95%D7%97_%D7%9E%D7%A9%D7%99%D7%AA%D7%95%D7%A3_pnxqhb.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 10,
+    "rating": 4.5,
+    "reviews": 5,
+    "features": [
+      "יחיחיחיחיח",
+      "יחיחיחיחיחי",
+      "יחיחי",
+      "יחיחיחיחיחי"
+    ],
+    "specs": "חיחיחיחיחיחי",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": true,
+    "position": null,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-09T05:27:40.401Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:31:54.931Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "696091d349cc153d5abc4244"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "sku": "5sds5d5sd5s-COPY-222457-COPY-453939-COPY-467825",
+    "name": "אוזניות Bluetooth אלחוטיות (עותק) (עותק) (עותק)",
+    "description": "לחלחלחלחלחלחלחח",
+    "fullDescription": "חלחלחלחלחלחלחל",
+    "category": "אביזרי מחשב",
+    "catalogId": null,
+    "catalogSlug": "",
+    "price": 500,
+    "originalPrice": 600,
+    "commission": 50,
+    "currency": "ILS",
+    "type": "group",
+    "purchaseType": "group",
+    "groupEndDate": {
+      "$date": "2026-02-08T05:27:12.009Z"
+    },
+    "expectedDeliveryDays": 60,
+    "groupMinQuantity": 54,
+    "groupCurrentQuantity": 10,
+    "groupPurchaseDetails": {
+      "closingDays": 30,
+      "shippingDays": 60,
+      "minQuantity": 54,
+      "currentQuantity": 10,
+      "totalDays": 90
+    },
+    "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+    "imageUrl": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+    "images": [
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936322/vipo-products/Untitled_design_20250729_224819_0000_uk1fri.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936365/vipo-products/image_14_ifoled.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936370/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_nsyrku.png",
+      "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767936388/vipo-products/%D7%A9%D7%95%D7%9C%D7%97%D7%9F_%D7%A0%D7%99%D7%A8%D7%95%D7%A1%D7%98%D7%94_fjwico.jpg"
+    ],
+    "videoUrl": "https://res.cloudinary.com/dckhhnoqh/video/upload/v1767936333/vipo-products/%D7%94%D7%A8%D7%95%D7%95%D7%97_%D7%9E%D7%A9%D7%99%D7%AA%D7%95%D7%A3_pnxqhb.mp4",
+    "imagePath": "",
+    "inStock": true,
+    "stockCount": 10,
+    "rating": 4.5,
+    "reviews": 5,
+    "features": [
+      "יחיחיחיחיח",
+      "יחיחיחיחיחי",
+      "יחיחי",
+      "יחיחיחיחיחי"
+    ],
+    "specs": "חיחיחיחיחיחי",
+    "suitableFor": "מתאים לכל מי שמחפש מוצר איכותי במחיר משתלם.\nמושלם לשימוש יומיומי בבית או במשרד.\nמתאים גם כמתנה מקורית ושימושית.",
+    "whyChooseUs": "איכות מעולה במחיר הוגן\nמשלוח מהיר ואמין לכל הארץ\nשירות לקוחות זמין ומקצועי\nאחריות מלאה על כל המוצרים",
+    "warranty": "אחריות יצרן מלאה\nהחלפה או החזר כספי תוך 14 יום\nתמיכה טכנית זמינה בטלפון ובמייל",
+    "customFields": [],
+    "active": true,
+    "isFeatured": true,
+    "position": null,
+    "archivedAt": null,
+    "priorityItemCode": null,
+    "prioritySyncStatus": "pending",
+    "lastPrioritySyncAt": null,
+    "vatType": "standard",
+    "createdAt": {
+      "$date": "2026-01-09T05:27:47.825Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:31:57.818Z"
     },
     "__v": 0
   }

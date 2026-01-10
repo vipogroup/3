@@ -32,16 +32,11 @@ function SettingsIcon({ className = 'w-6 h-6' }) {
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+        d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3"
       />
-      <path
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-      />
+      <circle cx="4" cy="14" r="2" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="8" r="2" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="20" cy="16" r="2" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );
 }
@@ -233,6 +228,8 @@ export default function BusinessDashboardClient() {
   const [openCategory, setOpenCategory] = useState(null);
   const [isImpersonating, setIsImpersonating] = useState(false);
   const [impersonatingTenant, setImpersonatingTenant] = useState(null);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -346,7 +343,7 @@ export default function BusinessDashboardClient() {
   };
 
   return (
-    <main className="min-h-screen bg-white p-3 sm:p-6 md:p-8">
+    <main className="min-h-screen bg-cyan-50 p-3 sm:p-6 md:p-8">
       {/* Impersonation Banner */}
       {isImpersonating && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 px-4 flex items-center justify-between shadow-lg">
@@ -393,6 +390,20 @@ export default function BusinessDashboardClient() {
           </h1>
           {tenant && (
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowShareModal(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-90 border-2"
+                style={{ 
+                  borderColor: '#0891b2',
+                  color: '#0891b2',
+                  background: 'white'
+                }}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+                שתף את החנות
+              </button>
               <Link
                 href={`/t/${tenant.slug}`}
                 target="_blank"
@@ -819,6 +830,95 @@ export default function BusinessDashboardClient() {
           </section>
         </div>
       </div>
+
+      {/* Share Modal */}
+      {showShareModal && tenant && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowShareModal(false)}>
+          <div 
+            className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+            dir="rtl"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold" style={{ color: '#1e3a8a' }}>שתף את החנות שלך</h3>
+              <button 
+                onClick={() => setShowShareModal(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-all"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* Store Link */}
+              <div className="p-4 rounded-xl bg-gray-50 border-2 border-gray-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                  <span className="font-bold text-gray-900">קישור לחנות</span>
+                </div>
+                <p className="text-xs text-gray-500 mb-2">שתף קישור זה כדי שאנשים יוכלו לראות את המוצרים שלך</p>
+                <div className="flex items-center gap-2">
+                  <input 
+                    type="text" 
+                    readOnly 
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/t/${tenant.slug}`}
+                    className="flex-1 px-3 py-2 bg-white border rounded-lg text-sm text-gray-700"
+                  />
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/t/${tenant.slug}`);
+                      setCopiedLink('store');
+                      setTimeout(() => setCopiedLink(null), 2000);
+                    }}
+                    className="px-4 py-2 rounded-lg text-white text-sm font-medium transition-all"
+                    style={{ background: copiedLink === 'store' ? '#16a34a' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  >
+                    {copiedLink === 'store' ? 'הועתק!' : 'העתק'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Registration Link */}
+              <div className="p-4 rounded-xl bg-gray-50 border-2 border-gray-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                  </svg>
+                  <span className="font-bold text-gray-900">קישור להרשמה</span>
+                </div>
+                <p className="text-xs text-gray-500 mb-2">שתף קישור זה כדי שלקוחות חדשים יירשמו ישירות לחנות שלך</p>
+                <div className="flex items-center gap-2">
+                  <input 
+                    type="text" 
+                    readOnly 
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/register?tenant=${tenant.slug}`}
+                    className="flex-1 px-3 py-2 bg-white border rounded-lg text-sm text-gray-700"
+                  />
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/register?tenant=${tenant.slug}`);
+                      setCopiedLink('register');
+                      setTimeout(() => setCopiedLink(null), 2000);
+                    }}
+                    className="px-4 py-2 rounded-lg text-white text-sm font-medium transition-all"
+                    style={{ background: copiedLink === 'register' ? '#16a34a' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  >
+                    {copiedLink === 'register' ? 'הועתק!' : 'העתק'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-400 text-center mt-4">
+              לקוחות שנרשמים דרך הקישור שלך יהיו שייכים לחנות שלך
+            </p>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

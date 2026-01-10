@@ -1582,5 +1582,215 @@
       "$date": "2026-01-07T01:57:32.158Z"
     },
     "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "695fcdfda7345f7c380737eb"
+    },
+    "tenantId": null,
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: miriamshabo22@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "695fcdfda7345f7c380737e2"
+      },
+      "email": "miriamshabo22@gmail.com",
+      "fullName": "מאים"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-08T15:32:13.736Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T15:32:13.736Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6960088e2bf647e67405d725"
+    },
+    "tenantId": null,
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: m05071823331@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "6960088e2bf647e67405d724"
+      },
+      "email": "m05071823331@gmail.com",
+      "fullName": "מנחם דחגח"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-08T19:42:06.720Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T19:42:06.720Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "696049c674e8fe0438e5e7ab"
+    },
+    "tenantId": null,
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: m0552934802@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "696049c674e8fe0438e5e7aa"
+      },
+      "email": "m0552934802@gmail.com",
+      "fullName": "לקוח עסק חדש ניסוי "
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-09T00:20:22.753Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T00:20:22.753Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69604c9474e8fe0438e5e7e3"
+    },
+    "tenantId": null,
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: m0552934803@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "69604c9474e8fe0438e5e7e2"
+      },
+      "email": "m0552934803@gmail.com",
+      "fullName": "לקוח חדש משתמש לעסק בדיקה "
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-09T00:32:20.521Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T00:32:20.521Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69605be374e8fe0438e5e91e"
+    },
+    "tenantId": null,
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: m0552934803@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "69605be374e8fe0438e5e91d"
+      },
+      "email": "m0552934803@gmail.com",
+      "fullName": "לקוח חדש משתמש לעסק בדיקה"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-09T01:37:39.090Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T01:37:39.090Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69605c7d74e8fe0438e5e93c"
+    },
+    "tenantId": null,
+    "type": "new_user",
+    "message": "נרשם משתמש חדש: m0552934802@gmail.com",
+    "payload": {
+      "userId": {
+        "$oid": "69605c7d74e8fe0438e5e93b"
+      },
+      "email": "m0552934802@gmail.com",
+      "fullName": "לקוח עסק חדש ניסוי "
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-09T01:40:13.781Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T01:40:13.781Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69605da274e8fe0438e5e959"
+    },
+    "tenantId": null,
+    "type": "new_user",
+    "message": "נרשם משתמש חדש (Google): Harel2021 Dror",
+    "payload": {
+      "userId": {
+        "$oid": "69605da2efefb52696a38076"
+      },
+      "email": "hareldror2021@gmail.com",
+      "fullName": "Harel2021 Dror",
+      "provider": "google"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-09T01:45:06.038Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T01:45:06.038Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69605fe874e8fe0438e5e996"
+    },
+    "tenantId": null,
+    "type": "new_user",
+    "message": "נרשם משתמש חדש (Google): Harel2021 Dror",
+    "payload": {
+      "userId": {
+        "$oid": "69605fe8efefb52696a38077"
+      },
+      "email": "hareldror2021@gmail.com",
+      "fullName": "Harel2021 Dror",
+      "provider": "google"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-09T01:54:48.771Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T01:54:48.771Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6961ade152b2cd8f29b1ec73"
+    },
+    "tenantId": null,
+    "type": "new_user",
+    "message": "נרשם משתמש חדש (Google): שירן",
+    "payload": {
+      "userId": {
+        "$oid": "6961ade183b4e887b05901f4"
+      },
+      "email": "s0533858881@gmail.com",
+      "fullName": "שירן",
+      "provider": "google"
+    },
+    "read": false,
+    "createdAt": {
+      "$date": "2026-01-10T01:39:45.392Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T01:39:45.392Z"
+    },
+    "__v": 0
   }
 ]

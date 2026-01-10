@@ -1,0 +1,83 @@
+[
+  {
+    "_id": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "name": "חנות הבדיקות",
+    "slug": "test-shop",
+    "ownerId": {
+      "$oid": "6960436274e8fe0438e5e744"
+    },
+    "status": "active",
+    "platformCommissionRate": 5,
+    "branding": {
+      "logo": null,
+      "favicon": null,
+      "primaryColor": "#3B82F6",
+      "secondaryColor": "#1E40AF",
+      "accentColor": "#10B981"
+    },
+    "contact": {
+      "email": "0523004374@gmail.com",
+      "phone": "0523004374",
+      "whatsapp": "0523004374",
+      "address": "באר יעקב "
+    },
+    "social": {
+      "facebook": null,
+      "instagram": null,
+      "twitter": null,
+      "linkedin": null
+    },
+    "seo": {
+      "title": "חנות הבדיקות",
+      "description": null,
+      "keywords": null
+    },
+    "features": {
+      "registration": true,
+      "groupPurchase": true,
+      "notifications": true,
+      "darkMode": false,
+      "agentSystem": true,
+      "coupons": true
+    },
+    "agentSettings": {
+      "defaultCommissionPercent": 12,
+      "defaultDiscountPercent": 10,
+      "commissionHoldDays": 30,
+      "groupPurchaseHoldDays": 100
+    },
+    "billing": {
+      "pendingBalance": 0,
+      "totalPaid": 0,
+      "lastPaymentAt": null,
+      "paymentMethod": null,
+      "bankDetails": {
+        "bankName": null,
+        "branchNumber": null,
+        "accountNumber": null,
+        "accountName": null
+      }
+    },
+    "stats": {
+      "totalSales": 0,
+      "totalOrders": 0,
+      "totalProducts": 0,
+      "totalAgents": 0,
+      "totalCustomers": 0
+    },
+    "createdAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T00:56:44.949Z"
+    },
+    "activatedAt": {
+      "$date": "2026-01-09T00:03:51.473Z"
+    },
+    "domain": "",
+    "subdomain": "",
+    "updatedBy": "692deea497ce1a2ba6d4e151"
+  }
+]

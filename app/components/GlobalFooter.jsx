@@ -2,8 +2,10 @@
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { useSiteTexts } from '@/lib/useSiteTexts';
 
 export default function GlobalFooter() {
+  const { getText } = useSiteTexts();
   const pathname = usePathname();
   
   // Check if we should hide the footer
@@ -36,34 +38,32 @@ export default function GlobalFooter() {
       {/* About VIPO Section */}
       <section id="about-vipo" className="about-vipo">
         <div className="container">
-          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>מי אנחנו</h2>
+          <h2 className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{getText('HOME_ABOUT_TITLE', 'מי אנחנו')}</h2>
           <div className="about-content">
             <p className="about-intro">
-              VIPO Group מובילה את תחום הרכישה הקבוצתית בישראל מאז 2018. אנו מחברים בין אלפי
-              לקוחות פרטיים ועסקיים לספקים איכותיים בארץ ובעולם, מקצרים תהליכים ומוזילים עלויות בצורה חכמה,
-              שקופה ומהירה – עד שהמוצר מגיע אליכם הביתה.
+              {getText('HOME_ABOUT_TEXT', 'VIPO Group מובילה את תחום הרכישה הקבוצתית בישראל מאז 2018. אנו מחברים בין אלפי לקוחות פרטיים ועסקיים לספקים איכותיים בארץ ובעולם, מקצרים תהליכים ומוזילים עלויות בצורה חכמה, שקופה ומהירה – עד שהמוצר מגיע אליכם הביתה.')}
             </p>
 
             <div className="about-stats" style={{maxWidth: '450px', gap: '10px', marginBottom: '20px'}}>
               <div className="stat-item" style={{padding: '8px 6px', borderRadius: '8px'}}>
                 <i className="fa-solid fa-user-check" style={{fontSize: '1rem'}}></i>
                 <div>
-                  <span className="stat-number" style={{fontSize: '0.8rem'}}>+9,500</span>
-                  <span className="stat-label" style={{fontSize: '0.65rem'}}>לקוחות מרוצים</span>
+                  <span className="stat-number" style={{fontSize: '0.8rem'}}>{getText('HOME_ABOUT_STAT_1', '+9,500')}</span>
+                  <span className="stat-label" style={{fontSize: '0.65rem'}}>{getText('HOME_ABOUT_STAT_1_LABEL', 'לקוחות מרוצים')}</span>
                 </div>
               </div>
               <div className="stat-item" style={{padding: '8px 6px', borderRadius: '8px'}}>
                 <i className="fa-solid fa-calendar" style={{fontSize: '1rem'}}></i>
                 <div>
-                  <span className="stat-number" style={{fontSize: '0.8rem'}}>2018</span>
-                  <span className="stat-label" style={{fontSize: '0.65rem'}}>שנת הקמה</span>
+                  <span className="stat-number" style={{fontSize: '0.8rem'}}>{getText('HOME_ABOUT_STAT_2', '2018')}</span>
+                  <span className="stat-label" style={{fontSize: '0.65rem'}}>{getText('HOME_ABOUT_STAT_2_LABEL', 'שנת הקמה')}</span>
                 </div>
               </div>
               <div className="stat-item" style={{padding: '8px 6px', borderRadius: '8px'}}>
                 <i className="fa-solid fa-globe" style={{fontSize: '1rem'}}></i>
                 <div>
-                  <span className="stat-number" style={{whiteSpace: 'nowrap', fontSize: '0.8rem'}}>ישראל + סין</span>
-                  <span className="stat-label" style={{fontSize: '0.65rem'}}>נוכחות בינלאומית</span>
+                  <span className="stat-number" style={{whiteSpace: 'nowrap', fontSize: '0.8rem'}}>{getText('HOME_ABOUT_STAT_3', 'ישראל + סין')}</span>
+                  <span className="stat-label" style={{fontSize: '0.65rem'}}>{getText('HOME_ABOUT_STAT_3_LABEL', 'נוכחות בינלאומית')}</span>
                 </div>
               </div>
             </div>
@@ -88,8 +88,8 @@ export default function GlobalFooter() {
       <footer id="contact" className="footer">
         <div className="container">
           <div className="footer-brand-section" style={{textAlign: 'center', marginBottom: '30px'}}>
-            <h2 className="footer-brand">VIPO GROUP</h2>
-            <p className="footer-tagline">רכישה קבוצתית חכמה וחסכונית</p>
+            <h2 className="footer-brand">{getText('FOOTER_COMPANY_NAME', 'VIPO GROUP')}</h2>
+            <p className="footer-tagline">{getText('FOOTER_TAGLINE', 'רכישה קבוצתית חכמה וחסכונית')}</p>
           </div>
           
           <div className="footer-main" style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '30px'}}>
@@ -97,21 +97,21 @@ export default function GlobalFooter() {
             <div className="footer-contact" style={{flex: '1', minWidth: '200px'}}>
               <h3 style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}}>יצירת קשר</h3>
               <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                <a href="tel:+972587009938" className="footer-contact-item">
+                <div className="footer-contact-item">
                   <i className="fa-solid fa-phone"></i>
-                  <span>058-700-9938</span>
-                </a>
-                <a href="mailto:vipo.m1985@gmail.com" className="footer-contact-item">
+                  <span>{getText('FOOTER_PHONE', '058-700-9938')}</span>
+                </div>
+                <div className="footer-contact-item">
                   <i className="fa-solid fa-envelope"></i>
-                  <span>vipo.m1985@gmail.com</span>
-                </a>
+                  <span>{getText('FOOTER_EMAIL', 'vipo.m1985@gmail.com')}</span>
+                </div>
                 <div className="footer-contact-item">
                   <i className="fa-solid fa-map-marker-alt"></i>
-                  <span>ז&apos;בוטינסקי 5, באר יעקב</span>
+                  <span>{getText('FOOTER_ADDRESS', "ז'בוטינסקי 5, באר יעקב")}</span>
                 </div>
                 <div className="footer-contact-item">
                   <i className="fa-solid fa-clock"></i>
-                  <span>א׳-ה׳ 09:00-18:00</span>
+                  <span>{getText('FOOTER_HOURS', 'א׳-ה׳ 09:00-18:00')}</span>
                 </div>
               </div>
             </div>
@@ -137,7 +137,7 @@ export default function GlobalFooter() {
           </div>
           
           <div className="footer-bottom">
-            <p>&copy; 2025 VIPO GROUP | ע.מ. 036517548</p>
+            <p>{getText('FOOTER_COPYRIGHT', '© 2025 VIPO GROUP | ע.מ. 036517548')}</p>
             <div className="footer-links">
               <a href="/terms">תנאי שימוש</a>
               <a href="/privacy">מדיניות פרטיות</a>
