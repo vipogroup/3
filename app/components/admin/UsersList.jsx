@@ -27,6 +27,7 @@ export default function UsersList() {
   const [tenantGroups, setTenantGroups] = useState([]);
   const [loadingTenants, setLoadingTenants] = useState(false);
   const [expandedTenants, setExpandedTenants] = useState({});
+  const [resettingAll, setResettingAll] = useState(false);
 
   const getCurrentUser = useCallback(async () => {
     try {
@@ -263,6 +264,38 @@ export default function UsersList() {
     }
   }
 
+  // Reset all users (for testing)
+  async function handleResetAllUsers() {
+    const confirmText = 'מחק משתמשים';
+    const userInput = prompt(`⚠️ אזהרה! פעולה זו תמחק את כל המשתמשים וכל הנתונים שלהם!\n(חוץ מ-Super Admin)\n\nהקלד "${confirmText}" לאישור:`);
+    
+    if (userInput !== confirmText) {
+      if (userInput !== null) alert('הטקסט שהוזן לא תואם. הפעולה בוטלה.');
+      return;
+    }
+    
+    setResettingAll(true);
+    try {
+      const res = await fetch('/api/admin/reset-users', {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'שגיאה באיפוס המשתמשים');
+      }
+      
+      alert(`✅ ${data.message}`);
+      fetchUsers(searchQuery, roleFilter);
+    } catch (err) {
+      alert(`❌ ${err.message}`);
+    } finally {
+      setResettingAll(false);
+    }
+  }
+
   async function handleRoleChange(userId, newRole) {
     // Check if trying to remove last admin
     const adminCount = users.filter((u) => u.role === 'admin').length;
@@ -466,6 +499,17 @@ export default function UsersList() {
                 className="px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-all"
               >
                 נקה
+              </button>
+            )}
+            {isSuperAdminUser && (
+              <button
+                type="button"
+                onClick={handleResetAllUsers}
+                disabled={resettingAll}
+                className="px-4 py-2.5 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-all disabled:opacity-50"
+                title="מחיקת כל המשתמשים (לבדיקות)"
+              >
+                {resettingAll ? 'מוחק...' : '⚠️ איפוס'}
               </button>
             )}
           </form>

@@ -230,20 +230,22 @@ export async function POST(req) {
       });
 
       // 2. Admin notification about new registration
+      // Multi-Tenant: If user registered with tenant, send to business_admin only
       await sendTemplateNotification({
         templateType: 'admin_new_registration',
         variables: {
           user_type: normalizedRole === 'agent' ? 'סוכן' : 'לקוח',
           datetime: new Date().toLocaleString('he-IL'),
         },
-        audienceRoles: ['admin'],
+        audienceRoles: tenantId ? ['business_admin'] : ['admin'],
         payloadOverrides: {
-          url: '/admin/users',
+          url: tenantId ? '/business/users' : '/admin/users',
           data: {
             userId: String(newUserId),
             userType: normalizedRole,
           },
         },
+        tenantId: tenantId ? String(tenantId) : null,
       });
     } catch (pushErr) {
       console.error('REGISTER_PUSH_ERROR', pushErr);

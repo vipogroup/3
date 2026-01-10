@@ -66,18 +66,47 @@ export async function POST(req) {
       return NextResponse.json({ error: 'invalid_user' }, { status: 400 });
     }
 
-    const roleTargets = ['all'];
-    if (user.role) {
-      roleTargets.push(user.role);
-    }
+    const isSystemAdmin = user.role === 'admin' || user.role === 'super_admin';
+    const isBusinessAdmin = user.role === 'business_admin';
 
-    const query = {
-      $or: [
-        { senderId: userObjectId },
-        { targetUserId: userObjectId },
-        { targetRole: { $in: roleTargets } },
-      ],
-    };
+    let query;
+
+    if (isSystemAdmin) {
+      // System admin marks admin-targeted messages as read
+      query = {
+        $or: [
+          { senderId: userObjectId },
+          { targetUserId: userObjectId },
+          { targetRole: 'admin' },
+          { targetRole: 'all' },
+        ],
+      };
+    } else if (isBusinessAdmin && user.tenantId) {
+      // Business admin marks only their tenant's messages as read
+      const tenantObjectId = normalizeObjectId(user.tenantId);
+      const tenantString = String(user.tenantId);
+      query = {
+        $or: [
+          { senderId: userObjectId },
+          { targetUserId: userObjectId },
+          { tenantId: tenantObjectId, targetRole: 'business_admin' },
+          { tenantId: tenantString, targetRole: 'business_admin' },
+        ],
+      };
+    } else {
+      // Regular user
+      const roleTargets = ['all'];
+      if (user.role) {
+        roleTargets.push(user.role);
+      }
+      query = {
+        $or: [
+          { senderId: userObjectId },
+          { targetUserId: userObjectId },
+          { targetRole: { $in: roleTargets } },
+        ],
+      };
+    }
 
     const docs = await Message.find(query, { _id: 1, readBy: 1 }).lean();
 

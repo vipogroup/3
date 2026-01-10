@@ -4,9 +4,14 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AgentsList from '@/app/components/admin/AgentsList';
+import { useTheme } from '@/app/context/ThemeContext';
 
 export default function BusinessAgentsPage() {
   const router = useRouter();
+  const { settings } = useTheme();
+  const primaryColor = settings?.primaryColor || '#1e3a8a';
+  const secondaryColor = settings?.secondaryColor || '#0891b2';
+  const mainGradient = settings?.buttonGradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
@@ -39,7 +44,7 @@ export default function BusinessAgentsPage() {
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="animate-spin rounded-full h-12 w-12" style={{
           border: '4px solid rgba(8, 145, 178, 0.2)',
-          borderTopColor: '#0891b2',
+          borderTopColor: secondaryColor,
         }}></div>
       </div>
     );
@@ -54,7 +59,7 @@ export default function BusinessAgentsPage() {
               <span
                 className="flex items-center gap-2 sm:gap-3"
                 style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: mainGradient,
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -62,7 +67,7 @@ export default function BusinessAgentsPage() {
               >
                 <svg
                   className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8"
-                  style={{ color: '#0891b2' }}
+                  style={{ color: secondaryColor }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -80,7 +85,7 @@ export default function BusinessAgentsPage() {
             <Link
               href="/business"
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: mainGradient }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

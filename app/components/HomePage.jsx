@@ -5,10 +5,18 @@ import Link from 'next/link';
 import Image from 'next/image';
 import FeaturedCarousel from './FeaturedCarousel';
 import { useSiteTexts, SiteTextsProvider } from '@/lib/useSiteTexts';
+import { useTheme } from '@/app/context/ThemeContext';
 import EditableTextField from './EditableTextField';
 
 function HomePageContent() {
   const { getText, editMode, canEdit, enableEditMode, disableEditMode } = useSiteTexts();
+  const { settings } = useTheme();
+  
+  // Dynamic colors and siteName from settings
+  const primaryColor = settings?.primaryColor || '#1e3a8a';
+  const secondaryColor = settings?.secondaryColor || '#0891b2';
+  const mainGradient = settings?.buttonGradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+  const siteName = settings?.siteName || 'VIPO';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -403,7 +411,7 @@ function HomePageContent() {
             fallback="איך זה עובד?"
             as="h2"
             className="section-title"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="steps-container">
             {[1,2,3,4,5,6].map((num, index) => {
@@ -444,7 +452,7 @@ function HomePageContent() {
               textKey="HOME_TRUST_TITLE" 
               fallback="שאנחנו מאוחדים אנחנו חזקים"
               as="h2"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+              style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
             />
             <EditableTextField 
               textKey="HOME_TRUST_TEXT" 
@@ -464,7 +472,7 @@ function HomePageContent() {
             fallback="חבר מביא חבר"
             as="h2"
             className="section-title"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="referral-content">
             <div className="referral-info">
@@ -502,7 +510,7 @@ function HomePageContent() {
             <div className="referral-link-box">
               <label htmlFor="referral-link">קבל קוד קופון אישי:</label>
               <div className="copy-link-container">
-                <input type="text" id="referral-link" value="VIPO-123456" readOnly />
+                <input type="text" id="referral-link" value={`${siteName}-123456`} readOnly />
                 <button className="btn btn-copy" aria-label="העתק קוד קופון אישי" onClick={handleCopyCode}>
                   {svgIcons.copy}
                 </button>
@@ -546,7 +554,7 @@ function HomePageContent() {
               return (
                 <div className="audience-card reveal-on-scroll" key={index}>
                   <div className="audience-icon">
-                    <span style={{color: '#1e3a8a'}}>{svgIcons[icons[index]]}</span>
+                    <span style={{color: primaryColor}}>{svgIcons[icons[index]]}</span>
                   </div>
                   <EditableTextField textKey={`HOME_TARGET_${num}_TITLE`} fallback={fallbackTitles[index]} as="h3" />
                   <EditableTextField textKey={`HOME_TARGET_${num}_TEXT`} fallback={fallbackDescs[index]} as="p" className="audience-description" />
@@ -565,7 +573,7 @@ function HomePageContent() {
             fallback="שאלות נפוצות"
             as="h2"
             className="section-title"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="faq-timeline">
             {[1,2,3,4,5].map((num, index) => {
@@ -610,7 +618,7 @@ function HomePageContent() {
             fallback="לקוחות מספרים"
             as="h2"
             className="section-title"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="testimonials-slider-wrapper">
             <div className="testimonials-slider">
@@ -662,7 +670,7 @@ function HomePageContent() {
             fallback="מי אנחנו"
             as="h2"
             className="section-title"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="about-content">
             <EditableTextField 
@@ -704,8 +712,8 @@ function HomePageContent() {
           <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
             <defs>
               <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style={{stopColor:'#1e3a8a', stopOpacity:1}} />
-                <stop offset="100%" style={{stopColor:'#0891b2', stopOpacity:1}} />
+                <stop offset="0%" style={{stopColor: primaryColor, stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor: secondaryColor, stopOpacity:1}} />
               </linearGradient>
             </defs>
             <path d="M0,0 C150,80 350,0 600,40 C850,80 1050,0 1200,40 L1200,120 L0,120 Z" fill="url(#waveGradient)"></path>
@@ -798,7 +806,7 @@ function HomePageContent() {
           style={{
             background: editMode 
               ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' 
-              : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              : mainGradient,
             color: 'white',
             fontWeight: '600',
           }}
@@ -837,7 +845,7 @@ function HomePageContent() {
             dir="rtl"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold" style={{ color: '#1e3a8a' }}>כניסה למצב עריכה</h3>
+              <h3 className="text-xl font-bold" style={{ color: primaryColor }}>כניסה למצב עריכה</h3>
               <button 
                 onClick={() => {
                   setShowPasswordModal(false);
@@ -876,7 +884,7 @@ function HomePageContent() {
             <button
               onClick={handlePasswordSubmit}
               className="w-full mt-4 px-4 py-3 rounded-lg text-white font-medium transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: mainGradient }}
             >
               כניסה
             </button>
@@ -888,7 +896,7 @@ function HomePageContent() {
       {editMode && (
         <div 
           className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-full shadow-lg"
-          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', color: 'white' }}
+          style={{ background: mainGradient, color: 'white' }}
         >
           <span className="flex items-center gap-2 text-sm font-medium">
             <svg className="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">

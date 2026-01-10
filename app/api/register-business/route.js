@@ -170,6 +170,31 @@ export async function POST(req) {
 
   } catch (err) {
     console.error('POST /api/register-business error:', err);
-    return NextResponse.json({ error: 'שגיאה ברישום העסק' }, { status: 500 });
+    
+    // הודעות שגיאה מפורטות לפי סוג השגיאה
+    let errorMessage = 'שגיאה ברישום העסק';
+    
+    if (err.code === 11000) {
+      // MongoDB duplicate key error
+      const field = Object.keys(err.keyPattern || {})[0];
+      if (field === 'email') {
+        errorMessage = 'כתובת האימייל כבר רשומה במערכת';
+      } else if (field === 'slug') {
+        errorMessage = 'מזהה העסק כבר קיים במערכת';
+      } else if (field === 'phone') {
+        errorMessage = 'מספר הטלפון כבר רשום במערכת';
+      } else {
+        errorMessage = `השדה "${field}" כבר קיים במערכת`;
+      }
+    } else if (err.name === 'ValidationError') {
+      // Mongoose validation error
+      const messages = Object.values(err.errors || {}).map(e => e.message);
+      errorMessage = messages.length > 0 ? messages.join(', ') : 'נתונים לא תקינים';
+    } else if (err.message) {
+      // כל שגיאה אחרת עם הודעה
+      errorMessage = err.message;
+    }
+    
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

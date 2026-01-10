@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { isMenuAllowed } from '@/lib/businessMenuConfig';
+import { useTheme } from '@/app/context/ThemeContext';
 
 function DashboardIcon({ className = 'w-6 h-6' }) {
   return (
@@ -221,6 +223,7 @@ function getRoleBadge(role) {
 
 export default function BusinessDashboardClient() {
   const router = useRouter();
+  const { settings } = useTheme();
   const [user, setUser] = useState(null);
   const [tenant, setTenant] = useState(null);
   const [dashboardData, setDashboardData] = useState(null);
@@ -230,6 +233,13 @@ export default function BusinessDashboardClient() {
   const [impersonatingTenant, setImpersonatingTenant] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copiedLink, setCopiedLink] = useState(null);
+  
+  // Dynamic colors from settings
+  const primaryColor = settings?.primaryColor || '#1e3a8a';
+  const secondaryColor = settings?.secondaryColor || '#0891b2';
+  const successColor = settings?.successColor || '#22c55e';
+  const mainGradient = settings?.buttonGradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+  const lightBg = `linear-gradient(135deg, ${primaryColor}08 0%, ${secondaryColor}08 100%)`;
 
   const loadData = useCallback(async () => {
     try {
@@ -290,6 +300,19 @@ export default function BusinessDashboardClient() {
     loadData();
   }, [loadData]);
 
+  // Helper function to check if a menu is allowed
+  const canShowMenu = useCallback((menuId) => {
+    // Super admin impersonating always sees everything
+    if (isImpersonating) return true;
+    // Check tenant's allowedMenus
+    return isMenuAllowed(menuId, tenant?.allowedMenus);
+  }, [tenant?.allowedMenus, isImpersonating]);
+
+  // Check if any menu in a category is allowed
+  const hasVisibleItemsInCategory = useCallback((menuIds) => {
+    return menuIds.some(menuId => canShowMenu(menuId));
+  }, [canShowMenu]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
@@ -298,7 +321,7 @@ export default function BusinessDashboardClient() {
           style={{
             border: '2px solid transparent',
             backgroundImage:
-              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
             backgroundOrigin: 'border-box',
             backgroundClip: 'padding-box, border-box',
             boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -308,7 +331,7 @@ export default function BusinessDashboardClient() {
             className="animate-spin rounded-full h-16 w-16 mx-auto mb-4"
             style={{
               border: '4px solid rgba(8, 145, 178, 0.2)',
-              borderTopColor: '#0891b2',
+              borderTopColor: secondaryColor,
             }}
           ></div>
           <p className="text-gray-600 text-center font-medium">טוען נתונים...</p>
@@ -375,7 +398,7 @@ export default function BusinessDashboardClient() {
             <span
               className="flex items-center gap-2 sm:gap-3"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: mainGradient,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -383,7 +406,7 @@ export default function BusinessDashboardClient() {
             >
               <DashboardIcon
                 className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8"
-                style={{ color: '#0891b2' }}
+                style={{ color: secondaryColor }}
               />
               דשבורד העסק שלי
             </span>
@@ -394,8 +417,8 @@ export default function BusinessDashboardClient() {
                 onClick={() => setShowShareModal(true)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-90 border-2"
                 style={{ 
-                  borderColor: '#0891b2',
-                  color: '#0891b2',
+                  borderColor: secondaryColor,
+                  color: secondaryColor,
                   background: 'white'
                 }}
               >
@@ -408,7 +431,7 @@ export default function BusinessDashboardClient() {
                 href={`/t/${tenant.slug}`}
                 target="_blank"
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                style={{ background: mainGradient }}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -444,137 +467,184 @@ export default function BusinessDashboardClient() {
         {/* Accordion Categories */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
           {/* 1. ניהול משתמשים */}
-          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+          {hasVisibleItemsInCategory(['users', 'agents']) && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`, backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
             <button onClick={() => toggleCategory('users')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
               <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: mainGradient }}>
                   <UsersIcon className="w-5 h-5" />
                 </span>
-                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>ניהול משתמשים</span>
+                <span className="text-base font-bold" style={{ color: primaryColor }}>ניהול משתמשים</span>
               </div>
-              <svg className={`w-5 h-5 transition-transform ${openCategory === 'users' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'users' ? 'rotate-180' : ''}`} style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             {openCategory === 'users' && (
             <div className="p-4 pt-0 grid grid-cols-2 gap-3">
+              {canShowMenu('users') && (
               <Link href="/business/users" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <UsersIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <UsersIcon className="w-5 h-5" style={{ color: secondaryColor }} />
                 <span className="text-sm font-medium text-gray-900">ניהול משתמשים</span>
               </Link>
+              )}
+              {canShowMenu('agents') && (
               <Link href="/business/agents" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <AgentIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <AgentIcon className="w-5 h-5" style={{ color: secondaryColor }} />
                 <span className="text-sm font-medium text-gray-900">ניהול סוכנים</span>
               </Link>
+              )}
             </div>
             )}
           </div>
+          )}
 
           {/* 2. קטלוג ומכירות */}
-          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+          {hasVisibleItemsInCategory(['products', 'orders', 'products_new']) && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`, backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
             <button onClick={() => toggleCategory('catalog')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
               <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: mainGradient }}>
                   <CubeIcon className="w-5 h-5" />
                 </span>
-                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>קטלוג ומכירות</span>
+                <span className="text-base font-bold" style={{ color: primaryColor }}>קטלוג ומכירות</span>
               </div>
-              <svg className={`w-5 h-5 transition-transform ${openCategory === 'catalog' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'catalog' ? 'rotate-180' : ''}`} style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             {openCategory === 'catalog' && (
             <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {canShowMenu('products') && (
               <Link href="/business/products" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <CubeIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <CubeIcon className="w-5 h-5" style={{ color: secondaryColor }} />
                 <span className="text-sm font-medium text-gray-900">ניהול מוצרים</span>
               </Link>
+              )}
+              {canShowMenu('orders') && (
               <Link href="/business/orders" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <CartIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <CartIcon className="w-5 h-5" style={{ color: secondaryColor }} />
                 <span className="text-sm font-medium text-gray-900">ניהול הזמנות</span>
               </Link>
+              )}
+              {canShowMenu('products_new') && (
               <Link href="/business/products/new" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <PlusCircleIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <PlusCircleIcon className="w-5 h-5" style={{ color: secondaryColor }} />
                 <span className="text-sm font-medium text-gray-900">הוסף מוצר</span>
               </Link>
+              )}
             </div>
             )}
           </div>
+          )}
 
           {/* 3. כספים ודוחות */}
-          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+          {hasVisibleItemsInCategory(['reports', 'commissions', 'withdrawals', 'transactions', 'analytics']) && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`, backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
             <button onClick={() => toggleCategory('finance')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
               <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: mainGradient }}>
                   <CoinStackIcon className="w-5 h-5" />
                 </span>
-                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>כספים ודוחות</span>
+                <span className="text-base font-bold" style={{ color: primaryColor }}>כספים ודוחות</span>
               </div>
-              <svg className={`w-5 h-5 transition-transform ${openCategory === 'finance' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'finance' ? 'rotate-180' : ''}`} style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             {openCategory === 'finance' && (
             <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {canShowMenu('reports') && (
               <Link href="/business/reports" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <ChartBarIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <ChartBarIcon className="w-5 h-5" style={{ color: secondaryColor }} />
                 <span className="text-sm font-medium text-gray-900">דוחות</span>
               </Link>
+              )}
+              {canShowMenu('commissions') && (
               <Link href="/business/commissions" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <CoinStackIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <CoinStackIcon className="w-5 h-5" style={{ color: secondaryColor }} />
                 <span className="text-sm font-medium text-gray-900">עמלות</span>
               </Link>
+              )}
+              {canShowMenu('withdrawals') && (
               <Link href="/business/withdrawals" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <CoinStackIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <CoinStackIcon className="w-5 h-5" style={{ color: secondaryColor }} />
                 <span className="text-sm font-medium text-gray-900">בקשות משיכה</span>
               </Link>
+              )}
             </div>
             )}
           </div>
+          )}
 
           {/* 4. הגדרות ושיווק */}
-          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+          {hasVisibleItemsInCategory(['settings', 'marketing', 'notifications', 'integrations', 'crm']) && (
+          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`, backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
             <button onClick={() => toggleCategory('settings')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
               <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: mainGradient }}>
                   <SettingsIcon className="w-5 h-5" />
                 </span>
-                <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>הגדרות ושיווק</span>
+                <span className="text-base font-bold" style={{ color: primaryColor }}>הגדרות ושיווק</span>
               </div>
-              <svg className={`w-5 h-5 transition-transform ${openCategory === 'settings' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`w-5 h-5 transition-transform ${openCategory === 'settings' ? 'rotate-180' : ''}`} style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             {openCategory === 'settings' && (
             <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {canShowMenu('settings') && (
               <Link href="/business/settings" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <SettingsIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <SettingsIcon className="w-5 h-5" style={{ color: secondaryColor }} />
                 <span className="text-sm font-medium text-gray-900">הגדרות חנות</span>
               </Link>
+              )}
+              {canShowMenu('marketing') && (
               <Link href="/business/marketing" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <SparkIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
+                <SparkIcon className="w-5 h-5" style={{ color: secondaryColor }} />
                 <span className="text-sm font-medium text-gray-900">שיווק</span>
               </Link>
+              )}
+              {canShowMenu('notifications') && (
               <Link href="/business/notifications" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
                 <span className="text-sm font-medium text-gray-900">התראות</span>
               </Link>
+              )}
+              {canShowMenu('integrations') && (
+              <Link href="/business/integrations" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <svg className="w-5 h-5" style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+                <span className="text-sm font-medium text-gray-900">אינטגרציות</span>
+              </Link>
+              )}
+              {canShowMenu('crm') && (
+              <Link href="/business/crm" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+                <svg className="w-5 h-5" style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span className="text-sm font-medium text-gray-900">CRM</span>
+              </Link>
+              )}
             </div>
             )}
           </div>
+          )}
         </div>
 
-        {/* Main Content Grid */}
+        {/* Main Content Grid - Widgets */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
           {/* New Users Section */}
+          {canShowMenu('new_users_widget') && (
           <section className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4 sm:mb-6">
               <h2
                 className="text-base sm:text-lg font-bold flex items-center gap-2"
                 style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: mainGradient,
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -582,7 +652,7 @@ export default function BusinessDashboardClient() {
               >
                 <UserPlusIcon
                   className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7"
-                  style={{ color: '#0891b2' }}
+                  style={{ color: secondaryColor }}
                 />
                 <span>משתמשים חדשים</span>
               </h2>
@@ -598,7 +668,7 @@ export default function BusinessDashboardClient() {
                       background: 'white',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#0891b2';
+                      e.currentTarget.style.borderColor = secondaryColor;
                       e.currentTarget.style.background =
                         'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)';
                     }}
@@ -649,14 +719,16 @@ export default function BusinessDashboardClient() {
               )}
             </div>
           </section>
+          )}
 
           {/* Recent Orders Section */}
+          {canShowMenu('recent_orders_widget') && (
           <section className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4 sm:mb-6">
               <h2
                 className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2"
                 style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: mainGradient,
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -664,7 +736,7 @@ export default function BusinessDashboardClient() {
               >
                 <ClipboardIcon
                   className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7"
-                  style={{ color: '#0891b2' }}
+                  style={{ color: secondaryColor }}
                 />
                 <span>הזמנות אחרונות</span>
               </h2>
@@ -676,40 +748,40 @@ export default function BusinessDashboardClient() {
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr style={{ borderBottom: '2px solid #0891b2' }}>
+                      <tr style={{ borderBottom: `2px solid ${secondaryColor}` }}>
                         <th
                           className="text-right py-3 px-3 text-sm font-semibold"
-                          style={{ color: '#1e3a8a' }}
+                          style={{ color: primaryColor }}
                         >
                           מוצר
                         </th>
                         <th
                           className="text-right py-3 px-3 text-sm font-semibold"
-                          style={{ color: '#1e3a8a' }}
+                          style={{ color: primaryColor }}
                         >
                           לקוח
                         </th>
                         <th
                           className="text-right py-3 px-3 text-sm font-semibold"
-                          style={{ color: '#1e3a8a' }}
+                          style={{ color: primaryColor }}
                         >
                           סכום
                         </th>
                         <th
                           className="text-right py-3 px-3 text-sm font-semibold"
-                          style={{ color: '#1e3a8a' }}
+                          style={{ color: primaryColor }}
                         >
                           עמלה
                         </th>
                         <th
                           className="text-right py-3 px-3 text-sm font-semibold"
-                          style={{ color: '#1e3a8a' }}
+                          style={{ color: primaryColor }}
                         >
                           סטטוס
                         </th>
                         <th
                           className="text-right py-3 px-3 text-sm font-semibold"
-                          style={{ color: '#1e3a8a' }}
+                          style={{ color: primaryColor }}
                         >
                           תאריך
                         </th>
@@ -730,7 +802,7 @@ export default function BusinessDashboardClient() {
                           <td className="py-3 px-3 text-sm">{order.customerName}</td>
                           <td
                             className="py-3 px-3 text-sm font-semibold"
-                            style={{ color: '#1e3a8a' }}
+                            style={{ color: primaryColor }}
                           >
                             ₪{(order.totalAmount || 0).toLocaleString()}
                           </td>
@@ -773,7 +845,7 @@ export default function BusinessDashboardClient() {
                         background: 'white',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = '#0891b2';
+                        e.currentTarget.style.borderColor = secondaryColor;
                         e.currentTarget.style.background =
                           'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)';
                       }}
@@ -804,7 +876,7 @@ export default function BusinessDashboardClient() {
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-gray-500">סכום:</span>
-                          <span className="font-semibold mr-1" style={{ color: '#1e3a8a' }}>
+                          <span className="font-semibold mr-1" style={{ color: primaryColor }}>
                             ₪{(order.totalAmount || 0).toLocaleString()}
                           </span>
                         </div>
@@ -828,6 +900,7 @@ export default function BusinessDashboardClient() {
               <div className="text-center py-8 text-gray-500 text-sm">אין הזמנות עדיין</div>
             )}
           </section>
+          )}
         </div>
       </div>
 
@@ -840,7 +913,7 @@ export default function BusinessDashboardClient() {
             dir="rtl"
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold" style={{ color: '#1e3a8a' }}>שתף את החנות שלך</h3>
+              <h3 className="text-xl font-bold" style={{ color: primaryColor }}>שתף את החנות שלך</h3>
               <button 
                 onClick={() => setShowShareModal(false)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-all"
@@ -855,7 +928,7 @@ export default function BusinessDashboardClient() {
               {/* Store Link */}
               <div className="p-4 rounded-xl bg-gray-50 border-2 border-gray-200">
                 <div className="flex items-center gap-2 mb-2">
-                  <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                   <span className="font-bold text-gray-900">קישור לחנות</span>
@@ -875,7 +948,7 @@ export default function BusinessDashboardClient() {
                       setTimeout(() => setCopiedLink(null), 2000);
                     }}
                     className="px-4 py-2 rounded-lg text-white text-sm font-medium transition-all"
-                    style={{ background: copiedLink === 'store' ? '#16a34a' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                    style={{ background: copiedLink === 'store' ? successColor : mainGradient }}
                   >
                     {copiedLink === 'store' ? 'הועתק!' : 'העתק'}
                   </button>
@@ -885,7 +958,7 @@ export default function BusinessDashboardClient() {
               {/* Registration Link */}
               <div className="p-4 rounded-xl bg-gray-50 border-2 border-gray-200">
                 <div className="flex items-center gap-2 mb-2">
-                  <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                   </svg>
                   <span className="font-bold text-gray-900">קישור להרשמה</span>
@@ -905,7 +978,7 @@ export default function BusinessDashboardClient() {
                       setTimeout(() => setCopiedLink(null), 2000);
                     }}
                     className="px-4 py-2 rounded-lg text-white text-sm font-medium transition-all"
-                    style={{ background: copiedLink === 'register' ? '#16a34a' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                    style={{ background: copiedLink === 'register' ? successColor : mainGradient }}
                   >
                     {copiedLink === 'register' ? 'הועתק!' : 'העתק'}
                   </button>

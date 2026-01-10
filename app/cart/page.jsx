@@ -6,10 +6,16 @@ import Image from 'next/image';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import { useCartContext } from '@/app/context/CartContext';
+import { useTheme } from '@/app/context/ThemeContext';
 import { validateCouponClient, calculateDiscount, calculateTotal } from '@/lib/couponsClient';
 
 export default function CartPage() {
   const router = useRouter();
+  const { settings } = useTheme();
+  
+  // Dynamic colors from settings
+  const primaryColor = settings?.primaryColor || '#1e3a8a';
+  const secondaryColor = settings?.secondaryColor || '#0891b2';
   const {
     items,
     totals,
@@ -89,8 +95,8 @@ export default function CartPage() {
     fetchUser();
   }, []);
 
-  const gradientPrimary = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
-  const gradientReverse = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+  const gradientPrimary = settings?.buttonGradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+  const gradientReverse = `linear-gradient(135deg, ${secondaryColor} 0%, ${primaryColor} 100%)`;
 
   const formatCurrency = (value) =>
     `₪${value.toLocaleString('he-IL', { minimumFractionDigits: 0 })}`;
@@ -224,12 +230,12 @@ export default function CartPage() {
             href="/shop"
             className="inline-block text-white font-medium px-6 py-3 rounded-lg transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              background: gradientPrimary,
               boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background =
-                'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                gradientReverse;
               e.currentTarget.style.transform = 'translateY(-2px)';
               e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
             }}
@@ -351,7 +357,7 @@ export default function CartPage() {
               <h1
                 className="text-3xl font-bold mb-1"
                 style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: gradientPrimary,
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -361,7 +367,7 @@ export default function CartPage() {
               </h1>
               <div
                 className="h-1 w-24 rounded-full"
-                style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+                style={{ background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
               />
             </div>
           </div>
@@ -414,7 +420,7 @@ export default function CartPage() {
                   style={{
                     background: 'white',
                     border: '2px solid transparent',
-                    backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                    backgroundImage: `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
                     backgroundOrigin: 'border-box',
                     backgroundClip: 'padding-box, border-box',
                     opacity: selectedItems[item.productId] ? 1 : 0.6,
@@ -460,7 +466,7 @@ export default function CartPage() {
                           <span 
                             className="text-lg font-black"
                             style={{ 
-                              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                              background: gradientPrimary,
                               WebkitBackgroundClip: 'text',
                               WebkitTextFillColor: 'transparent',
                             }}
@@ -494,7 +500,7 @@ export default function CartPage() {
                         className="flex items-center rounded-xl overflow-hidden"
                         style={{
                           border: '2px solid transparent',
-                          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                          backgroundImage: `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
                           backgroundOrigin: 'border-box',
                           backgroundClip: 'padding-box, border-box',
                         }}
@@ -528,7 +534,7 @@ export default function CartPage() {
                         <p 
                           className="text-lg font-black"
                           style={{ 
-                            background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                            background: gradientPrimary,
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                           }}
@@ -558,7 +564,7 @@ export default function CartPage() {
               <h2
                 className="text-2xl font-bold mb-1"
                 style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: gradientPrimary,
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -568,7 +574,7 @@ export default function CartPage() {
               </h2>
               <div
                 className="h-1 w-20 rounded-full"
-                style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+                style={{ background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
               />
             </div>
 
@@ -599,7 +605,7 @@ export default function CartPage() {
                       onMouseEnter={(e) => {
                         if (!isApplying) {
                           e.currentTarget.style.background =
-                            'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                            gradientReverse;
                           e.currentTarget.style.transform = 'translateY(-2px)';
                         }
                       }}
@@ -699,7 +705,7 @@ export default function CartPage() {
               <span 
                 className="text-2xl font-black"
                 style={{ 
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: gradientPrimary,
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -726,7 +732,7 @@ export default function CartPage() {
               onMouseEnter={(e) => {
                 if (selectedItemsList.length > 0) {
                   e.currentTarget.style.background =
-                    'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                    gradientReverse;
                   e.currentTarget.style.transform = 'translateY(-2px)';
                   e.currentTarget.style.boxShadow = '0 6px 16px rgba(8, 145, 178, 0.4)';
                 }

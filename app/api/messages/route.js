@@ -29,7 +29,7 @@ async function notifyRecipients(doc) {
       messageId: String(doc._id),
       targetRole: doc.targetRole,
     },
-    url: '/dashboard',
+    url: doc.targetRole === 'business_admin' ? '/business' : '/dashboard',
   };
 
   try {
@@ -39,6 +39,10 @@ async function notifyRecipients(doc) {
       await pushBroadcast(payload);
     } else if (doc.targetRole === 'admin') {
       await pushToTags(['admin'], payload);
+    } else if (doc.targetRole === 'business_admin' && doc.tenantId) {
+      // Multi-Tenant: For business_admin, use pushToRoles with tenantId filter
+      const { pushToRoles } = await import('@/lib/pushSender');
+      await pushToRoles(['business_admin'], payload, String(doc.tenantId));
     } else {
       await pushToTags([doc.targetRole], payload);
     }

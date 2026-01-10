@@ -90,6 +90,9 @@ export async function POST(req) {
     const commissionAvailableAt = new Date(now.getTime() + holdDays * 24 * 60 * 60 * 1000);
     const finalCommissionAmount = refAgentId ? commissionAmount : 0;
     
+    // Multi-Tenant: Get tenantId from user or product
+    const tenantId = me.tenantId || product.tenantId || null;
+    
     const orderDoc = {
       productId: new ObjectId(productId),
       productName: product.name,
@@ -97,6 +100,7 @@ export async function POST(req) {
       itemPrice,
       totalAmount,
       customerName,
+      ...(tenantId && { tenantId: new ObjectId(tenantId) }),
       customerPhone: customerPhone || null,
       customerEmail: customerEmail || null,
       shippingAddress: shippingAddress || null,
@@ -120,6 +124,7 @@ export async function POST(req) {
     // Send notifications
     try {
       // 1. Admin notification about new order
+      // Multi-Tenant: If order has tenantId, send to business_admin of that tenant only
       await sendTemplateNotification({
         templateType: 'order_new',
         variables: {
@@ -127,15 +132,16 @@ export async function POST(req) {
           customer_name: customerName || 'לקוח',
           total_amount: totalAmount.toLocaleString('he-IL'),
         },
-        audienceRoles: ['admin'],
+        audienceRoles: tenantId ? ['business_admin'] : ['admin'],
         payloadOverrides: {
-          url: `/admin/orders/${orderId}`,
+          url: tenantId ? `/business/orders` : `/admin/orders/${orderId}`,
           data: {
             orderId: String(orderId),
             totalAmount,
             customerName,
           },
         },
+        tenantId: tenantId ? String(tenantId) : null,
       });
 
       // 2. Order confirmation to customer
@@ -158,21 +164,23 @@ export async function POST(req) {
         });
 
         // 4. Admin notification about agent sale
+        // Multi-Tenant: Send to business_admin if tenant order
         await sendTemplateNotification({
           templateType: 'admin_agent_sale',
           variables: {
             agent_name: 'סוכן',
             order_id: String(orderId),
           },
-          audienceRoles: ['admin'],
+          audienceRoles: tenantId ? ['business_admin'] : ['admin'],
           payloadOverrides: {
-            url: `/admin/orders/${orderId}`,
+            url: tenantId ? `/business/orders` : `/admin/orders/${orderId}`,
             data: {
               orderId: String(orderId),
               agentId: String(refAgentId),
               commission: commissionAmount,
             },
           },
+          tenantId: tenantId ? String(tenantId) : null,
         });
       }
     } catch (notifyErr) {

@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Building2, Plus, Search, Edit, Trash2, Eye, Check, X, RefreshCw, UserPlus, ExternalLink, LayoutDashboard, Copy, Link2 } from 'lucide-react';
+import { Building2, Plus, Search, Edit, Trash2, Eye, Check, X, RefreshCw, UserPlus, ExternalLink, LayoutDashboard, Copy, Link2, Shield, AlertTriangle } from 'lucide-react';
+import BusinessMenuPermissionsModal from '@/app/components/admin/BusinessMenuPermissionsModal';
 import { useRouter } from 'next/navigation';
 
 export default function TenantsClient() {
@@ -14,8 +15,10 @@ export default function TenantsClient() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTenant, setEditingTenant] = useState(null);
   const [showAdminModal, setShowAdminModal] = useState(null); // tenant for which to create admin
+  const [showPermissionsModal, setShowPermissionsModal] = useState(null); // tenant for menu permissions
   const [registrationUrl, setRegistrationUrl] = useState('/register-business');
   const [copied, setCopied] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   // Set registration URL on client side only
   useEffect(() => {
@@ -95,6 +98,39 @@ export default function TenantsClient() {
       loadTenants();
     } catch (err) {
       alert(err.message);
+    }
+  };
+
+  // Enter tenant dashboard as super admin
+  // Reset all tenants (for testing)
+  const handleResetAllTenants = async () => {
+    const confirmText = 'מחק הכל';
+    const userInput = prompt(`⚠️ אזהרה! פעולה זו תמחק את כל העסקים וכל הנתונים שלהם!\n\nהקלד "${confirmText}" לאישור:`);
+    
+    if (userInput !== confirmText) {
+      if (userInput !== null) alert('הטקסט שהוזן לא תואם. הפעולה בוטלה.');
+      return;
+    }
+    
+    setResetting(true);
+    try {
+      const res = await fetch('/api/admin/reset-tenants', {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'שגיאה באיפוס העסקים');
+      }
+      
+      alert(`✅ ${data.message}`);
+      loadTenants();
+    } catch (err) {
+      alert(`❌ ${err.message}`);
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -216,6 +252,15 @@ export default function TenantsClient() {
               <RefreshCw className="w-4 h-4" />
               <span className="hidden sm:inline">רענון</span>
             </button>
+            <button
+              onClick={handleResetAllTenants}
+              disabled={resetting}
+              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+              title="מחיקת כל העסקים (לבדיקות)"
+            >
+              <AlertTriangle className="w-4 h-4" />
+              <span className="hidden sm:inline">{resetting ? 'מוחק...' : 'איפוס'}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -326,6 +371,13 @@ export default function TenantsClient() {
                           <UserPlus className="w-4 h-4" />
                         </button>
                         <button
+                          onClick={() => setShowPermissionsModal(tenant)}
+                          className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg"
+                          title="הרשאות תפריטים"
+                        >
+                          <Shield className="w-4 h-4" />
+                        </button>
+                        <button
                           onClick={() => setEditingTenant(tenant)}
                           className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
                           title="עריכה"
@@ -415,6 +467,19 @@ export default function TenantsClient() {
           onClose={() => setShowAdminModal(null)}
           onSave={() => {
             setShowAdminModal(null);
+            loadTenants();
+          }}
+        />
+      )}
+
+      {/* Business Menu Permissions Modal */}
+      {showPermissionsModal && (
+        <BusinessMenuPermissionsModal
+          tenant={showPermissionsModal}
+          isOpen={!!showPermissionsModal}
+          onClose={() => setShowPermissionsModal(null)}
+          onSave={(updatedTenant) => {
+            setShowPermissionsModal(null);
             loadTenants();
           }}
         />

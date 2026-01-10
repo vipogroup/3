@@ -110,6 +110,13 @@ const TenantSchema = new mongoose.Schema(
       coupons: { type: Boolean, default: true },
     },
     
+    // === הרשאות תפריטים לדשבורד Business Admin ===
+    // ברירת מחדל: מערך ריק - אין הרשאות. Super Admin צריך להפעיל ידנית
+    allowedMenus: {
+      type: [String],
+      default: [],
+    },
+    
     // === הגדרות עמלות סוכנים ===
     agentSettings: {
       defaultCommissionPercent: { type: Number, default: 12, min: 0, max: 100 },

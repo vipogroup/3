@@ -1,20 +1,25 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { DEFAULT_SETTINGS, withDefaultSettings } from '@/lib/settingsDefaults';
 
 const ThemeContext = createContext();
 
-const STORAGE_KEY = 'siteSettings';
+const STORAGE_KEY_BASE = 'siteSettings';
 const REMOTE_POLL_INTERVAL = 30_000; // 30 seconds
 const isBrowser = typeof window !== 'undefined';
 
-function withMetadata(settings, { source = 'local', updatedAt } = {}) {
+function getStorageKey(tenantId) {
+  return tenantId ? `${STORAGE_KEY_BASE}_${tenantId}` : STORAGE_KEY_BASE;
+}
+
+function withMetadata(settings, { source = 'local', updatedAt, tenantId } = {}) {
   const timestamp = typeof updatedAt === 'number' ? updatedAt : Date.now();
   return {
     ...settings,
     __source: source,
     __updatedAt: timestamp,
+    __tenantId: tenantId || null,
   };
 }
 
@@ -22,43 +27,65 @@ export function ThemeProvider({ children }) {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [tenantId, setTenantId] = useState(null);
+  const storageKeyRef = useRef(STORAGE_KEY_BASE);
 
-  const persistLocally = useCallback((value) => {
+  const persistLocally = useCallback((value, tid = null) => {
     if (!isBrowser) return;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+      const key = getStorageKey(tid || tenantId);
+      storageKeyRef.current = key;
+      localStorage.setItem(key, JSON.stringify(value));
     } catch (err) {
       console.warn('Failed to persist settings locally', err);
     }
-  }, []);
+  }, [tenantId]);
 
   const applyRemoteSettings = useCallback(
     (remoteData = {}) => {
       const remoteSettings = withDefaultSettings(remoteData?.settings || {});
       const remoteUpdatedAt = remoteData?.updatedAt ? new Date(remoteData.updatedAt).getTime() : 0;
+      const remoteTenantId = remoteData?.tenantId || null;
+      
+      // Update tenantId state if different
+      if (remoteTenantId !== tenantId) {
+        setTenantId(remoteTenantId);
+      }
+      
       const remoteWithMeta = withMetadata(remoteSettings, {
         source: 'remote',
         updatedAt: remoteUpdatedAt,
+        tenantId: remoteTenantId,
       });
 
       setSettings((current) => {
         const currentUpdatedAt = current?.__updatedAt ?? 0;
+        const currentTenantId = current?.__tenantId || null;
+        
+        // If tenant changed, always use remote settings
+        if (currentTenantId !== remoteTenantId) {
+          persistLocally(remoteWithMeta, remoteTenantId);
+          return remoteWithMeta;
+        }
 
         if (currentUpdatedAt > remoteUpdatedAt) {
-          persistLocally(current);
+          persistLocally(current, remoteTenantId);
           return current;
         }
 
-        persistLocally(remoteWithMeta);
+        persistLocally(remoteWithMeta, remoteTenantId);
         return remoteWithMeta;
       });
     },
-    [persistLocally],
+    [persistLocally, tenantId],
   );
 
   const fetchRemoteSettings = useCallback(async () => {
     try {
-      const res = await fetch('/api/settings', { cache: 'no-store' });
+      const res = await fetch('/api/settings', { 
+        cache: 'no-store',
+        credentials: 'include', // Include cookies for auth
+      });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.error || 'settings_fetch_failed');
@@ -77,27 +104,38 @@ export function ThemeProvider({ children }) {
     setLoading(true);
     setError(null);
 
-    if (isBrowser) {
+    // First fetch remote to get tenantId, then load local cache
+    await fetchRemoteSettings();
+    
+    // After we know the tenantId, try to load from correct local storage
+    if (isBrowser && tenantId) {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY);
+        const key = getStorageKey(tenantId);
+        const saved = localStorage.getItem(key);
         if (saved) {
           const parsed = JSON.parse(saved);
           const localSettings = withDefaultSettings(parsed);
-          setSettings(
-            withMetadata(localSettings, {
-              source: parsed?.__source || 'local',
-              updatedAt: parsed?.__updatedAt,
-            }),
-          );
+          const localUpdatedAt = parsed?.__updatedAt ?? 0;
+          
+          // Only use local if it's newer than what we have
+          setSettings((current) => {
+            if (localUpdatedAt > (current?.__updatedAt ?? 0)) {
+              return withMetadata(localSettings, {
+                source: parsed?.__source || 'local',
+                updatedAt: localUpdatedAt,
+                tenantId: parsed?.__tenantId,
+              });
+            }
+            return current;
+          });
         }
       } catch (err) {
         console.warn('Failed to parse local settings', err);
       }
     }
-
-    await fetchRemoteSettings();
+    
     setLoading(false);
-  }, [fetchRemoteSettings]);
+  }, [fetchRemoteSettings, tenantId]);
 
   // Load settings from API or localStorage
   useEffect(() => {
@@ -176,6 +214,7 @@ export function ThemeProvider({ children }) {
         const res = await fetch('/api/settings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Include cookies for auth
           body: JSON.stringify({ settings: merged }),
         });
 
@@ -206,7 +245,9 @@ export function ThemeProvider({ children }) {
     if (!isBrowser) return undefined;
 
     const handleStorage = (event) => {
-      if (event.key && event.key !== STORAGE_KEY) return;
+      // Check if the storage key matches our current tenant's key
+      const currentKey = getStorageKey(tenantId);
+      if (event.key && event.key !== currentKey) return;
 
       if (!event.newValue) {
         fetchRemoteSettings();
@@ -219,6 +260,7 @@ export function ThemeProvider({ children }) {
         const withMeta = withMetadata(localSettings, {
           source: parsed?.__source || 'local',
           updatedAt: parsed?.__updatedAt,
+          tenantId: parsed?.__tenantId,
         });
 
         setSettings((current) => {
@@ -239,7 +281,7 @@ export function ThemeProvider({ children }) {
 
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
-  }, [fetchRemoteSettings]);
+  }, [fetchRemoteSettings, tenantId]);
 
   useEffect(() => {
     if (!isBrowser) return undefined;
@@ -259,6 +301,7 @@ export function ThemeProvider({ children }) {
         saveSettings,
         loading,
         error,
+        tenantId,
         reloadSettings: loadSettings,
       }}
     >

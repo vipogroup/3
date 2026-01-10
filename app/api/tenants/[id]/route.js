@@ -112,7 +112,7 @@ export async function PUT(request, { params }) {
     
     // Super admin can also update these
     if (isSuperAdmin(user)) {
-      allowedFields.push(...superAdminOnlyFields, 'domain', 'subdomain', 'billing');
+      allowedFields.push(...superAdminOnlyFields, 'domain', 'subdomain', 'billing', 'allowedMenus');
     }
     
     for (const field of allowedFields) {
@@ -163,7 +163,14 @@ export async function PUT(request, { params }) {
 }
 
 /**
- * DELETE /api/tenants/[id] - מחיקת עסק (רק Super Admin)
+ * PATCH /api/tenants/[id] - עדכון חלקי (למשל allowedMenus)
+ */
+export async function PATCH(request, { params }) {
+  return PUT(request, { params });
+}
+
+/**
+ * DELETE /api/tenants/[id] - מחיקת עסק וכל הנתונים הקשורים (רק Super Admin)
  */
 export async function DELETE(request, { params }) {
   try {
@@ -189,27 +196,67 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'העסק לא נמצא' }, { status: 404 });
     }
     
-    // Check if tenant has data
-    const hasData = await db.collection('orders').findOne({ tenantId: tenant._id });
-    if (hasData) {
-      return NextResponse.json(
-        { error: 'לא ניתן למחוק עסק עם נתונים קיימים. יש להשהות אותו במקום.' },
-        { status: 400 }
-      );
-    }
+    const tenantId = tenant._id;
     
-    // Delete tenant
-    await db.collection('tenants').deleteOne({ _id: new ObjectId(id) });
+    // מחיקת כל הנתונים הקשורים לעסק
+    const deleteResults = await Promise.allSettled([
+      // הזמנות
+      db.collection('orders').deleteMany({ tenantId }),
+      // מוצרים
+      db.collection('products').deleteMany({ tenantId }),
+      // עמלות
+      db.collection('commissions').deleteMany({ tenantId }),
+      // בקשות משיכה
+      db.collection('withdrawals').deleteMany({ tenantId }),
+      // עסקאות
+      db.collection('transactions').deleteMany({ tenantId }),
+      // קופונים
+      db.collection('coupons').deleteMany({ tenantId }),
+      // התראות
+      db.collection('notifications').deleteMany({ tenantId }),
+      // רמות גיימיפיקציה
+      db.collection('gamificationlevels').deleteMany({ tenantId }),
+      // לידים CRM
+      db.collection('leads').deleteMany({ tenantId }),
+      // הודעות CRM
+      db.collection('messages').deleteMany({ tenantId }),
+      // משימות CRM
+      db.collection('tasks').deleteMany({ tenantId }),
+      // אוטומציות CRM
+      db.collection('automations').deleteMany({ tenantId }),
+      // תבניות הודעות
+      db.collection('templates').deleteMany({ tenantId }),
+      // קטגוריות
+      db.collection('categories').deleteMany({ tenantId }),
+      // הגדרות
+      db.collection('settings').deleteMany({ tenantId }),
+    ]);
     
-    // Remove tenantId from associated users
-    await db.collection('users').updateMany(
-      { tenantId: tenant._id },
-      { $unset: { tenantId: '' } }
-    );
+    // מחיקת משתמשים השייכים לעסק
+    await db.collection('users').deleteMany({ tenantId });
+    
+    // מחיקת העסק עצמו
+    await db.collection('tenants').deleteOne({ _id: tenantId });
+    
+    // סיכום המחיקות
+    const deletedCounts = {};
+    const collections = [
+      'orders', 'products', 'commissions', 'withdrawals', 'transactions',
+      'coupons', 'notifications', 'gamificationlevels', 'leads', 'messages',
+      'tasks', 'automations', 'templates', 'categories', 'settings'
+    ];
+    deleteResults.forEach((result, index) => {
+      if (result.status === 'fulfilled' && result.value?.deletedCount) {
+        deletedCounts[collections[index]] = result.value.deletedCount;
+      }
+    });
+    
+    console.log(`Tenant ${tenant.name} (${tenantId}) deleted with all related data:`, deletedCounts);
     
     return NextResponse.json({
       ok: true,
-      message: 'העסק נמחק בהצלחה',
+      message: 'העסק וכל הנתונים הקשורים נמחקו בהצלחה',
+      deletedCounts,
     });
   } catch (error) {
     console.error('DELETE /api/tenants/[id] error:', error);
