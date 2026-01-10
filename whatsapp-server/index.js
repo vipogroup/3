@@ -83,11 +83,50 @@ client.on('disconnected', (reason) => {
   }, 5000);
 });
 
+// Store messages in memory for API access
+let messageHistory = [];
+
 client.on('message', async (msg) => {
+  // Skip status messages and group messages
+  if (msg.from === 'status@broadcast' || msg.from.includes('@g.us')) {
+    return;
+  }
+  
   console.log(`📨 Message from ${msg.from}: ${msg.body}`);
   
-  // TODO: Forward to main app webhook
-  // You can add webhook logic here to notify your main app
+  const messageData = {
+    id: msg.id._serialized,
+    from: msg.from.replace('@c.us', ''),
+    to: clientInfo?.wid?.user || '',
+    message: msg.body,
+    timestamp: new Date(msg.timestamp * 1000).toISOString(),
+    type: 'incoming',
+    hasMedia: msg.hasMedia,
+    status: 'received',
+  };
+  
+  // Save to memory
+  messageHistory.unshift(messageData);
+  if (messageHistory.length > 100) messageHistory.pop();
+  
+  // Forward to VIPO webhook
+  const WEBHOOK_URL = process.env.VIPO_WEBHOOK_URL || 'http://localhost:3001/api/crm/whatsapp/webhook';
+  
+  try {
+    const response = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(messageData),
+    });
+    
+    if (response.ok) {
+      console.log(`✅ Message forwarded to VIPO webhook`);
+    } else {
+      console.error(`❌ Webhook error: ${response.status}`);
+    }
+  } catch (error) {
+    console.error(`❌ Failed to forward to webhook:`, error.message);
+  }
 });
 
 // API Routes
@@ -187,6 +226,15 @@ app.post('/restart', async (req, res) => {
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Get messages history
+app.get('/messages', (req, res) => {
+  const limit = parseInt(req.query.limit) || 20;
+  res.json({
+    messages: messageHistory.slice(0, limit),
+    total: messageHistory.length,
+  });
 });
 
 // Start server
