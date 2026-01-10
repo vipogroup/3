@@ -3,7 +3,6 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTheme } from '@/app/context/ThemeContext';
 
 const NotificationsManagerClient = dynamic(
   () => import('@/app/admin/notifications/NotificationsManagerClient'),
@@ -22,8 +21,6 @@ const NotificationsManagerClient = dynamic(
 
 export default function BusinessNotificationsPage() {
   const router = useRouter();
-  const { settings } = useTheme();
-  const secondaryColor = settings?.secondaryColor || '#0891b2';
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
@@ -56,7 +53,7 @@ export default function BusinessNotificationsPage() {
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="animate-spin rounded-full h-12 w-12" style={{
           border: '4px solid rgba(8, 145, 178, 0.2)',
-          borderTopColor: secondaryColor,
+          borderTopColor: '#0891b2',
         }}></div>
       </div>
     );

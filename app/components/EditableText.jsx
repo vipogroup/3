@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { editTextSafely, validateTextEdit } from '@/lib/editTextSafely';
 
 /**
  * EditableText - קומפוננטה לעריכת טקסט inline
@@ -87,11 +88,21 @@ export default function EditableText({
     setIsEditing(true);
   };
 
-  // שמירת השינויים
+  // שמירת השינויים עם ולידציה
   const saveText = async () => {
     if (editValue === text) {
       setIsEditing(false);
       return;
+    }
+
+    // ולידציה לפני שמירה
+    const elementRef = document.querySelector(`[data-text-key="${textKey}"]`);
+    if (elementRef) {
+      const validation = validateTextEdit(elementRef, editValue);
+      if (!validation.valid) {
+        alert(`לא ניתן לשמור את הטקסט:\n${validation.issues.join('\n')}`);
+        return;
+      }
     }
 
     setSaving(true);
@@ -162,7 +173,8 @@ export default function EditableText({
         <button
           onClick={saveText}
           disabled={saving}
-          className="p-1.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all disabled:opacity-50"
+          className="p-1.5 text-white rounded-lg transition-all disabled:opacity-50"
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
           title="שמור (Enter)"
         >
           {saving ? (
@@ -192,7 +204,11 @@ export default function EditableText({
 
   // תצוגה רגילה עם כפתור עריכה למנהל
   return (
-    <Component className={`${className} ${isAdmin ? 'group relative' : ''}`} style={style}>
+    <Component 
+      className={`${className} ${isAdmin ? 'group relative' : ''}`} 
+      style={style}
+      data-text-key={textKey}
+    >
       {children || text || defaultValue}
       
       {isAdmin && loaded && (

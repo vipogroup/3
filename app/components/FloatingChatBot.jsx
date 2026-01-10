@@ -1,66 +1,48 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 
-const FAQ_CATEGORIES = [
-  {
-    id: 'shipping',
-    name: 'משלוחים',
-    questions: [
-      { question: 'כמה זמן לוקח משלוח?', answer: 'משלוחים מגיעים תוך 3-5 ימי עסקים. משלוח אקספרס תוך 1-2 ימי עסקים.' },
-      { question: 'האם יש משלוח חינם?', answer: 'כן! משלוח חינם בכל הזמנה מעל ₪200.' },
-      { question: 'לאן אתם שולחים?', answer: 'אנחנו שולחים לכל רחבי הארץ, כולל יהודה ושומרון.' },
-      { question: 'מעקב משלוח', answer: 'לאחר המשלוח תקבל SMS עם קישור למעקב. ניתן גם לעקוב באזור "ההזמנות שלי".' },
-    ]
+// Default config for fallback
+const DEFAULT_CONFIG = {
+  texts: {
+    title: 'שירות לקוחות',
+    subtitle: 'מענה מיידי לשאלות נפוצות',
+    welcome1: 'שלום! אני הבוט של VIPO.',
+    welcome2: 'איך אפשר לעזור לך היום?',
+    happyHelp: 'נשמח לעזור!',
+    writeMessage: 'כתוב את ההודעה שלך ונציג יחזור אליך בהקדם:',
+    whatKnow: 'מה תרצה לדעת?',
+    anythingElse: 'האם יש משהו נוסף שאוכל לעזור?',
+    noAnswer: 'לא מצאתי תשובה מתאימה.',
+    whatDo: 'מה תרצה לעשות?',
+    goodbye: 'תודה רבה! שמחנו לעזור. אם תצטרך עוד משהו, אני כאן.',
+    sentSuccess: 'ההודעה נשלחה בהצלחה!',
+    teamReply: 'צוות התמיכה יחזור אליך בהקדם. יש משהו נוסף?',
+    sendError: 'שגיאה בשליחה. נסה שוב או התקשר 03-1234567',
+    moreHelp: 'האם יש משהו נוסף?',
+    chooseTopic: 'בחר נושא:'
   },
-  {
-    id: 'payment',
-    name: 'תשלומים',
-    questions: [
-      { question: 'אמצעי תשלום', answer: 'אנחנו מקבלים כרטיסי אשראי (ויזה, מאסטרקארד, אמקס), ביט, PayPal ותשלום במזומן בעת האיסוף.' },
-      { question: 'תשלומים', answer: 'כן! עד 12 תשלומים ללא ריבית בכרטיסי אשראי נבחרים.' },
-      { question: 'אבטחת תשלום', answer: 'בהחלט! אנחנו משתמשים בהצפנת SSL ועומדים בתקן PCI DSS לאבטחת תשלומים.' },
-    ]
+  buttons: {
+    otherTopic: 'נושא אחר',
+    talkAgent: 'שיחה עם נציג',
+    thanks: 'זה הכל, תודה',
+    backTopics: 'חזרה לנושאים',
+    send: 'שלח',
+    sending: 'שולח...',
+    cancel: 'ביטול'
   },
-  {
-    id: 'returns',
-    name: 'החזרות וביטולים',
-    questions: [
-      { question: 'מדיניות החזרות', answer: 'ניתן להחזיר מוצרים תוך 14 יום מיום הקנייה, כל עוד המוצר באריזתו המקורית ובמצב תקין.' },
-      { question: 'ביטול הזמנה', answer: 'ניתן לבטל הזמנה לפני המשלוח באזור "ההזמנות שלי" או ליצור קשר עם שירות הלקוחות.' },
-      { question: 'החזר כספי', answer: 'ההחזר מתבצע תוך 7-14 ימי עסקים לאמצעי התשלום המקורי.' },
-    ]
+  placeholders: {
+    message: 'כתוב את ההודעה שלך...',
+    agent: 'כתוב הודעה לנציג...',
+    question: 'כתוב שאלה...'
   },
-  {
-    id: 'account',
-    name: 'חשבון וסוכנים',
-    questions: [
-      { question: 'הרשמה לאתר', answer: 'לחצו על "החשבון שלי" בתפריט העליון ובחרו "הרשמה". תוכלו להירשם עם מייל או דרך גוגל.' },
-      { question: 'להפוך לסוכן', answer: 'ניתן להירשם כסוכן דרך האזור האישי. סוכנים מרוויחים עמלות על כל מכירה שהביאו!' },
-      { question: 'יתרונות סוכן', answer: 'סוכנים מקבלים עמלה על כל מכירה, גישה למוצרים בלעדיים, ותמיכה אישית.' },
-      { question: 'שכחתי סיסמה', answer: 'לחצו על "שכחתי סיסמה" בדף ההתחברות ונשלח לכם קישור לאיפוס למייל.' },
-    ]
-  },
-  {
-    id: 'general',
-    name: 'שאלות כלליות',
-    questions: [
-      { question: 'שעות פעילות', answer: 'אנחנו זמינים בימים א\'-ה\' 9:00-18:00, ו\' 9:00-13:00. שבת - סגור.' },
-      { question: 'יצירת קשר', answer: 'טלפון: 03-1234567 | מייל: support@vipo.co.il | וואטסאפ: 050-1234567' },
-      { question: 'חנות פיזית', answer: 'כרגע אנחנו פועלים באונליין בלבד, עם נקודות איסוף ברחבי הארץ.' },
-    ]
-  },
-  {
-    id: 'support',
-    name: 'שיחה עם נציג',
-    isContact: true,
-    questions: []
-  }
-];
-
-const ALL_QUESTIONS = FAQ_CATEGORIES.flatMap(cat => cat.questions);
+  categories: [],
+  settings: { isActive: true, position: 'left' }
+};
 
 export default function FloatingChatBot() {
+  const [botConfig, setBotConfig] = useState(DEFAULT_CONFIG);
+  const [configLoaded, setConfigLoaded] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -68,6 +50,46 @@ export default function FloatingChatBot() {
   const [sendingMessage, setSendingMessage] = useState(false);
   const [showContactInput, setShowContactInput] = useState(false);
   const messagesEndRef = useRef(null);
+
+  // Load bot config from API
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const res = await fetch('/api/bot-config?ownerType=admin');
+        const data = await res.json();
+        if (data.success && data.config) {
+          setBotConfig(data.config);
+        }
+      } catch (error) {
+        console.error('Error loading bot config:', error);
+      } finally {
+        setConfigLoaded(true);
+      }
+    };
+    loadConfig();
+  }, []);
+
+  // Helper to get text from config
+  const getText = (key, fallback) => {
+    const keys = key.split('.');
+    let value = botConfig;
+    for (const k of keys) {
+      value = value?.[k];
+    }
+    return value || fallback;
+  };
+
+  // Get categories from config
+  const FAQ_CATEGORIES = useMemo(() => {
+    if (botConfig.categories && botConfig.categories.length > 0) {
+      return botConfig.categories.filter(c => c.isActive !== false);
+    }
+    return DEFAULT_CONFIG.categories;
+  }, [botConfig.categories]);
+
+  const ALL_QUESTIONS = useMemo(() => {
+    return FAQ_CATEGORIES.flatMap(cat => cat.questions || []);
+  }, [FAQ_CATEGORIES]);
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -81,15 +103,15 @@ export default function FloatingChatBot() {
 
   // Initialize chat when opened
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
+    if (isOpen && messages.length === 0 && configLoaded) {
       showWelcome();
     }
-  }, [isOpen]);
+  }, [isOpen, configLoaded]);
 
   const showWelcome = () => {
     setMessages([
-      { type: 'bot', text: 'שלום! אני הבוט של VIPO.' },
-      { type: 'bot', text: 'איך אפשר לעזור לך היום?', showCategories: true }
+      { type: 'bot', text: botConfig.texts?.welcome1 || 'שלום! אני הבוט של VIPO.' },
+      { type: 'bot', text: botConfig.texts?.welcome2 || 'איך אפשר לעזור לך היום?', showCategories: true }
     ]);
     setShowContactInput(false);
   };
@@ -99,8 +121,8 @@ export default function FloatingChatBot() {
       setMessages(prev => [
         ...prev,
         { type: 'user', text: category.name },
-        { type: 'bot', text: 'נשמח לעזור!' },
-        { type: 'bot', text: 'כתוב את ההודעה שלך ונציג יחזור אליך בהקדם:', showContactForm: true }
+        { type: 'bot', text: botConfig.texts?.happyHelp || 'נשמח לעזור!' },
+        { type: 'bot', text: botConfig.texts?.writeMessage || 'כתוב את ההודעה שלך ונציג יחזור אליך בהקדם:', showContactForm: true }
       ]);
       setShowContactInput(true);
       scrollToBottom();
@@ -110,7 +132,7 @@ export default function FloatingChatBot() {
     setMessages(prev => [
       ...prev,
       { type: 'user', text: category.name },
-      { type: 'bot', text: `מה תרצה לדעת על ${category.name}?`, showQuestions: category.id }
+      { type: 'bot', text: botConfig.texts?.whatKnow || 'מה תרצה לדעת?', showQuestions: category.id }
     ]);
     scrollToBottom();
   };
@@ -120,7 +142,7 @@ export default function FloatingChatBot() {
       ...prev,
       { type: 'user', text: question },
       { type: 'bot', text: answer },
-      { type: 'bot', text: 'האם יש משהו נוסף שאוכל לעזור?', showActions: true }
+      { type: 'bot', text: botConfig.texts?.anythingElse || 'האם יש משהו נוסף שאוכל לעזור?', showActions: true }
     ]);
     scrollToBottom();
   };
@@ -129,21 +151,21 @@ export default function FloatingChatBot() {
     if (action === 'categories') {
       setMessages(prev => [
         ...prev,
-        { type: 'user', text: 'בחירת נושא אחר' },
-        { type: 'bot', text: 'בחר נושא:', showCategories: true }
+        { type: 'user', text: botConfig.buttons?.otherTopic || 'נושא אחר' },
+        { type: 'bot', text: botConfig.texts?.chooseTopic || 'בחר נושא:', showCategories: true }
       ]);
     } else if (action === 'contact') {
       setMessages(prev => [
         ...prev,
-        { type: 'user', text: 'שיחה עם נציג' },
-        { type: 'bot', text: 'כתוב את ההודעה שלך:', showContactForm: true }
+        { type: 'user', text: botConfig.buttons?.talkAgent || 'שיחה עם נציג' },
+        { type: 'bot', text: botConfig.texts?.writeMessage || 'כתוב את ההודעה שלך:', showContactForm: true }
       ]);
       setShowContactInput(true);
     } else if (action === 'done') {
       setMessages(prev => [
         ...prev,
-        { type: 'user', text: 'זה הכל, תודה!' },
-        { type: 'bot', text: 'תודה רבה! שמחנו לעזור. אם תצטרך עוד משהו, אני כאן.' }
+        { type: 'user', text: botConfig.buttons?.thanks || 'זה הכל, תודה!' },
+        { type: 'bot', text: botConfig.texts?.goodbye || 'תודה רבה! שמחנו לעזור. אם תצטרך עוד משהו, אני כאן.' }
       ]);
     }
     scrollToBottom();
@@ -168,13 +190,13 @@ export default function FloatingChatBot() {
         setMessages(prev => [
           ...prev, 
           { type: 'bot', text: matchedFaq.answer },
-          { type: 'bot', text: 'האם יש משהו נוסף?', showActions: true }
+          { type: 'bot', text: botConfig.texts?.moreHelp || 'האם יש משהו נוסף?', showActions: true }
         ]);
       } else {
         setMessages(prev => [
           ...prev, 
-          { type: 'bot', text: 'לא מצאתי תשובה מתאימה.' },
-          { type: 'bot', text: 'מה תרצה לעשות?', showActions: true }
+          { type: 'bot', text: botConfig.texts?.noAnswer || 'לא מצאתי תשובה מתאימה.' },
+          { type: 'bot', text: botConfig.texts?.whatDo || 'מה תרצה לעשות?', showActions: true }
         ]);
       }
       scrollToBottom();
@@ -205,8 +227,8 @@ export default function FloatingChatBot() {
       if (res.ok) {
         setMessages(prev => [
           ...prev, 
-          { type: 'bot', text: 'ההודעה נשלחה בהצלחה!' },
-          { type: 'bot', text: 'צוות התמיכה יחזור אליך בהקדם. יש משהו נוסף?', showActions: true }
+          { type: 'bot', text: botConfig.texts?.sentSuccess || 'ההודעה נשלחה בהצלחה!' },
+          { type: 'bot', text: botConfig.texts?.teamReply || 'צוות התמיכה יחזור אליך בהקדם. יש משהו נוסף?', showActions: true }
         ]);
       } else {
         throw new Error('Failed');
@@ -214,8 +236,8 @@ export default function FloatingChatBot() {
     } catch (error) {
       setMessages(prev => [
         ...prev, 
-        { type: 'bot', text: 'שגיאה בשליחה. נסה שוב או התקשר 03-1234567' },
-        { type: 'bot', text: 'מה תרצה לעשות?', showActions: true }
+        { type: 'bot', text: botConfig.texts?.sendError || 'שגיאה בשליחה. נסה שוב או התקשר 03-1234567' },
+        { type: 'bot', text: botConfig.texts?.whatDo || 'מה תרצה לעשות?', showActions: true }
       ]);
     }
     setSendingMessage(false);
@@ -265,8 +287,8 @@ export default function FloatingChatBot() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-white font-bold">שירות לקוחות</h3>
-                <p className="text-white/70 text-xs">מענה מיידי לשאלות נפוצות</p>
+                <h3 className="text-white font-bold">{botConfig.texts?.title || 'שירות לקוחות'}</h3>
+                <p className="text-white/70 text-xs">{botConfig.texts?.subtitle || 'מענה מיידי לשאלות נפוצות'}</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -340,7 +362,7 @@ export default function FloatingChatBot() {
                       onClick={() => handleAction('categories')}
                       className="px-3 py-1.5 text-xs text-cyan-600 hover:text-cyan-800 underline"
                     >
-                      חזרה לנושאים
+                      {botConfig.buttons?.backTopics || 'חזרה לנושאים'}
                     </button>
                   </div>
                 )}
@@ -352,19 +374,19 @@ export default function FloatingChatBot() {
                       onClick={() => handleAction('categories')}
                       className="px-3 py-2 rounded-xl bg-white border-2 border-cyan-500 hover:bg-cyan-50 transition-all text-cyan-700 text-sm font-medium"
                     >
-                      נושא אחר
+                      {botConfig.buttons?.otherTopic || 'נושא אחר'}
                     </button>
                     <button
                       onClick={() => handleAction('contact')}
                       className="px-3 py-2 rounded-xl bg-white border-2 border-cyan-500 hover:bg-cyan-50 transition-all text-cyan-700 text-sm font-medium"
                     >
-                      שיחה עם נציג
+                      {botConfig.buttons?.talkAgent || 'שיחה עם נציג'}
                     </button>
                     <button
                       onClick={() => handleAction('done')}
                       className="px-3 py-2 rounded-xl bg-gray-100 border border-gray-300 hover:bg-gray-200 transition-all text-gray-600 text-sm"
                     >
-                      זה הכל, תודה
+                      {botConfig.buttons?.thanks || 'זה הכל, תודה'}
                     </button>
                   </div>
                 )}
@@ -377,7 +399,7 @@ export default function FloatingChatBot() {
                         value={contactMessage}
                         onChange={(e) => setContactMessage(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendToAdmin()}
-                        placeholder="כתוב את ההודעה שלך..."
+                        placeholder={botConfig.placeholders?.message || 'כתוב את ההודעה שלך...'}
                         className="w-full p-2 text-sm border border-gray-200 rounded-lg resize-none h-20 focus:outline-none focus:border-cyan-500"
                       />
                       <div className="flex gap-2 mt-2">
@@ -387,13 +409,13 @@ export default function FloatingChatBot() {
                           className="flex-1 py-2 rounded-lg text-white text-sm font-medium disabled:opacity-50"
                           style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                         >
-                          {sendingMessage ? 'שולח...' : 'שלח'}
+                          {sendingMessage ? (botConfig.buttons?.sending || 'שולח...') : (botConfig.buttons?.send || 'שלח')}
                         </button>
                         <button
                           onClick={() => handleAction('categories')}
                           className="px-3 py-2 rounded-lg text-gray-600 text-sm border border-gray-200 hover:bg-gray-50"
                         >
-                          ביטול
+                          {botConfig.buttons?.cancel || 'ביטול'}
                         </button>
                       </div>
                     </div>
@@ -412,7 +434,7 @@ export default function FloatingChatBot() {
                 value={showContactInput ? contactMessage : inputValue}
                 onChange={(e) => showContactInput ? setContactMessage(e.target.value) : setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder={showContactInput ? "כתוב הודעה לנציג..." : "כתוב שאלה..."}
+                placeholder={showContactInput ? (botConfig.placeholders?.agent || 'כתוב הודעה לנציג...') : (botConfig.placeholders?.question || 'כתוב שאלה...')}
                 className="flex-1 min-w-0 px-4 py-2.5 rounded-full border border-gray-200 focus:outline-none focus:border-cyan-500 text-sm"
               />
               <button

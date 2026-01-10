@@ -4,8 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import EditableTextField from './EditableTextField';
+import { useSiteTexts } from '@/lib/useSiteTexts';
 
-export default function FeaturedCarousel({ darkBackground = true, title = 'מוצרים במחיר מפעל' }) {
+export default function FeaturedCarousel({ darkBackground = true, title = 'מוצרים במחיר מפעל', textKey = 'HOME_CAROUSEL_TITLE' }) {
+  const { editMode } = useSiteTexts();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -63,9 +66,13 @@ export default function FeaturedCarousel({ darkBackground = true, title = 'מו�
     return (
       <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, marginTop: '60px', marginBottom: '0', minHeight: '420px' }}>
         <div className="text-center mb-2 md:mb-4">
-          <h2 className="text-xl font-bold drop-shadow-lg" style={darkBackground ? { color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' } : { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-            {title}
-          </h2>
+          <EditableTextField 
+            textKey={textKey}
+            fallback={title}
+            as="h2"
+            className="text-xl font-bold drop-shadow-lg"
+            style={darkBackground ? { color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' } : { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+          />
           <div 
             className="h-1 w-16 mx-auto mt-2 rounded-full"
             style={{ background: darkBackground ? 'linear-gradient(90deg, rgba(255,255,255,0.3) 0%, #ffffff 50%, rgba(255,255,255,0.3) 100%)' : 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
@@ -113,9 +120,13 @@ export default function FeaturedCarousel({ darkBackground = true, title = 'מו�
     <div className="py-0 md:py-2 px-4 pb-0" style={{ position: 'relative', zIndex: 2, marginTop: '60px', marginBottom: '0', minHeight: '420px' }}>
       {/* Section Header */}
       <div className="text-center mb-2 md:mb-4">
-        <h2 className="text-xl font-bold drop-shadow-lg" style={darkBackground ? { color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' } : { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-          {title}
-        </h2>
+        <EditableTextField 
+          textKey={textKey}
+          fallback={title}
+          as="h2"
+          className="text-xl font-bold drop-shadow-lg"
+          style={darkBackground ? { color: '#ffffff', textShadow: '2px 2px 8px rgba(0, 0, 0, 0.7)' } : { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+        />
         <div 
           className="h-1 w-16 mx-auto mt-2 rounded-full"
           style={{ background: darkBackground ? 'linear-gradient(90deg, rgba(255,255,255,0.3) 0%, #ffffff 50%, rgba(255,255,255,0.3) 100%)' : 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}

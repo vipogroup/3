@@ -3,22 +3,17 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCartContext } from '@/app/context/CartContext';
-import { useTheme } from '@/app/context/ThemeContext';
 import PushNotificationsToggle from '@/app/components/PushNotificationsToggle';
 import { hasActiveSubscription, subscribeToPush, unsubscribeFromPush, ensureNotificationPermission } from '@/app/lib/pushClient';
 import { getFilteredNavItems } from '@/lib/adminNavigation';
 import { hasPermission } from '@/lib/superAdmins';
 import { ADMIN_PERMISSIONS } from '@/lib/superAdmins';
+import { useSiteTexts } from '@/lib/useSiteTexts';
+import EditableTextField from './EditableTextField';
 
 export default function UserHeader() {
   const router = useRouter();
-  const { settings } = useTheme();
   const [user, setUser] = useState(null);
-  
-  // Dynamic colors from settings
-  const primaryColor = settings?.primaryColor || '#1e3a8a';
-  const secondaryColor = settings?.secondaryColor || '#0891b2';
-  const mainGradient = settings?.buttonGradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
   const [pushEnabled, setPushEnabled] = useState(false);
@@ -223,8 +218,8 @@ export default function UserHeader() {
       style={{
         borderBottom: '2px solid transparent',
         backgroundImage: isTenantPage 
-          ? `linear-gradient(#ecfeff, #ecfeff), linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)`
-          : `linear-gradient(white, white), linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+          ? 'linear-gradient(#ecfeff, #ecfeff), linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)'
+          : 'linear-gradient(white, white), linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)',
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
         backgroundColor: isTenantPage ? '#ecfeff' : 'white',
@@ -236,13 +231,13 @@ export default function UserHeader() {
             href="/"
             className="font-bold text-3xl cursor-pointer hover:opacity-80 transition-opacity"
             style={{
-              background: mainGradient,
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
             }}
           >
-            {settings?.siteName || 'VIPO'}
+            <EditableTextField textKey="SITE_LOGO_TEXT" fallback="VIPO" as="span" />
           </Link>
         </div>
 
@@ -298,14 +293,14 @@ export default function UserHeader() {
                   href={href}
                   className="px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300"
                   style={{
-                    color: isActive ? primaryColor : '#4b5563',
+                    color: isActive ? '#1e3a8a' : '#4b5563',
                     background: isActive
-                      ? `linear-gradient(135deg, ${primaryColor}1A 0%, ${secondaryColor}1A 100%)`
+                      ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)'
                       : 'transparent',
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
-                      e.currentTarget.style.color = secondaryColor;
+                      e.currentTarget.style.color = '#0891b2';
                       e.currentTarget.style.background = 'rgba(8, 145, 178, 0.05)';
                     }
                   }}
@@ -326,13 +321,13 @@ export default function UserHeader() {
           <Link
             href="/cart"
             className="relative p-2 rounded-full transition-all duration-300"
-            style={{ color: pathname === '/cart' ? primaryColor : '#4b5563' }}
+            style={{ color: pathname === '/cart' ? '#1e3a8a' : '#4b5563' }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = secondaryColor;
+              e.currentTarget.style.color = '#0891b2';
               e.currentTarget.style.background = 'rgba(8, 145, 178, 0.1)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = pathname === '/cart' ? primaryColor : '#4b5563';
+              e.currentTarget.style.color = pathname === '/cart' ? '#1e3a8a' : '#4b5563';
               e.currentTarget.style.background = 'transparent';
             }}
           >
@@ -358,13 +353,13 @@ export default function UserHeader() {
             <Link
               href="/messages"
               className="relative p-2 rounded-full transition-all duration-300"
-              style={{ color: pathname === '/messages' ? primaryColor : '#4b5563' }}
+              style={{ color: pathname === '/messages' ? '#1e3a8a' : '#4b5563' }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.color = secondaryColor;
+                e.currentTarget.style.color = '#0891b2';
                 e.currentTarget.style.background = 'rgba(8, 145, 178, 0.1)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.color = pathname === '/messages' ? primaryColor : '#4b5563';
+                e.currentTarget.style.color = pathname === '/messages' ? '#1e3a8a' : '#4b5563';
                 e.currentTarget.style.background = 'transparent';
               }}
               title="הודעות"
@@ -393,13 +388,13 @@ export default function UserHeader() {
             <Link
               href="/admin"
               className="relative p-2 rounded-full transition-all duration-300"
-              style={{ color: pathname === '/admin' ? primaryColor : '#4b5563' }}
+              style={{ color: pathname === '/admin' ? '#1e3a8a' : '#4b5563' }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.color = secondaryColor;
+                e.currentTarget.style.color = '#0891b2';
                 e.currentTarget.style.background = 'rgba(8, 145, 178, 0.1)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.color = pathname === '/admin' ? primaryColor : '#4b5563';
+                e.currentTarget.style.color = pathname === '/admin' ? '#1e3a8a' : '#4b5563';
                 e.currentTarget.style.background = 'transparent';
               }}
               title="דשבורד מנהל"
@@ -416,13 +411,13 @@ export default function UserHeader() {
             <Link
               href="/business"
               className="relative p-2 rounded-full transition-all duration-300"
-              style={{ color: pathname === '/business' ? primaryColor : '#4b5563' }}
+              style={{ color: pathname === '/business' ? '#1e3a8a' : '#4b5563' }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.color = secondaryColor;
+                e.currentTarget.style.color = '#0891b2';
                 e.currentTarget.style.background = 'rgba(8, 145, 178, 0.1)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.color = pathname === '/business' ? primaryColor : '#4b5563';
+                e.currentTarget.style.color = pathname === '/business' ? '#1e3a8a' : '#4b5563';
                 e.currentTarget.style.background = 'transparent';
               }}
               title="דשבורד העסק שלי"
@@ -473,7 +468,7 @@ export default function UserHeader() {
                   style={{
                     border: '2px solid transparent',
                     backgroundImage:
-                      `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+                      'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
                     backgroundOrigin: 'border-box',
                     backgroundClip: 'padding-box, border-box',
                     boxShadow: '0 8px 25px rgba(8, 145, 178, 0.25)',
@@ -599,7 +594,7 @@ export default function UserHeader() {
                     <Link
                       href="/about"
                       className="flex items-center gap-2 px-4 py-2 text-sm font-medium"
-                      style={{ color: primaryColor }}
+                      style={{ color: '#1e3a8a' }}
                       onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(30, 58, 138, 0.1)')}
                       onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                     >
@@ -715,7 +710,7 @@ export default function UserHeader() {
                         <Link
                           href="/join"
                           className="flex items-center gap-2 px-4 py-2 text-sm font-medium"
-                          style={{ color: secondaryColor }}
+                          style={{ color: '#0891b2' }}
                           onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(8, 145, 178, 0.1)')}
                           onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                         >
@@ -859,7 +854,7 @@ export default function UserHeader() {
               href={loginHref}
               className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300"
               style={{
-                background: mainGradient,
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
                 boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)',
                 color: '#fff',
               }}

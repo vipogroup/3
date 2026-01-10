@@ -1,0 +1,109 @@
+[
+  {
+    "_id": {
+      "$oid": "696220a8ac741be76ad663c1"
+    },
+    "name": "VIPO",
+    "slug": "coneec",
+    "ownerId": {
+      "$oid": "696220a8ac741be76ad663c0"
+    },
+    "status": "active",
+    "platformCommissionRate": 5,
+    "branding": {
+      "logo": null,
+      "favicon": null,
+      "primaryColor": "#0891b2",
+      "secondaryColor": "#1e3a8a",
+      "accentColor": "#06b6d4",
+      "successColor": "#16a34a",
+      "warningColor": "#f59e0b",
+      "dangerColor": "#dc2626",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1f2937",
+      "backgroundGradient": "linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)",
+      "cardGradient": "linear-gradient(white, white)",
+      "buttonGradient": "linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)"
+    },
+    "contact": {
+      "email": null,
+      "phone": null,
+      "whatsapp": null,
+      "address": "באר יעקב "
+    },
+    "social": {
+      "facebook": null,
+      "instagram": null,
+      "twitter": null,
+      "linkedin": null
+    },
+    "seo": {
+      "title": "מחסני נירוסטה",
+      "description": "מערכת מתקדמת לניהול סוכנים, מוצרים ורכישות קבוצתיות",
+      "keywords": "סוכנים, מוצרים, רכישה קבוצתית, VIPO",
+      "googleAnalyticsId": ""
+    },
+    "features": {
+      "registration": true,
+      "groupPurchase": null,
+      "notifications": true,
+      "darkMode": false
+    },
+    "agentSettings": {
+      "defaultCommissionPercent": 12,
+      "defaultDiscountPercent": 10,
+      "commissionHoldDays": 30,
+      "groupPurchaseHoldDays": 100
+    },
+    "billing": {
+      "pendingBalance": 0,
+      "totalPaid": 0,
+      "lastPaymentAt": null,
+      "paymentMethod": null,
+      "bankDetails": {
+        "bankName": null,
+        "branchNumber": null,
+        "accountNumber": null,
+        "accountName": null
+      }
+    },
+    "stats": {
+      "totalSales": 0,
+      "totalOrders": 0,
+      "totalProducts": 0,
+      "totalAgents": 0,
+      "totalCustomers": 0
+    },
+    "createdAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T14:09:51.541Z"
+    },
+    "activatedAt": {
+      "$date": "2026-01-10T09:50:21.114Z"
+    },
+    "domain": "",
+    "subdomain": "",
+    "updatedBy": "692deea497ce1a2ba6d4e151",
+    "allowedMenus": [
+      "users",
+      "agents",
+      "products",
+      "products_new",
+      "orders",
+      "reports",
+      "commissions",
+      "withdrawals",
+      "transactions",
+      "analytics",
+      "settings",
+      "marketing",
+      "notifications",
+      "integrations",
+      "new_users_widget",
+      "recent_orders_widget",
+      "crm"
+    ]
+  }
+]

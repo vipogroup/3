@@ -1,2 +1,3 @@
-2026/01/09-22:15:46.476 5b30 Creating DB C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test\whatsapp-server\.wwebjs_auth\session\Default\Local Storage\leveldb since it was missing.
-2026/01/09-22:15:46.632 5b30 Reusing MANIFEST C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test\whatsapp-server\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
+2026/01/10-09:39:11.369 2d90 Reusing MANIFEST C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test\whatsapp-server\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
+2026/01/10-09:39:11.378 2d90 Recovering log #3
+2026/01/10-09:39:11.382 2d90 Reusing old log C:\Users\ALFA DPM\Desktop\New Agent System Miriam\vipo-agents-test\whatsapp-server\.wwebjs_auth\session\Default\Local Storage\leveldb/000003.log 

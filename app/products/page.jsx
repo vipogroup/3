@@ -9,7 +9,6 @@ import Image from 'next/image';
 
 import { getProducts } from '@/app/lib/products';
 import { useCartContext } from '@/app/context/CartContext';
-import { useTheme } from '@/app/context/ThemeContext';
 import {
   isGroupPurchase,
   getGroupTimeRemaining,
@@ -20,7 +19,6 @@ import { useRouter } from 'next/navigation';
 function ProductsPageContent() {
   const searchParams = useSearchParams();
   const typeFilter = searchParams.get('type'); // 'available', 'group', or null (all)
-  const { settings } = useTheme();
   
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -46,13 +44,12 @@ function ProductsPageContent() {
     return products;
   }, [products, typeFilter]);
 
-  // Dynamic colors from settings
-  const primaryColor = settings?.primaryColor || '#1e3a8a';
-  const secondaryColor = settings?.secondaryColor || '#0891b2';
-  const accentColor = settings?.accentColor || '#06b6d4';
-  const gradientPrimary = settings?.buttonGradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-  const gradientReverse = `linear-gradient(135deg, ${secondaryColor} 0%, ${primaryColor} 100%)`;
-  const warningColor = settings?.warningColor || '#f59e0b';
+  const primaryColor = '#1e3a8a'; // כחול נייבי
+  const secondaryColor = '#0891b2'; // טורקיז
+  const accentColor = '#06b6d4'; // טורקיז בהיר
+  const gradientPrimary = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+  const gradientReverse = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+  const warningColor = '#f59e0b'; // כתום לתגיות והנחות
 
   const loadProducts = useCallback(async () => {
     try {

@@ -1,0 +1,590 @@
+[
+  {
+    "_id": {
+      "$oid": "695f51c562acf71a6f919389"
+    },
+    "name": "מתחיל",
+    "minSalesAmount": 0,
+    "minDeals": 0,
+    "commissionBoostPct": 0,
+    "badgeColor": "bronze",
+    "sortOrder": 1,
+    "tenantId": {
+      "$oid": "695f51c562acf71a6f919388"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T06:42:13.049Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T06:42:13.049Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f51c562acf71a6f91938a"
+    },
+    "name": "מתקדם",
+    "minSalesAmount": 5000,
+    "minDeals": 5,
+    "commissionBoostPct": 2,
+    "badgeColor": "silver",
+    "sortOrder": 2,
+    "tenantId": {
+      "$oid": "695f51c562acf71a6f919388"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T06:42:13.049Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T06:42:13.049Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f51c562acf71a6f91938b"
+    },
+    "name": "מקצוען",
+    "minSalesAmount": 15000,
+    "minDeals": 15,
+    "commissionBoostPct": 5,
+    "badgeColor": "gold",
+    "sortOrder": 3,
+    "tenantId": {
+      "$oid": "695f51c562acf71a6f919388"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T06:42:13.049Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T06:42:13.049Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f51c562acf71a6f91938c"
+    },
+    "name": "אלוף",
+    "minSalesAmount": 50000,
+    "minDeals": 50,
+    "commissionBoostPct": 10,
+    "badgeColor": "platinum",
+    "sortOrder": 4,
+    "tenantId": {
+      "$oid": "695f51c562acf71a6f919388"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T06:42:13.049Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T06:42:13.049Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f535062acf71a6f9193ae"
+    },
+    "name": "מתחיל",
+    "minSalesAmount": 0,
+    "minDeals": 0,
+    "commissionBoostPct": 0,
+    "badgeColor": "bronze",
+    "sortOrder": 1,
+    "tenantId": {
+      "$oid": "695f535062acf71a6f9193ad"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T06:48:48.927Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T06:48:48.927Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f535062acf71a6f9193af"
+    },
+    "name": "מתקדם",
+    "minSalesAmount": 5000,
+    "minDeals": 5,
+    "commissionBoostPct": 2,
+    "badgeColor": "silver",
+    "sortOrder": 2,
+    "tenantId": {
+      "$oid": "695f535062acf71a6f9193ad"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T06:48:48.927Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T06:48:48.927Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f535062acf71a6f9193b0"
+    },
+    "name": "מקצוען",
+    "minSalesAmount": 15000,
+    "minDeals": 15,
+    "commissionBoostPct": 5,
+    "badgeColor": "gold",
+    "sortOrder": 3,
+    "tenantId": {
+      "$oid": "695f535062acf71a6f9193ad"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T06:48:48.927Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T06:48:48.927Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695f535062acf71a6f9193b1"
+    },
+    "name": "אלוף",
+    "minSalesAmount": 50000,
+    "minDeals": 50,
+    "commissionBoostPct": 10,
+    "badgeColor": "platinum",
+    "sortOrder": 4,
+    "tenantId": {
+      "$oid": "695f535062acf71a6f9193ad"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T06:48:48.927Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T06:48:48.927Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6960436274e8fe0438e5e746"
+    },
+    "name": "מתחיל",
+    "minSalesAmount": 0,
+    "minDeals": 0,
+    "commissionBoostPct": 0,
+    "badgeColor": "bronze",
+    "sortOrder": 1,
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6960436274e8fe0438e5e747"
+    },
+    "name": "מתקדם",
+    "minSalesAmount": 5000,
+    "minDeals": 5,
+    "commissionBoostPct": 2,
+    "badgeColor": "silver",
+    "sortOrder": 2,
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6960436274e8fe0438e5e748"
+    },
+    "name": "מקצוען",
+    "minSalesAmount": 15000,
+    "minDeals": 15,
+    "commissionBoostPct": 5,
+    "badgeColor": "gold",
+    "sortOrder": 3,
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6960436274e8fe0438e5e749"
+    },
+    "name": "אלוף",
+    "minSalesAmount": 50000,
+    "minDeals": 50,
+    "commissionBoostPct": 10,
+    "badgeColor": "platinum",
+    "sortOrder": 4,
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T23:53:06.463Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621c1dac741be76ad6634b"
+    },
+    "name": "מתחיל",
+    "minSalesAmount": 0,
+    "minDeals": 0,
+    "commissionBoostPct": 0,
+    "badgeColor": "bronze",
+    "sortOrder": 1,
+    "tenantId": {
+      "$oid": "69621c1dac741be76ad6634a"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:30:05.977Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:30:05.977Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621c1dac741be76ad6634c"
+    },
+    "name": "מתקדם",
+    "minSalesAmount": 5000,
+    "minDeals": 5,
+    "commissionBoostPct": 2,
+    "badgeColor": "silver",
+    "sortOrder": 2,
+    "tenantId": {
+      "$oid": "69621c1dac741be76ad6634a"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:30:05.977Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:30:05.977Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621c1dac741be76ad6634d"
+    },
+    "name": "מקצוען",
+    "minSalesAmount": 15000,
+    "minDeals": 15,
+    "commissionBoostPct": 5,
+    "badgeColor": "gold",
+    "sortOrder": 3,
+    "tenantId": {
+      "$oid": "69621c1dac741be76ad6634a"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:30:05.977Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:30:05.977Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621c1dac741be76ad6634e"
+    },
+    "name": "אלוף",
+    "minSalesAmount": 50000,
+    "minDeals": 50,
+    "commissionBoostPct": 10,
+    "badgeColor": "platinum",
+    "sortOrder": 4,
+    "tenantId": {
+      "$oid": "69621c1dac741be76ad6634a"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:30:05.977Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:30:05.977Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621decac741be76ad6637a"
+    },
+    "name": "מתחיל",
+    "minSalesAmount": 0,
+    "minDeals": 0,
+    "commissionBoostPct": 0,
+    "badgeColor": "bronze",
+    "sortOrder": 1,
+    "tenantId": {
+      "$oid": "69621decac741be76ad66379"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:37:48.508Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:37:48.508Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621decac741be76ad6637b"
+    },
+    "name": "מתקדם",
+    "minSalesAmount": 5000,
+    "minDeals": 5,
+    "commissionBoostPct": 2,
+    "badgeColor": "silver",
+    "sortOrder": 2,
+    "tenantId": {
+      "$oid": "69621decac741be76ad66379"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:37:48.508Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:37:48.508Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621decac741be76ad6637c"
+    },
+    "name": "מקצוען",
+    "minSalesAmount": 15000,
+    "minDeals": 15,
+    "commissionBoostPct": 5,
+    "badgeColor": "gold",
+    "sortOrder": 3,
+    "tenantId": {
+      "$oid": "69621decac741be76ad66379"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:37:48.508Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:37:48.508Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621decac741be76ad6637d"
+    },
+    "name": "אלוף",
+    "minSalesAmount": 50000,
+    "minDeals": 50,
+    "commissionBoostPct": 10,
+    "badgeColor": "platinum",
+    "sortOrder": 4,
+    "tenantId": {
+      "$oid": "69621decac741be76ad66379"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:37:48.508Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:37:48.508Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621e0aac741be76ad66383"
+    },
+    "name": "מתחיל",
+    "minSalesAmount": 0,
+    "minDeals": 0,
+    "commissionBoostPct": 0,
+    "badgeColor": "bronze",
+    "sortOrder": 1,
+    "tenantId": {
+      "$oid": "69621e0aac741be76ad66382"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:38:18.289Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:38:18.289Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621e0aac741be76ad66384"
+    },
+    "name": "מתקדם",
+    "minSalesAmount": 5000,
+    "minDeals": 5,
+    "commissionBoostPct": 2,
+    "badgeColor": "silver",
+    "sortOrder": 2,
+    "tenantId": {
+      "$oid": "69621e0aac741be76ad66382"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:38:18.289Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:38:18.289Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621e0aac741be76ad66385"
+    },
+    "name": "מקצוען",
+    "minSalesAmount": 15000,
+    "minDeals": 15,
+    "commissionBoostPct": 5,
+    "badgeColor": "gold",
+    "sortOrder": 3,
+    "tenantId": {
+      "$oid": "69621e0aac741be76ad66382"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:38:18.289Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:38:18.289Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69621e0aac741be76ad66386"
+    },
+    "name": "אלוף",
+    "minSalesAmount": 50000,
+    "minDeals": 50,
+    "commissionBoostPct": 10,
+    "badgeColor": "platinum",
+    "sortOrder": 4,
+    "tenantId": {
+      "$oid": "69621e0aac741be76ad66382"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:38:18.289Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:38:18.289Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "696220a8ac741be76ad663c2"
+    },
+    "name": "מתחיל",
+    "minSalesAmount": 0,
+    "minDeals": 0,
+    "commissionBoostPct": 0,
+    "badgeColor": "bronze",
+    "sortOrder": 1,
+    "tenantId": {
+      "$oid": "696220a8ac741be76ad663c1"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "696220a8ac741be76ad663c3"
+    },
+    "name": "מתקדם",
+    "minSalesAmount": 5000,
+    "minDeals": 5,
+    "commissionBoostPct": 2,
+    "badgeColor": "silver",
+    "sortOrder": 2,
+    "tenantId": {
+      "$oid": "696220a8ac741be76ad663c1"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "696220a8ac741be76ad663c4"
+    },
+    "name": "מקצוען",
+    "minSalesAmount": 15000,
+    "minDeals": 15,
+    "commissionBoostPct": 5,
+    "badgeColor": "gold",
+    "sortOrder": 3,
+    "tenantId": {
+      "$oid": "696220a8ac741be76ad663c1"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "696220a8ac741be76ad663c5"
+    },
+    "name": "אלוף",
+    "minSalesAmount": 50000,
+    "minDeals": 50,
+    "commissionBoostPct": 10,
+    "badgeColor": "platinum",
+    "sortOrder": 4,
+    "tenantId": {
+      "$oid": "696220a8ac741be76ad663c1"
+    },
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    }
+  }
+]

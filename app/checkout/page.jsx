@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useCartContext } from '@/app/context/CartContext';
-import { useTheme } from '@/app/context/ThemeContext';
 
 const FORCE_PAYMENT_DEMO = process.env.NEXT_PUBLIC_PAYPLUS_FORCE_DEMO === 'true';
 const SKIP_REQUIRED_FIELDS = process.env.NEXT_PUBLIC_SKIP_CHECKOUT_VALIDATION === 'true';
@@ -31,13 +30,6 @@ function CheckoutClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { items, totals, isEmpty, hydrated, clearCart, removeItem } = useCartContext();
-  const { settings } = useTheme();
-  
-  // Dynamic colors from settings
-  const primaryColor = settings?.primaryColor || '#1e3a8a';
-  const secondaryColor = settings?.secondaryColor || '#0891b2';
-  const mainGradient = settings?.buttonGradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-  const reverseGradient = `linear-gradient(135deg, ${secondaryColor} 0%, ${primaryColor} 100%)`;
   
   // Filter items based on selected items from cart page
   const [selectedProductIds, setSelectedProductIds] = useState(null);
@@ -654,7 +646,7 @@ function CheckoutClient() {
           style={{
             border: '2px solid transparent',
             backgroundImage:
-              `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
             backgroundOrigin: 'border-box',
             backgroundClip: 'padding-box, border-box',
             boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -664,7 +656,7 @@ function CheckoutClient() {
             className="animate-spin rounded-full h-12 w-12 mx-auto"
             style={{
               border: '4px solid rgba(8, 145, 178, 0.2)',
-              borderTopColor: secondaryColor,
+              borderTopColor: '#0891b2',
             }}
           ></div>
           <p className="text-gray-600 mt-4 text-center font-medium">טוען...</p>
@@ -685,12 +677,12 @@ function CheckoutClient() {
             href="/cart"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all shadow-md"
             style={{
-              background: mainGradient,
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
               color: 'white',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background =
-                reverseGradient;
+                'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
               e.currentTarget.style.transform = 'translateY(-2px)';
               e.currentTarget.style.boxShadow = '0 6px 20px rgba(8, 145, 178, 0.4)';
             }}
@@ -719,7 +711,7 @@ function CheckoutClient() {
           style={{
             border: '2px solid transparent',
             backgroundImage:
-              `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
             backgroundOrigin: 'border-box',
             backgroundClip: 'padding-box, border-box',
             boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -729,7 +721,7 @@ function CheckoutClient() {
             <h1
               className="text-3xl font-bold mb-2"
               style={{
-                background: mainGradient,
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -739,7 +731,7 @@ function CheckoutClient() {
             </h1>
             <div
               className="h-1 w-24 rounded-full mb-3"
-              style={{ background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+              style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
             />
             <div className="flex items-center gap-3 flex-wrap">
               <div
@@ -747,7 +739,7 @@ function CheckoutClient() {
                 style={{
                   background:
                     'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
-                  color: primaryColor,
+                  color: '#1e3a8a',
                   border: '1px solid rgba(8, 145, 178, 0.3)',
                 }}
               >
@@ -765,7 +757,7 @@ function CheckoutClient() {
                 style={{
                   background:
                     'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
-                  color: primaryColor,
+                  color: '#1e3a8a',
                   border: '1px solid rgba(8, 145, 178, 0.3)',
                 }}
               >
@@ -789,7 +781,7 @@ function CheckoutClient() {
             style={{
               border: '2px solid transparent',
               backgroundImage:
-                `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
               boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -843,7 +835,7 @@ function CheckoutClient() {
             <section
               className="border-2 rounded-xl p-4"
               style={{
-                borderColor: openSections[1] || expandAll ? secondaryColor : '#e5e7eb',
+                borderColor: openSections[1] || expandAll ? '#0891b2' : '#e5e7eb',
                 background:
                   openSections[1] || expandAll
                     ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)'
@@ -894,7 +886,7 @@ function CheckoutClient() {
                   className="w-6 h-6 transition-transform duration-300"
                   style={{
                     transform: openSections[1] || expandAll ? 'rotate(180deg)' : 'rotate(0deg)',
-                    color: primaryColor,
+                    color: '#1e3a8a',
                   }}
                   fill="none"
                   stroke="currentColor"
@@ -975,7 +967,7 @@ function CheckoutClient() {
             <section
               className="border-2 rounded-xl p-4"
               style={{
-                borderColor: openSections[2] || expandAll ? secondaryColor : '#e5e7eb',
+                borderColor: openSections[2] || expandAll ? '#0891b2' : '#e5e7eb',
                 background:
                   openSections[2] || expandAll
                     ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)'
@@ -1022,7 +1014,7 @@ function CheckoutClient() {
                   className="w-6 h-6 transition-transform duration-300"
                   style={{
                     transform: openSections[2] || expandAll ? 'rotate(180deg)' : 'rotate(0deg)',
-                    color: primaryColor,
+                    color: '#1e3a8a',
                   }}
                   fill="none"
                   stroke="currentColor"
@@ -1229,7 +1221,7 @@ function CheckoutClient() {
                   className="w-6 h-6 transition-transform duration-300"
                   style={{
                     transform: openSections[3] || expandAll ? 'rotate(180deg)' : 'rotate(0deg)',
-                    color: primaryColor,
+                    color: '#1e3a8a',
                   }}
                   fill="none"
                   stroke="currentColor"
@@ -1400,7 +1392,7 @@ function CheckoutClient() {
               onMouseEnter={(e) => {
                 if (!processing && formData.agreeToTerms) {
                   e.currentTarget.style.background =
-                    reverseGradient;
+                    'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
                   e.currentTarget.style.transform = 'translateY(-2px)';
                   e.currentTarget.style.boxShadow = '0 10px 25px rgba(8, 145, 178, 0.3)';
                 }
@@ -1449,7 +1441,7 @@ function CheckoutClient() {
             style={{
               border: '2px solid transparent',
               backgroundImage:
-                `linear-gradient(white, white), linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
               boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -1469,14 +1461,14 @@ function CheckoutClient() {
               </h2>
               <div
                 className="h-1 w-20 rounded-full mb-2"
-                style={{ background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+                style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
               />
               <div
                 className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium inline-flex"
                 style={{
                   background:
                     'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
-                  color: primaryColor,
+                  color: '#1e3a8a',
                   border: '1px solid rgba(8, 145, 178, 0.3)',
                 }}
               >

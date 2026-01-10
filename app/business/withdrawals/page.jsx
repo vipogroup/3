@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useTheme } from '@/app/context/ThemeContext';
 
 const STATUS_FILTERS = [
   { value: 'all', label: 'הכל' },
@@ -86,7 +85,7 @@ function WithdrawalRow({ withdrawal, onOpen }) {
           {withdrawal.user?.email || withdrawal.user?.phone || '—'}
         </div>
       </td>
-      <td className="px-4 py-3 text-sm font-semibold" style={{ color: secondaryColor }}>
+      <td className="px-4 py-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>
         {formatCurrencyILS(withdrawal.amount)}
       </td>
       <td className="px-4 py-3 text-sm text-gray-600">{formatCurrencyILS(withdrawal.snapshotBalance)}</td>
@@ -114,13 +113,6 @@ function WithdrawalRow({ withdrawal, onOpen }) {
 
 export default function BusinessWithdrawalsPage() {
   const router = useRouter();
-  const { settings } = useTheme();
-  
-  // Dynamic colors from settings
-  const primaryColor = settings?.primaryColor || '#1e3a8a';
-  const secondaryColor = settings?.secondaryColor || '#0891b2';
-  const mainGradient = settings?.buttonGradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-  
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -305,7 +297,7 @@ export default function BusinessWithdrawalsPage() {
             <h1
               className="text-2xl font-bold"
               style={{
-                background: mainGradient,
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -364,7 +356,7 @@ export default function BusinessWithdrawalsPage() {
                     }`}
                     style={
                       statusFilter === status.value
-                        ? { background: mainGradient }
+                        ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }
                         : undefined
                     }
                   >
@@ -561,7 +553,7 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
       >
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold" style={{ color: secondaryColor }}>
+            <h2 className="text-xl font-bold" style={{ color: '#1e3a8a' }}>
               ניהול בקשת משיכה
             </h2>
             <p className="text-sm text-gray-500">עדכון סטטוס והעברת הערות לסוכן</p>
@@ -615,7 +607,7 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
                 <p className="text-xs text-gray-500">סכום הבקשה</p>
-                <p className="mt-2 text-lg font-bold" style={{ color: secondaryColor }}>
+                <p className="mt-2 text-lg font-bold" style={{ color: '#1e3a8a' }}>
                   {formatCurrencyILS(withdrawal.amount)}
                 </p>
               </div>
@@ -639,13 +631,13 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
 
             {withdrawal.paymentDetails && (
               <div className="rounded-xl p-4" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.08), rgba(8, 145, 178, 0.08))', border: '1px solid rgba(30, 58, 138, 0.2)' }}>
-                <p className="text-sm font-semibold mb-3" style={{ color: secondaryColor }}>
+                <p className="text-sm font-semibold mb-3" style={{ color: '#1e3a8a' }}>
                   פרטי העברת התשלום
                 </p>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500">אמצעי תשלום:</span>
-                    <span className="font-semibold" style={{ color: secondaryColor }}>
+                    <span className="font-semibold" style={{ color: '#1e3a8a' }}>
                       {withdrawal.paymentDetails.method === 'bit' && 'ביט'}
                       {withdrawal.paymentDetails.method === 'paybox' && 'פייבוקס'}
                       {withdrawal.paymentDetails.method === 'paypal' && 'פייפל'}
@@ -771,7 +763,7 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
               <button
                 type="submit"
                 className="w-full rounded-lg px-4 py-2 text-sm font-semibold text-white sm:w-auto"
-                style={{ background: mainGradient }}
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                 disabled={loading}
               >
                 {loading ? 'מעבד…' : 'שמירת הפעולה'}

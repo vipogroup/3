@@ -1,0 +1,34 @@
+[
+  {
+    "_id": {
+      "$oid": "695c90103bc3dd7d20469940"
+    },
+    "agentId": {
+      "$oid": "695c7e593bc3dd7d2046966b"
+    },
+    "refCode": "svkn-bdykh-001",
+    "ip": "79.177.157.200",
+    "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36",
+    "url": "https://0.0.0.0:3001/r/svkn-bdykh-001",
+    "action": "click",
+    "createdAt": {
+      "$date": "2026-01-06T04:31:12.783Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "695fff2c4555405d81fdbff3"
+    },
+    "agentId": {
+      "$oid": "695fcdfda7345f7c380737e2"
+    },
+    "refCode": "maym-001",
+    "ip": "10.0.0.2",
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.2 Mobile/15E148 Safari/604.1",
+    "url": "http://0.0.0.0:3001/r/maym-001",
+    "action": "click",
+    "createdAt": {
+      "$date": "2026-01-08T19:02:04.723Z"
+    }
+  }
+]

@@ -8,8 +8,6 @@ import { formatCurrencyILS } from '@/app/utils/date';
 import { useTheme } from '@/app/context/ThemeContext';
 import { getAllPresets, applyPreset } from '@/app/lib/themePresets';
 import TunnelButton from './TunnelButton';
-import ColorPicker from './ColorPicker';
-import GradientPicker from './GradientPicker';
 
 function PaletteIcon({ className = 'w-5 h-5' }) {
   return (
@@ -618,18 +616,11 @@ export default function SettingsForm() {
           {/* Colors Tab */}
           {activeTab === 'colors' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                    ערכת צבעים
-                  </h2>
-                  <p className="text-sm text-gray-600 mt-1">
-                    לחץ על כל צבע לפתיחת הפלטה המלאה
-                  </p>
-                </div>
-              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
+                ערכת צבעים
+              </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[
                   { key: 'primaryColor', label: 'צבע ראשי', desc: 'כפתורים וקישורים' },
                   { key: 'secondaryColor', label: 'צבע משני', desc: 'אלמנטים משניים' },
@@ -639,22 +630,25 @@ export default function SettingsForm() {
                   { key: 'dangerColor', label: 'צבע שגיאה', desc: 'הודעות שגיאה' },
                   { key: 'backgroundColor', label: 'צבע רקע', desc: 'רקע האתר' },
                   { key: 'textColor', label: 'צבע טקסט', desc: 'טקסט ראשי' },
-                ].map((color, index) => (
-                  <ColorPicker
+                ].map((color) => (
+                  <div
                     key={color.key}
-                    value={settings[color.key]}
-                    onChange={(value) => handleChange(color.key, value)}
-                    label={color.label}
-                    description={color.desc}
-                    showBrandPresets={index === 0}
-                    onApplyPreset={index === 0 ? (presetColors) => {
-                      Object.entries(presetColors).forEach(([key, value]) => {
-                        handleChange(key, value);
-                      });
-                      setSuccess('סגנון מותג הוחל בהצלחה!');
-                      setTimeout(() => setSuccess(''), 3000);
-                    } : undefined}
-                  />
+                    className="flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl"
+                  >
+                    <input
+                      type="color"
+                      value={settings[color.key]}
+                      onChange={(e) => handleChange(color.key, e.target.value)}
+                      className="w-16 h-16 border-2 rounded-lg cursor-pointer"
+                    />
+                    <div className="flex-1">
+                      <div className="font-bold text-gray-900">{color.label}</div>
+                      <div className="text-sm text-gray-600">{color.desc}</div>
+                      <div className="text-xs font-mono text-gray-500 mt-1">
+                        {settings[color.key]}
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
 
@@ -671,13 +665,30 @@ export default function SettingsForm() {
                   { key: 'cardGradient', label: 'גרדיאנט כרטיסים', desc: 'רקע כרטיסי תוכן' },
                   { key: 'buttonGradient', label: 'גרדיאנט כפתורים', desc: 'רקע כפתורי פעולה' },
                 ].map((gradient) => (
-                  <GradientPicker
+                  <div
                     key={gradient.key}
-                    value={settings[gradient.key] || ''}
-                    onChange={(value) => handleChange(gradient.key, value)}
-                    label={gradient.label}
-                    description={gradient.desc}
-                  />
+                    className="p-4 border-2 border-purple-200 rounded-xl bg-purple-50/60 flex flex-col gap-3"
+                  >
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <div>
+                        <div className="font-bold text-gray-900">{gradient.label}</div>
+                        <div className="text-sm text-gray-600">{gradient.desc}</div>
+                      </div>
+                      <div
+                        className="h-12 w-36 rounded-lg shadow-inner border border-white/60"
+                        style={{ background: settings[gradient.key] }}
+                        title={settings[gradient.key] || ''}
+                      ></div>
+                    </div>
+                    <input
+                      type="text"
+                      value={settings[gradient.key] || ''}
+                      onChange={(e) => handleChange(gradient.key, e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:border-purple-500 font-mono text-sm"
+                      placeholder="לדוגמה: linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #ec4899 100%)"
+                      dir="ltr"
+                    />
+                  </div>
                 ))}
               </div>
 

@@ -2,6 +2,7 @@ import './globals.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { ThemeProvider } from '@/app/context/ThemeContext';
 import { CartProvider } from '@/app/context/CartContext';
+import { SiteTextsProvider } from '@/lib/useSiteTexts';
 import UserHeader from '@/app/components/UserHeader';
 import ReferralTracker from '@/app/components/ReferralTracker';
 import CartToast from '@/app/components/CartToast';
@@ -72,17 +73,19 @@ export default function RootLayout({ children }) {
         <LoadingScreen />
         <CartProvider>
           <ThemeProvider>
-            <PwaInstaller enabled={enableServiceWorker} />
-            <ReferralTracker />
-            <UserHeader />
-            {children}
-            <GlobalFooterWrapper />
-            <CartToast />
-            <InstallPrompt />
-            <UpdateNotifier />
-            <PushNotificationModal />
-            <CookieConsent />
-            <FloatingChatBot />
+            <SiteTextsProvider page="global">
+              <PwaInstaller enabled={enableServiceWorker} />
+              <ReferralTracker />
+              <UserHeader />
+              {children}
+              <GlobalFooterWrapper />
+              <CartToast />
+              <InstallPrompt />
+              <UpdateNotifier />
+              <PushNotificationModal />
+              <CookieConsent />
+              <FloatingChatBot />
+            </SiteTextsProvider>
           </ThemeProvider>
         </CartProvider>
       </body>

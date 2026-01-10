@@ -599,17 +599,18 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
             {/* Payment Details Section */}
             {withdrawal.paymentDetails && (
               <div className="rounded-xl p-4" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.08), rgba(8, 145, 178, 0.08))', border: '1px solid rgba(30, 58, 138, 0.2)' }}>
-                <p className="text-sm font-semibold mb-3" style={{ color: '#1e3a8a' }}>
-                  💰 פרטי העברת התשלום
+                <p className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: '#1e3a8a' }}>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  פרטי העברת התשלום
                 </p>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500">אמצעי תשלום:</span>
-                    <span className="font-semibold" style={{ color: '#1e3a8a' }}>
-                      {withdrawal.paymentDetails.method === 'bit' && '💳 ביט'}
-                      {withdrawal.paymentDetails.method === 'paybox' && '📱 פייבוקס'}
-                      {withdrawal.paymentDetails.method === 'paypal' && '🅿️ פייפל'}
-                      {withdrawal.paymentDetails.method === 'bank' && '🏦 העברה בנקאית'}
+                    <span className="font-semibold flex items-center gap-1" style={{ color: '#1e3a8a' }}>
+                      {withdrawal.paymentDetails.method === 'bit' && <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg> ביט</>}
+                      {withdrawal.paymentDetails.method === 'paybox' && <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg> פייבוקס</>}
+                      {withdrawal.paymentDetails.method === 'paypal' && <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg> פייפל</>}
+                      {withdrawal.paymentDetails.method === 'bank' && <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg> העברה בנקאית</>}
                     </span>
                   </div>
                   

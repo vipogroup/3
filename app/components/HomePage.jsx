@@ -4,19 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import FeaturedCarousel from './FeaturedCarousel';
-import { useSiteTexts, SiteTextsProvider } from '@/lib/useSiteTexts';
-import { useTheme } from '@/app/context/ThemeContext';
+import { useSiteTexts } from '@/lib/useSiteTexts';
 import EditableTextField from './EditableTextField';
 
 function HomePageContent() {
   const { getText, editMode, canEdit, enableEditMode, disableEditMode } = useSiteTexts();
-  const { settings } = useTheme();
-  
-  // Dynamic colors and siteName from settings
-  const primaryColor = settings?.primaryColor || '#1e3a8a';
-  const secondaryColor = settings?.secondaryColor || '#0891b2';
-  const mainGradient = settings?.buttonGradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-  const siteName = settings?.siteName || 'VIPO';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -345,7 +337,7 @@ function HomePageContent() {
       <section id="main-content" className="hero reveal-on-scroll">
         <div className="container">
           <div className="hero-content">
-            <h1><span className="word">🇮🇱</span> <span className="word">ביחד</span> <span className="word">ננצח</span> <span className="word">🇮🇱</span><br/><span className="word" style={{fontSize: '0.55em'}}>נלחמים ביוקר המחייה</span></h1>
+            <h1><span className="word">🇮🇱</span> <EditableTextField textKey="HOME_HERO_TITLE_MAIN" fallback="ביחד ננצח" as="span" className="word" /> <span className="word">🇮🇱</span><br/><EditableTextField textKey="HOME_HERO_TITLE_SUB" fallback="נלחמים ביוקר המחייה" as="span" className="word" style={{fontSize: '0.55em'}} /></h1>
             <EditableTextField 
               textKey="HOME_HERO_SUBTITLE" 
               fallback="רכישה קבוצתית במחיר מפעל - ככה ננצח!"
@@ -360,7 +352,7 @@ function HomePageContent() {
                 onMouseMove={handleMagneticMove}
                 onMouseLeave={handleMagneticLeave}
               >
-                {getText('HOME_HERO_CTA_PRIMARY', 'צפו במוצרים')}
+                <EditableTextField textKey="HOME_HERO_CTA_PRIMARY" fallback="צפו במוצרים" as="span" />
               </Link>
               <a 
                 href="#video-section" 
@@ -374,7 +366,7 @@ function HomePageContent() {
                     window.scrollTo({ top, behavior: 'smooth' });
                   }
                 }}
-              >{getText('HOME_HERO_CTA_SECONDARY', 'איך זה עובד?')}</a>
+              ><EditableTextField textKey="HOME_HERO_CTA_SECONDARY" fallback="איך זה עובד?" as="span" /></a>
             </div>
           </div>
         </div>
@@ -411,7 +403,7 @@ function HomePageContent() {
             fallback="איך זה עובד?"
             as="h2"
             className="section-title"
-            style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="steps-container">
             {[1,2,3,4,5,6].map((num, index) => {
@@ -452,7 +444,7 @@ function HomePageContent() {
               textKey="HOME_TRUST_TITLE" 
               fallback="שאנחנו מאוחדים אנחנו חזקים"
               as="h2"
-              style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
             />
             <EditableTextField 
               textKey="HOME_TRUST_TEXT" 
@@ -472,7 +464,7 @@ function HomePageContent() {
             fallback="חבר מביא חבר"
             as="h2"
             className="section-title"
-            style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="referral-content">
             <div className="referral-info">
@@ -494,23 +486,23 @@ function HomePageContent() {
               onClick={() => setReferralPanelOpen(!referralPanelOpen)}
               aria-expanded={referralPanelOpen}
             >
-              {getText('HOME_REFERRAL_BUTTON', 'משתפים חברים – ומרוויחים בלי לקנות')}
+              <EditableTextField textKey="HOME_REFERRAL_BUTTON" fallback="משתפים חברים – ומרוויחים בלי לקנות" as="span" />
             </button>
             <div className={`referral-info-panel ${referralPanelOpen ? 'open' : ''}`}>
-              <h4>איך מרוויחים כסף בלי לרכוש בעצמכם?</h4>
+              <EditableTextField textKey="HOME_REFERRAL_PANEL_TITLE" fallback="איך מרוויחים כסף בלי לרכוש בעצמכם?" as="h4" />
               <ol className="referral-steps">
-                <li>נרשמים בחינם משתפים מוצר בלחיצת כפתור ישירות לווצאפ או לכל רשת חברתית ובכל פעם שחבר ירכוש דרך השיתוף שלך החשבון שלך יזוכה ב-10% מערך העסקה שיתפת הרווחת</li>
-                <li>שולחים בקשה למימוש העמלות והכסף נשלח לחשבון בנק שלך</li>
+                <li><EditableTextField textKey="HOME_REFERRAL_STEP_1" fallback="נרשמים בחינם משתפים מוצר בלחיצת כפתור ישירות לווצאפ או לכל רשת חברתית ובכל פעם שחבר ירכוש דרך השיתוף שלך החשבון שלך יזוכה ב-10% מערך העסקה שיתפת הרווחת" as="span" multiline /></li>
+                <li><EditableTextField textKey="HOME_REFERRAL_STEP_2" fallback="שולחים בקשה למימוש העמלות והכסף נשלח לחשבון בנק שלך" as="span" /></li>
               </ol>
               <hr className="referral-divider" />
-              <p className="referral-summary">אין התחייבות אין צורך לקנות פשוט רק לשתף</p>
-              <p className="referral-motto" style={{fontWeight: 'bold', marginTop: '10px'}}>רק ביחד נתאחד ונחזיר את השליטה לעם זאת לא שיטה זאת תנועה של עם אחד</p>
-              <Link href="/register" className="btn btn-primary referral-panel-cta">{getText('HOME_REFERRAL_CTA', 'פתחו קוד קופון אישי')}</Link>
+              <EditableTextField textKey="HOME_REFERRAL_SUMMARY" fallback="אין התחייבות אין צורך לקנות פשוט רק לשתף" as="p" className="referral-summary" />
+              <EditableTextField textKey="HOME_REFERRAL_MOTTO" fallback="רק ביחד נתאחד ונחזיר את השליטה לעם זאת לא שיטה זאת תנועה של עם אחד" as="p" className="referral-motto" style={{fontWeight: 'bold', marginTop: '10px'}} />
+              <Link href="/register" className="btn btn-primary referral-panel-cta"><EditableTextField textKey="HOME_REFERRAL_CTA" fallback="פתחו קוד קופון אישי" as="span" /></Link>
             </div>
             <div className="referral-link-box">
-              <label htmlFor="referral-link">קבל קוד קופון אישי:</label>
+              <EditableTextField textKey="HOME_REFERRAL_LABEL" fallback="קבל קוד קופון אישי:" as="label" htmlFor="referral-link" />
               <div className="copy-link-container">
-                <input type="text" id="referral-link" value={`${siteName}-123456`} readOnly />
+                <input type="text" id="referral-link" value="VIPO-123456" readOnly />
                 <button className="btn btn-copy" aria-label="העתק קוד קופון אישי" onClick={handleCopyCode}>
                   {svgIcons.copy}
                 </button>
@@ -554,7 +546,7 @@ function HomePageContent() {
               return (
                 <div className="audience-card reveal-on-scroll" key={index}>
                   <div className="audience-icon">
-                    <span style={{color: primaryColor}}>{svgIcons[icons[index]]}</span>
+                    <span style={{color: '#1e3a8a'}}>{svgIcons[icons[index]]}</span>
                   </div>
                   <EditableTextField textKey={`HOME_TARGET_${num}_TITLE`} fallback={fallbackTitles[index]} as="h3" />
                   <EditableTextField textKey={`HOME_TARGET_${num}_TEXT`} fallback={fallbackDescs[index]} as="p" className="audience-description" />
@@ -573,7 +565,7 @@ function HomePageContent() {
             fallback="שאלות נפוצות"
             as="h2"
             className="section-title"
-            style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="faq-timeline">
             {[1,2,3,4,5].map((num, index) => {
@@ -618,7 +610,7 @@ function HomePageContent() {
             fallback="לקוחות מספרים"
             as="h2"
             className="section-title"
-            style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="testimonials-slider-wrapper">
             <div className="testimonials-slider">
@@ -670,7 +662,7 @@ function HomePageContent() {
             fallback="מי אנחנו"
             as="h2"
             className="section-title"
-            style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="about-content">
             <EditableTextField 
@@ -712,8 +704,8 @@ function HomePageContent() {
           <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
             <defs>
               <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style={{stopColor: primaryColor, stopOpacity:1}} />
-                <stop offset="100%" style={{stopColor: secondaryColor, stopOpacity:1}} />
+                <stop offset="0%" style={{stopColor:'#1e3a8a', stopOpacity:1}} />
+                <stop offset="100%" style={{stopColor:'#0891b2', stopOpacity:1}} />
               </linearGradient>
             </defs>
             <path d="M0,0 C150,80 350,0 600,40 C850,80 1050,0 1200,40 L1200,120 L0,120 Z" fill="url(#waveGradient)"></path>
@@ -742,7 +734,7 @@ function HomePageContent() {
           <div className="footer-main" style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '30px'}}>
             {/* יצירת קשר - ימין */}
             <div className="footer-contact" style={{flex: '1', minWidth: '200px'}}>
-              <h3 style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}}>יצירת קשר</h3>
+              <EditableTextField textKey="FOOTER_CONTACT_TITLE" fallback="יצירת קשר" as="h3" style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}} />
               <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
                 <div className="footer-contact-item">
                   <i className="fa-solid fa-phone"></i>
@@ -765,13 +757,13 @@ function HomePageContent() {
             
             {/* קישורי ניווט - שמאל */}
             <div className="footer-nav" style={{flex: '1', minWidth: '200px'}}>
-              <h3 style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}}>ניווט מהיר</h3>
+              <EditableTextField textKey="FOOTER_NAV_TITLE" fallback="ניווט מהיר" as="h3" style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}} />
               <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                <a href="/" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-home"></i> דף הבית</a>
-                <a href="/shop" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-store"></i> חנות</a>
-                <a href="#how-it-works" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-cogs"></i> איך זה עובד</a>
-                <a href="#faq" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-question-circle"></i> שאלות נפוצות</a>
-                <a href="#about-vipo" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-users"></i> מי אנחנו</a>
+                <a href="/" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-home"></i> <EditableTextField textKey="FOOTER_NAV_HOME" fallback="דף הבית" as="span" /></a>
+                <a href="/shop" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-store"></i> <EditableTextField textKey="FOOTER_NAV_SHOP" fallback="חנות" as="span" /></a>
+                <a href="#how-it-works" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-cogs"></i> <EditableTextField textKey="FOOTER_NAV_HOW" fallback="איך זה עובד" as="span" /></a>
+                <a href="#faq" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-question-circle"></i> <EditableTextField textKey="FOOTER_NAV_FAQ" fallback="שאלות נפוצות" as="span" /></a>
+                <a href="#about-vipo" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-users"></i> <EditableTextField textKey="FOOTER_NAV_ABOUT" fallback="מי אנחנו" as="span" /></a>
               </div>
             </div>
           </div>
@@ -786,8 +778,8 @@ function HomePageContent() {
           <div className="footer-bottom">
             <EditableTextField textKey="FOOTER_COPYRIGHT" fallback="© 2025 VIPO GROUP | ע.מ. 036517548" as="p" />
             <div className="footer-links">
-              <a href="/terms">תנאי שימוש</a>
-              <a href="/privacy">מדיניות פרטיות</a>
+              <a href="/terms"><EditableTextField textKey="FOOTER_LINK_TERMS" fallback="תנאי שימוש" as="span" /></a>
+              <a href="/privacy"><EditableTextField textKey="FOOTER_LINK_PRIVACY" fallback="מדיניות פרטיות" as="span" /></a>
             </div>
           </div>
         </div>
@@ -806,7 +798,7 @@ function HomePageContent() {
           style={{
             background: editMode 
               ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' 
-              : mainGradient,
+              : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
             color: 'white',
             fontWeight: '600',
           }}
@@ -845,7 +837,7 @@ function HomePageContent() {
             dir="rtl"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold" style={{ color: primaryColor }}>כניסה למצב עריכה</h3>
+              <h3 className="text-xl font-bold" style={{ color: '#1e3a8a' }}>כניסה למצב עריכה</h3>
               <button 
                 onClick={() => {
                   setShowPasswordModal(false);
@@ -884,7 +876,7 @@ function HomePageContent() {
             <button
               onClick={handlePasswordSubmit}
               className="w-full mt-4 px-4 py-3 rounded-lg text-white font-medium transition-all hover:opacity-90"
-              style={{ background: mainGradient }}
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
               כניסה
             </button>
@@ -896,7 +888,7 @@ function HomePageContent() {
       {editMode && (
         <div 
           className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-full shadow-lg"
-          style={{ background: mainGradient, color: 'white' }}
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', color: 'white' }}
         >
           <span className="flex items-center gap-2 text-sm font-medium">
             <svg className="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -910,11 +902,7 @@ function HomePageContent() {
   );
 }
 
-// Main export with provider wrapper
+// Main export - uses global SiteTextsProvider from layout
 export default function HomePage() {
-  return (
-    <SiteTextsProvider page="home">
-      <HomePageContent />
-    </SiteTextsProvider>
-  );
+  return <HomePageContent />;
 }

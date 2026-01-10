@@ -85,24 +85,7 @@ export async function GET(req) {
     
     // Check for tenant-specific settings
     const host = req.headers.get('host');
-    let tenant = await getTenantByHost(host);
-    
-    // If no tenant found by host, check logged-in user's tenantId
-    if (!tenant) {
-      const token = extractToken(req);
-      if (token) {
-        const payload = verifyJWT(token);
-        if (payload?.tenantId) {
-          const tenantDoc = await db.collection('tenants').findOne({ 
-            _id: new ObjectId(payload.tenantId),
-            status: 'active'
-          });
-          if (tenantDoc) {
-            tenant = tenantDoc;
-          }
-        }
-      }
-    }
+    const tenant = await getTenantByHost(host);
     
     let settings;
     let updatedAt = null;

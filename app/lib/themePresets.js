@@ -149,32 +149,19 @@ export const THEME_PRESETS = {
   },
 };
 
-// פונקציה ליצירת גרדיאנט אוטומטי מצבעים
-function generateGradient(color1, color2, angle = 135) {
-  return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
-}
-
 // פונקציה להחלת preset
 export function applyPreset(presetName) {
   const preset = THEME_PRESETS[presetName];
   if (!preset) return null;
 
-  const colors = preset.colors;
-  
-  // יצירת גרדיאנטים אוטומטית אם לא מוגדרים
-  const autoButtonGradient = generateGradient(colors.primaryColor, colors.secondaryColor);
-  const autoBackgroundGradient = generateGradient(colors.secondaryColor, colors.accentColor || colors.primaryColor);
-  const autoCardGradient = 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.98) 100%)';
-
   return {
     siteName: 'VIPO',
     siteDescription: `מערכת מתקדמת בסגנון ${preset.name}`,
-    ...colors,
+    ...preset.colors,
     ...(preset.gradients || {}),
-    // גרדיאנטים - השתמש במוגדר או צור אוטומטית
-    backgroundGradient: colors.backgroundGradient || preset.backgroundGradient || autoBackgroundGradient,
-    cardGradient: colors.cardGradient || preset.cardGradient || autoCardGradient,
-    buttonGradient: colors.buttonGradient || preset.buttonGradient || autoButtonGradient,
+    backgroundGradient: preset.colors.backgroundGradient || preset.backgroundGradient,
+    cardGradient: preset.colors.cardGradient || preset.cardGradient,
+    buttonGradient: preset.colors.buttonGradient || preset.buttonGradient,
     ...(preset.typography || {}),
     themePreset: presetName,
   };

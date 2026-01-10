@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useSiteTexts } from '@/lib/useSiteTexts';
+import { editTextSafely, validateTextEdit } from '@/lib/editTextSafely';
 
 /**
  * EditableTextField - קומפוננטה לעריכת טקסט inline
@@ -48,11 +49,21 @@ export default function EditableTextField({
     setIsEditing(true);
   };
 
-  // Save changes
+  // Save changes with safety validation
   const saveText = async () => {
     if (editValue === currentText) {
       setIsEditing(false);
       return;
+    }
+
+    // ולידציה לפני שמירה
+    const elementRef = document.querySelector(`[data-text-key="${textKey}"]`);
+    if (elementRef) {
+      const validation = validateTextEdit(elementRef, editValue);
+      if (!validation.valid) {
+        alert(`שגיאה בעריכת הטקסט:\n${validation.issues.join('\n')}`);
+        return;
+      }
     }
 
     setSaving(true);
@@ -113,7 +124,8 @@ export default function EditableTextField({
         <button
           onClick={saveText}
           disabled={saving}
-          className="p-1.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all disabled:opacity-50"
+          className="p-1.5 text-white rounded-lg transition-all disabled:opacity-50"
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
           title="שמור (Enter)"
         >
           {saving ? (
@@ -156,6 +168,7 @@ export default function EditableTextField({
       style={{ ...style, ...editModeStyles }}
       onClick={editMode ? startEditing : undefined}
       title={editMode ? `לחץ לעריכה: ${textKey}` : undefined}
+      data-text-key={textKey}
     >
       {children || currentText}
     </Component>

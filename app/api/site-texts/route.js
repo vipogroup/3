@@ -120,15 +120,23 @@ export async function GET(request) {
     const textId = searchParams.get('textId');
     const section = searchParams.get('section');
     const initDefaults = searchParams.get('initDefaults') === 'true';
+    const businessId = searchParams.get('businessId');
+    
+    // Convert businessId to ObjectId if provided
+    const tenantId = businessId ? businessId : null;
     
     // Initialize defaults if requested
     if (initDefaults && page === 'home') {
       for (const [sectionKey, fields] of Object.entries(HOME_PAGE_DEFAULTS)) {
         for (const field of fields) {
-          const existing = await SiteText.findOne({ textId: field.textId });
+          const existing = await SiteText.findOne({ 
+            textId: field.textId,
+            tenantId: tenantId
+          });
           if (!existing) {
             await SiteText.create({
               textId: field.textId,
+              tenantId: tenantId,
               page: 'home',
               section: sectionKey,
               label: field.label,
@@ -144,7 +152,7 @@ export async function GET(request) {
     }
     
     // Build query
-    const query = {};
+    const query = { tenantId };
     if (page) query.page = page;
     if (section) query.section = section;
     if (textId) query.textId = textId;
@@ -185,27 +193,61 @@ export async function GET(request) {
   }
 }
 
-// PUT - Update a text value
+// PUT - Update a text value (creates if not exists)
 export async function PUT(request) {
   try {
     await connectMongo();
     
     const body = await request.json();
-    const { textId, value } = body;
+    const { textId, value, businessId } = body;
     
     if (!textId) {
       return NextResponse.json({ error: 'textId is required' }, { status: 400 });
     }
     
-    const text = await SiteText.findOneAndUpdate(
-      { textId },
-      { value, updatedAt: new Date() },
-      { new: true }
-    );
+    // Convert businessId to ObjectId if provided
+    const tenantId = businessId ? businessId : null;
     
-    if (!text) {
-      return NextResponse.json({ error: 'Text not found' }, { status: 404 });
+    // Determine page and section from textId prefix
+    let page = 'home';
+    let section = 'CUSTOM';
+    
+    if (textId.startsWith('SHOP_')) {
+      page = 'shop';
+      section = 'SHOP_SECTION';
+    } else if (textId.startsWith('HOME_')) {
+      page = 'home';
+      if (textId.includes('HERO')) section = 'HERO_SECTION';
+      else if (textId.includes('HOW')) section = 'HOW_IT_WORKS_SECTION';
+      else if (textId.includes('TRUST')) section = 'TRUST_SECTION';
+      else if (textId.includes('REFERRAL')) section = 'REFERRAL_SECTION';
+      else if (textId.includes('TARGET')) section = 'TARGET_AUDIENCE_SECTION';
+      else if (textId.includes('FAQ')) section = 'FAQ_SECTION';
+      else if (textId.includes('TESTIMONIAL')) section = 'TESTIMONIALS_SECTION';
+      else if (textId.includes('ABOUT')) section = 'ABOUT_SECTION';
+    } else if (textId.startsWith('FOOTER_')) {
+      page = 'global';
+      section = 'FOOTER_SECTION';
     }
+    
+    // Use upsert to create if not exists
+    const text = await SiteText.findOneAndUpdate(
+      { textId, tenantId },
+      { 
+        value, 
+        updatedAt: new Date(),
+        // Set these only on insert (not on update)
+        $setOnInsert: {
+          tenantId,
+          page,
+          section,
+          label: textId,
+          defaultValue: value,
+          createdAt: new Date()
+        }
+      },
+      { new: true, upsert: true }
+    );
     
     return NextResponse.json({ success: true, text });
   } catch (error) {

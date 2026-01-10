@@ -2,15 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useTheme } from '@/app/context/ThemeContext';
 
 export default function CRMDashboard() {
-  const { settings } = useTheme();
-  
-  // Dynamic colors from settings
-  const primaryColor = settings?.primaryColor || '#1e3a8a';
-  const secondaryColor = settings?.secondaryColor || '#0891b2';
-  const mainGradient = settings?.buttonGradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
   // Main navigation tabs
   const mainTabs = [
     { id: 'inbox', label: 'Inbox', icon: 'inbox' },
@@ -398,11 +391,11 @@ export default function CRMDashboard() {
       {/* Top Navigation - VIPO Style */}
       <header className="h-16 flex items-center justify-between px-4 sm:px-6 bg-white border-b border-gray-200">
         <div className="flex items-center gap-4 sm:gap-6">
-          <Link href="/business" className="text-xl sm:text-2xl font-bold" style={{ background: mainGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            {settings?.siteName || 'VIPO'}
+          <Link href="/business" className="text-xl sm:text-2xl font-bold" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            VIPO
           </Link>
           <span className="text-gray-300">|</span>
-          <h1 className="text-lg font-bold" style={{ color: primaryColor }}>מערכת CRM</h1>
+          <h1 className="text-lg font-bold" style={{ color: '#1e3a8a' }}>מערכת CRM</h1>
           
           <nav className="hidden md:flex items-center gap-1 mr-4">
             {mainTabs.map(tab => (
@@ -413,7 +406,7 @@ export default function CRMDashboard() {
                     ? 'text-white' 
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
-                style={activeTab === tab.id ? { background: mainGradient } : {}}
+                style={activeTab === tab.id ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}
@@ -458,7 +451,7 @@ export default function CRMDashboard() {
             <button
               onClick={openQRModal}
               className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg text-white transition-colors"
-              style={{ background: mainGradient }}
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
@@ -482,7 +475,7 @@ export default function CRMDashboard() {
       {showQRModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 text-center">
-            <h3 className="text-xl font-bold mb-4" style={{ color: primaryColor }}>חיבור WhatsApp</h3>
+            <h3 className="text-xl font-bold mb-4" style={{ color: '#1e3a8a' }}>חיבור WhatsApp</h3>
             <p className="text-gray-600 mb-4">סרוק את הקוד עם אפליקציית WhatsApp בטלפון</p>
             
             {/* Embed the QR page directly using iframe */}
@@ -537,7 +530,7 @@ export default function CRMDashboard() {
                       ? 'text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
-                  style={activeQueue === queue.id ? { background: mainGradient } : {}}
+                  style={activeQueue === queue.id ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
                 >
                   <span className="ml-1"><QueueIcon type={queue.icon} /></span>
                   {queue.name}
@@ -560,7 +553,7 @@ export default function CRMDashboard() {
                   className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
                     selectedConversation?.phone === conv.phone ? 'bg-cyan-50 border-r-4' : ''
                   }`}
-                  style={selectedConversation?.phone === conv.phone ? { borderRightColor: secondaryColor } : {}}
+                  style={selectedConversation?.phone === conv.phone ? { borderRightColor: '#0891b2' } : {}}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
@@ -604,13 +597,13 @@ export default function CRMDashboard() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="הערה" style={{ color: secondaryColor }}>
+                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="הערה" style={{ color: '#0891b2' }}>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                   </button>
-                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="תיוג" style={{ color: secondaryColor }}>
+                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="תיוג" style={{ color: '#0891b2' }}>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
                   </button>
-                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="תזכורת" style={{ color: secondaryColor }}>
+                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="תזכורת" style={{ color: '#0891b2' }}>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   </button>
                   <button className="p-2 hover:bg-gray-100 rounded-lg text-red-500" title="סגור">
@@ -632,7 +625,7 @@ export default function CRMDashboard() {
                           ? 'text-white rounded-br-none'
                           : 'bg-white text-gray-900 rounded-bl-none'
                       }`}
-                      style={msg.type === 'outgoing' ? { background: mainGradient } : {}}
+                      style={msg.type === 'outgoing' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
                     >
                       <p className="break-words text-sm">{msg.message || '[מדיה]'}</p>
                       <div className={`text-xs mt-1 flex items-center gap-1 ${msg.type === 'outgoing' ? 'text-cyan-100' : 'text-gray-400'}`}>
@@ -655,7 +648,7 @@ export default function CRMDashboard() {
                     onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                     placeholder="הקלד הודעה..."
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:border-cyan-500"
-                    style={{ borderColor: connected ? secondaryColor : undefined }}
+                    style={{ borderColor: connected ? '#0891b2' : undefined }}
                     disabled={!connected}
                   />
                   <button
@@ -760,13 +753,13 @@ export default function CRMDashboard() {
                 <div className="space-y-2 text-sm">
                   {selectedLead.email && (
                     <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                      <svg className="w-4 h-4" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                       <span className="text-gray-600">{selectedLead.email}</span>
                     </div>
                   )}
                   {selectedLead.company && (
                     <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                      <svg className="w-4 h-4" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                       <span className="text-gray-600">{selectedLead.company}</span>
                     </div>
                   )}
@@ -816,7 +809,7 @@ export default function CRMDashboard() {
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-medium" style={{ color: '#1e3a8a' }}>משימות</h4>
-                  <button className="text-sm hover:underline" style={{ color: secondaryColor }}>+ הוסף</button>
+                  <button className="text-sm hover:underline" style={{ color: '#0891b2' }}>+ הוסף</button>
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 p-2 bg-yellow-50 rounded-lg text-sm">
@@ -836,7 +829,7 @@ export default function CRMDashboard() {
                       onClick={() => setShowSnoozeMenu(!showSnoozeMenu)}
                       className="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-50 flex items-center gap-1"
                     >
-                      <svg className="w-4 h-4" style={{ color: secondaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <svg className="w-4 h-4" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       השהה
                     </button>
                     {showSnoozeMenu && (
@@ -969,7 +962,7 @@ export default function CRMDashboard() {
                           <button 
                             onClick={() => { setSelectedLead(lead); setActiveTab('inbox'); }}
                             className="text-xs px-2 py-1 rounded hover:bg-gray-100"
-                            style={{ color: secondaryColor }}
+                            style={{ color: '#0891b2' }}
                           >
                             צפה
                           </button>
@@ -1083,7 +1076,7 @@ export default function CRMDashboard() {
                         <p className="font-medium text-sm text-gray-900">{lead.name}</p>
                         <p className="text-xs text-gray-500">{lead.phone}</p>
                         {lead.estimatedValue > 0 && (
-                          <p className="text-xs mt-1 font-medium" style={{ color: secondaryColor }}>₪{lead.estimatedValue.toLocaleString()}</p>
+                          <p className="text-xs mt-1 font-medium" style={{ color: '#0891b2' }}>₪{lead.estimatedValue.toLocaleString()}</p>
                         )}
                       </div>
                     ))}
