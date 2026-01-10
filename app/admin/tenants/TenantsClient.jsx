@@ -230,7 +230,7 @@ export default function TenantsClient() {
     }
   };
 
-  // Enter tenant dashboard as super admin
+  // Enter tenant dashboard as super admin - opens in new tab
   const handleEnterDashboard = async (tenantId) => {
     try {
       // Set impersonation cookie/session
@@ -246,8 +246,8 @@ export default function TenantsClient() {
         throw new Error(data.error || 'שגיאה בכניסה לדשבורד');
       }
       
-      // Navigate to business dashboard
-      router.push('/business');
+      // Open business dashboard in new tab
+      window.open('/business', '_blank');
     } catch (err) {
       alert(err.message);
     }

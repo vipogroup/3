@@ -333,7 +333,7 @@ export default function BusinessDashboardClient() {
 
   const stats = dashboardData || {};
 
-  // Exit impersonation and return to admin
+  // Exit impersonation and close tab (since it was opened in a new tab)
   const handleExitImpersonation = async () => {
     try {
       const res = await fetch('/api/admin/impersonate', {
@@ -342,7 +342,12 @@ export default function BusinessDashboardClient() {
       });
       
       if (res.ok) {
-        router.push('/admin/tenants');
+        // Close the current tab - the admin dashboard stays open in the original tab
+        window.close();
+        // Fallback if window.close() doesn't work (some browsers block it)
+        setTimeout(() => {
+          window.location.href = '/admin/tenants';
+        }, 100);
       } else {
         const data = await res.json();
         alert(data.error || 'שגיאה ביציאה');
@@ -358,31 +363,20 @@ export default function BusinessDashboardClient() {
 
   return (
     <main className="min-h-screen bg-cyan-50 p-3 sm:p-6 md:p-8">
-      {/* Impersonation Banner */}
+      {/* Small Return Button for Admin Impersonation */}
       {isImpersonating && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 px-4 flex items-center justify-between shadow-lg">
-          <div className="flex items-center gap-3">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            <span className="font-medium">
-              מצב צפייה כמנהל ראשי - {tenant?.name || 'עסק'}
-            </span>
-          </div>
-          <button
-            onClick={handleExitImpersonation}
-            className="flex items-center gap-2 bg-white text-red-600 px-4 py-1.5 rounded-lg font-medium hover:bg-red-50 transition-all"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            חזרה לניהול ראשי
-          </button>
-        </div>
+        <button
+          onClick={handleExitImpersonation}
+          className="fixed top-3 left-3 z-50 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium shadow-lg transition-all"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+          </svg>
+          חזור לדשבורד מנהל ראשי
+        </button>
       )}
       
-      <div className={`max-w-7xl mx-auto ${isImpersonating ? 'pt-12' : ''}`}>
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-4 sm:mb-6 flex items-center justify-between">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
