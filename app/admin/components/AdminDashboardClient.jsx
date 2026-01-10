@@ -985,10 +985,10 @@ export default function AdminDashboardClient() {
           </div>
           )}
 
-          {/* 6. גיבוי ועדכון מערכת - רק למנהלים ראשיים */}
+          {/* 6. גיבוי ועדכון מערכת - רק למנהלים ראשיים - לחיצה מעבירה ישירות לדף */}
           {isSuperAdmin && (
-          <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
-            <button onClick={() => toggleCategory('backup')} className="w-full flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
+          <Link href="/admin/backups" className="block rounded-xl overflow-hidden transition-all hover:shadow-lg" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
+            <div className="flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -997,84 +997,11 @@ export default function AdminDashboardClient() {
                 </span>
                 <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>גיבוי ועדכון מערכת</span>
               </div>
-              <svg className={`w-5 h-5 transition-transform ${openCategory === 'backup' ? 'rotate-180' : ''}`} style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-            </button>
-            {openCategory === 'backup' && (
-            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3 relative">
-              {/* Info Tooltip Modal */}
-              {infoTooltip && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" onClick={() => setInfoTooltip(null)}>
-                  <div className="bg-white rounded-xl p-4 max-w-sm mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-bold text-gray-900">מידע</h4>
-                      <button onClick={() => setInfoTooltip(null)} className="p-1 hover:bg-gray-100 rounded-full">
-                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                    <p className="text-sm text-gray-600 leading-relaxed">{backupInfoTexts[infoTooltip]}</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex items-center gap-2">
-                <Link href="/admin/backups?action=backup" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-green-50 hover:bg-green-100 transition-all">
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#16a34a' }}>1</span>
-                  <span className="text-sm font-medium text-gray-900">גיבוי חדש</span>
-                </Link>
-                <button onClick={() => setInfoTooltip('backup')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
-              </div>
-              <div className="flex items-center gap-2">
-                <Link href="/admin/backups?action=update" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-all">
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#2563eb' }}>2</span>
-                  <span className="text-sm font-medium text-gray-900">עדכון מערכת</span>
-                </Link>
-                <button onClick={() => setInfoTooltip('update')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
-              </div>
-              <div className="flex items-center gap-2">
-                <Link href="/admin/backups?action=server" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-cyan-50 hover:bg-cyan-100 transition-all">
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#0891b2' }}>3</span>
-                  <span className="text-sm font-medium text-gray-900">הפעל שרת פנימי</span>
-                </Link>
-                <button onClick={() => setInfoTooltip('server')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
-              </div>
-              <div className="flex items-center gap-2">
-                <Link href="/admin/backups" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#6b7280' }}>4</span>
-                  <span className="text-sm font-medium text-gray-900">בדיקה ידנית</span>
-                </Link>
-                <button onClick={() => setInfoTooltip('manual')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
-              </div>
-              <div className="flex items-center gap-2">
-                <Link href="/admin/backups?action=deploy" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 transition-all">
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#7c3aed' }}>5</span>
-                  <span className="text-sm font-medium text-gray-900">Deploy לVercel</span>
-                </Link>
-                <button onClick={() => setInfoTooltip('deploy')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
-              </div>
-              <div className="flex items-center gap-2">
-                <Link href="/admin/backups?action=restore" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-amber-50 hover:bg-amber-100 transition-all">
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#d97706' }}>!</span>
-                  <span className="text-sm font-medium text-gray-900">שחזור גיבוי</span>
-                </Link>
-                <button onClick={() => setInfoTooltip('restore')} className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-bold transition-all">i</button>
-              </div>
-              <div className="flex items-center gap-2 col-span-2 sm:col-span-3">
-                <Link href="/admin/emergency-backup" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-red-50 hover:bg-red-100 transition-all border-2 border-red-200">
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: '#dc2626' }}>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                  </span>
-                  <span className="text-sm font-bold text-red-800">גיבוי חירום - הקמת מערכת חדשה</span>
-                </Link>
-              </div>
             </div>
-            )}
-          </div>
+          </Link>
           )}
 
           {/* 7. משימות ותיקונים - רק למנהלים ראשיים */}
