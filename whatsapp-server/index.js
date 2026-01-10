@@ -286,13 +286,25 @@ app.post('/send', async (req, res) => {
       return res.status(400).json({ error: 'Missing "to" or "message"' });
     }
 
-    // Normalize phone number
-    let phone = to.replace(/\D/g, '');
-    if (phone.startsWith('0')) {
-      phone = '972' + phone.substring(1);
+    // Handle different ID formats
+    let chatId;
+    
+    // Check if it's already a LID format (from incoming messages)
+    if (to.includes('@lid') || to.startsWith('lid@')) {
+      // Use LID format directly
+      const lidNumber = to.replace('lid@', '').replace('@lid', '');
+      chatId = lidNumber + '@lid';
+      console.log(`Using LID format: ${chatId}`);
+    } else {
+      // Normalize phone number
+      let phone = to.replace(/\D/g, '');
+      if (phone.startsWith('0')) {
+        phone = '972' + phone.substring(1);
+      }
+      chatId = phone + '@c.us';
     }
     
-    const chatId = phone + '@c.us';
+    const phone = chatId.split('@')[0];
     
     // Try different approaches to send the message
     let result;

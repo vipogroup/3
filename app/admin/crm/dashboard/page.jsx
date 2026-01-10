@@ -416,6 +416,37 @@ export default function CRMDashboard() {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Server Status & Reset Button */}
+          <button
+            onClick={async () => {
+              if (!connected) {
+                if (confirm('האם לאפס את שרת WhatsApp?')) {
+                  try {
+                    await fetch('/api/crm/whatsapp/reset', { method: 'POST' });
+                    window.location.reload();
+                  } catch (error) {
+                    console.error('Reset error:', error);
+                    alert('שגיאה באיפוס השרת');
+                  }
+                }
+              }
+            }}
+            className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg transition-all ${
+              connected 
+                ? 'bg-green-100 hover:bg-green-200 text-green-700 cursor-default' 
+                : 'bg-red-100 hover:bg-red-200 text-red-700 cursor-pointer animate-pulse'
+            }`}
+            title={connected ? 'השרת מחובר' : 'לחץ לאיפוס השרת'}
+          >
+            <span className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
+            <span className="font-medium">{connected ? 'שרת פעיל' : 'שרת מנותק'}</span>
+            {!connected && (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            )}
+          </button>
+
           {!connected && (
             <button
               onClick={openQRModal}
@@ -428,10 +459,6 @@ export default function CRMDashboard() {
               סרוק QR
             </button>
           )}
-          <div className={`flex items-center gap-2 text-sm px-3 py-1 rounded-full ${connected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-            <span className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
-            {connected ? 'מחובר' : 'לא מחובר'}
-          </div>
           <Link 
             href="/admin" 
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
@@ -451,19 +478,14 @@ export default function CRMDashboard() {
             <h3 className="text-xl font-bold mb-4" style={{ color: '#1e3a8a' }}>חיבור WhatsApp</h3>
             <p className="text-gray-600 mb-4">סרוק את הקוד עם אפליקציית WhatsApp בטלפון</p>
             
-            {qrLoading && !qrCode ? (
-              <div className="w-64 h-64 mx-auto flex items-center justify-center bg-gray-100 rounded-lg">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
-              </div>
-            ) : qrCode ? (
-              <img src={`data:image/png;base64,${qrCode}`} alt="WhatsApp QR Code" className="w-64 h-64 mx-auto rounded-lg" />
-            ) : (
-              <div className="w-64 h-64 mx-auto flex items-center justify-center bg-gray-100 rounded-lg">
-                <p className="text-gray-500">ממתין ל-QR...</p>
-              </div>
-            )}
+            {/* Embed the QR page directly using iframe */}
+            <iframe 
+              src="http://localhost:3002/qr" 
+              className="w-72 h-80 mx-auto border-0 rounded-lg"
+              title="WhatsApp QR Code"
+            />
             
-            <p className="text-sm text-gray-500 mt-4">הקוד מתעדכן אוטומטית</p>
+            <p className="text-sm text-gray-500 mt-2">סרוק את הקוד עם WhatsApp בטלפון</p>
             
             <button
               onClick={() => setShowQRModal(false)}

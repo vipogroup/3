@@ -92,7 +92,7 @@ const nextConfig = {
               "img-src 'self' data: https://res.cloudinary.com https://images.unsplash.com https://m.media-amazon.com https://placehold.co https://raw.githubusercontent.com",
               "font-src 'self' data: https://fonts.gstatic.com",
               "connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com https://fonts.googleapis.com https://fonts.gstatic.com",
-              "frame-src 'self' https://vipogroup.github.io https://vipogroup.github.io/",
+              "frame-src 'self' http://localhost:3002 https://vipogroup.github.io https://vipogroup.github.io/",
               "frame-ancestors 'none'",
             ].join('; '),
           },
