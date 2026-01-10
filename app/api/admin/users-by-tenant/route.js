@@ -28,11 +28,14 @@ export async function GET(req) {
       projection: { passwordHash: 0, password: 0 } 
     }).toArray();
 
-    // Separate users: system users (no tenantId) vs tenant users
-    const systemUsers = allUsers.filter(u => !u.tenantId);
+    // Separate users: system users (no tenantId AND not business_admin) vs tenant users
+    // Business admins should NEVER appear in system users, even if they don't have a tenantId yet
+    const systemUsers = allUsers.filter(u => !u.tenantId && u.role !== 'business_admin');
     
     // Group users by tenant
     const usersByTenant = {};
+    
+    // First, add all tenants with their users
     for (const tenant of allTenants) {
       const tenantId = String(tenant._id);
       usersByTenant[tenantId] = {
@@ -46,6 +49,25 @@ export async function GET(req) {
           ...u,
           _id: String(u._id),
           tenantId: String(u.tenantId),
+        })),
+      };
+    }
+    
+    // Find business_admin users without tenantId (orphaned business admins)
+    const orphanedBusinessAdmins = allUsers.filter(u => u.role === 'business_admin' && !u.tenantId);
+    
+    // Group orphaned business admins as "unassigned" tenant group
+    if (orphanedBusinessAdmins.length > 0) {
+      usersByTenant['unassigned'] = {
+        tenant: {
+          _id: 'unassigned',
+          name: 'מנהלי עסק ללא שיוך',
+          slug: 'unassigned',
+          status: 'pending',
+        },
+        users: orphanedBusinessAdmins.map(u => ({
+          ...u,
+          _id: String(u._id),
         })),
       };
     }

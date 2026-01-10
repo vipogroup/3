@@ -207,6 +207,18 @@ export async function DELETE(req, { params }) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
     
+    // הגנה על מנהלים מוגנים - בדיקת המייל הספציפי
+    const PROTECTED_ADMINS = ['0587009938@gmail.com'];
+    if (PROTECTED_ADMINS.includes(user.email) || user.protected === true) {
+      // בדיקת סיסמת-על
+      const body = await req.json().catch(() => ({}));
+      if (body.masterPassword !== 'm1e9n8i5') {
+        return NextResponse.json({ 
+          error: 'מנהל זה מוגן ולא ניתן למחיקה. נדרשת סיסמת-על למחיקה' 
+        }, { status: 403 });
+      }
+    }
+    
     // Multi-Tenant: Verify user belongs to admin's tenant before deleting
     if (!isSuperAdmin(decoded) && decoded.tenantId) {
       const userTenantId = user.tenantId?.toString();

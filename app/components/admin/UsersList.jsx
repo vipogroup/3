@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
 import { isSuperAdmin } from '@/lib/superAdmins';
 import AdminPermissionsModal from './AdminPermissionsModal';
+import AdminsTab from './AdminsTab';
 
 export default function UsersList() {
   const [users, setUsers] = useState([]);
@@ -23,10 +24,11 @@ export default function UsersList() {
   const [openDropdownId, setOpenDropdownId] = useState(null);
   
   // Tenant users state
-  const [activeTab, setActiveTab] = useState('system'); // 'system' | 'tenants'
+  const [activeTab, setActiveTab] = useState('system'); // 'system' | 'tenants' | 'admins'
   const [tenantGroups, setTenantGroups] = useState([]);
   const [loadingTenants, setLoadingTenants] = useState(false);
   const [expandedTenants, setExpandedTenants] = useState({});
+  const [superAdmins, setSuperAdmins] = useState([]);
   const [resettingAll, setResettingAll] = useState(false);
 
   const getCurrentUser = useCallback(async () => {
@@ -56,7 +58,19 @@ export default function UsersList() {
       if (!res.ok) throw new Error('Failed to fetch users');
       const data = await res.json();
       // API returns 'items' not 'users'
-      const usersList = data.items || data.users || [];
+      let usersList = data.items || data.users || [];
+      
+      // Filter out business_admin users from system users tab
+      // They should only appear in the tenants tab
+      usersList = usersList.filter(u => u.role !== 'business_admin');
+      
+      // Separate super admins for dedicated tab
+      const admins = usersList.filter(u => u.role === 'admin' || u.isSuperAdmin);
+      setSuperAdmins(admins);
+      
+      // Remove admins from regular users list
+      usersList = usersList.filter(u => u.role !== 'admin' && !u.isSuperAdmin);
+      
       setUsers(usersList);
 
       // Fetch agent names for users with referredBy
@@ -140,34 +154,35 @@ export default function UsersList() {
   async function handleResetUser(user) {
     if (!user?._id) return;
 
-    if (user.role === 'admin') {
-      setError('לא ניתן לאפס מנהלים');
-      return;
-    }
+    const defaultPassword = '123456789';
+    const resetMessage = user.role === 'admin' 
+      ? `האם לאפס את הסיסמה של המנהל ${user.fullName || user.email}?\n\nהסיסמה החדשה תהיה: ${defaultPassword}`
+      : `האם לאפס את סיסמת המשתמש ${user.fullName || user.email}?\n\nהסיסמה החדשה תהיה: ${defaultPassword}`;
 
-    if (!confirm(`האם לאפס את המשתמש ${user.fullName || user.email || user.phone}?\n\nפעולה זו תמחק את כל ההזמנות, העמלות ובקשות המשיכה של המשתמש!`)) {
+    if (!confirm(resetMessage)) {
       return;
     }
 
     try {
       setError('');
       setResettingId(user._id);
-      const res = await fetch(`/api/users/${user._id}/reset`, {
+      
+      // איפוס סיסמה בלבד - לא מחיקת נתונים!
+      const res = await fetch(`/api/users/${user._id}/reset-password`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: defaultPassword }),
       });
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Failed to reset user');
+        throw new Error(data.error || 'Failed to reset password');
       }
 
-      const data = await res.json();
-      alert(`המשתמש אופס בהצלחה!\n\nהזמנות שנמחקו: ${data.stats?.ordersDeleted || 0}\nבקשות משיכה שנמחקו: ${data.stats?.withdrawalsDeleted || 0}`);
+      alert(`✅ הסיסמה אופסה בהצלחה!\n\nהסיסמה החדשה: ${defaultPassword}\n\nיש להעביר למשתמש את הסיסמה החדשה.`);
       
-      // Refresh users list
-      fetchUsers(searchQuery, roleFilter);
     } catch (err) {
-      setError(err.message || 'איפוס נכשל');
+      setError(err.message || 'איפוס סיסמה נכשל');
     } finally {
       setResettingId(null);
     }
@@ -401,28 +416,43 @@ export default function UsersList() {
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => setActiveTab('system')}
-              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-                activeTab === 'system'
-                  ? 'text-white shadow-md'
-                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+              onClick={() => setActiveTab('admins')}
+              className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === 'admins'
+                  ? 'text-white'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
               }`}
-              style={activeTab === 'system' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+              style={activeTab === 'admins' ? {
+                background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)'
+              } : {}}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-              </svg>
-              משתמשי מערכת ({users.length})
+              מנהלי מערכת
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('system')}
+              className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === 'system'
+                  ? 'text-white'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              }`}
+              style={activeTab === 'system' ? {
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+              } : {}}
+            >
+              משתמשי מערכת
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('tenants')}
-              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-all ${
                 activeTab === 'tenants'
-                  ? 'text-white shadow-md'
-                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                  ? 'text-white'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
               }`}
-              style={activeTab === 'tenants' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+              style={activeTab === 'tenants' ? {
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+              } : {}}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -1049,7 +1079,18 @@ export default function UsersList() {
         </div>
       )}
 
+      {/* Admins Tab Section */}
+      {activeTab === 'admins' && (
+        <AdminsTab 
+          superAdmins={superAdmins}
+          currentUserId={currentUserId}
+          onDeleteUser={handleDeleteUser}
+          deletingId={deletingId}
+        />
+      )}
+
       {/* Info Box */}
+      {activeTab === 'system' && (
       <div
         className="mt-6 rounded-xl p-6"
         style={{
@@ -1097,6 +1138,7 @@ export default function UsersList() {
           )}
         </ul>
       </div>
+      )}
 
       {/* Permissions Modal */}
       <AdminPermissionsModal

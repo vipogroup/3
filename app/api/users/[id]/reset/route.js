@@ -70,6 +70,14 @@ export async function POST(req, { params }) {
     if (user.role === 'admin') {
       return NextResponse.json({ error: 'לא ניתן לאפס מנהלים' }, { status: 400 });
     }
+    
+    // הגנה נוספת על מנהלים מוגנים
+    const PROTECTED_ADMINS = ['0587009938@gmail.com'];
+    if (PROTECTED_ADMINS.includes(user.email) || user.protected === true) {
+      return NextResponse.json({ 
+        error: 'משתמש זה מוגן ולא ניתן לאיפוס' 
+      }, { status: 403 });
+    }
 
     // Delete all orders where user is the agent
     const ordersDeleted = await orders.deleteMany({

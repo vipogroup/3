@@ -49,9 +49,14 @@ export async function DELETE(request) {
       db.collection('pushsubscriptions').deleteMany({}),
     ]);
     
-    // מחיקת משתמשים (לא כולל super_admin)
+    // מחיקת משתמשים - הגנה על מנהלים ראשיים מוגנים
+    const PROTECTED_ADMINS = ['0587009938@gmail.com'];
     const usersDeleted = await db.collection('users').deleteMany({ 
-      role: { $ne: 'super_admin' }
+      $and: [
+        { role: { $ne: 'super_admin' } },
+        { email: { $nin: PROTECTED_ADMINS } },
+        { protected: { $ne: true } }
+      ]
     });
     
     // סיכום המחיקות
