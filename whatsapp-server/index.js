@@ -294,24 +294,52 @@ app.post('/send', async (req, res) => {
     
     const chatId = phone + '@c.us';
     
-    // Check if the number is registered on WhatsApp
-    const isRegistered = await client.isRegisteredUser(chatId);
+    // Try different approaches to send the message
+    let result;
+    let sent = false;
     
-    if (!isRegistered) {
-      return res.status(400).json({ 
-        error: 'מספר הטלפון לא רשום ב-WhatsApp',
-        phone: phone 
-      });
+    try {
+      // Method 1: Direct send (works for existing chats)
+      result = await client.sendMessage(chatId, message);
+      sent = true;
+      console.log(`✉️ Message sent to ${phone} (direct method)`);
+    } catch (directError) {
+      console.log(`Direct send failed for ${phone}, trying alternative method...`);
+      
+      try {
+        // Method 2: Check if number exists and create chat
+        const contact = await client.getContactById(chatId).catch(() => null);
+        
+        if (contact) {
+          const chat = await contact.getChat();
+          result = await chat.sendMessage(message);
+          sent = true;
+          console.log(`✉️ Message sent to ${phone} (via contact)`);
+        } else {
+          // Method 3: Force send to new number
+          const number = await client.getNumberId(phone).catch(() => null);
+          
+          if (number) {
+            result = await client.sendMessage(number._serialized, message);
+            sent = true;
+            console.log(`✉️ Message sent to ${phone} (via number ID)`);
+          } else {
+            throw new Error(`Cannot send to ${phone} - number not found on WhatsApp`);
+          }
+        }
+      } catch (altError) {
+        console.error(`All send methods failed for ${phone}:`, altError.message);
+        throw altError;
+      }
     }
     
-    // Send message directly - works for both existing and new chats
-    const result = await client.sendMessage(chatId, message);
-    
-    console.log(`✉️ Message sent to ${phone}`);
+    if (!sent || !result) {
+      throw new Error('Message sending failed');
+    }
     
     // Store in message history
     messageHistory.push({
-      id: result.id._serialized,
+      id: result.id?._serialized || Date.now().toString(),
       from: clientInfo?.wid?.user || 'me',
       to: phone,
       message: message,
@@ -326,7 +354,7 @@ app.post('/send', async (req, res) => {
     
     res.json({
       success: true,
-      messageId: result.id._serialized,
+      messageId: result.id?._serialized || Date.now().toString(),
       to: phone,
     });
   } catch (error) {
