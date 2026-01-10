@@ -6,7 +6,7 @@ const WHATSAPP_SERVER_URL = process.env.WHATSAPP_LOCAL_URL || 'http://localhost:
 
 export async function GET(request) {
   try {
-    const response = await fetch(`${WHATSAPP_SERVER_URL}/qr`, {
+    const response = await fetch(`${WHATSAPP_SERVER_URL}/qr/json`, {
       cache: 'no-store',
     });
     
@@ -15,6 +15,7 @@ export async function GET(request) {
   } catch (error) {
     return NextResponse.json({ 
       error: 'WhatsApp server not running',
+      qrCode: null
     });
   }
 }
