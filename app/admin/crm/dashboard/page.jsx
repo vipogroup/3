@@ -112,8 +112,8 @@ export default function CRMDashboard() {
     try {
       const res = await fetch('/api/crm/whatsapp/qr');
       const data = await res.json();
-      if (data.qr) {
-        setQrCode(data.qr);
+      if (data.qrCode) {
+        setQrCode(data.qrCode);
       } else if (data.ready) {
         setConnected(true);
         setShowQRModal(false);
@@ -453,7 +453,7 @@ export default function CRMDashboard() {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
               </div>
             ) : qrCode ? (
-              <img src={qrCode} alt="WhatsApp QR Code" className="w-64 h-64 mx-auto rounded-lg" />
+              <img src={`data:image/png;base64,${qrCode}`} alt="WhatsApp QR Code" className="w-64 h-64 mx-auto rounded-lg" />
             ) : (
               <div className="w-64 h-64 mx-auto flex items-center justify-center bg-gray-100 rounded-lg">
                 <p className="text-gray-500">ממתין ל-QR...</p>
