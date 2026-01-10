@@ -24,6 +24,9 @@ export default function CRMDashboard() {
   const [connected, setConnected] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [newNote, setNewNote] = useState('');
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [qrCode, setQrCode] = useState(null);
+  const [qrLoading, setQrLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Additional state for new tabs
@@ -102,6 +105,38 @@ export default function CRMDashboard() {
     } catch (error) {
       setConnected(false);
     }
+  };
+
+  const fetchQRCode = async () => {
+    setQrLoading(true);
+    try {
+      const res = await fetch('/api/crm/whatsapp/qr');
+      const data = await res.json();
+      if (data.qr) {
+        setQrCode(data.qr);
+      } else if (data.ready) {
+        setConnected(true);
+        setShowQRModal(false);
+      }
+    } catch (error) {
+      console.error('Error fetching QR:', error);
+    } finally {
+      setQrLoading(false);
+    }
+  };
+
+  const openQRModal = () => {
+    setShowQRModal(true);
+    fetchQRCode();
+    const interval = setInterval(() => {
+      checkConnection().then(() => {
+        if (connected) {
+          clearInterval(interval);
+          setShowQRModal(false);
+        }
+      });
+      fetchQRCode();
+    }, 3000);
   };
 
   const fetchConversations = async () => {
@@ -378,6 +413,18 @@ export default function CRMDashboard() {
         </div>
 
         <div className="flex items-center gap-3">
+          {!connected && (
+            <button
+              onClick={openQRModal}
+              className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg text-white transition-colors"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              </svg>
+              סרוק QR
+            </button>
+          )}
           <div className={`flex items-center gap-2 text-sm px-3 py-1 rounded-full ${connected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
             <span className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
             {connected ? 'מחובר' : 'לא מחובר'}
@@ -393,6 +440,37 @@ export default function CRMDashboard() {
           </Link>
         </div>
       </header>
+
+      {/* QR Code Modal */}
+      {showQRModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 text-center">
+            <h3 className="text-xl font-bold mb-4" style={{ color: '#1e3a8a' }}>חיבור WhatsApp</h3>
+            <p className="text-gray-600 mb-4">סרוק את הקוד עם אפליקציית WhatsApp בטלפון</p>
+            
+            {qrLoading && !qrCode ? (
+              <div className="w-64 h-64 mx-auto flex items-center justify-center bg-gray-100 rounded-lg">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+              </div>
+            ) : qrCode ? (
+              <img src={qrCode} alt="WhatsApp QR Code" className="w-64 h-64 mx-auto rounded-lg" />
+            ) : (
+              <div className="w-64 h-64 mx-auto flex items-center justify-center bg-gray-100 rounded-lg">
+                <p className="text-gray-500">ממתין ל-QR...</p>
+              </div>
+            )}
+            
+            <p className="text-sm text-gray-500 mt-4">הקוד מתעדכן אוטומטית</p>
+            
+            <button
+              onClick={() => setShowQRModal(false)}
+              className="mt-4 px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              סגור
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
