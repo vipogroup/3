@@ -60,16 +60,17 @@ export default function UsersList() {
       // API returns 'items' not 'users'
       let usersList = data.items || data.users || [];
       
-      // Filter out business_admin users from system users tab
-      // They should only appear in the tenants tab
-      usersList = usersList.filter(u => u.role !== 'business_admin');
-      
-      // Separate super admins for dedicated tab
-      const admins = usersList.filter(u => u.role === 'admin' || u.isSuperAdmin);
+      // Separate super admins for dedicated tab (admin role with isSuperAdmin or protected flag)
+      const admins = usersList.filter(u => (u.role === 'admin' && (u.isSuperAdmin || u.protected)) || u.email === '0587009938@gmail.com');
       setSuperAdmins(admins);
       
-      // Remove admins from regular users list
-      usersList = usersList.filter(u => u.role !== 'admin' && !u.isSuperAdmin);
+      // Remove only protected admins from regular users list, keep business_admin and regular admins
+      usersList = usersList.filter(u => {
+        // Keep business_admin and regular non-protected admins in main list
+        if (u.email === '0587009938@gmail.com') return false;
+        if (u.role === 'admin' && (u.isSuperAdmin || u.protected)) return false;
+        return true;
+      });
       
       setUsers(usersList);
 
@@ -397,6 +398,7 @@ export default function UsersList() {
     { value: 'customer', label: 'לקוח', color: 'bg-blue-100 text-blue-800' },
     { value: 'agent', label: 'סוכן', color: 'bg-green-100 text-green-800' },
     { value: 'admin', label: 'מנהל', color: 'bg-red-100 text-red-800' },
+    { value: 'business_admin', label: 'מנהל עסק', color: 'bg-purple-100 text-purple-800' },
   ];
 
   const filteredUsers = roleFilter === 'all' ? users : users.filter(u => u.role === roleFilter);
@@ -731,8 +733,8 @@ export default function UsersList() {
                               </div>
                             )}
                             
-                            {/* Permissions */}
-                            {user.role === 'admin' && isSuperAdminUser && !isSuperAdmin(user.email) && (
+                            {/* Permissions - for admin and business_admin */}
+                            {(user.role === 'admin' || user.role === 'business_admin') && isSuperAdminUser && !isSuperAdmin(user.email) && (
                               <button
                                 type="button"
                                 onClick={() => { handleOpenPermissionsModal(user); setOpenDropdownId(null); }}

@@ -48,6 +48,7 @@ export default function AdminPermissionsModal({ user, isOpen, onClose, onSave })
 
   useEffect(() => {
     if (isOpen && user) {
+      console.log('AdminPermissionsModal opened for user:', user);
       setSelectedPermissions(user.permissions || []);
       setError('');
     }
