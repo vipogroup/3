@@ -1,14 +1,23 @@
 import { NextResponse } from 'next/server';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request) {
   try {
+    // Check if we're in production (Vercel)
+    if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ 
+        error: 'Reset functionality is only available in local development',
+        message: 'WhatsApp server must be managed locally'
+      }, { status: 501 });
+    }
+    
     console.log('Resetting WhatsApp server...');
+    
+    // Only import and use exec in development
+    const { exec } = await import('child_process');
+    const { promisify } = await import('util');
+    const execAsync = promisify(exec);
     
     // Try to restart the WhatsApp server using PM2
     try {
@@ -57,6 +66,19 @@ export async function POST(request) {
 // GET endpoint to check if reset is available
 export async function GET(request) {
   try {
+    // Check if we're in production (Vercel)
+    if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ 
+        available: false,
+        message: 'Reset functionality is only available in local development'
+      });
+    }
+    
+    // Only import and use exec in development
+    const { exec } = await import('child_process');
+    const { promisify } = await import('util');
+    const execAsync = promisify(exec);
+    
     // Check if PM2 is available
     const { stdout } = await execAsync('pm2 list');
     const hasWhatsAppServer = stdout.includes('whatsapp-server');
