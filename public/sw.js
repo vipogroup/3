@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vipo-static-v8';
+const CACHE_NAME = 'vipo-static-v9';
 const PRECACHE_URLS = [
   '/',
   '/products',
@@ -92,6 +92,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // דפים שלא צריכים caching
+  const excludePaths = ['/login', '/register', '/admin', '/api', '/_next'];
+  if (excludePaths.some(path => requestUrl.pathname.startsWith(path))) {
+    return;
+  }
+
   // בדיקה אם זה קובץ חיוני
   const isEssential = PRECACHE_URLS.includes(requestUrl.pathname);
 
@@ -101,21 +107,28 @@ self.addEventListener('fetch', (event) => {
         // נסה קודם להביא מהרשת
         const networkResponse = await fetch(request);
         
-        // אם הצליח, שמור במטמון
-        const cache = await caches.open(CACHE_NAME);
-        cache.put(request, networkResponse.clone());
+        // אם הצליח וזה לא דף שגיאה, שמור במטמון
+        if (networkResponse.ok) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(request, networkResponse.clone());
+        }
         return networkResponse;
       } catch (error) {
         // אם נכשל, נסה להביא מהמטמון
         const cachedResponse = await caches.match(request);
         if (cachedResponse) return cachedResponse;
 
-        // אם זה ניווט, חזור לדף הבית
+        // אם זה ניווט ויש לנו דף בית במטמון, חזור אליו
         if (request.mode === 'navigate') {
-          return caches.match('/');
+          const homeCache = await caches.match('/');
+          if (homeCache) return homeCache;
         }
 
-        throw error;
+        // החזר תגובה בסיסית במקרה של כישלון
+        return new Response('Offline - Please check your connection', {
+          status: 503,
+          headers: { 'Content-Type': 'text/plain' }
+        });
       }
     })()
   );
