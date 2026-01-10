@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSiteTexts } from '@/lib/useSiteTexts';
 
@@ -8,27 +7,16 @@ export default function GlobalFooter() {
   const { getText } = useSiteTexts();
   const pathname = usePathname();
   
-  // Check if we should hide the footer
+  // Check pages where footer should NOT appear
   const isAdminPage = pathname?.startsWith('/admin');
   const isHomePage = pathname === '/';
   const isRegisterBusinessPage = pathname === '/register-business';
-  const shouldHide = isAdminPage || isHomePage || isRegisterBusinessPage;
-
-  // Load homepage styles for footer
-  useEffect(() => {
-    if (shouldHide) return;
-    
-    // Check if style is already loaded
-    const existingLink = document.querySelector('link[href="/home/css/style.css"]');
-    if (!existingLink) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = '/home/css/style.css';
-      document.head.appendChild(link);
-    }
-  }, [shouldHide]);
+  const isLoginPage = pathname === '/login';
+  const isRegisterPage = pathname === '/register';
   
-  // Don't render on admin or homepage
+  const shouldHide = isAdminPage || isHomePage || isRegisterBusinessPage || isLoginPage || isRegisterPage;
+  
+  // Don't render on excluded pages
   if (shouldHide) {
     return null;
   }
