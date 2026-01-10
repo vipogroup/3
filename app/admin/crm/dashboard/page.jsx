@@ -127,16 +127,19 @@ export default function CRMDashboard() {
 
   const openQRModal = () => {
     setShowQRModal(true);
+    setQrCode(null); // Reset QR code
     fetchQRCode();
     const interval = setInterval(() => {
+      fetchQRCode();
       checkConnection().then(() => {
         if (connected) {
           clearInterval(interval);
           setShowQRModal(false);
         }
       });
-      fetchQRCode();
     }, 3000);
+    // Store interval to clear it when modal closes
+    return () => clearInterval(interval);
   };
 
   const fetchConversations = async () => {
