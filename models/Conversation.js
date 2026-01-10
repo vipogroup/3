@@ -58,7 +58,7 @@ const ConversationSchema = new mongoose.Schema({
   // Status
   status: {
     type: String,
-    enum: ['new', 'open', 'pending', 'resolved', 'closed'],
+    enum: ['new', 'open', 'pending', 'waiting', 'resolved', 'closed', 'spam'],
     default: 'new',
   },
   

@@ -1,0 +1,35 @@
+[
+  {
+    "_id": {
+      "$oid": "696091b049cc153d5abc4230"
+    },
+    "tenantId": null,
+    "senderId": {
+      "$oid": "6960436274e8fe0438e5e744"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: אוזניות Bluetooth אלחוטיות (עותק)",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "6960436274e8fe0438e5e744"
+        },
+        "readAt": {
+          "$date": "2026-01-09T05:27:12.138Z"
+        },
+        "_id": {
+          "$oid": "696091b049cc153d5abc4231"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-01-09T05:27:12.139Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:27:12.139Z"
+    },
+    "__v": 0
+  }
+]

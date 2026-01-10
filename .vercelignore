@@ -36,3 +36,24 @@ Thumbs.db
 
 # Separate projects
 vipo-crm
+
+# Backups folder
+backups
+
+# WhatsApp server (runs separately)
+whatsapp-server
+
+# Git
+.git
+
+# Audit reports
+audit-reports
+
+# Notes
+notes
+
+# Tools
+tools
+
+# New files
+new1

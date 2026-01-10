@@ -1,0 +1,138 @@
+[
+  {
+    "_id": {
+      "$oid": "6960795149cc153d5abc3e6d"
+    },
+    "userId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "amount": 4,
+    "notes": "",
+    "paymentDetails": {
+      "method": "bit",
+      "phone": "0523005212"
+    },
+    "status": "completed",
+    "adminNotes": "",
+    "snapshotBalance": 50,
+    "snapshotOnHold": 4,
+    "autoSettled": false,
+    "createdAt": {
+      "$date": "2026-01-09T03:43:13.142Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T04:04:28.006Z"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "processedAt": {
+      "$date": "2026-01-09T04:04:28.006Z"
+    },
+    "processedBy": {
+      "$oid": "6960436274e8fe0438e5e744"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6960886f49cc153d5abc40a4"
+    },
+    "userId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "amount": 4,
+    "notes": "",
+    "paymentDetails": {
+      "method": "paybox",
+      "phone": "0523005212"
+    },
+    "status": "completed",
+    "adminNotes": "",
+    "snapshotBalance": 104,
+    "snapshotOnHold": 4,
+    "autoSettled": false,
+    "createdAt": {
+      "$date": "2026-01-09T04:47:43.216Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T04:48:47.748Z"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "processedAt": {
+      "$date": "2026-01-09T04:48:47.748Z"
+    },
+    "processedBy": {
+      "$oid": "6960436274e8fe0438e5e744"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69608ae449cc153d5abc40f4"
+    },
+    "userId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "amount": 50,
+    "notes": "",
+    "paymentDetails": {
+      "method": "paybox",
+      "phone": "0523005212"
+    },
+    "status": "completed",
+    "adminNotes": "",
+    "snapshotBalance": 58,
+    "snapshotOnHold": 50,
+    "autoSettled": false,
+    "createdAt": {
+      "$date": "2026-01-09T04:58:12.931Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T04:58:36.210Z"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "processedAt": {
+      "$date": "2026-01-09T04:58:36.210Z"
+    },
+    "processedBy": {
+      "$oid": "6960436274e8fe0438e5e744"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69608be649cc153d5abc4128"
+    },
+    "userId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "amount": 4,
+    "notes": "",
+    "paymentDetails": {
+      "method": "bit",
+      "phone": "0523005212"
+    },
+    "status": "completed",
+    "adminNotes": "",
+    "snapshotBalance": 158,
+    "snapshotOnHold": 4,
+    "autoSettled": false,
+    "createdAt": {
+      "$date": "2026-01-09T05:02:30.879Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:03:44.998Z"
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "processedAt": {
+      "$date": "2026-01-09T05:03:44.998Z"
+    },
+    "processedBy": {
+      "$oid": "6960436274e8fe0438e5e744"
+    }
+  }
+]

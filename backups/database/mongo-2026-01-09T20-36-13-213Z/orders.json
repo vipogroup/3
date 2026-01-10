@@ -1,0 +1,428 @@
+[
+  {
+    "_id": {
+      "$oid": "695fd493a7345f7c38073900"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "692def013a64c7c8757a270b"
+        },
+        "name": "מקלדת מכנית RGB מקצועית",
+        "quantity": 1,
+        "unitPrice": 499,
+        "totalPrice": 499,
+        "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 499,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 499
+    },
+    "totalAmount": 499,
+    "discountAmount": 0,
+    "createdBy": "695fcdfda7345f7c380737e2",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": null,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2026-01-08T16:00:19.877Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T16:00:22.897Z"
+    },
+    "customer": {
+      "fullName": "מאים י",
+      "email": "miriamshabo22@gmail.com",
+      "phone": "0533858881",
+      "address": "מי",
+      "city": "יו",
+      "zipCode": "35679"
+    },
+    "paymentMethod": "credit_card",
+    "deliveryMethod": "pickup",
+    "shippingCost": 0,
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": {
+        "$date": "2026-01-08T16:00:22.897Z"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "696014546f7e11e9fdb72136"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "692d1aec869076b593f909ac"
+        },
+        "name": "שעון חכם ספורט",
+        "quantity": 1,
+        "unitPrice": 599,
+        "totalPrice": 599,
+        "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800",
+        "sku": null,
+        "slug": null,
+        "purchaseType": "group"
+      }
+    ],
+    "totals": {
+      "subtotal": 599,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 599
+    },
+    "totalAmount": 599,
+    "discountAmount": 0,
+    "createdBy": "6960088e2bf647e67405d724",
+    "status": "paid",
+    "orderType": "group",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": null,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2026-01-08T20:32:20.600Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-08T20:32:25.148Z"
+    },
+    "customer": {
+      "fullName": "מנחם דחגח",
+      "email": "m05071823331@gmail.com",
+      "phone": "0533858887",
+      "address": "זבוטינסקי 5",
+      "city": "באר יעקב",
+      "zipCode": "7030305"
+    },
+    "paymentMethod": "credit_card",
+    "deliveryMethod": "pickup",
+    "shippingCost": 0,
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": {
+        "$date": "2026-01-08T20:32:25.148Z"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "696075ff49cc153d5abc3df1"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "696063af74e8fe0438e5ea47"
+        },
+        "name": "אוזניות Bluetooth אלחוטיות (עותק)",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+        "sku": "5sds5d5sd5s-COPY-222457",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 10,
+      "discountAmount": 50,
+      "totalAmount": 450,
+      "shippingAmount": 0,
+      "vatAmount": 0
+    },
+    "totalAmount": 450,
+    "discountAmount": 50,
+    "createdBy": "69605fe8efefb52696a38077",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": true,
+    "commissionStatus": "available",
+    "commissionAvailableAt": {
+      "$date": "2026-01-09T03:42:32.588Z"
+    },
+    "refSource": "lkvch-ask-chdsh-nysvy-001",
+    "refAgentId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "commissionAmount": 54,
+    "appliedCouponCode": "lkvch-ask-chdsh-nysvy-001",
+    "agentId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": {
+      "$date": "2026-01-09T03:29:03.390Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T04:57:05.561Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0524002552",
+      "address": "jhjkghjg",
+      "city": "hgjghj",
+      "zipCode": "6756778"
+    },
+    "paymentMethod": "credit_card",
+    "deliveryMethod": "pickup",
+    "shippingCost": 0,
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": {
+        "$date": "2026-01-09T03:29:06.261Z"
+      }
+    },
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "paymentStatus": "pending",
+    "prioritySyncStatus": "pending",
+    "refundAmount": 0
+  },
+  {
+    "_id": {
+      "$oid": "6960810d49cc153d5abc3fae"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "696063af74e8fe0438e5ea47"
+        },
+        "name": "אוזניות Bluetooth אלחוטיות (עותק)",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+        "sku": "5sds5d5sd5s-COPY-222457",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 10,
+      "discountAmount": 50,
+      "totalAmount": 450,
+      "shippingAmount": 0,
+      "vatAmount": 0
+    },
+    "totalAmount": 450,
+    "discountAmount": 50,
+    "createdBy": "69605fe8efefb52696a38077",
+    "status": "paid",
+    "orderType": "regular",
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "commissionSettled": true,
+    "commissionStatus": "available",
+    "commissionAvailableAt": {
+      "$date": "2026-01-09T04:21:06.633Z"
+    },
+    "refSource": "lkvch-ask-chdsh-nysvy-001",
+    "refAgentId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "commissionAmount": 54,
+    "appliedCouponCode": "lkvch-ask-chdsh-nysvy-001",
+    "agentId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": {
+      "$date": "2026-01-09T04:16:13.080Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T04:21:06.639Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0524002552",
+      "address": "jhjkghjg",
+      "city": "hgjghj",
+      "zipCode": "6756778"
+    },
+    "paymentMethod": "credit_card",
+    "deliveryMethod": "pickup",
+    "shippingCost": 0,
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": {
+        "$date": "2026-01-09T04:16:16.230Z"
+      }
+    },
+    "paymentStatus": "pending",
+    "prioritySyncStatus": "pending",
+    "refundAmount": 0
+  },
+  {
+    "_id": {
+      "$oid": "69608b4949cc153d5abc4109"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "696063af74e8fe0438e5ea47"
+        },
+        "name": "אוזניות Bluetooth אלחוטיות (עותק)",
+        "quantity": 1,
+        "unitPrice": 500,
+        "totalPrice": 500,
+        "image": "https://res.cloudinary.com/dckhhnoqh/image/upload/v1767924538/vipo-products/ChatGPT_Image_Dec_16_2025_04_10_53_PM_aovwm0.png",
+        "sku": "5sds5d5sd5s-COPY-222457",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 500,
+      "discountPercent": 10,
+      "discountAmount": 50,
+      "totalAmount": 450,
+      "shippingAmount": 0,
+      "vatAmount": 0
+    },
+    "totalAmount": 450,
+    "discountAmount": 50,
+    "createdBy": "69605fe8efefb52696a38077",
+    "status": "paid",
+    "orderType": "regular",
+    "tenantId": {
+      "$oid": "6960436274e8fe0438e5e745"
+    },
+    "commissionSettled": true,
+    "commissionStatus": "available",
+    "commissionAvailableAt": {
+      "$date": "2026-01-09T05:01:58.741Z"
+    },
+    "refSource": "lkvch-ask-chdsh-nysvy-001",
+    "refAgentId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "commissionAmount": 54,
+    "appliedCouponCode": "lkvch-ask-chdsh-nysvy-001",
+    "agentId": {
+      "$oid": "69605c7d74e8fe0438e5e93b"
+    },
+    "couponCommissionPercent": 12,
+    "commissionPercent": 12,
+    "createdAt": {
+      "$date": "2026-01-09T04:59:53.577Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T05:01:58.744Z"
+    },
+    "customer": {
+      "fullName": "Harel2021 Dror",
+      "email": "hareldror2021@gmail.com",
+      "phone": "0524002552",
+      "address": "jhjkghjg",
+      "city": "hgjghj",
+      "zipCode": "6756778"
+    },
+    "paymentMethod": "credit_card",
+    "deliveryMethod": "pickup",
+    "shippingCost": 0,
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": {
+        "$date": "2026-01-09T04:59:56.133Z"
+      }
+    },
+    "paymentStatus": "pending",
+    "prioritySyncStatus": "pending",
+    "refundAmount": 0
+  },
+  {
+    "_id": {
+      "$oid": "69612eff736f3366e67fc94f"
+    },
+    "items": [
+      {
+        "productId": {
+          "$oid": "695c7cb53bc3dd7d2046962f"
+        },
+        "name": "עיעכי",
+        "quantity": 1,
+        "unitPrice": 50,
+        "totalPrice": 50,
+        "image": null,
+        "sku": "עיכי",
+        "slug": null,
+        "purchaseType": "regular"
+      }
+    ],
+    "totals": {
+      "subtotal": 50,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "totalAmount": 50
+    },
+    "totalAmount": 50,
+    "discountAmount": 0,
+    "createdBy": "692deea497ce1a2ba6d4e151",
+    "status": "paid",
+    "orderType": "regular",
+    "commissionSettled": false,
+    "commissionStatus": "pending",
+    "commissionAvailableAt": null,
+    "refSource": null,
+    "refAgentId": null,
+    "commissionAmount": 0,
+    "appliedCouponCode": null,
+    "agentId": null,
+    "couponCommissionPercent": 0,
+    "commissionPercent": 0,
+    "createdAt": {
+      "$date": "2026-01-09T16:38:23.042Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-09T16:38:25.007Z"
+    },
+    "customer": {
+      "fullName": "ישראל ED",
+      "email": "m0587009938@gmail.com",
+      "phone": "0587009938",
+      "address": "5 ז'בוטינסקי",
+      "city": "באר יעקב",
+      "zipCode": "56656"
+    },
+    "paymentMethod": "credit_card",
+    "deliveryMethod": "pickup",
+    "shippingCost": 0,
+    "demoPayment": true,
+    "payplus": {
+      "demoCompletedAt": {
+        "$date": "2026-01-09T16:38:25.007Z"
+      }
+    }
+  }
+]

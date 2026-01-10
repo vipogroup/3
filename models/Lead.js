@@ -33,11 +33,46 @@ const LeadSchema = new mongoose.Schema({
     default: 'new',
   },
   
+  // Pipeline Stage (Sales Funnel)
+  pipelineStage: {
+    type: String,
+    enum: ['lead', 'contact', 'meeting', 'proposal', 'negotiation', 'won', 'lost'],
+    default: 'lead',
+  },
+  
+  // Estimated Value
+  estimatedValue: {
+    type: Number,
+    default: 0,
+  },
+  
+  // Segment
+  segment: {
+    type: String,
+    enum: ['cold', 'warm', 'hot', 'vip'],
+    default: 'cold',
+  },
+  
+  // Priority Score (1-100)
+  score: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 100,
+  },
+  
   // Source
   source: {
     type: String,
-    enum: ['website', 'whatsapp', 'phone', 'referral', 'agent', 'manual', 'other'],
+    enum: ['website', 'whatsapp', 'phone', 'referral', 'agent', 'manual', 'facebook', 'instagram', 'google', 'other'],
     default: 'manual',
+  },
+  
+  // UTM tracking
+  utm: {
+    source: String,
+    medium: String,
+    campaign: String,
   },
   
   // Agent attribution
@@ -79,6 +114,30 @@ const LeadSchema = new mongoose.Schema({
   lastContactAt: Date,
   nextFollowUpAt: Date,
   
+  // SLA Tracking
+  firstResponseAt: Date,
+  slaDeadline: Date,
+  slaStatus: {
+    type: String,
+    enum: ['pending', 'met', 'breached'],
+    default: 'pending',
+  },
+  
+  // Snooze / Deferred handling
+  snoozedUntil: Date,
+  snoozedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  snoozedReason: String,
+  
+  // Priority
+  priority: {
+    type: String,
+    enum: ['low', 'normal', 'high', 'urgent'],
+    default: 'normal',
+  },
+  
 }, {
   timestamps: true,
 });
@@ -88,6 +147,8 @@ LeadSchema.index({ tenantId: 1, status: 1 });
 LeadSchema.index({ tenantId: 1, createdAt: -1 });
 LeadSchema.index({ tenantId: 1, phone: 1 });
 LeadSchema.index({ tenantId: 1, assignedTo: 1 });
+LeadSchema.index({ tenantId: 1, slaStatus: 1, slaDeadline: 1 });
+LeadSchema.index({ tenantId: 1, snoozedUntil: 1 });
 
 // Virtual for conversation count
 LeadSchema.virtual('conversations', {
