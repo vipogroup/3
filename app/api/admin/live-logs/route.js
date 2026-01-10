@@ -11,7 +11,7 @@ let recentAlerts = [];
 const MAX_LOGS = 100;
 
 // Add log to memory
-export function addLog(log) {
+function addLog(log) {
   recentLogs.unshift({
     ...log,
     timestamp: new Date().toISOString(),
@@ -21,7 +21,7 @@ export function addLog(log) {
 }
 
 // Add error to memory
-export function addError(error) {
+function addError(error) {
   recentErrors.unshift({
     ...error,
     timestamp: new Date().toISOString(),
@@ -31,7 +31,7 @@ export function addError(error) {
 }
 
 // Add security alert to memory
-export function addSecurityAlert(alert) {
+function addSecurityAlert(alert) {
   recentAlerts.unshift({
     ...alert,
     timestamp: new Date().toISOString(),
