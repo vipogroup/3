@@ -143,8 +143,8 @@ app.get('/status', (req, res) => {
   });
 });
 
-// Get QR code
-app.get('/qr', (req, res) => {
+// Get QR code as JSON (for API)
+app.get('/qr/json', (req, res) => {
   if (isReady) {
     return res.json({ ready: true, message: 'Already connected' });
   }
@@ -154,6 +154,123 @@ app.get('/qr', (req, res) => {
   }
   
   res.json({ qr: qrCodeData });
+});
+
+// Get QR code as HTML page
+app.get('/qr', (req, res) => {
+  const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>חיבור WhatsApp - VIPO</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+    h1 {
+      color: #1e3a8a;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+    p {
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .qr-container {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px 0;
+    }
+    .qr-container img {
+      max-width: 280px;
+      width: 100%;
+      height: auto;
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-top: 15px;
+    }
+    .status.connected {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    .status.waiting {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    .connected .dot { background: #10b981; }
+    .waiting .dot { background: #f59e0b; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .refresh-note {
+      color: #999;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+  </style>
+  <script>
+    setTimeout(() => location.reload(), 5000);
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>🔗 חיבור WhatsApp</h1>
+    <p>סרוק את הקוד עם אפליקציית WhatsApp בטלפון</p>
+    
+    <div class="qr-container">
+      ${isReady 
+        ? '<p style="color: #10b981; font-size: 48px;">✅</p><p style="color: #065f46; font-weight: bold;">מחובר בהצלחה!</p>'
+        : qrCodeData 
+          ? '<img src="' + qrCodeData + '" alt="QR Code" />'
+          : '<p style="color: #666;">ממתין ל-QR...</p><div class="dot waiting" style="margin: 20px auto;"></div>'
+      }
+    </div>
+    
+    <div class="status ${isReady ? 'connected' : 'waiting'}">
+      <span class="dot"></span>
+      ${isReady ? 'מחובר' : 'ממתין לסריקה'}
+    </div>
+    
+    ${clientInfo ? '<p style="margin-top: 15px; color: #666;">מחובר כ: ' + clientInfo.pushname + '</p>' : ''}
+    
+    <p class="refresh-note">הדף מתעדכן אוטומטית כל 5 שניות</p>
+  </div>
+</body>
+</html>
+  `;
+  
+  res.type('html').send(html);
 });
 
 // Send message
@@ -177,10 +294,35 @@ app.post('/send', async (req, res) => {
     
     const chatId = phone + '@c.us';
     
-    // Send message
+    // Check if the number is registered on WhatsApp
+    const isRegistered = await client.isRegisteredUser(chatId);
+    
+    if (!isRegistered) {
+      return res.status(400).json({ 
+        error: 'מספר הטלפון לא רשום ב-WhatsApp',
+        phone: phone 
+      });
+    }
+    
+    // Send message directly - works for both existing and new chats
     const result = await client.sendMessage(chatId, message);
     
     console.log(`✉️ Message sent to ${phone}`);
+    
+    // Store in message history
+    messageHistory.push({
+      id: result.id._serialized,
+      from: clientInfo?.wid?.user || 'me',
+      to: phone,
+      message: message,
+      timestamp: new Date().toISOString(),
+      type: 'sent'
+    });
+    
+    // Keep only last 100 messages
+    if (messageHistory.length > 100) {
+      messageHistory.shift();
+    }
     
     res.json({
       success: true,
