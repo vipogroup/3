@@ -9,7 +9,7 @@ import PwaInstaller from '@/app/components/PwaInstaller';
 import InstallPrompt from '@/app/components/InstallPrompt';
 import UpdateNotifier from '@/app/components/UpdateNotifier';
 import PushNotificationModal from '@/app/components/PushNotificationModal';
-import GlobalFooter from '@/app/components/GlobalFooter';
+import GlobalFooterWrapper from '@/app/components/GlobalFooterWrapper';
 import FloatingChatBot from '@/app/components/FloatingChatBot';
 import CookieConsent from '@/components/CookieConsent';
 import LoadingScreen from '@/app/components/LoadingScreen';
@@ -76,7 +76,7 @@ export default function RootLayout({ children }) {
             <ReferralTracker />
             <UserHeader />
             {children}
-            <GlobalFooter />
+            <GlobalFooterWrapper />
             <CartToast />
             <InstallPrompt />
             <UpdateNotifier />
