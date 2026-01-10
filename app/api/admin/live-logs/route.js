@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
-import dbConnect from '@/lib/mongodb';
-import ActivityLog from '@/models/ActivityLog';
-import ErrorLog from '@/models/ErrorLog';
-import SecurityAlert from '@/models/SecurityAlert';
+import { getDb } from '@/lib/db';
+import { ObjectId } from 'mongodb';
 
 // Store recent logs in memory for real-time access
 let recentLogs = [];
@@ -71,7 +69,7 @@ export async function GET(request) {
   const type = searchParams.get('type') || 'all';
   const since = searchParams.get('since'); // timestamp to get logs after
 
-  await dbConnect();
+  const db = await getDb();
 
   try {
     let logs = [];
@@ -90,10 +88,12 @@ export async function GET(request) {
       logs = filterByTime(recentLogs);
       
       if (logs.length < 20) {
-        const dbLogs = await ActivityLog.find()
+        const activityLogsCol = db.collection('activitylogs');
+        const dbLogs = await activityLogsCol
+          .find({})
           .sort({ createdAt: -1 })
           .limit(50)
-          .lean();
+          .toArray();
         
         const dbLogsFormatted = dbLogs.map(log => ({
           id: log._id.toString(),
@@ -113,10 +113,12 @@ export async function GET(request) {
       errors = filterByTime(recentErrors);
       
       if (errors.length < 20) {
-        const dbErrors = await ErrorLog.find()
+        const errorLogsCol = db.collection('errorlogs');
+        const dbErrors = await errorLogsCol
+          .find({})
           .sort({ createdAt: -1 })
           .limit(50)
-          .lean();
+          .toArray();
         
         const dbErrorsFormatted = dbErrors.map(err => ({
           id: err._id.toString(),
@@ -137,10 +139,12 @@ export async function GET(request) {
       alerts = filterByTime(recentAlerts);
       
       if (alerts.length < 20) {
-        const dbAlerts = await SecurityAlert.find()
+        const securityAlertsCol = db.collection('securityalerts');
+        const dbAlerts = await securityAlertsCol
+          .find({})
           .sort({ createdAt: -1 })
           .limit(50)
-          .lean();
+          .toArray();
         
         const dbAlertsFormatted = dbAlerts.map(alert => ({
           id: alert._id.toString(),
@@ -181,20 +185,23 @@ export async function POST(request) {
     const body = await request.json();
     const { type, data } = body;
 
-    await dbConnect();
+    const db = await getDb();
 
     switch (type) {
       case 'log':
         addLog(data);
-        await ActivityLog.create(data);
+        const activityLogsCol = db.collection('activitylogs');
+        await activityLogsCol.insertOne({ ...data, createdAt: new Date() });
         break;
       case 'error':
         addError(data);
-        await ErrorLog.create(data);
+        const errorLogsCol = db.collection('errorlogs');
+        await errorLogsCol.insertOne({ ...data, createdAt: new Date() });
         break;
       case 'alert':
         addSecurityAlert(data);
-        await SecurityAlert.create(data);
+        const securityAlertsCol = db.collection('securityalerts');
+        await securityAlertsCol.insertOne({ ...data, createdAt: new Date() });
         break;
       default:
         return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
