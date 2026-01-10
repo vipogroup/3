@@ -10,7 +10,9 @@ let recentMessages = [];
 // Idempotency - track processed message IDs
 const processedMessageIds = new Set();
 
-export function getRecentMessages() {
+// Note: This function is used internally by this module
+// Next.js routes can only export HTTP methods (GET, POST, etc.)
+function getRecentMessages() {
   return recentMessages;
 }
 
