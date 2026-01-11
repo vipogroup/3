@@ -1,10 +1,11 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { getDb } from '@/lib/db';
 import { randomUUID } from 'crypto';
 import { ObjectId } from 'mongodb';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   const body = await req.json();
   const { agentId, productId, baseUrl } = body;
   if (!agentId || !productId || !baseUrl)
@@ -23,3 +24,5 @@ export async function POST(req) {
   await db.collection('referralLinks').insertOne(doc);
   return Response.json(doc);
 }
+
+export const POST = withErrorLogging(POSTHandler);

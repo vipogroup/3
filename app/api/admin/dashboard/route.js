@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
@@ -12,7 +13,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/admin/dashboard
  * Get admin dashboard statistics
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -182,3 +183,5 @@ export async function GET(req) {
     return NextResponse.json({ ok: false, error: message }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

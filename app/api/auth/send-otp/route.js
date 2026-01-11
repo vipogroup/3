@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -5,7 +6,7 @@ import { z } from 'zod';
 import { sendOTP } from '@/lib/auth';
 import { rateLimiters } from '@/lib/rateLimit';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   // Rate limiting: 3 requests per 5 minutes
   const rateLimit = rateLimiters.otp(req);
   if (!rateLimit.allowed) {
@@ -33,3 +34,5 @@ export async function POST(req) {
     return NextResponse.json({ error: 'otp_send_failed', message }, { status });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

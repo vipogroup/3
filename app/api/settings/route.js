@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 export const runtime = 'nodejs';
@@ -78,7 +79,7 @@ function normalizeSettings(input = {}) {
   return withDefaultSettings(normalized);
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const db = await getDb();
     const collection = db.collection(SETTINGS_COLLECTION);
@@ -151,7 +152,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const token = extractToken(req);
     const payload = verifyJWT(token);
@@ -293,3 +294,6 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: 'settings_save_failed' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

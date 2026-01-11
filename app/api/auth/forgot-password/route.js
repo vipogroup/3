@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -42,7 +43,7 @@ function resolveOrigin(request) {
   return url.toString().replace(/\/$/, '');
 }
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     let body;
     try {
@@ -130,3 +131,5 @@ export async function POST(request) {
     return NextResponse.json({ ok: false, error: 'server_error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

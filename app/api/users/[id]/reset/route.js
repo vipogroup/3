@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { verifyJwt } from '@/src/lib/auth/createToken.js';
@@ -37,7 +38,7 @@ function parseObjectId(id) {
   }
 }
 
-export async function POST(req, { params }) {
+async function POSTHandler(req, { params }) {
   try {
     const currentUser = await ensureAdmin(req);
     if (!currentUser) {
@@ -125,3 +126,5 @@ export async function POST(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

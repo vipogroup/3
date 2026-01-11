@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -6,7 +7,7 @@ import { cookies } from 'next/headers';
 import { connectMongo } from '@/lib/mongoose';
 import User from '@/models/User';
 
-export async function GET() {
+async function GETHandler() {
   try {
     const cookieStore = cookies();
     const autoCoupon = cookieStore.get('autoCoupon')?.value;
@@ -48,3 +49,5 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: 'server_error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

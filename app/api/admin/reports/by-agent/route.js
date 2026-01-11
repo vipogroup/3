@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -7,7 +8,7 @@ import { getByAgent } from '@/lib/reports';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -32,3 +33,4 @@ export async function GET(req) {
   }
 }
 
+export const GET = withErrorLogging(GETHandler);

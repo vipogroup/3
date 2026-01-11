@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
@@ -33,7 +34,7 @@ async function usersCollection() {
   return dbo.collection('users');
 }
 
-export async function POST(req, { params }) {
+async function POSTHandler(req, { params }) {
   try {
     const token = getAuthToken(req);
     const decoded = verifyJwt(token);
@@ -104,3 +105,5 @@ export async function POST(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

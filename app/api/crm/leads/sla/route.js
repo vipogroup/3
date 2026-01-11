@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import Lead from '@/models/Lead';
@@ -5,7 +6,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // GET /api/crm/leads/sla - Get SLA statistics
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -82,3 +83,5 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Failed to fetch SLA stats' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

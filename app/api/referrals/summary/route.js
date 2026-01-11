@@ -1,10 +1,11 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserFromCookies } from '@/lib/auth/server';
 
-export async function GET() {
+async function GETHandler() {
   try {
     // Get current user from session
     const user = await getUserFromCookies();
@@ -40,3 +41,5 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: 'Server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

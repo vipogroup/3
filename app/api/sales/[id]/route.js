@@ -1,4 +1,5 @@
 // app/api/sales/[id]/route.js
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { connectMongo } from '@/lib/mongoose';
@@ -32,7 +33,7 @@ async function getUserFromRequest(req) {
   };
 }
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     // Authenticate user
     const user = await getUserFromRequest(req);
@@ -61,7 +62,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PUT(req, { params }) {
+async function PUTHandler(req, { params }) {
   const { id } = params;
 
   // Basic id validation
@@ -126,7 +127,7 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     // Authenticate user
     const user = await getUserFromRequest(req);
@@ -154,3 +155,7 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: 'Failed to delete sale' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PUT = withErrorLogging(PUTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

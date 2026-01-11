@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -7,7 +8,7 @@ import { getDb } from '@/lib/db';
 import { requireAuth } from '@/lib/auth/requireAuth';
 import { generateAgentCoupon, DEFAULT_AGENT_COMMISSION_PERCENT, DEFAULT_AGENT_DISCOUNT_PERCENT } from '@/lib/agents';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const me = await requireAuth(req);
     if (!me) {
@@ -80,3 +81,5 @@ export async function GET(req) {
     return NextResponse.json({ ok: false, error: 'server_error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

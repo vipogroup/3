@@ -4,6 +4,13 @@ import { jwtVerify } from 'jose';
 
 const PROTECTED_ROUTES = ['/dashboard', '/admin', '/agent', '/business'];
 
+function genRequestId() {
+  return (
+    globalThis.crypto?.randomUUID?.() ||
+    `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  );
+}
+
 /**
  * Validate legacy JWT token
  */
@@ -48,21 +55,42 @@ function getTenantFromHost(host) {
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
   const host = request.headers.get('host');
-  
+  const requestHeaders = new Headers(request.headers);
+
+  let requestId = requestHeaders.get('x-request-id');
+  if (!requestId) {
+    requestId = genRequestId();
+    requestHeaders.set('x-request-id', requestId);
+  }
+
   // Multi-Tenant: Detect tenant from subdomain/domain
   const tenantInfo = getTenantFromHost(host);
-  
-  // Create response with tenant header if detected
-  const response = NextResponse.next();
+
   if (tenantInfo) {
     if (typeof tenantInfo === 'string') {
-      // Subdomain tenant
-      response.headers.set('x-tenant-slug', tenantInfo);
+      requestHeaders.set('x-tenant-slug', tenantInfo);
     } else if (tenantInfo.customDomain) {
-      // Custom domain tenant
-      response.headers.set('x-tenant-domain', tenantInfo.customDomain);
+      requestHeaders.set('x-tenant-domain', tenantInfo.customDomain);
     }
   }
+
+  const applyCommonHeaders = (response) => {
+    response.headers.set('x-request-id', requestId);
+    if (tenantInfo) {
+      if (typeof tenantInfo === 'string') {
+        response.headers.set('x-tenant-slug', tenantInfo);
+      } else if (tenantInfo.customDomain) {
+        response.headers.set('x-tenant-domain', tenantInfo.customDomain);
+      }
+    }
+    return response;
+  };
+
+  const nextResponse = () => applyCommonHeaders(NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  }));
 
   // Check for legacy auth_token cookie and validate it
   const legacyToken = request.cookies.get('auth_token')?.value;
@@ -91,15 +119,15 @@ export async function middleware(request) {
     if (isAuthenticated) {
       const url = request.nextUrl.clone();
       url.pathname = '/';
-      return NextResponse.redirect(url);
+      return applyCommonHeaders(NextResponse.redirect(url));
     }
     // Clear invalid legacy token if it exists but is not valid
     if (legacyToken && !isLegacyValid) {
-      const response = NextResponse.next();
+      const response = nextResponse();
       response.cookies.delete('auth_token');
       return response;
     }
-    return NextResponse.next();
+    return nextResponse();
   }
 
   // Protect routes that require authentication
@@ -107,13 +135,13 @@ export async function middleware(request) {
     if (!isAuthenticated) {
       const url = request.nextUrl.clone();
       url.pathname = '/login';
-      return NextResponse.redirect(url);
+      return applyCommonHeaders(NextResponse.redirect(url));
     }
 
-    return NextResponse.next();
+    return nextResponse();
   }
 
-  return NextResponse.next();
+  return nextResponse();
 }
 
 export const config = {

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 
 import { requireAdminApi } from '@/lib/auth/server';
@@ -8,7 +9,7 @@ import { sendPushNotification, getWebPushConfig } from '@/lib/webPush';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -100,3 +101,5 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: message }, { status });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

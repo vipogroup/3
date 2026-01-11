@@ -1,0 +1,64 @@
+[
+  {
+    "_id": {
+      "$oid": "692df8933a64c7c8757a2710"
+    },
+    "key": "activeTheme",
+    "updatedAt": {
+      "$date": "2025-12-01T20:20:35.840Z"
+    },
+    "value": "amazon"
+  },
+  {
+    "_id": {
+      "$oid": "6962648683b4e887b05901f5"
+    },
+    "key": "siteSettings",
+    "updatedAt": {
+      "$date": "2026-01-10T14:39:02.678Z"
+    },
+    "value": {
+      "siteName": "VIPO",
+      "siteDescription": "מערכת מתקדמת בסגנון VIPO כחול-טורקיז",
+      "logoUrl": "",
+      "faviconUrl": "",
+      "primaryColor": "#0891b2",
+      "secondaryColor": "#1e3a8a",
+      "accentColor": "#06b6d4",
+      "successColor": "#16a34a",
+      "warningColor": "#f59e0b",
+      "dangerColor": "#dc2626",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1f2937",
+      "fontFamily": "'Inter', 'Heebo', sans-serif",
+      "lineHeight": "1.6",
+      "letterSpacing": "0.01em",
+      "direction": "rtl",
+      "themePreset": "vipo-turquoise",
+      "email": "info@vipo.com",
+      "phone": "050-1234567",
+      "address": "תל אביב, ישראל",
+      "whatsapp": "972501234567",
+      "facebook": "",
+      "instagram": "",
+      "twitter": "",
+      "linkedin": "",
+      "enableRegistration": true,
+      "enableGroupBuy": true,
+      "enableGamification": true,
+      "enableNotifications": true,
+      "enableDarkMode": false,
+      "metaTitle": "VIPO - מערכת ניהול סוכנים",
+      "metaDescription": "מערכת מתקדמת לניהול סוכנים, מוצרים ורכישות קבוצתיות",
+      "metaKeywords": "סוכנים, מוצרים, רכישה קבוצתית, VIPO",
+      "googleAnalyticsId": "",
+      "googleTagManagerId": "",
+      "googleSearchConsoleVerification": "",
+      "smtpHost": "",
+      "smtpPort": "587",
+      "smtpUser": "",
+      "smtpPassword": "",
+      "emailFrom": "noreply@vipo.com"
+    }
+  }
+]

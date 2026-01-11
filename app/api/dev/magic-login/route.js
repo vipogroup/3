@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -5,7 +6,7 @@ import jwt from 'jsonwebtoken';
 
 const isDev = () => process.env.NODE_ENV !== 'production';
 
-export async function GET(req) {
+async function GETHandler(req) {
   if (!isDev()) {
     return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
   }
@@ -22,3 +23,5 @@ export async function GET(req) {
   });
   return res;
 }
+
+export const GET = withErrorLogging(GETHandler);

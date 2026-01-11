@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -15,7 +16,7 @@ function safeJsonParse(body) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     console.log('PUSH_SUBSCRIBE: POST request received');
     const config = getWebPushConfig();
@@ -72,7 +73,7 @@ export async function POST(req) {
   }
 }
 
-export async function DELETE(req) {
+async function DELETEHandler(req) {
   try {
     const user = await requireAuthApi(req);
     const raw = await req.text();
@@ -92,3 +93,6 @@ export async function DELETE(req) {
     return NextResponse.json({ ok: false, error: message }, { status });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -5,7 +6,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
     
@@ -54,3 +55,5 @@ export async function GET(req) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

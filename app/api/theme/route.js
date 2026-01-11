@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -9,7 +10,7 @@ import { requireAdminApi } from '@/lib/auth/server';
  * GET /api/theme
  * Get current active theme
  */
-export async function GET() {
+async function GETHandler() {
   try {
     const db = await getDb();
     const settings = db.collection('settings');
@@ -38,7 +39,7 @@ export async function GET() {
  * Set active theme
  * Body: { themeId: "amazon" | "aliexpress" | ... }
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Admin only
     await requireAdminApi(req);
@@ -79,3 +80,6 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
@@ -24,7 +25,7 @@ async function checkAdmin(req) {
   }
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -111,3 +112,5 @@ export async function GET(req) {
     }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

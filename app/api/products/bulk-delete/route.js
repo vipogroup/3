@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -30,7 +31,7 @@ function normalizeIds(ids) {
   return { objectIds, legacyIds };
 }
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     // Admin-only: bulk delete products
     await requireAdminApi(request);
@@ -64,3 +65,5 @@ export async function POST(request) {
     );
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

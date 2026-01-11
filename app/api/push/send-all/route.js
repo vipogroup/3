@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -14,7 +15,7 @@ if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
   webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Verify admin user
     const user = await requireAuthApi(req);
@@ -79,3 +80,5 @@ export async function POST(req) {
     return NextResponse.json({ error: error.message || 'Failed to send notifications' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

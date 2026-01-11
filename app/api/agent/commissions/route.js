@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -29,7 +30,7 @@ function inferOrderTypeLabel(type) {
   return 'רכישה רגילה';
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
     
@@ -206,3 +207,5 @@ export async function GET(req) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

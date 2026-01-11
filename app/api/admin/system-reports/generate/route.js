@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +14,7 @@ import { getPayPlusConfig } from '@/lib/payplus/config.js';
  * POST /api/admin/system-reports/generate
  * Generate and save system reports
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -437,3 +438,5 @@ async function generateBackupReport(admin, now, db) {
   const ok = stats.filter(s => !s.e).length;
   return { title: 'דוח גיבוי', type: 'backup', category: 'database', summary: `${total} מסמכים`, content, contentHtml: '', tags: ['backup'], version: '1.0', status: 'published', stats: { totalChecks: cols.length, passed: ok, failed: cols.length - ok, warnings: 0, score: Math.round((ok / cols.length) * 100) }, createdBy: new ObjectId(admin.id), createdByName: admin.fullName || 'Admin', attachments: [], createdAt: now, updatedAt: now };
 }
+
+export const POST = withErrorLogging(POSTHandler);

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import Lead from '@/models/Lead';
@@ -6,7 +7,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // GET /api/crm/leads/[id] - Get single lead
-export async function GET(request, { params }) {
+async function GETHandler(request, { params }) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -31,7 +32,7 @@ export async function GET(request, { params }) {
 }
 
 // PATCH /api/crm/leads/[id] - Update lead
-export async function PATCH(request, { params }) {
+async function PATCHHandler(request, { params }) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -57,7 +58,7 @@ export async function PATCH(request, { params }) {
 }
 
 // DELETE /api/crm/leads/[id] - Delete lead
-export async function DELETE(request, { params }) {
+async function DELETEHandler(request, { params }) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -76,3 +77,7 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ error: 'Failed to delete lead' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PATCH = withErrorLogging(PATCHHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

@@ -1,4 +1,5 @@
 // app/api/gamification/levels/route.js
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import LevelRule from '@/models/LevelRule';
@@ -34,7 +35,7 @@ async function isAdmin(req) {
   return user && (user.role === 'admin' || user.role === 'business_admin');
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await getUserFromRequest(req);
     
@@ -70,7 +71,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const user = await getUserFromRequest(req);
     
@@ -129,3 +130,6 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Failed to create level rule' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

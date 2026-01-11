@@ -1,4 +1,5 @@
 // app/api/sales/report/route.js
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { connectMongo } from '@/lib/mongoose';
@@ -43,7 +44,7 @@ async function getUserFromRequest(req) {
   };
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     // Authenticate user
     const user = await getUserFromRequest(req);
@@ -137,3 +138,5 @@ export async function GET(req) {
     );
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

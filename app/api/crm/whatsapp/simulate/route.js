@@ -1,10 +1,11 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth/requireAuth';
 import { simulateIncomingMessage } from '@/lib/crm/whatsappMockService';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     const user = await requireAuth(request);
     if (!user) {
@@ -31,3 +32,5 @@ export async function POST(request) {
     }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

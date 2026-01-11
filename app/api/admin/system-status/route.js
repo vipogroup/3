@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { rateLimiters } from '@/lib/rateLimit';
 
@@ -144,7 +145,7 @@ function checkPayPlus() {
   return { status: 'connected', message: 'PayPlus מוגדר - סליקת אשראי פעילה' };
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   const rateLimit = rateLimiters.admin(req);
   if (!rateLimit.allowed) {
     return NextResponse.json({ error: rateLimit.message }, { status: 429 });
@@ -182,3 +183,5 @@ export async function GET(req) {
     return NextResponse.json({ error: 'Failed to check system status' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

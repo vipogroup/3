@@ -1,10 +1,11 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
 const WHATSAPP_SERVER_URL = process.env.WHATSAPP_LOCAL_URL || 'http://localhost:3002';
 
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     // Check local server status
     const response = await fetch(`${WHATSAPP_SERVER_URL}/status`, {
@@ -21,3 +22,5 @@ export async function GET(request) {
     });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

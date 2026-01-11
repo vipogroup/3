@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -13,7 +14,7 @@ function generateCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   // Rate limiting
   const rateLimit = rateLimiters.otp(req);
   if (!rateLimit.allowed) {
@@ -105,3 +106,5 @@ export async function POST(req) {
     return NextResponse.json({ error: 'send_failed', message: 'שליחת המייל נכשלה' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

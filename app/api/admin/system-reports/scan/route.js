@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -52,7 +53,7 @@ const ENTERPRISE_REPORT_TYPES = [
  * POST /api/admin/system-reports/scan
  * Run a full system scan
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -227,7 +228,7 @@ export async function POST(req) {
  * GET /api/admin/system-reports/scan
  * Get scan history
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const { searchParams } = new URL(req.url);
@@ -2062,3 +2063,6 @@ ${unreliable === 0 && partiallyReliable === 0
     },
   };
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -5,7 +6,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { requireAgentApi } from '@/lib/auth/server';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await requireAgentApi(req);
 
@@ -44,3 +45,5 @@ export async function GET(req) {
     return NextResponse.json({ ok: false, error: message }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

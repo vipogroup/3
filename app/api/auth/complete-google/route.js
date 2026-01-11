@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -28,7 +29,7 @@ function normalizePhone(value) {
   return digitsOnly;
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Get the NextAuth token to identify the user
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -161,3 +162,5 @@ export async function POST(req) {
     );
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

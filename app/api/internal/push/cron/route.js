@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 
 import { processDueNotifications } from '@/lib/notifications/dispatcher';
@@ -31,7 +32,7 @@ function isAuthorized(req) {
   return { ok: true };
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   const auth = isAuthorized(req);
   if (!auth.ok) {
     return auth.response;
@@ -63,7 +64,10 @@ export async function POST(req) {
   }
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   // Allow GET for providers that only support GET webhooks (e.g. Vercel cron)
   return POST(req);
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

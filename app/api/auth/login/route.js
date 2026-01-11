@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 export const runtime = 'nodejs';
@@ -29,7 +30,7 @@ function normalizePhone(value) {
   return digitsOnly;
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   const rateLimit = rateLimiters.login(req);
   if (!rateLimit.allowed) {
     return failureResponse(rateLimit.message, 429, { error: 'TOO_MANY_REQUESTS' });
@@ -117,3 +118,5 @@ export async function POST(req) {
     return failureResponse('Server error', 500);
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
@@ -59,7 +60,7 @@ async function getAgentStats(db, agentId, startOfDay, endOfDay) {
   };
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   const auth = isAuthorized(req);
   if (!auth.ok) {
     return auth.response;
@@ -172,7 +173,10 @@ export async function POST(req) {
   }
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   // Allow GET for providers that only support GET webhooks
   return POST(req);
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

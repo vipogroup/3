@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +13,7 @@ import { ObjectId } from 'mongodb';
  * GET /api/admin/transactions
  * Admin-only: Get all transactions with filters
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     if (process.env.NEXT_PHASE === 'phase-export') {
       return NextResponse.json({ success: false, skip: true });
@@ -106,3 +107,4 @@ export async function GET(req) {
   }
 }
 
+export const GET = withErrorLogging(GETHandler);

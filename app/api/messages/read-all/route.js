@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -56,7 +57,7 @@ function normalizeObjectId(value) {
   return new ObjectId(value);
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const user = await requireAuthApi(req);
     await connectMongo();
@@ -148,3 +149,5 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Server error' }, { status });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

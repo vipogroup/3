@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import CrmTask from '@/models/CrmTask';
@@ -5,7 +6,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // GET /api/crm/tasks/[id] - Get single task
-export async function GET(request, { params }) {
+async function GETHandler(request, { params }) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -31,7 +32,7 @@ export async function GET(request, { params }) {
 }
 
 // PATCH /api/crm/tasks/[id] - Update task
-export async function PATCH(request, { params }) {
+async function PATCHHandler(request, { params }) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -63,7 +64,7 @@ export async function PATCH(request, { params }) {
 }
 
 // DELETE /api/crm/tasks/[id] - Delete task
-export async function DELETE(request, { params }) {
+async function DELETEHandler(request, { params }) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -82,3 +83,7 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ error: 'Failed to delete task' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PATCH = withErrorLogging(PATCHHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

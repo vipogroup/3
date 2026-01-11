@@ -1,10 +1,11 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { requireAdminApi } from '@/lib/auth/server';
 
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     // Admin-only: list all users
     await requireAdminApi(request);
@@ -47,3 +48,5 @@ export async function GET(request) {
     return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

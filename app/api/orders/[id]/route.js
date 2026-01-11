@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
@@ -13,7 +14,7 @@ async function ordersCollection() {
   return col;
 }
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     const user = await requireAuthApi(req);
 
@@ -53,7 +54,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     const user = await requireAuthApi(req);
     if (user.role !== 'admin' && user.role !== 'business_admin') {
@@ -90,7 +91,7 @@ export async function DELETE(req, { params }) {
   }
 }
 
-export async function PUT(req, { params }) {
+async function PUTHandler(req, { params }) {
   try {
     const user = await requireAuthApi(req);
     if (user.role !== 'admin' && user.role !== 'business_admin') {
@@ -143,7 +144,7 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function PATCH(req, { params }) {
+async function PATCHHandler(req, { params }) {
   try {
     const user = await requireAuthApi(req);
 
@@ -183,3 +184,8 @@ export async function PATCH(req, { params }) {
     return NextResponse.json({ error: status === 401 ? 'Unauthorized' : 'Server error' }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const DELETE = withErrorLogging(DELETEHandler);
+export const PUT = withErrorLogging(PUTHandler);
+export const PATCH = withErrorLogging(PATCHHandler);

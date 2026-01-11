@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
@@ -557,7 +558,7 @@ async function runWebVitalsAudit(db) {
 // API Handlers
 // ============================================
 
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     const db = await getDb();
     
@@ -584,7 +585,7 @@ export async function GET(request) {
   }
 }
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     const db = await getDb();
     
@@ -652,7 +653,7 @@ export async function POST(request) {
   }
 }
 
-export async function DELETE(request) {
+async function DELETEHandler(request) {
   try {
     const db = await getDb();
     
@@ -678,3 +679,7 @@ export async function DELETE(request) {
     return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

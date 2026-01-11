@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { rateLimiters } from '@/lib/rateLimit';
@@ -26,7 +27,7 @@ async function checkAdmin(req) {
 }
 
 // GET - Fetch active alerts
-export async function GET(req) {
+async function GETHandler(req) {
   // Rate limiting
   const rateLimit = rateLimiters.admin(req);
   if (!rateLimit.allowed) {
@@ -70,7 +71,7 @@ export async function GET(req) {
 }
 
 // POST - Create a new alert
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const body = await req.json();
     const { 
@@ -109,7 +110,7 @@ export async function POST(req) {
 }
 
 // PATCH - Mark alert(s) as read
-export async function PATCH(req) {
+async function PATCHHandler(req) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -154,7 +155,7 @@ export async function PATCH(req) {
 }
 
 // DELETE - Delete old alerts
-export async function DELETE(req) {
+async function DELETEHandler(req) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -183,3 +184,7 @@ export async function DELETE(req) {
   }
 }
 
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);
+export const PATCH = withErrorLogging(PATCHHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

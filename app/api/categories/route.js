@@ -1,4 +1,5 @@
 // app/api/categories/route.js
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import Category from '@/models/Category';
@@ -14,7 +15,7 @@ const DEFAULT_CATEGORIES = [
 ];
 
 // GET - Get all categories
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await connectMongo();
     
@@ -57,7 +58,7 @@ export async function GET(req) {
 }
 
 // POST - Add new category
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     await requireAdminApi(req);
     await connectMongo();
@@ -105,7 +106,7 @@ export async function POST(req) {
 }
 
 // DELETE - Delete category (soft delete)
-export async function DELETE(req) {
+async function DELETEHandler(req) {
   try {
     await requireAdminApi(req);
     await connectMongo();
@@ -136,3 +137,7 @@ export async function DELETE(req) {
     return NextResponse.json({ error: 'Failed to delete category' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

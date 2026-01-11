@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -6,7 +7,7 @@ import { getDb } from '@/lib/db';
 import { requireAdminApi } from '@/lib/auth/server';
 import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     
@@ -87,3 +88,5 @@ export async function GET(req) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

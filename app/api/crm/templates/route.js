@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -6,7 +7,7 @@ import MessageTemplate from '@/models/MessageTemplate';
 import { requireAuth } from '@/lib/auth/requireAuth';
 import { getTenantFilter } from '@/lib/tenantContext';
 
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     const user = await requireAuth(request);
     if (!user) {
@@ -36,7 +37,7 @@ export async function GET(request) {
   }
 }
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     const user = await requireAuth(request);
     if (!user) {
@@ -70,3 +71,6 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

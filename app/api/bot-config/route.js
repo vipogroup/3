@@ -1,9 +1,10 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import BotConfig from '@/models/BotConfig';
 
 // GET - Fetch bot config based on owner type
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     await connectMongo();
     
@@ -38,7 +39,7 @@ export async function GET(request) {
 }
 
 // PUT - Update bot config
-export async function PUT(request) {
+async function PUTHandler(request) {
   try {
     await connectMongo();
     
@@ -78,7 +79,7 @@ export async function PUT(request) {
 }
 
 // POST - Add category or question
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     await connectMongo();
     
@@ -142,7 +143,7 @@ export async function POST(request) {
 }
 
 // DELETE - Remove category or question
-export async function DELETE(request) {
+async function DELETEHandler(request) {
   try {
     await connectMongo();
     
@@ -189,3 +190,8 @@ export async function DELETE(request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PUT = withErrorLogging(PUTHandler);
+export const POST = withErrorLogging(POSTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

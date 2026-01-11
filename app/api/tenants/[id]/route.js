@@ -3,6 +3,7 @@
  * ניהול עסק ספציפי - GET, PUT, DELETE
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { requireAdminGuard } from '@/lib/auth/requireAuth';
@@ -12,7 +13,7 @@ import { ObjectId } from 'mongodb';
 /**
  * GET /api/tenants/[id] - קבלת פרטי עסק
  */
-export async function GET(request, { params }) {
+async function GETHandler(request, { params }) {
   try {
     const authResult = await requireAdminGuard(request);
     if (!authResult.ok) {
@@ -72,7 +73,7 @@ export async function GET(request, { params }) {
 /**
  * PUT /api/tenants/[id] - עדכון פרטי עסק
  */
-export async function PUT(request, { params }) {
+async function PUTHandler(request, { params }) {
   try {
     const authResult = await requireAdminGuard(request);
     if (!authResult.ok) {
@@ -165,14 +166,14 @@ export async function PUT(request, { params }) {
 /**
  * PATCH /api/tenants/[id] - עדכון חלקי (למשל allowedMenus)
  */
-export async function PATCH(request, { params }) {
+async function PATCHHandler(request, { params }) {
   return PUT(request, { params });
 }
 
 /**
  * DELETE /api/tenants/[id] - מחיקת עסק וכל הנתונים הקשורים (רק Super Admin)
  */
-export async function DELETE(request, { params }) {
+async function DELETEHandler(request, { params }) {
   try {
     const authResult = await requireAdminGuard(request);
     if (!authResult.ok) {
@@ -266,3 +267,8 @@ export async function DELETE(request, { params }) {
     );
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PUT = withErrorLogging(PUTHandler);
+export const PATCH = withErrorLogging(PATCHHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

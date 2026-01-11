@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 
 import { requireAdminApi } from '@/lib/auth/server';
@@ -16,7 +17,7 @@ function normalizeType(rawType) {
   return String(rawType).trim();
 }
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -44,7 +45,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PUT(req, { params }) {
+async function PUTHandler(req, { params }) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -87,7 +88,7 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -109,3 +110,7 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ ok: false, error: message }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PUT = withErrorLogging(PUTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

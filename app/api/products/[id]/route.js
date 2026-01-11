@@ -1,4 +1,5 @@
 // app/api/products/[id]/route.js
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 
@@ -21,14 +22,14 @@ function buildProductQuery(id) {
   return conditions.length === 1 ? conditions[0] : { $or: conditions };
 }
 
-export async function GET(_req, { params }) {
+async function GETHandler(_req, { params }) {
   await connectMongo();
   const doc = await Product.findOne(buildProductQuery(params.id)).lean();
   if (!doc) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json(doc);
 }
 
-export async function PUT(req, { params }) {
+async function PUTHandler(req, { params }) {
   try {
     // Admin-only: update product
     const admin = await requireAdminApi(req);
@@ -283,7 +284,7 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     // Admin-only: delete product
     const admin = await requireAdminApi(req);
@@ -327,3 +328,7 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PUT = withErrorLogging(PUTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

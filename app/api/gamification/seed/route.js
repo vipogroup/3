@@ -1,4 +1,5 @@
 // app/api/gamification/seed/route.js
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import LevelRule from '@/models/LevelRule';
@@ -26,7 +27,7 @@ async function isAdmin(req) {
   return user && user.role === 'admin';
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Check if user is admin
     if (!(await isAdmin(req))) {
@@ -130,3 +131,5 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Failed to seed gamification rules' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

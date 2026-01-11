@@ -1,0 +1,41 @@
+[
+  {
+    "_id": {
+      "$oid": "696220a8ac741be76ad663c0"
+    },
+    "fullName": "דניאל",
+    "email": "m0533858881@gmail.com",
+    "phone": "0533858881",
+    "role": "business_admin",
+    "passwordHash": "$2a$10$xll.qOj9qfmvk894FXNBUO/zw5O84eKqWp38Z7FvGiZGB8Is50rGC",
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T09:49:28.372Z"
+    },
+    "tenantId": {
+      "$oid": "696220a8ac741be76ad663c1"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6962c3dc784294d7e11b61bc"
+    },
+    "email": "0587009938@gmail.com",
+    "phone": "0587009938",
+    "fullName": "מנהל ראשי",
+    "role": "admin",
+    "passwordHash": "$2a$10$elMB70EllQKOqxB5gPR4/u0/qsLGNtpstZCvm9vlHveAt8GBEY75u",
+    "isSuperAdmin": true,
+    "protected": true,
+    "isActive": true,
+    "createdAt": {
+      "$date": "2026-01-10T21:25:48.623Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T21:25:48.623Z"
+    }
+  }
+]

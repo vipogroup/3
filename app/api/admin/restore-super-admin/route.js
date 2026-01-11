@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/hash';
@@ -16,7 +17,7 @@ const SUPER_ADMIN = {
   protected: true
 };
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const db = await getDb();
     const users = db.collection('users');
@@ -89,7 +90,7 @@ export async function POST(req) {
 }
 
 // פונקציה לבדיקה אם המנהל קיים
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const db = await getDb();
     const users = db.collection('users');
@@ -118,3 +119,6 @@ export async function GET(req) {
     }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

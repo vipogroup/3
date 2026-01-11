@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { requireAdminApi } from '@/lib/auth/server';
@@ -6,7 +7,7 @@ import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     
@@ -157,3 +158,5 @@ export async function POST(req) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

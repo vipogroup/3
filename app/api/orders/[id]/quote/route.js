@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
@@ -103,7 +104,7 @@ async function generateOrderPdfBuffer(order) {
   });
 }
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     const token = req.cookies.get('token')?.value || '';
     const decoded = verifyJwt(token);
@@ -130,3 +131,5 @@ export async function GET(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

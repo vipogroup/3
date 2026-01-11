@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 export const runtime = 'nodejs';
@@ -24,7 +25,7 @@ function uploadBufferToCloudinary(buffer, options = {}) {
   });
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Authentication required
     let user;
@@ -108,3 +109,5 @@ export async function POST(req) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

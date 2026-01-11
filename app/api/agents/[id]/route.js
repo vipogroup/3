@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
@@ -25,7 +26,7 @@ function normalize(doc) {
   };
 }
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     if (!ensureAdmin(req)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -59,7 +60,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PUT(req, { params }) {
+async function PUTHandler(req, { params }) {
   try {
     if (!ensureAdmin(req)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -181,3 +182,6 @@ export async function PUT(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PUT = withErrorLogging(PUTHandler);

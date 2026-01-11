@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import Conversation from '@/models/Conversation';
@@ -5,7 +6,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // GET /api/crm/conversations - List conversations (Inbox)
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -63,7 +64,7 @@ export async function GET(request) {
 }
 
 // POST /api/crm/conversations - Create conversation
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -83,3 +84,6 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Failed to create conversation' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

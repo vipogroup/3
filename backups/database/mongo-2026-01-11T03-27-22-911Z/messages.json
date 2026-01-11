@@ -1,0 +1,68 @@
+[
+  {
+    "_id": {
+      "$oid": "696225ddac741be76ad664a2"
+    },
+    "tenantId": null,
+    "senderId": {
+      "$oid": "696220a8ac741be76ad663c0"
+    },
+    "senderRole": "admin",
+    "targetRole": "agent",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: לחלחלחל",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "696220a8ac741be76ad663c0"
+        },
+        "readAt": {
+          "$date": "2026-01-10T10:11:41.168Z"
+        },
+        "_id": {
+          "$oid": "696225ddac741be76ad664a3"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-01-10T10:11:41.176Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T10:11:41.176Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "696225ddac741be76ad664a6"
+    },
+    "tenantId": null,
+    "senderId": {
+      "$oid": "696220a8ac741be76ad663c0"
+    },
+    "senderRole": "admin",
+    "targetRole": "customer",
+    "targetUserId": null,
+    "message": "מוצר חדש נוסף למערכת: לחלחלחל",
+    "readBy": [
+      {
+        "userId": {
+          "$oid": "696220a8ac741be76ad663c0"
+        },
+        "readAt": {
+          "$date": "2026-01-10T10:11:41.238Z"
+        },
+        "_id": {
+          "$oid": "696225ddac741be76ad664a7"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2026-01-10T10:11:41.239Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T10:11:41.239Z"
+    },
+    "__v": 0
+  }
+]

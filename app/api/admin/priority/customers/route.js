@@ -3,6 +3,7 @@
  * GET /api/admin/priority/customers - רשימת לקוחות מסונכרנים
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -12,7 +13,7 @@ import dbConnect from '@/lib/dbConnect';
 import User from '@/models/User';
 import IntegrationSyncMap from '@/models/IntegrationSyncMap';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -88,3 +89,5 @@ export async function GET(req) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

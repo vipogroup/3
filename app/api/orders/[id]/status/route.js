@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
@@ -30,7 +31,7 @@ async function getFullUser(decoded) {
   return user ? { ...decoded, ...user, _id: user._id } : decoded;
 }
 
-export async function POST(req, { params }) {
+async function POSTHandler(req, { params }) {
   try {
     const token = req.cookies.get('token')?.value || req.cookies.get('auth_token')?.value || '';
     const decoded = verifyJwt(token);
@@ -76,3 +77,5 @@ export async function POST(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

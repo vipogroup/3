@@ -3,6 +3,7 @@
  * GET /api/admin/priority/status - סטטוס חיבור לפריוריטי
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -12,7 +13,7 @@ import { validatePriorityConfig } from '@/lib/priority/config';
 import dbConnect from '@/lib/dbConnect';
 import IntegrationSyncMap from '@/models/IntegrationSyncMap';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -87,7 +88,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -116,3 +117,6 @@ export async function POST(req) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +16,7 @@ import { ObjectId } from 'mongodb';
  * - reportId: ID of the report to export
  * - format: 'csv' or 'pdf'
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -101,7 +102,7 @@ export async function GET(req) {
  * POST /api/admin/system-reports/export
  * Generate export data for multiple reports or custom data
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -535,3 +536,6 @@ async function generateReconciliationExport(db, dateRange) {
     summary: { matched, mismatched, missingTx, orphanTx, total: reconciliationRows.length },
   };
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

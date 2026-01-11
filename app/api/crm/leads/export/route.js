@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -6,7 +7,7 @@ import Lead from '@/models/Lead';
 import { requireAuth } from '@/lib/auth/requireAuth';
 import { getTenantFilter } from '@/lib/tenantContext';
 
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     const user = await requireAuth(request);
     if (!user) {
@@ -87,3 +88,5 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

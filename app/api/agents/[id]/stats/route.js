@@ -1,4 +1,5 @@
 // app/api/agents/[id]/stats/route.js
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { connectMongo } from '@/lib/mongoose';
@@ -22,7 +23,7 @@ async function getUserFromRequest(req) {
   };
 }
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     // Get user
     const user = await getUserFromRequest(req);
@@ -220,3 +221,5 @@ export async function GET(req, { params }) {
     return NextResponse.json({ error: 'Failed to fetch agent stats' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

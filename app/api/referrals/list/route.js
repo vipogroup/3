@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -8,7 +9,7 @@ import { getUserFromCookies } from '@/lib/auth/server';
  * GET /api/referrals/list
  * Returns list of users referred by the current user
  */
-export async function GET() {
+async function GETHandler() {
   try {
     // Get current user from session
     const user = await getUserFromCookies();
@@ -55,3 +56,5 @@ export async function GET() {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

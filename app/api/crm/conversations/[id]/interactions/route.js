@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import Conversation from '@/models/Conversation';
@@ -5,7 +6,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // POST /api/crm/conversations/[id]/interactions - Add interaction
-export async function POST(request, { params }) {
+async function POSTHandler(request, { params }) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -47,3 +48,5 @@ export async function POST(request, { params }) {
     return NextResponse.json({ error: 'Failed to add interaction' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

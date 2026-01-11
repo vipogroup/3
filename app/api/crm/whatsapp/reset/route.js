@@ -1,8 +1,9 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     // Check if we're in production (Vercel)
     if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
@@ -64,7 +65,7 @@ export async function POST(request) {
 }
 
 // GET endpoint to check if reset is available
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     // Check if we're in production (Vercel)
     if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
@@ -96,3 +97,6 @@ export async function GET(request) {
     });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

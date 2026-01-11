@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -5,7 +6,7 @@ import { connectDB } from '@/lib/db';
 import User from '@/models/User';
 import { hashPassword, verifyPassword } from '@/lib/hash';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   // Security: Only allow in development or with secret key
   const isProduction = process.env.NODE_ENV === 'production';
   const seedSecret = req.headers.get('x-seed-secret');
@@ -53,3 +54,5 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

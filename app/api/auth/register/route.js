@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 export const runtime = 'nodejs';
@@ -32,7 +33,7 @@ function normalizePhone(value) {
   return digitsOnly;
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   const incomingAutomationKey = req.headers.get('x-automation-key');
   const bypassRateLimit =
     process.env.DISABLE_RATE_LIMIT === 'true' || incomingAutomationKey === automationKey;
@@ -276,3 +277,5 @@ export async function POST(req) {
     );
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

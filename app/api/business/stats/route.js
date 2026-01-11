@@ -1,10 +1,11 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { requireAuthApi } from '@/lib/auth/server';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
     
@@ -87,3 +88,5 @@ export async function GET(req) {
     return NextResponse.json({ error: 'שגיאה בטעינת הנתונים' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

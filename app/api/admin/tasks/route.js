@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { logAdminActivity } from '@/lib/auditMiddleware';
@@ -32,7 +33,7 @@ async function checkAdmin(req) {
 }
 
 // GET - List all tasks
-export async function GET(req) {
+async function GETHandler(req) {
   const rateLimit = rateLimiters.admin(req);
   if (!rateLimit.allowed) {
     return NextResponse.json({ error: rateLimit.message }, { status: 429 });
@@ -54,7 +55,7 @@ export async function GET(req) {
 }
 
 // POST - Create new task
-export async function POST(req) {
+async function POSTHandler(req) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -100,3 +101,6 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Failed to create task' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

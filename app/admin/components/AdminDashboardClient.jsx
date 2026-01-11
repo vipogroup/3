@@ -1119,6 +1119,15 @@ export default function AdminDashboardClient() {
                 </svg>
                 <span className="text-sm font-medium text-gray-900">שגיאות מערכת</span>
               </Link>
+              <Link href="/admin/errors" className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-l from-[#fee2e2] via-[#ffe4e6] to-[#fce7f3] hover:from-[#fecaca] hover:via-[#fbcfe8] hover:to-[#f9a8d4] transition-all shadow-sm">
+                <svg className="w-5 h-5" style={{ color: '#be123c' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m6.938 4H5.082c-1.54 0-2.502-1.667-1.732-3L10.268 4c.77-1.333 2.694-1.333 3.464 0L20.66 16c.77 1.333-.192 3-1.732 3z" />
+                </svg>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-gray-900">לוח ניטור שגיאות</span>
+                  <span className="text-xs font-medium text-[#be123c]">חדש • נתונים חיים ממונגו</span>
+                </div>
+              </Link>
               <Link href="/admin/system-reports?tab=downloads" className="flex items-center gap-3 p-3 rounded-lg bg-amber-50 hover:bg-amber-100 transition-all">
                 <svg className="w-5 h-5" style={{ color: '#d97706' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -1241,6 +1250,40 @@ export default function AdminDashboardClient() {
           </div>
           )}
 
+          {isSuperAdmin && (
+          <Link
+            href="/admin/errors"
+            className="block rounded-xl overflow-hidden transition-all hover:shadow-lg"
+            style={{
+              border: '2px solid transparent',
+              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+              boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)'
+            }}
+          >
+            <div className="flex items-center justify-between p-4 text-right transition-all hover:bg-gray-50">
+              <div className="flex items-center gap-3">
+                <span
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white"
+                  style={{ background: 'linear-gradient(135deg, #e11d48 0%, #dc2626 100%)' }}
+                >
+                  <ChartBarIcon className="w-5 h-5" />
+                </span>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-base font-bold" style={{ color: '#1e3a8a' }}>
+                    ניטור שגיאות
+                  </span>
+                  <span className="text-xs font-semibold text-red-500">System Error Monitoring</span>
+                </div>
+              </div>
+              <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </Link>
+          )}
+
           {/* 10. דוחות גוגל - רק למנהלים ראשיים */}
           {isSuperAdmin && (
           <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
@@ -1331,34 +1374,6 @@ export default function AdminDashboardClient() {
             </div>
             )}
           </div>
-          )}
-
-          {/* 11. לוגים און-ליין - רק למנהלים ראשיים */}
-          {isSuperAdmin && (
-          <Link 
-            href="/admin/live-logs"
-            className="rounded-xl overflow-hidden flex items-center justify-between p-4 transition-all hover:shadow-lg"
-            style={{ 
-              border: '2px solid transparent', 
-              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #dc2626, #f97316)', 
-              backgroundOrigin: 'border-box', 
-              backgroundClip: 'padding-box, border-box', 
-              boxShadow: '0 2px 10px rgba(220, 38, 38, 0.1)' 
-            }}
-          >
-            <div className="flex items-center gap-3">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #f97316 100%)' }}>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </span>
-              <span className="text-base font-bold" style={{ color: '#dc2626' }}>לוגים און-ליין</span>
-            </div>
-            <span className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-              LIVE
-            </span>
-          </Link>
           )}
         </div>
 

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +12,7 @@ import { ObjectId } from 'mongodb';
  * GET /api/admin/system-reports
  * Get all system reports with pagination and filters
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -85,7 +86,7 @@ export async function GET(req) {
  * POST /api/admin/system-reports
  * Create a new system report
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -146,3 +147,6 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Server error' }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

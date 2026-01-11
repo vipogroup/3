@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +12,7 @@ import { ObjectId } from 'mongodb';
  * GET /api/admin/system-reports/[id]
  * Get a single system report by ID
  */
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     const { id } = params || {};
     if (!id || !ObjectId.isValid(id)) {
@@ -55,7 +56,7 @@ export async function GET(req, { params }) {
  * DELETE /api/admin/system-reports/[id]
  * Delete a system report
  */
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     const { id } = params || {};
     if (!id || !ObjectId.isValid(id)) {
@@ -92,7 +93,7 @@ export async function DELETE(req, { params }) {
  * PATCH /api/admin/system-reports/[id]
  * Update a system report (archive/publish)
  */
-export async function PATCH(req, { params }) {
+async function PATCHHandler(req, { params }) {
   try {
     const { id } = params || {};
     if (!id || !ObjectId.isValid(id)) {
@@ -143,3 +144,7 @@ export async function PATCH(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const DELETE = withErrorLogging(DELETEHandler);
+export const PATCH = withErrorLogging(PATCHHandler);

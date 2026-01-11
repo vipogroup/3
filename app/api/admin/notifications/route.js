@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 
 import { requireAdminApi } from '@/lib/auth/server';
@@ -7,7 +8,7 @@ import { listScheduledNotifications } from '@/lib/notifications/scheduler';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -27,7 +28,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -76,3 +77,5 @@ export async function POST(req) {
   }
 }
 
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

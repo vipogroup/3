@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -5,7 +6,7 @@ import { z } from 'zod';
 import { verifyOTP, ensureUser, signJWT } from '@/lib/auth';
 import { rateLimiters } from '@/lib/rateLimit';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   // Rate limiting: 5 requests per 5 minutes (same as login)
   const rateLimit = rateLimiters.login(req);
   if (!rateLimit.allowed) {
@@ -46,3 +47,5 @@ export async function POST(req) {
 
   return res;
 }
+
+export const POST = withErrorLogging(POSTHandler);

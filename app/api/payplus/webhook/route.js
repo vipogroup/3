@@ -9,6 +9,7 @@
  * - Commission lifecycle management
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { getDb } from '@/lib/db';
@@ -335,7 +336,7 @@ function sendAdminAlert(order, paymentEvent, payload) {
 /**
  * POST handler
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   const rawBody = await req.text();
   let payload;
   
@@ -392,3 +393,5 @@ export async function POST(req) {
   // Always return 200 to PayPlus (unless signature is invalid)
   return Response.json(result);
 }
+
+export const POST = withErrorLogging(POSTHandler);

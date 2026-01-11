@@ -1,4 +1,5 @@
 // app/api/gamification/goals/route.js
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { connectMongo } from '@/lib/mongoose';
@@ -27,7 +28,7 @@ async function getUserFromRequest(req) {
   return user;
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     // Get user
     const user = await getUserFromRequest(req);
@@ -99,7 +100,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const user = await getUserFromRequest(req);
     
@@ -183,3 +184,6 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Failed to create goal' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

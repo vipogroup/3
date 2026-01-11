@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -26,7 +27,7 @@ function validateBase64ForClient(str) {
   }
 }
 
-export async function GET() {
+async function GETHandler() {
   const config = getWebPushConfig();
 
   if (!config.configured) {
@@ -49,3 +50,5 @@ export async function GET() {
     contact: config.contact,
   });
 }
+
+export const GET = withErrorLogging(GETHandler);

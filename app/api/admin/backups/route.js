@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { exec } from 'child_process';
 import { promisify } from 'util';
@@ -142,7 +143,7 @@ async function checkAdmin(req) {
 }
 
 // GET - List backups
-export async function GET(req) {
+async function GETHandler(req) {
   const rateLimit = rateLimiters.admin(req);
   if (!rateLimit.allowed) {
     return NextResponse.json({ error: rateLimit.message }, { status: 429 });
@@ -207,7 +208,7 @@ export async function GET(req) {
 }
 
 // POST - Run backup action
-export async function POST(req) {
+async function POSTHandler(req) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -1070,3 +1071,6 @@ function formatBytes(bytes) {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

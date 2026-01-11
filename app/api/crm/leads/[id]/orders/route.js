@@ -1,8 +1,9 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth/requireAuth';
 import { getLeadOrders, calculateLeadValue } from '@/lib/crm/orderLeadConnection';
 
-export async function GET(request, { params }) {
+async function GETHandler(request, { params }) {
   try {
     const user = await requireAuth(request);
     if (!user) {
@@ -25,3 +26,5 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

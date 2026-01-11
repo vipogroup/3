@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Lead from '@/models/Lead';
@@ -24,7 +25,7 @@ const SLA_FIRST_RESPONSE_HOURS = 2;
  * ויוצר לידים אוטומטית
  * לא דורש אימות כי זה שרת פנימי
  */
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     const messageData = await request.json();
     
@@ -136,3 +137,5 @@ export async function POST(request) {
     }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

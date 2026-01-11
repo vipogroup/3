@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -42,7 +43,7 @@ function mapWithdrawal(doc, user) {
   };
 }
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     const { id } = params || {};
     if (!id || !ObjectId.isValid(id)) {
@@ -103,7 +104,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PATCH(req, { params }) {
+async function PATCHHandler(req, { params }) {
   try {
     const { id } = params || {};
     if (!id || !ObjectId.isValid(id)) {
@@ -425,3 +426,6 @@ export async function PATCH(req, { params }) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PATCH = withErrorLogging(PATCHHandler);

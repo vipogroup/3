@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import fs from 'fs';
@@ -105,7 +106,7 @@ async function generateOrderPdfBuffer(order) {
   });
 }
 
-export async function POST(req, { params }) {
+async function POSTHandler(req, { params }) {
   try {
     const token = req.cookies.get('token')?.value || '';
     const decoded = verifyJwt(token);
@@ -168,3 +169,5 @@ async function cleanupOldTmpFiles(dir) {
     }
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

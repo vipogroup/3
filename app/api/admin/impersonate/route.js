@@ -3,6 +3,7 @@
  * מאפשר ל-Super Admin להיכנס לדשבורד של עסק ספציפי
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { requireAdminGuard } from '@/lib/auth/requireAuth';
@@ -17,7 +18,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
  * POST /api/admin/impersonate - התחזות לעסק ספציפי
  * רק Super Admin יכול להתחזות
  */
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     const authResult = await requireAdminGuard(request);
     if (!authResult.ok) {
@@ -110,7 +111,7 @@ export async function POST(request) {
 /**
  * DELETE /api/admin/impersonate - יציאה מהתחזות וחזרה ל-Super Admin
  */
-export async function DELETE(request) {
+async function DELETEHandler(request) {
   try {
     const authResult = await requireAdminGuard(request);
     if (!authResult.ok) {
@@ -175,3 +176,6 @@ export async function DELETE(request) {
     );
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

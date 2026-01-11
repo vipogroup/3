@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -9,7 +10,7 @@ import { getDb } from '@/lib/db';
  * Cleanup messages that have been read by all intended recipients
  * Can be called via cron job or manually by admin
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Verify cron secret or admin auth
     const cronSecret = req.headers.get('x-cron-secret');
@@ -79,7 +80,7 @@ export async function POST(req) {
 /**
  * GET endpoint to check cleanup stats without deleting
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const cronSecret = req.headers.get('x-cron-secret');
     const expectedSecret = process.env.CRON_SECRET || 'vipo-cron-secret';
@@ -140,3 +141,6 @@ export async function GET(req) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

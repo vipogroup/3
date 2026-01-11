@@ -1,4 +1,5 @@
 // app/api/gamification/bonuses/[id]/route.js
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import BonusRule from '@/models/BonusRule';
@@ -25,7 +26,7 @@ async function isAdmin(req) {
   return user && user.role === 'admin';
 }
 
-export async function PUT(req, { params }) {
+async function PUTHandler(req, { params }) {
   try {
     // Check if user is admin
     if (!(await isAdmin(req))) {
@@ -89,7 +90,7 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     // Check if user is admin
     if (!(await isAdmin(req))) {
@@ -113,3 +114,6 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: 'Failed to delete bonus rule' }, { status: 500 });
   }
 }
+
+export const PUT = withErrorLogging(PUTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

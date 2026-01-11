@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -6,7 +7,7 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { requireAuthApi } from '@/lib/auth/server';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const user = await requireAuthApi(req);
     const body = await req.json().catch(() => null);
@@ -55,3 +56,5 @@ export async function POST(req) {
     return NextResponse.json({ error: 'server_error' }, { status });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

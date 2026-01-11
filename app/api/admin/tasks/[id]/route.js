@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
@@ -30,7 +31,7 @@ async function checkAdmin(req) {
 }
 
 // PATCH - Update task (toggle completed, edit, etc.)
-export async function PATCH(req, { params }) {
+async function PATCHHandler(req, { params }) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -76,7 +77,7 @@ export async function PATCH(req, { params }) {
 }
 
 // DELETE - Delete task
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -101,3 +102,6 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: 'Failed to delete task' }, { status: 500 });
   }
 }
+
+export const PATCH = withErrorLogging(PATCHHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

@@ -1,8 +1,9 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import QRCode from 'qrcode';
 import { getDb } from '@/lib/db';
 import sharp from 'sharp';
 
-export async function GET(request, { params }) {
+async function GETHandler(request, { params }) {
   try {
     const urlObj = new URL(request.url);
     const fmt = urlObj.searchParams.get('fmt') || 'svg';
@@ -41,3 +42,5 @@ export async function GET(request, { params }) {
     return Response.json({ error: 'qr_failed' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

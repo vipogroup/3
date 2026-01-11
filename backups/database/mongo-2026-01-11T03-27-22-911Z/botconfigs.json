@@ -1,0 +1,298 @@
+[
+  {
+    "_id": {
+      "$oid": "696294c9fffb5433208c694a"
+    },
+    "ownerType": "admin",
+    "businessId": null,
+    "texts": {
+      "title": "שירות לקוחות",
+      "subtitle": "מענה מיידי לשאלות נפוצות",
+      "welcome1": "שלום! אני הבוט של VIPO.",
+      "welcome2": "איך אפשר לעזור לך היום?",
+      "happyHelp": "נשמח לעזור!",
+      "writeMessage": "כתוב את ההודעה שלך ונציג יחזור אליך בהקדם:",
+      "whatKnow": "מה תרצה לדעת?",
+      "anythingElse": "האם יש משהו נוסף שאוכל לעזור?",
+      "noAnswer": "לא מצאתי תשובה מתאימה.",
+      "whatDo": "מה תרצה לעשות?",
+      "goodbye": "תודה רבה! שמחנו לעזור. אם תצטרך עוד משהו, אני כאן.",
+      "sentSuccess": "ההודעה נשלחה בהצלחה!",
+      "teamReply": "צוות התמיכה יחזור אליך בהקדם. יש משהו נוסף?",
+      "sendError": "שגיאה בשליחה. נסה שוב או התקשר 03-1234567",
+      "moreHelp": "האם יש משהו נוסף?",
+      "chooseTopic": "בחר נושא:"
+    },
+    "buttons": {
+      "otherTopic": "נושא אחר",
+      "talkAgent": "שיחה עם נציג",
+      "thanks": "זה הכל, תודה",
+      "backTopics": "חזרה לנושאים",
+      "send": "שלח",
+      "sending": "שולח...",
+      "cancel": "ביטול"
+    },
+    "placeholders": {
+      "message": "כתוב את ההודעה שלך...",
+      "agent": "כתוב הודעה לנציג...",
+      "question": "כתוב שאלה..."
+    },
+    "categories": [
+      {
+        "id": "shipping",
+        "name": "משלוחים",
+        "isContact": false,
+        "questions": [
+          {
+            "id": "ship_1",
+            "question": "כמה זמן לוקח משלוח?",
+            "answer": "משלוחים מגיעים תוך 3-5 ימי עסקים. משלוח אקספרס תוך 1-2 ימי עסקים.",
+            "order": 1,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c694c"
+            }
+          },
+          {
+            "id": "ship_2",
+            "question": "האם יש משלוח חינם?",
+            "answer": "כן! משלוח חינם בכל הזמנה מעל ₪200.",
+            "order": 2,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c694d"
+            }
+          },
+          {
+            "id": "ship_3",
+            "question": "לאן אתם שולחים?",
+            "answer": "אנחנו שולחים לכל רחבי הארץ, כולל יהודה ושומרון.",
+            "order": 3,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c694e"
+            }
+          },
+          {
+            "id": "ship_4",
+            "question": "מעקב משלוח",
+            "answer": "לאחר המשלוח תקבל SMS עם קישור למעקב. ניתן גם לעקוב באזור \"ההזמנות שלי\".",
+            "order": 4,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c694f"
+            }
+          }
+        ],
+        "order": 1,
+        "isActive": true,
+        "_id": {
+          "$oid": "696294cafffb5433208c694b"
+        }
+      },
+      {
+        "id": "payment",
+        "name": "תשלומים",
+        "isContact": false,
+        "questions": [
+          {
+            "id": "pay_1",
+            "question": "אמצעי תשלום",
+            "answer": "אנחנו מקבלים כרטיסי אשראי (ויזה, מאסטרקארד, אמקס), ביט, PayPal ותשלום במזומן בעת האיסוף.",
+            "order": 1,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c6951"
+            }
+          },
+          {
+            "id": "pay_2",
+            "question": "תשלומים",
+            "answer": "כן! עד 12 תשלומים ללא ריבית בכרטיסי אשראי נבחרים.",
+            "order": 2,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c6952"
+            }
+          },
+          {
+            "id": "pay_3",
+            "question": "אבטחת תשלום",
+            "answer": "בהחלט! אנחנו משתמשים בהצפנת SSL ועומדים בתקן PCI DSS לאבטחת תשלומים.",
+            "order": 3,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c6953"
+            }
+          }
+        ],
+        "order": 2,
+        "isActive": true,
+        "_id": {
+          "$oid": "696294cafffb5433208c6950"
+        }
+      },
+      {
+        "id": "returns",
+        "name": "החזרות וביטולים",
+        "isContact": false,
+        "questions": [
+          {
+            "id": "ret_1",
+            "question": "מדיניות החזרות",
+            "answer": "ניתן להחזיר מוצרים תוך 14 יום מיום הקנייה, כל עוד המוצר באריזתו המקורית ובמצב תקין.",
+            "order": 1,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c6955"
+            }
+          },
+          {
+            "id": "ret_2",
+            "question": "ביטול הזמנה",
+            "answer": "ניתן לבטל הזמנה לפני המשלוח באזור \"ההזמנות שלי\" או ליצור קשר עם שירות הלקוחות.",
+            "order": 2,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c6956"
+            }
+          },
+          {
+            "id": "ret_3",
+            "question": "החזר כספי",
+            "answer": "ההחזר מתבצע תוך 7-14 ימי עסקים לאמצעי התשלום המקורי.",
+            "order": 3,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c6957"
+            }
+          }
+        ],
+        "order": 3,
+        "isActive": true,
+        "_id": {
+          "$oid": "696294cafffb5433208c6954"
+        }
+      },
+      {
+        "id": "account",
+        "name": "חשבון וסוכנים",
+        "isContact": false,
+        "questions": [
+          {
+            "id": "acc_1",
+            "question": "הרשמה לאתר",
+            "answer": "לחצו על \"החשבון שלי\" בתפריט העליון ובחרו \"הרשמה\". תוכלו להירשם עם מייל או דרך גוגל.",
+            "order": 1,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c6959"
+            }
+          },
+          {
+            "id": "acc_2",
+            "question": "להפוך לסוכן",
+            "answer": "ניתן להירשם כסוכן דרך האזור האישי. סוכנים מרוויחים עמלות על כל מכירה שהביאו!",
+            "order": 2,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c695a"
+            }
+          },
+          {
+            "id": "acc_3",
+            "question": "יתרונות סוכן",
+            "answer": "סוכנים מקבלים עמלה על כל מכירה, גישה למוצרים בלעדיים, ותמיכה אישית.",
+            "order": 3,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c695b"
+            }
+          },
+          {
+            "id": "acc_4",
+            "question": "שכחתי סיסמה",
+            "answer": "לחצו על \"שכחתי סיסמה\" בדף ההתחברות ונשלח לכם קישור לאיפוס למייל.",
+            "order": 4,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c695c"
+            }
+          }
+        ],
+        "order": 4,
+        "isActive": true,
+        "_id": {
+          "$oid": "696294cafffb5433208c6958"
+        }
+      },
+      {
+        "id": "general",
+        "name": "שאלות כלליות",
+        "isContact": false,
+        "questions": [
+          {
+            "id": "gen_1",
+            "question": "שעות פעילות",
+            "answer": "אנחנו זמינים בימים א'-ה' 9:00-18:00, ו' 9:00-13:00. שבת - סגור.",
+            "order": 1,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c695e"
+            }
+          },
+          {
+            "id": "gen_2",
+            "question": "יצירת קשר",
+            "answer": "טלפון: 03-1234567 | מייל: support@vipo.co.il | וואטסאפ: 050-1234567",
+            "order": 2,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c695f"
+            }
+          },
+          {
+            "id": "gen_3",
+            "question": "חנות פיזית",
+            "answer": "כרגע אנחנו פועלים באונליין בלבד, עם נקודות איסוף ברחבי הארץ.",
+            "order": 3,
+            "isActive": true,
+            "_id": {
+              "$oid": "696294cafffb5433208c6960"
+            }
+          }
+        ],
+        "order": 5,
+        "isActive": true,
+        "_id": {
+          "$oid": "696294cafffb5433208c695d"
+        }
+      },
+      {
+        "id": "support",
+        "name": "שיחה עם נציג",
+        "isContact": true,
+        "questions": [],
+        "order": 6,
+        "isActive": true,
+        "_id": {
+          "$oid": "696294cafffb5433208c6961"
+        }
+      }
+    ],
+    "settings": {
+      "isActive": true,
+      "showOnAllPages": true,
+      "position": "right",
+      "primaryColor": "#1e3a8a",
+      "secondaryColor": "#0891b2"
+    },
+    "createdAt": {
+      "$date": "2026-01-10T18:04:58.041Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T18:19:27.390Z"
+    },
+    "__v": 0
+  }
+]

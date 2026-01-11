@@ -1,10 +1,11 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 
-export async function GET(req) {
+async function GETHandler(req) {
   // בדיקת הרשאות
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
@@ -66,3 +67,5 @@ export async function GET(req) {
     }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

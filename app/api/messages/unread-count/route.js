@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -7,7 +8,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { connectMongo } from '@/lib/mongoose';
 import Message from '@/models/Message';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
     await connectMongo();
@@ -65,3 +66,5 @@ export async function GET(req) {
     return NextResponse.json({ error: 'Server error', count: 0 }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

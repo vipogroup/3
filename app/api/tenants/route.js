@@ -3,6 +3,7 @@
  * ניהול עסקים (tenants) - רק Super Admin
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { requireAdminGuard } from '@/lib/auth/requireAuth';
@@ -13,7 +14,7 @@ import { ObjectId } from 'mongodb';
  * GET /api/tenants - קבלת רשימת כל העסקים
  * רק Super Admin יכול לראות את כל העסקים
  */
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     const authResult = await requireAdminGuard(request);
     if (!authResult.ok) {
@@ -83,7 +84,7 @@ export async function GET(request) {
  * POST /api/tenants - יצירת עסק חדש
  * רק Super Admin יכול ליצור עסקים
  */
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     const authResult = await requireAdminGuard(request);
     if (!authResult.ok) {
@@ -225,3 +226,6 @@ export async function POST(request) {
     );
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

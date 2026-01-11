@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -10,7 +11,7 @@ import { ObjectId } from 'mongodb';
  * GET /api/admin/social-audit/export
  * Export a social audit report in various formats
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const { searchParams } = new URL(req.url);
@@ -312,3 +313,5 @@ All checks passed successfully!
 
   return md;
 }
+
+export const GET = withErrorLogging(GETHandler);

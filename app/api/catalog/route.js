@@ -1,10 +1,11 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { connectMongo } from '@/lib/mongoose';
 import Product from '@/models/Product';
 import { getCurrentTenant } from '@/lib/tenant';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await connectMongo();
 
@@ -31,3 +32,5 @@ export async function GET(req) {
     );
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

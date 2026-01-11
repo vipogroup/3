@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -9,7 +10,7 @@ import { ObjectId } from 'mongodb';
  * GET /api/my-orders
  * Returns orders where the current user is the CUSTOMER (not as agent)
  */
-export async function GET(req) {
+async function GETHandler(req) {
   let user;
   try {
     user = await requireAuthApi(req);
@@ -55,3 +56,5 @@ export async function GET(req) {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

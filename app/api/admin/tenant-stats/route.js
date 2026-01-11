@@ -3,13 +3,14 @@
  * סטטיסטיקות מכירות לפי tenant - Super Admin בלבד
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { requireAdminGuard } from '@/lib/auth/requireAuth';
 import { isSuperAdmin } from '@/lib/tenant';
 import { ObjectId } from 'mongodb';
 
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     const authResult = await requireAdminGuard(request);
     if (!authResult.ok) {
@@ -121,3 +122,5 @@ export async function GET(request) {
     );
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

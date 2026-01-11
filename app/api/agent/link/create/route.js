@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -9,7 +10,7 @@ import { ObjectId } from 'mongodb';
  * Create a unique referral link for an agent
  * Body: { agentId, productId (optional) }
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const body = await req.json();
     const { agentId, productId } = body;
@@ -52,3 +53,5 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

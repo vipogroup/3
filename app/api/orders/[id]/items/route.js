@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
@@ -13,7 +14,7 @@ async function ordersCollection() {
   return col;
 }
 
-export async function PATCH(req, { params }) {
+async function PATCHHandler(req, { params }) {
   try {
     const token = req.cookies.get('token')?.value || '';
     const decoded = verifyJwt(token);
@@ -47,3 +48,5 @@ export async function PATCH(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const PATCH = withErrorLogging(PATCHHandler);

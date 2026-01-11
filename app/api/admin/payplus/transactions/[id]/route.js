@@ -4,6 +4,7 @@
  * POST /api/admin/payplus/transactions/:id/retry - ניסיון חוזר
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -12,7 +13,7 @@ import dbConnect from '@/lib/dbConnect';
 import PaymentEvent from '@/models/PaymentEvent';
 import IntegrationSyncMap from '@/models/IntegrationSyncMap';
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     await requireAdminApi(req);
 
@@ -44,7 +45,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function POST(req, { params }) {
+async function POSTHandler(req, { params }) {
   try {
     await requireAdminApi(req);
 
@@ -98,3 +99,6 @@ export async function POST(req, { params }) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

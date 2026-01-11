@@ -5,6 +5,7 @@
  * DELETE /api/admin/priority/products/:id - מחיקת מיפוי
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -13,7 +14,7 @@ import dbConnect from '@/lib/dbConnect';
 import PriorityProduct from '@/models/PriorityProduct';
 import Product from '@/models/Product';
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     await requireAdminApi(req);
 
@@ -38,7 +39,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PUT(req, { params }) {
+async function PUTHandler(req, { params }) {
   try {
     const admin = await requireAdminApi(req);
 
@@ -89,7 +90,7 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     await requireAdminApi(req);
 
@@ -123,3 +124,7 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PUT = withErrorLogging(PUTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

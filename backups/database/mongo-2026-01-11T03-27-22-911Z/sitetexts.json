@@ -1,0 +1,46 @@
+[
+  {
+    "_id": {
+      "$oid": "6962802483b4e887b05901f6"
+    },
+    "textId": "FOOTER_PHONE",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-01-10T16:36:52.068Z"
+    },
+    "defaultValue": "0523004374",
+    "fieldType": "text",
+    "isActive": true,
+    "label": "FOOTER_PHONE",
+    "order": 0,
+    "page": "home",
+    "previewLocation": "",
+    "section": "CUSTOM",
+    "updatedAt": {
+      "$date": "2026-01-10T17:10:02.165Z"
+    },
+    "value": "55555"
+  },
+  {
+    "_id": {
+      "$oid": "6962897183b4e887b05901f7"
+    },
+    "textId": "SITE_LOGO_TEXT",
+    "__v": 0,
+    "createdAt": {
+      "$date": "2026-01-10T17:16:33.301Z"
+    },
+    "defaultValue": "YB",
+    "fieldType": "text",
+    "isActive": true,
+    "label": "SITE_LOGO_TEXT",
+    "order": 0,
+    "page": "home",
+    "previewLocation": "",
+    "section": "CUSTOM",
+    "updatedAt": {
+      "$date": "2026-01-10T17:16:33.301Z"
+    },
+    "value": "YB"
+  }
+]

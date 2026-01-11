@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -8,7 +9,7 @@ import { ObjectId } from 'mongodb';
  * GET /api/agent/customers?agentId=xxx&limit=50
  * Get customers referred by agent
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const { searchParams } = new URL(req.url);
     const agentId = searchParams.get('agentId');
@@ -57,3 +58,5 @@ export async function GET(req) {
     return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

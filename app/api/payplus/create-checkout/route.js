@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { getDb } from '@/lib/db';
@@ -6,7 +7,7 @@ import { createPayPlusSession, validatePayPlusConfig } from '@/lib/payplus/clien
 import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Check PayPlus configuration first
     const configStatus = validatePayPlusConfig();
@@ -96,3 +97,5 @@ export async function POST(req) {
     return Response.json({ error: message }, { status });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

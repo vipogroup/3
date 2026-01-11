@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -12,7 +13,7 @@ async function usersCollection() {
   return dbo.collection('users');
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const token = req.cookies.get('token')?.value;
     const decoded = token ? verifyJwt(token) : null;
@@ -39,3 +40,5 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

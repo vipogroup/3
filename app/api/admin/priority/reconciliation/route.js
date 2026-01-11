@@ -3,6 +3,7 @@
  * GET /api/admin/priority/reconciliation - דוח התאמות מול פריוריטי
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -12,7 +13,7 @@ import IntegrationSyncMap from '@/models/IntegrationSyncMap';
 import Order from '@/models/Order';
 import PaymentEvent from '@/models/PaymentEvent';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -118,3 +119,5 @@ export async function GET(req) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

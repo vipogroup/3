@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -28,7 +29,7 @@ function validateAuth(req) {
   return provided === cronSecret;
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     if (!validateAuth(req)) {
       return unauthorized();
@@ -124,3 +125,5 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: 'Server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -13,7 +14,7 @@ import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 /**
  * @deprecated Use POST /api/orders instead - this endpoint will be removed in future versions
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Auth + Rate Limit
     const me = await requireAuthApi(req);
@@ -257,3 +258,5 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

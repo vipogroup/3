@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import mongoose from 'mongoose';
@@ -19,7 +20,7 @@ const supportMessageSchema = new mongoose.Schema({
 const SupportMessage = mongoose.models.SupportMessage || mongoose.model('SupportMessage', supportMessageSchema);
 
 // POST - Create new support message
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     await dbConnect();
     
@@ -71,7 +72,7 @@ export async function POST(request) {
 }
 
 // GET - Get all support messages (admin only)
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     await dbConnect();
 
@@ -120,3 +121,6 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Failed to fetch messages' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

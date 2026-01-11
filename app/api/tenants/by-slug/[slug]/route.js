@@ -1,7 +1,8 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     const { slug } = params;
     
@@ -36,3 +37,5 @@ export async function GET(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

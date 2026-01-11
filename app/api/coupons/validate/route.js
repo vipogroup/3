@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -5,7 +6,7 @@ import { connectMongo } from '@/lib/mongoose';
 import User from '@/models/User';
 import { getCurrentTenant } from '@/lib/tenant/tenantMiddleware';
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     const body = await request.json().catch(() => ({}));
     const rawCode = typeof body.code === 'string' ? body.code.trim() : '';
@@ -62,3 +63,5 @@ export async function POST(request) {
     return NextResponse.json({ ok: false, error: 'server_error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

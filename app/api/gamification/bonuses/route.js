@@ -1,4 +1,5 @@
 // app/api/gamification/bonuses/route.js
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import BonusRule from '@/models/BonusRule';
@@ -27,7 +28,7 @@ async function getUserFromRequest(req) {
   return user;
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await getUserFromRequest(req);
     
@@ -63,7 +64,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const user = await getUserFromRequest(req);
     
@@ -128,3 +129,6 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Failed to create bonus rule' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

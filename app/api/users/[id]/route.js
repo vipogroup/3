@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
@@ -45,7 +46,7 @@ function parseObjectId(id) {
   }
 }
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     if (!(await ensureAdmin(req))) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -74,7 +75,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PATCH(req, { params }) {
+async function PATCHHandler(req, { params }) {
   try {
     const currentUser = await ensureAdmin(req);
     if (!currentUser) {
@@ -187,7 +188,7 @@ export async function PATCH(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     const decoded = await ensureAdmin(req);
     if (!decoded) {
@@ -250,3 +251,7 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PATCH = withErrorLogging(PATCHHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
@@ -55,7 +56,7 @@ function resolveBaseUrl(req) {
  * GET /api/agent/stats?agentId=xxx
  * Get agent statistics - referrals, sales, commissions, clicks, etc.
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
     if (user.role !== 'agent' && user.role !== 'admin' && user.role !== 'business_admin') {
@@ -191,3 +192,5 @@ export async function GET(req) {
     return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

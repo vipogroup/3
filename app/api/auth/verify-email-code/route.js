@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -7,7 +8,7 @@ import { rateLimiters } from '@/lib/rateLimit';
 
 const MAX_ATTEMPTS = 5;
 
-export async function POST(req) {
+async function POSTHandler(req) {
   // Rate limiting
   const rateLimit = rateLimiters.login(req);
   if (!rateLimit.allowed) {
@@ -67,3 +68,5 @@ export async function POST(req) {
     return NextResponse.json({ error: 'verify_failed' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

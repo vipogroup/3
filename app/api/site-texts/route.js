@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import SiteText from '@/models/SiteText';
@@ -111,7 +112,7 @@ const SECTION_LABELS = {
 };
 
 // GET - Fetch all texts for a page or specific text
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     await connectMongo();
     
@@ -194,7 +195,7 @@ export async function GET(request) {
 }
 
 // PUT - Update a text value (creates if not exists)
-export async function PUT(request) {
+async function PUTHandler(request) {
   try {
     await connectMongo();
     
@@ -257,7 +258,7 @@ export async function PUT(request) {
 }
 
 // POST - Bulk update texts
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     await connectMongo();
     
@@ -284,3 +285,7 @@ export async function POST(request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PUT = withErrorLogging(PUTHandler);
+export const POST = withErrorLogging(POSTHandler);

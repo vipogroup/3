@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +12,7 @@ import { requireAdminApi } from '@/lib/auth/server';
  * Fix existing orders that contain group products but were saved as 'regular'
  * Updates orderType to 'group' and commissionAvailableAt to 100 days from order date
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -115,7 +116,7 @@ export async function POST(req) {
  * GET /api/admin/fix-order-types
  * Preview which orders would be fixed (dry run)
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -203,3 +204,6 @@ export async function GET(req) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

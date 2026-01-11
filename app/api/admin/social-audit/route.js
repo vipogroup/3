@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -30,7 +31,7 @@ const REPORT_TYPES = {
  * GET /api/admin/social-audit
  * Get social audit reports history
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const { searchParams } = new URL(req.url);
@@ -98,7 +99,7 @@ export async function GET(req) {
  * POST /api/admin/social-audit
  * Run a social audit scan
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -896,3 +897,6 @@ function simulatePreview(metadata, platform, pageUrl) {
 
   return result;
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

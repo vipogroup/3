@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import Conversation from '@/models/Conversation';
@@ -5,7 +6,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // GET /api/crm/conversations/[id] - Get single conversation
-export async function GET(request, { params }) {
+async function GETHandler(request, { params }) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -31,7 +32,7 @@ export async function GET(request, { params }) {
 }
 
 // PATCH /api/crm/conversations/[id] - Update conversation
-export async function PATCH(request, { params }) {
+async function PATCHHandler(request, { params }) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -55,3 +56,6 @@ export async function PATCH(request, { params }) {
     return NextResponse.json({ error: 'Failed to update conversation' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PATCH = withErrorLogging(PATCHHandler);

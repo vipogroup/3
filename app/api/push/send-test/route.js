@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -6,7 +7,7 @@ import { findSubscriptionsByUserIds, getAllSubscriptions, removePushSubscription
 import { sendPushNotification, getWebPushConfig } from '@/lib/webPush';
 
 // POST - שליחת התראת בדיקה למשתמש המחובר
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     console.log('SEND_TEST: Starting...');
     const user = await requireAuthApi(request);
@@ -159,3 +160,5 @@ export async function POST(request) {
     return NextResponse.json({ ok: false, error: message }, { status });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

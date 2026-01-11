@@ -1,10 +1,11 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { requireAuthApi } from '@/lib/auth/server';
 import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
-export async function PUT(req, { params }) {
+async function PUTHandler(req, { params }) {
   try {
     const user = await requireAuthApi(req);
     if (user.role !== 'admin' && user.role !== 'business_admin') {
@@ -68,3 +69,5 @@ export async function PUT(req, { params }) {
     );
   }
 }
+
+export const PUT = withErrorLogging(PUTHandler);

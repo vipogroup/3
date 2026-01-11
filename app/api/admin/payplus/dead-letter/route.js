@@ -4,6 +4,7 @@
  * POST /api/admin/payplus/dead-letter - פעולות על DLQ
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -12,7 +13,7 @@ import dbConnect from '@/lib/dbConnect';
 import PaymentEvent from '@/models/PaymentEvent';
 import { DeadLetterQueue } from '@/lib/payplus/retryPolicy';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -50,7 +51,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -104,3 +105,6 @@ export async function POST(req) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

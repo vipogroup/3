@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import Transaction from '@/models/Transaction';
 import { getDb } from '@/lib/db';
 import { requireAuth } from '@/lib/authz';
@@ -10,7 +11,7 @@ import { ObjectId } from 'mongodb';
  * - Regular user: can only update their own transactions to "paid"
  * - Admin: can update any transaction to any status
  */
-export async function PATCH(req, { params }) {
+async function PATCHHandler(req, { params }) {
   try {
     await getDb();
     const user = await requireAuth();
@@ -109,3 +110,5 @@ export async function PATCH(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const PATCH = withErrorLogging(PATCHHandler);

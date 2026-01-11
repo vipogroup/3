@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -6,7 +7,7 @@ import { getAllSubscriptions, findSubscriptionsByTags } from '@/lib/pushSubscrip
 import { sendPushNotification, getWebPushConfig } from '@/lib/webPush';
 
 // GET - בדיקת סטטוס המנויים
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     await requireAdminApi(request);
 
@@ -41,7 +42,7 @@ export async function GET(request) {
 }
 
 // POST - שליחת התראת בדיקה
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     await requireAdminApi(request);
 
@@ -107,3 +108,6 @@ export async function POST(request) {
     }, { status: error?.status || 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

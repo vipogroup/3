@@ -1,9 +1,10 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Lead from '@/models/Lead';
 import { requireAuth } from '@/lib/auth/requireAuth';
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     const user = await requireAuth(request);
     if (!user) {
@@ -80,3 +81,5 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

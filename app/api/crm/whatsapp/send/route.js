@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth/requireAuth';
 import dbConnect from '@/lib/dbConnect';
@@ -8,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 const WHATSAPP_SERVER_URL = process.env.WHATSAPP_LOCAL_URL || 'http://localhost:3002';
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     const user = await requireAuth(request);
     if (!user) {
@@ -122,7 +123,7 @@ export async function POST(request) {
   }
 }
 
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     const user = await requireAuth(request);
     if (!user) {
@@ -144,3 +145,6 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

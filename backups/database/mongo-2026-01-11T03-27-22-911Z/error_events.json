@@ -1,0 +1,104 @@
+[
+  {
+    "_id": {
+      "$oid": "6962fb203cbf981b28ae4bba"
+    },
+    "ts": {
+      "$date": "2026-01-11T01:21:36.470Z"
+    },
+    "severity": "error",
+    "source": "api",
+    "type": "Error",
+    "message": "Unauthorized",
+    "stack": "Error: Unauthorized\n    at requireAuthApi (webpack-internal:///(rsc)/./lib/auth/server.js:233:17)\n    at async requireAdminApi (webpack-internal:///(rsc)/./lib/auth/server.js:243:18)\n    at async GETHandler (webpack-internal:///(rsc)/./app/api/admin/errors/stats/route.js:21:19)\n    at async eval (webpack-internal:///(rsc)/./lib/errorTracking/errorLogger.js:107:30)\n    at async c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:6:57228\n    at async eT.execute (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:6:46851)\n    at async eT.handle (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:6:58760)\n    at async doRender (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1366:42)\n    at async cacheEntry.responseCache.get.routeKind (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1588:28)\n    at async DevServer.renderToResponseWithComponentsImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1496:28)\n    at async DevServer.renderPageComponent (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1924:24)\n    at async DevServer.renderToResponseImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1962:32)\n    at async DevServer.pipeImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:922:25)\n    at async NextNodeServer.handleCatchallRenderRequest (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\next-server.js:272:17)\n    at async DevServer.handleRequestImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:818:17)\n    at async c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:339:20\n    at async Span.traceAsyncFn (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\trace\\trace.js:154:20)\n    at async DevServer.handleRequest (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:336:24)\n    at async invokeRender (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\router-server.js:179:21)\n    at async handleRequest (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\router-server.js:359:24)\n    at async requestHandlerImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\router-server.js:383:13)\n    at async Server.requestListener (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\start-server.js:141:13)",
+    "route": "/api/admin/errors/stats",
+    "method": "GET",
+    "status": 401,
+    "requestId": "0914b3d9-f433-49cc-87b1-d912dd243d8d",
+    "userId": null,
+    "tenantId": null,
+    "ip": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.19041.6456",
+    "fingerprint": "6c392206c1898310d2d436a84cb747fd5380557e",
+    "meta": {
+      "params": null
+    },
+    "environment": "development",
+    "buildId": null,
+    "deploymentId": null,
+    "firstSeen": {
+      "$date": "2026-01-11T01:21:36.471Z"
+    },
+    "lastSeen": {
+      "$date": "2026-01-11T01:21:36.471Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6962fbcd3cbf981b28ae4bbb"
+    },
+    "ts": {
+      "$date": "2026-01-11T01:24:29.525Z"
+    },
+    "severity": "error",
+    "source": "api",
+    "type": "Error",
+    "message": "Unauthorized",
+    "stack": "Error: Unauthorized\n    at requireAuthApi (webpack-internal:///(rsc)/./lib/auth/server.js:233:17)\n    at async requireAdminApi (webpack-internal:///(rsc)/./lib/auth/server.js:243:18)\n    at async GETHandler (webpack-internal:///(rsc)/./app/api/admin/errors/stats/route.js:21:19)\n    at async eval (webpack-internal:///(rsc)/./lib/errorTracking/errorLogger.js:107:30)\n    at async c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:6:57228\n    at async eT.execute (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:6:46851)\n    at async eT.handle (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:6:58760)\n    at async doRender (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1366:42)\n    at async cacheEntry.responseCache.get.routeKind (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1588:28)\n    at async DevServer.renderToResponseWithComponentsImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1496:28)\n    at async DevServer.renderPageComponent (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1924:24)\n    at async DevServer.renderToResponseImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1962:32)\n    at async DevServer.pipeImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:922:25)\n    at async NextNodeServer.handleCatchallRenderRequest (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\next-server.js:272:17)\n    at async DevServer.handleRequestImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:818:17)\n    at async c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:339:20\n    at async Span.traceAsyncFn (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\trace\\trace.js:154:20)\n    at async DevServer.handleRequest (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:336:24)\n    at async invokeRender (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\router-server.js:179:21)\n    at async handleRequest (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\router-server.js:359:24)\n    at async requestHandlerImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\router-server.js:383:13)\n    at async Server.requestListener (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\start-server.js:141:13)",
+    "route": "/api/admin/errors/stats",
+    "method": "GET",
+    "status": 401,
+    "requestId": "03105df9-1810-4135-b8d8-76e1beac2e75",
+    "userId": null,
+    "tenantId": null,
+    "ip": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "fingerprint": "6c392206c1898310d2d436a84cb747fd5380557e",
+    "meta": {
+      "params": null
+    },
+    "environment": "development",
+    "buildId": null,
+    "deploymentId": null,
+    "firstSeen": {
+      "$date": "2026-01-11T01:24:29.526Z"
+    },
+    "lastSeen": {
+      "$date": "2026-01-11T01:24:29.526Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6962fc473cbf981b28ae4bbc"
+    },
+    "ts": {
+      "$date": "2026-01-11T01:26:31.779Z"
+    },
+    "severity": "error",
+    "source": "api",
+    "type": "Error",
+    "message": "Unauthorized",
+    "stack": "Error: Unauthorized\n    at requireAuthApi (webpack-internal:///(rsc)/./lib/auth/server.js:233:17)\n    at async requireAdminApi (webpack-internal:///(rsc)/./lib/auth/server.js:243:18)\n    at async GETHandler (webpack-internal:///(rsc)/./app/api/admin/errors/stats/route.js:21:19)\n    at async eval (webpack-internal:///(rsc)/./lib/errorTracking/errorLogger.js:107:30)\n    at async c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:6:57228\n    at async eT.execute (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:6:46851)\n    at async eT.handle (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:6:58760)\n    at async doRender (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1366:42)\n    at async cacheEntry.responseCache.get.routeKind (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1588:28)\n    at async DevServer.renderToResponseWithComponentsImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1496:28)\n    at async DevServer.renderPageComponent (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1924:24)\n    at async DevServer.renderToResponseImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:1962:32)\n    at async DevServer.pipeImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:922:25)\n    at async NextNodeServer.handleCatchallRenderRequest (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\next-server.js:272:17)\n    at async DevServer.handleRequestImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\base-server.js:818:17)\n    at async c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:339:20\n    at async Span.traceAsyncFn (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\trace\\trace.js:154:20)\n    at async DevServer.handleRequest (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:336:24)\n    at async invokeRender (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\router-server.js:179:21)\n    at async handleRequest (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\router-server.js:359:24)\n    at async requestHandlerImpl (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\router-server.js:383:13)\n    at async Server.requestListener (c:\\Users\\ALFA DPM\\Desktop\\New Agent System Miriam\\vipo-agents-test\\node_modules\\next\\dist\\server\\lib\\start-server.js:141:13)",
+    "route": "/api/admin/errors/stats",
+    "method": "GET",
+    "status": 401,
+    "requestId": "0bd70d5b-de93-414e-af2b-41bc08accc50",
+    "userId": null,
+    "tenantId": null,
+    "ip": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "fingerprint": "6c392206c1898310d2d436a84cb747fd5380557e",
+    "meta": {
+      "params": null
+    },
+    "environment": "development",
+    "buildId": null,
+    "deploymentId": null,
+    "firstSeen": {
+      "$date": "2026-01-11T01:26:31.779Z"
+    },
+    "lastSeen": {
+      "$date": "2026-01-11T01:26:31.779Z"
+    }
+  }
+]

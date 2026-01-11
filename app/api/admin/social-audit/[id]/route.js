@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -10,7 +11,7 @@ import { ObjectId } from 'mongodb';
  * GET /api/admin/social-audit/[id]
  * Get a specific social audit report
  */
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     const admin = await requireAdminApi(req);
     const { id } = params;
@@ -46,7 +47,7 @@ export async function GET(req, { params }) {
  * DELETE /api/admin/social-audit/[id]
  * Delete a social audit report
  */
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     const admin = await requireAdminApi(req);
     const { id } = params;
@@ -88,3 +89,6 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

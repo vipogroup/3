@@ -1,10 +1,11 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth/server';
 import { getCloudinary } from '@/lib/cloudinary';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Only admin can create upload preset
     await requireAdminApi(req);
@@ -60,7 +61,7 @@ export async function POST(req) {
   }
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -97,3 +98,6 @@ export async function GET(req) {
     );
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -5,7 +6,7 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { getDb } from '@/lib/db';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const body = await req.json();
     const { businessName, slug, owner, contact } = body;
@@ -198,3 +199,5 @@ export async function POST(req) {
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

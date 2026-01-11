@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -12,7 +13,7 @@ import { checkRateLimit } from '@/lib/rateLimit';
  * Log a referral click/view/action
  * Body: { agentId, productId (optional), action, url }
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Rate limiting: 30 per minute (public endpoint for tracking)
     const rateLimit = checkRateLimit(req, 'referral-log', { maxRequests: 30, windowMs: 60 * 1000 });
@@ -64,7 +65,7 @@ export async function POST(req) {
  * GET /api/referral/log?agentId=xxx&productId=xxx&action=xxx
  * Get referral logs with filters (requires auth)
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     // Require authentication to view logs
     await requireAuthApi(req);
@@ -119,3 +120,6 @@ export async function GET(req) {
     return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

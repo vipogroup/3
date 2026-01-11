@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -51,7 +52,7 @@ async function notifyRecipients(doc) {
   }
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
     await connectMongo();
@@ -165,7 +166,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const user = await requireAuthApi(req);
     await connectMongo();
@@ -272,3 +273,6 @@ export async function POST(req) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

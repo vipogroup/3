@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -10,7 +11,7 @@ import { isSuperAdminUser } from '@/lib/superAdmins';
  * DELETE /api/admin/reset-users - מחיקת כל המשתמשים והנתונים הקשורים (רק Super Admin)
  * ⚠️ זהירות! פעולה זו בלתי הפיכה ומוחקת את כל המשתמשים!
  */
-export async function DELETE(request) {
+async function DELETEHandler(request) {
   try {
     const authResult = await requireAdminGuard(request);
     if (!authResult.ok) {
@@ -91,3 +92,5 @@ export async function DELETE(request) {
     );
   }
 }
+
+export const DELETE = withErrorLogging(DELETEHandler);

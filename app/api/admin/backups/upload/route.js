@@ -1,9 +1,10 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import { logAdminActivity } from '@/lib/auditMiddleware';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   // בדיקת הרשאות
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
@@ -127,3 +128,5 @@ export async function POST(req) {
     }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

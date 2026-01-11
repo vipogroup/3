@@ -3,6 +3,7 @@
  * POST /api/admin/priority/sync/:orderId - סנכרון ידני של הזמנה
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -14,7 +15,7 @@ import Order from '@/models/Order';
 import PaymentEvent from '@/models/PaymentEvent';
 import IntegrationSyncMap from '@/models/IntegrationSyncMap';
 
-export async function POST(req, { params }) {
+async function POSTHandler(req, { params }) {
   try {
     await requireAdminApi(req);
 
@@ -68,7 +69,7 @@ export async function POST(req, { params }) {
   }
 }
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     await requireAdminApi(req);
 
@@ -91,3 +92,6 @@ export async function GET(req, { params }) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

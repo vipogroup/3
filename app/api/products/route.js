@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -407,7 +408,7 @@ function serializeProduct(doc) {
   return serialized;
 }
 
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     await connectMongo();
     const { searchParams } = new URL(request.url);
@@ -482,7 +483,7 @@ export async function GET(request) {
   }
 }
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     // Admin-only: create product
     const adminUser = await requireAdminApi(request);
@@ -618,3 +619,6 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

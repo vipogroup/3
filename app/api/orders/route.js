@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -22,7 +23,7 @@ async function ordersCollection() {
   return col;
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
     const identifier = buildRateLimitKey(req, user.id);
@@ -127,7 +128,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // 1) Auth
     const me = await requireAuthApi(req);
@@ -639,3 +640,6 @@ export async function POST(req) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

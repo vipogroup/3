@@ -6,6 +6,7 @@
  * Authorization: Bearer {CRON_SECRET}
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -37,7 +38,7 @@ function validateAuth(req) {
   return provided === cronSecret;
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     if (!validateAuth(req)) {
       return unauthorized();
@@ -220,3 +221,5 @@ async function sendReconciliationAlert(report) {
     }
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

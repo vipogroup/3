@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import mongoose from 'mongoose';
@@ -5,7 +6,7 @@ import mongoose from 'mongoose';
 const SupportMessage = mongoose.models.SupportMessage;
 
 // GET - Get single message
-export async function GET(request, { params }) {
+async function GETHandler(request, { params }) {
   try {
     await dbConnect();
     
@@ -23,7 +24,7 @@ export async function GET(request, { params }) {
 }
 
 // PATCH - Update message (mark as read, reply, close)
-export async function PATCH(request, { params }) {
+async function PATCHHandler(request, { params }) {
   try {
     await dbConnect();
 
@@ -72,7 +73,7 @@ export async function PATCH(request, { params }) {
 }
 
 // DELETE - Delete message
-export async function DELETE(request, { params }) {
+async function DELETEHandler(request, { params }) {
   try {
     await dbConnect();
 
@@ -99,3 +100,7 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ error: 'Failed to delete message' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PATCH = withErrorLogging(PATCHHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

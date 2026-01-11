@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -7,7 +8,7 @@ import { connectMongo } from '@/lib/mongoose';
 import Product from '@/models/Product';
 import { requireAdminApi } from '@/lib/auth/server';
 
-export async function POST(request) {
+async function POSTHandler(request) {
   try {
     // Verify admin access
     const authResult = await requireAdminApi(request);
@@ -67,3 +68,5 @@ export async function POST(request) {
     );
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

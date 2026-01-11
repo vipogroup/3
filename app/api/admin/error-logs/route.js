@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { rateLimiters } from '@/lib/rateLimit';
@@ -27,7 +28,7 @@ async function checkAdmin(req) {
 }
 
 // GET - Fetch error logs
-export async function GET(req) {
+async function GETHandler(req) {
   const rateLimit = rateLimiters.admin(req);
   if (!rateLimit.allowed) {
     return NextResponse.json({ error: rateLimit.message }, { status: 429 });
@@ -84,7 +85,7 @@ export async function GET(req) {
 }
 
 // POST - Log a new error
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const body = await req.json();
     const { 
@@ -127,7 +128,7 @@ export async function POST(req) {
 }
 
 // PATCH - Mark error as resolved
-export async function PATCH(req) {
+async function PATCHHandler(req) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -163,7 +164,7 @@ export async function PATCH(req) {
 }
 
 // DELETE - Clear old logs
-export async function DELETE(req) {
+async function DELETEHandler(req) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -194,3 +195,8 @@ export async function DELETE(req) {
     return NextResponse.json({ error: 'Failed to delete logs' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);
+export const PATCH = withErrorLogging(PATCHHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

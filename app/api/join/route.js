@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 // app/api/join/route.js
@@ -37,7 +38,7 @@ function sanitizeNextPath(rawNext) {
   return trimmed.replace(/\s/g, '') || '/products';
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   const url = new URL(req.url);
   const ref = url.searchParams.get('ref');
   const nextParam = sanitizeNextPath(url.searchParams.get('next'));
@@ -107,3 +108,5 @@ export async function GET(req) {
 
   return response;
 }
+
+export const GET = withErrorLogging(GETHandler);

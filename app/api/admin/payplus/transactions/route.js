@@ -3,6 +3,7 @@
  * GET /api/admin/payplus/transactions - רשימת עסקאות
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -10,7 +11,7 @@ import { requireAdminApi } from '@/lib/auth/server';
 import dbConnect from '@/lib/dbConnect';
 import PaymentEvent from '@/models/PaymentEvent';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -84,3 +85,5 @@ export async function GET(req) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

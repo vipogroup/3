@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -6,7 +7,7 @@ import { findSubscriptionsByUserIds, getAllSubscriptions, deleteAllUserSubscript
 import { getWebPushConfig } from '@/lib/webPush';
 
 // GET - מידע דיבוג על ההתראות
-export async function GET(request) {
+async function GETHandler(request) {
   try {
     const user = await requireAuthApi(request);
     
@@ -70,7 +71,7 @@ export async function GET(request) {
 }
 
 // DELETE - מחיקת כל ה-subscriptions של המשתמש
-export async function DELETE(request) {
+async function DELETEHandler(request) {
   try {
     const user = await requireAuthApi(request);
     
@@ -89,3 +90,6 @@ export async function DELETE(request) {
     }, { status: error?.status || 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -91,7 +92,7 @@ function normalizeUpdates(body = {}) {
   return updates;
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const filter = buildUserFilter(await resolveUserId(req));
     if (!filter) {
@@ -117,7 +118,7 @@ export async function GET(req) {
   }
 }
 
-export async function PATCH(req) {
+async function PATCHHandler(req) {
   try {
     const filter = buildUserFilter(await resolveUserId(req));
     if (!filter) {
@@ -152,3 +153,6 @@ export async function PATCH(req) {
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PATCH = withErrorLogging(PATCHHandler);

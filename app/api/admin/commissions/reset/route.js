@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -6,7 +7,7 @@ import { getDb } from '@/lib/db';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -74,3 +75,5 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: message }, { status });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

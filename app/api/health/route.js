@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 /**
@@ -10,7 +11,7 @@ export const dynamic = 'force-dynamic';
  * Returns: { status: 'ok', timestamp: ISO string }
  */
 
-export async function GET() {
+async function GETHandler() {
   return new Response(
     JSON.stringify({
       status: 'ok',
@@ -23,3 +24,5 @@ export async function GET() {
     },
   );
 }
+
+export const GET = withErrorLogging(GETHandler);

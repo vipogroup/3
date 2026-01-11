@@ -3,6 +3,7 @@
  * POST /api/admin/commissions/release - שחרור עמלות ידני
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -11,7 +12,7 @@ import dbConnect from '@/lib/dbConnect';
 import Order from '@/models/Order';
 import { releaseAvailableCommissions } from '@/lib/commissions/commissionService';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -158,7 +159,7 @@ export async function POST(req) {
   }
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -216,3 +217,6 @@ export async function GET(req) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

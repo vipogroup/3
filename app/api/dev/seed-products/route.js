@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -10,7 +11,7 @@ import { requireAdminApi } from '@/lib/auth/server';
 
 export const runtime = 'nodejs';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   // Block in production
   if (process.env.NODE_ENV === 'production') {
     return NextResponse.json({ error: 'Not available in production' }, { status: 403 });
@@ -118,3 +119,5 @@ export async function POST(req) {
     );
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

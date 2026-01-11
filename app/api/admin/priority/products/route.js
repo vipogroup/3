@@ -4,6 +4,7 @@
  * POST /api/admin/priority/products - יצירת/עדכון מיפוי
  */
 
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -13,7 +14,7 @@ import dbConnect from '@/lib/dbConnect';
 import PriorityProduct from '@/models/PriorityProduct';
 import Product from '@/models/Product';
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -83,7 +84,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     await requireAdminApi(req);
 
@@ -132,3 +133,6 @@ export async function POST(req) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

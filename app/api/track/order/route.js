@@ -1,8 +1,9 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { getDb } from '@/lib/db';
 
-export async function POST(req) {
+async function POSTHandler(req) {
   const body = await req.json();
   const db = await getDb();
 
@@ -24,3 +25,5 @@ export async function POST(req) {
 
   return Response.json({ ok: true, orderId: String(insertedId) });
 }
+
+export const POST = withErrorLogging(POSTHandler);

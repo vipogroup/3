@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +19,7 @@ function parsePositiveInt(value, fallback) {
   return parsed;
 }
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const db = await getDb();
     const admin = await requireAdminApi(req);
@@ -164,3 +165,5 @@ export async function GET(req) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

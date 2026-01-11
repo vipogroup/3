@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
@@ -23,7 +24,7 @@ function uploadBufferToCloudinary(buffer, options = {}) {
   });
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -78,3 +79,5 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

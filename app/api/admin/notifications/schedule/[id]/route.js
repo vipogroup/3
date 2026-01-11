@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 
 import { requireAdminApi } from '@/lib/auth/server';
@@ -15,7 +16,7 @@ function normalizeId(rawId) {
   return String(rawId).trim();
 }
 
-export async function GET(req, { params }) {
+async function GETHandler(req, { params }) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -42,7 +43,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PATCH(req, { params }) {
+async function PATCHHandler(req, { params }) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -82,7 +83,7 @@ export async function PATCH(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -109,3 +110,7 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ ok: false, error: message }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const PATCH = withErrorLogging(PATCHHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

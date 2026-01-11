@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -8,7 +9,7 @@ import { spawn } from 'child_process';
 let tunnelProcess = null;
 let currentTunnelUrl = null;
 
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
     if (user.role !== 'admin') {
@@ -25,7 +26,7 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     const user = await requireAuthApi(req);
     if (user.role !== 'admin') {
@@ -99,7 +100,7 @@ export async function POST(req) {
   }
 }
 
-export async function DELETE(req) {
+async function DELETEHandler(req) {
   try {
     const user = await requireAuthApi(req);
     if (user.role !== 'admin') {
@@ -120,3 +121,7 @@ export async function DELETE(req) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);
+export const DELETE = withErrorLogging(DELETEHandler);

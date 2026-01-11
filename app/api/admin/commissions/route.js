@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +13,7 @@ import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
  * GET /api/admin/commissions
  * Admin endpoint to get all commissions data with agent details
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const admin = await requireAdminApi(req);
     const identifier = buildRateLimitKey(req, admin.id);
@@ -230,3 +231,5 @@ export async function GET(req) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);

@@ -25,6 +25,7 @@
     "import:agents": "node tools/import-agents-from-pdf.js",
     "import:agents:pdf": "node tools/import-agents-from-pdf.js",
     "import:products": "node scripts/import-products.js",
+    "wrap:api": "node scripts/wrapApiHandlers.js",
     "serve:agents": "npx http-server export_vipo_products_ui -p 3005",
     "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
     "format": "prettier --write .",

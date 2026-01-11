@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/mongoose';
 import Lead from '@/models/Lead';
@@ -6,7 +7,7 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
 
 // POST /api/crm/leads/[id]/convert - Convert lead to customer
-export async function POST(request, { params }) {
+async function POSTHandler(request, { params }) {
   try {
     const user = await requireAuthApi(request);
     await connectMongo();
@@ -61,3 +62,5 @@ export async function POST(request, { params }) {
     return NextResponse.json({ error: 'Failed to convert lead' }, { status: 500 });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);

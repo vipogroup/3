@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -11,7 +12,7 @@ import { resolveTenantId } from '@/lib/tenant/tenantMiddleware';
  * POST /api/withdrawals
  * Create a new withdrawal request
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     // Get current user
     const user = await requireAuthApi(req);
@@ -205,7 +206,7 @@ export async function POST(req) {
  * GET /api/withdrawals
  * Get user's withdrawal requests
  */
-export async function GET(req) {
+async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
     
@@ -254,3 +255,6 @@ export async function GET(req) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+
+export const POST = withErrorLogging(POSTHandler);
+export const GET = withErrorLogging(GETHandler);

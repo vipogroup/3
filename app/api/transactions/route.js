@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import Transaction from '@/models/Transaction';
@@ -10,7 +11,7 @@ import { ObjectId } from 'mongodb';
  * GET /api/transactions
  * Get current user's transactions
  */
-export async function GET() {
+async function GETHandler() {
   try {
     await getDb();
     const user = await getUserFromSession();
@@ -60,7 +61,7 @@ export async function GET() {
  * POST /api/transactions
  * Create new transaction
  */
-export async function POST(req) {
+async function POSTHandler(req) {
   try {
     await getDb();
     const user = await getUserFromSession();
@@ -120,3 +121,6 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export const GET = withErrorLogging(GETHandler);
+export const POST = withErrorLogging(POSTHandler);

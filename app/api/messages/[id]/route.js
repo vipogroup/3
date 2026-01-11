@@ -1,3 +1,4 @@
+import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
@@ -12,7 +13,7 @@ function normalizeObjectId(value) {
   return new ObjectId(value);
 }
 
-export async function DELETE(req, { params }) {
+async function DELETEHandler(req, { params }) {
   try {
     const user = await requireAuthApi(req);
     await connectMongo();
@@ -47,3 +48,5 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: 'Server error' }, { status });
   }
 }
+
+export const DELETE = withErrorLogging(DELETEHandler);
