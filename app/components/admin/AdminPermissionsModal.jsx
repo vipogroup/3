@@ -39,6 +39,9 @@ const PERMISSION_GROUPS = {
     { key: ADMIN_PERMISSIONS.VIEW_COMMISSIONS, label: 'צפייה בעמלות' },
     { key: ADMIN_PERMISSIONS.EDIT_COMMISSIONS, label: 'עריכת עמלות' },
   ],
+  'כלי בדיקות': [
+    { key: ADMIN_PERMISSIONS.MANAGE_TEST_HARNESS, label: 'ניהול Test Harness' },
+  ],
 };
 
 export default function AdminPermissionsModal({ user, isOpen, onClose, onSave }) {

@@ -5,6 +5,14 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { requireAuthApi } from '@/lib/auth/server';
 import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
+import {
+  ORDER_STATUS,
+  ORDER_STATUS_VALUES,
+  coercePaymentStatusForOrderStatus,
+  normalizeOrderStatus,
+  assertOrderStatusInvariant,
+  canTransitionOrderStatus,
+} from '@/lib/orders/status';
 
 async function ordersCollection() {
   const db = await getDb();
@@ -115,18 +123,43 @@ async function PUTHandler(req, { params }) {
     }
 
     const body = await req.json();
-    const { status } = body;
+    const { status, paymentStatus } = body;
 
-    const allowedStatuses = ['pending', 'paid', 'cancelled', 'completed', 'shipped'];
-    if (!status || !allowedStatuses.includes(status)) {
+    if (!status) {
       return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
     }
 
-    // Build update object
-    const updateSet = { status, updatedAt: new Date() };
-    
+    const normalizedStatus = normalizeOrderStatus(status);
+    if (!ORDER_STATUS_VALUES.includes(normalizedStatus)) {
+      return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+    }
+
+    // TODO: allow explicit admin override once ADMIN_PERMISSIONS.OVERRIDE_ORDER_TRANSITIONS is implemented
+    if (!canTransitionOrderStatus(order.status, normalizedStatus, { actorRole: user.role })) {
+      return NextResponse.json(
+        {
+          error: `Transition from "${order.status}" to "${normalizedStatus}" is not allowed`,
+        },
+        { status: 400 },
+      );
+    }
+
+    const coercedPaymentStatus = coercePaymentStatusForOrderStatus(normalizedStatus, paymentStatus);
+
+    try {
+      assertOrderStatusInvariant(normalizedStatus, coercedPaymentStatus);
+    } catch (err) {
+      return NextResponse.json({ error: err.message }, { status: 400 });
+    }
+
+    const updateSet = {
+      status: normalizedStatus,
+      paymentStatus: coercedPaymentStatus,
+      updatedAt: new Date(),
+    };
+
     // When order is paid, mark commission as settled so it can be released by cron
-    if (status === 'paid' && order.commissionAmount > 0 && !order.commissionSettled) {
+    if (normalizedStatus === ORDER_STATUS.PAID && order.commissionAmount > 0 && !order.commissionSettled) {
       updateSet.commissionSettled = true;
     }
 
@@ -163,6 +196,9 @@ async function PATCHHandler(req, { params }) {
 
     const body = await req.json();
     const updates = {};
+    let normalizedStatus;
+    let coercedPaymentStatus;
+
     if (body.customer && typeof body.customer === 'object') {
       updates['customer.fullName'] = String(
         body.customer.fullName || order.customer?.fullName || '',
@@ -171,9 +207,54 @@ async function PATCHHandler(req, { params }) {
       updates['customer.notes'] = String(body.customer.notes || order.customer?.notes || '').trim();
     }
 
+    if (body.status) {
+      normalizedStatus = normalizeOrderStatus(body.status);
+      if (!ORDER_STATUS_VALUES.includes(normalizedStatus)) {
+        return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+      }
+
+      // TODO: allow explicit admin override once ADMIN_PERMISSIONS.OVERRIDE_ORDER_TRANSITIONS is implemented
+      if (!canTransitionOrderStatus(order.status, normalizedStatus, { actorRole: user.role })) {
+        return NextResponse.json(
+          {
+            error: `Transition from "${order.status}" to "${normalizedStatus}" is not allowed`,
+          },
+          { status: 400 },
+        );
+      }
+
+      coercedPaymentStatus = coercePaymentStatusForOrderStatus(normalizedStatus, body.paymentStatus);
+
+      try {
+        assertOrderStatusInvariant(normalizedStatus, coercedPaymentStatus);
+      } catch (err) {
+        return NextResponse.json({ error: err.message }, { status: 400 });
+      }
+
+      updates.status = normalizedStatus;
+      updates.paymentStatus = coercedPaymentStatus;
+
+      if (normalizedStatus === ORDER_STATUS.PAID && order.commissionAmount > 0 && !order.commissionSettled) {
+        updates.commissionSettled = true;
+      }
+    } else if (body.paymentStatus) {
+      // Allow updating paymentStatus alone while keeping consistency
+      coercedPaymentStatus = coercePaymentStatusForOrderStatus(order.status, body.paymentStatus);
+
+      try {
+        assertOrderStatusInvariant(order.status, coercedPaymentStatus);
+      } catch (err) {
+        return NextResponse.json({ error: err.message }, { status: 400 });
+      }
+
+      updates.paymentStatus = coercedPaymentStatus;
+    }
+
     if (!Object.keys(updates).length) {
       return NextResponse.json({ error: 'Nothing to update' }, { status: 400 });
     }
+
+    updates.updatedAt = new Date();
 
     await col.updateOne({ _id: new ObjectId(id) }, { $set: updates });
     const updated = await col.findOne({ _id: new ObjectId(id) });

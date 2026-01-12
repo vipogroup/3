@@ -12,8 +12,14 @@ import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
 import { pushToUsers } from '@/lib/pushSender';
-import { getCurrentTenant, isSuperAdmin } from '@/lib/tenant';
+import { getCurrentTenant } from '@/lib/tenant';
 import { sendOrderToCRM } from '@/lib/webhooks/crmWebhook';
+import {
+  ORDER_STATUS,
+  coercePaymentStatusForOrderStatus,
+  normalizeOrderStatus,
+  assertOrderStatusInvariant,
+} from '@/lib/orders/status';
 
 async function ordersCollection() {
   const db = await getDb();
@@ -37,6 +43,7 @@ async function GETHandler(req) {
     const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '20', 10)));
     const skip = (page - 1) * limit;
     const status = (searchParams.get('status') || '').trim();
+
     const q = (searchParams.get('q') || '').trim();
 
     const filter = {};
@@ -74,13 +81,16 @@ async function GETHandler(req) {
       }
       criteria.push({ $or: customerCriteria });
     }
-    if (status) criteria.push({ status });
+    if (status) {
+      const normalizedStatus = normalizeOrderStatus(status);
+      criteria.push({ status: normalizedStatus });
+    }
     if (q) {
       const safeQ = escapeRegex(q);
       criteria.push({
         $or: [
-        { 'customer.phone': { $regex: safeQ, $options: 'i' } },
-        { 'items.sku': { $regex: safeQ, $options: 'i' } },
+          { 'customer.phone': { $regex: safeQ, $options: 'i' } },
+          { 'items.sku': { $regex: safeQ, $options: 'i' } },
         ],
       });
     }
@@ -145,7 +155,14 @@ async function POSTHandler(req) {
 
     // 2) Parse body
     const body = await req.json();
-    const { items: rawItems = [], totals: totalsPayload = {}, coupon: couponPayload = null, ...rest } =
+    const {
+      items: rawItems = [],
+      totals: totalsPayload = {},
+      coupon: couponPayload = null,
+      status: rawStatus,
+      paymentStatus: rawPaymentStatus,
+      ...rest
+    } =
       body || {};
 
     if (!Array.isArray(rawItems)) {
@@ -418,6 +435,15 @@ async function POSTHandler(req) {
       tenantId = tenant?._id || null;
     }
     
+    const orderStatus = normalizeOrderStatus(rawStatus || ORDER_STATUS.PENDING);
+    const orderPaymentStatus = coercePaymentStatusForOrderStatus(orderStatus, rawPaymentStatus);
+
+    try {
+      assertOrderStatusInvariant(orderStatus, orderPaymentStatus);
+    } catch (err) {
+      return NextResponse.json({ error: err.message }, { status: 400 });
+    }
+
     const orderDoc = {
       items,
       totals: {
@@ -429,7 +455,7 @@ async function POSTHandler(req) {
       totalAmount,
       discountAmount,
       createdBy: me._id,
-      status: 'pending',
+      status: orderStatus,
       orderType,
       // Multi-Tenant: Associate order with tenant
       ...(tenantId && { tenantId }),
@@ -445,13 +471,10 @@ async function POSTHandler(req) {
       commissionPercent,
       createdAt: now,
       updatedAt: now,
+      paymentStatus: orderPaymentStatus,
       ...rest,
     };
 
-    const result = await ordersCol.insertOne(orderDoc);
-    const orderId = result.insertedId;
-
-    // שמירת פרטי משלוח בפרופיל המשתמש (לרכישות עתידיות)
     try {
       const customerData = rest?.customer || {};
       if (customerData.address || customerData.city || customerData.zipCode) {
@@ -611,7 +634,7 @@ async function POSTHandler(req) {
         agentId: refAgentId ? String(refAgentId) : null,
         agentName: couponAgent?.fullName,
         referralCode: couponCode || refSource,
-        status: 'pending',
+        status: orderStatus,
       });
     } catch (crmErr) {
       console.warn('CRM_WEBHOOK_FAILED:', crmErr?.message);

@@ -1,5 +1,15 @@
 import mongoose from 'mongoose';
 
+import {
+  ORDER_STATUS,
+  ORDER_STATUS_VALUES,
+  PAYMENT_STATUS,
+  PAYMENT_STATUS_VALUES,
+  coercePaymentStatusForOrderStatus,
+  assertOrderStatusInvariant,
+  normalizeOrderStatus,
+} from '@/lib/orders/status';
+
 const OrderSchema = new mongoose.Schema(
   {
     // === Multi-Tenant ===
@@ -10,7 +20,12 @@ const OrderSchema = new mongoose.Schema(
       index: true,
     },
     
-    status: { type: String, default: 'pending' },
+    status: {
+      type: String,
+      enum: ORDER_STATUS_VALUES,
+      default: ORDER_STATUS.PENDING,
+      set: normalizeOrderStatus,
+    },
 
     // Referral tracking & commission basics
     refSource: { type: String, default: null }, // הערך הגולמי מה-cookie
@@ -55,8 +70,12 @@ const OrderSchema = new mongoose.Schema(
     payplusTransactionId: { type: String, default: null, index: true },
     paymentStatus: {
       type: String,
-      enum: ['pending', 'processing', 'success', 'failed', 'refunded', 'partial_refund', 'chargeback'],
-      default: 'pending',
+      enum: PAYMENT_STATUS_VALUES,
+      default: PAYMENT_STATUS.PENDING,
+      set(value) {
+        const coerced = coercePaymentStatusForOrderStatus(this?.status, value);
+        return coerced;
+      },
     },
     paymentMethod: { type: String, default: null },
     paidAt: { type: Date, default: null },
@@ -104,5 +123,19 @@ const OrderSchema = new mongoose.Schema(
 OrderSchema.index({ agentId: 1, status: 1, createdAt: -1 });
 OrderSchema.index({ refAgentId: 1, createdAt: -1 });
 OrderSchema.index({ commissionStatus: 1, commissionAvailableAt: 1 });
+
+OrderSchema.pre('validate', function enforceStatusInvariant(next) {
+  this.status = normalizeOrderStatus(this.status);
+  this.paymentStatus = coercePaymentStatusForOrderStatus(this.status, this.paymentStatus);
+
+  try {
+    assertOrderStatusInvariant(this.status, this.paymentStatus);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+OrderSchema.statics.normalizeStatus = normalizeOrderStatus;
 
 export default mongoose.models.Order || mongoose.model('Order', OrderSchema);

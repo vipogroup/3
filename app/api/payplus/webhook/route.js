@@ -23,6 +23,11 @@ import IntegrationSyncMap from '@/models/IntegrationSyncMap';
 import Order from '@/models/Order';
 import User from '@/models/User';
 import dbConnect from '@/lib/dbConnect';
+import {
+  ORDER_STATUS,
+  PAYMENT_STATUS,
+} from '@/lib/orders/status';
+import { applyOrderStatusUpdate } from '@/lib/orders/applyOrderStatusUpdate';
 
 /**
  * Generate unique event ID for idempotency
@@ -126,7 +131,7 @@ async function processCommission(order, eventType) {
 /**
  * Process webhook event
  */
-async function processWebhookEvent(payload, signature, sourceIp, userAgent) {
+async function processWebhookEvent(payload, signature, sourceIp, userAgent, requestId) {
   await dbConnect();
   
   const eventId = generateEventId(payload);
@@ -183,22 +188,116 @@ async function processWebhookEvent(payload, signature, sourceIp, userAgent) {
     const syncMap = await IntegrationSyncMap.getOrCreate(order._id);
     await syncMap.updatePayplusStatus(transactionId, payload.session_id, 'synced');
 
-    // Update order based on event type
-    const orderUpdate = {
+    const now = new Date();
+    const baseUpdate = {
       payplusTransactionId: transactionId,
       payplusSessionId: payload.session_id,
       paymentMethod: payload.payment_method,
-      updatedAt: new Date(),
+      updatedAt: now,
     };
+
+    let nextStatus = order.status;
+    let nextPaymentStatus = order.paymentStatus;
+    let additionalUpdate = {};
+    let shouldUpdateStatus = false;
 
     switch (eventType) {
       case 'success':
-        orderUpdate.status = 'paid';
-        orderUpdate.paymentStatus = 'success';
-        orderUpdate.paidAt = new Date();
+        nextStatus = ORDER_STATUS.PAID;
+        nextPaymentStatus = PAYMENT_STATUS.SUCCESS;
+        additionalUpdate.paidAt = now;
+        shouldUpdateStatus = true;
         
         // Process commission
-        const commissionResult = await processCommission(order, eventType);
+        break;
+
+      case 'pending':
+        nextStatus = ORDER_STATUS.PENDING;
+        nextPaymentStatus = PAYMENT_STATUS.PROCESSING;
+        shouldUpdateStatus = true;
+        break;
+
+      case 'failed':
+        nextStatus = ORDER_STATUS.FAILED;
+        nextPaymentStatus = PAYMENT_STATUS.FAILED;
+        shouldUpdateStatus = true;
+        break;
+
+      case 'cancelled':
+        nextStatus = ORDER_STATUS.CANCELLED;
+        nextPaymentStatus = PAYMENT_STATUS.CANCELLED;
+        shouldUpdateStatus = true;
+        break;
+
+      case 'refund':
+      case 'partial_refund':
+        nextStatus = ORDER_STATUS.FAILED;
+        nextPaymentStatus = eventType === 'refund' ? PAYMENT_STATUS.REFUNDED : PAYMENT_STATUS.PARTIAL_REFUND;
+        additionalUpdate.refundAmount = amount;
+        additionalUpdate.refundedAt = now;
+        shouldUpdateStatus = true;
+        break;
+
+      case 'chargeback':
+        nextStatus = ORDER_STATUS.FAILED;
+        nextPaymentStatus = PAYMENT_STATUS.CHARGEBACK;
+        shouldUpdateStatus = true;
+        break;
+    }
+
+    let statusResult = {
+      orderId: order._id.toString(),
+      oldStatus: order.status,
+      newStatus: order.status,
+      oldPaymentStatus: order.paymentStatus,
+      newPaymentStatus: order.paymentStatus,
+      changed: false,
+    };
+
+    if (shouldUpdateStatus) {
+      try {
+        statusResult = await applyOrderStatusUpdate({
+          order,
+          nextStatus,
+          nextPaymentStatus,
+          actor: { type: 'webhook', id: 'payplus' },
+          reason: `payplus:${eventType}`,
+          metadata: {
+            requestId,
+            eventId,
+            payloadStatus: payload?.status || payload?.type,
+          },
+        });
+
+        order.status = statusResult.newStatus;
+        order.paymentStatus = statusResult.newPaymentStatus;
+      } catch (err) {
+        if (err?.code === 'ORDER_TRANSITION_BLOCKED') {
+          console.error(`[PAYPLUS_WEBHOOK] Transition blocked for order ${orderId}: ${err.message}`);
+          paymentEvent.status = 'ignored';
+          paymentEvent.errorMessage = err.message;
+          await paymentEvent.save();
+          return {
+            ok: true,
+            message: 'transition_blocked',
+            eventId,
+          };
+        }
+        throw err;
+      }
+    }
+
+    const orderForCommission = {
+      ...(typeof order.toObject === 'function' ? order.toObject() : order),
+      status: statusResult.newStatus,
+      paymentStatus: statusResult.newPaymentStatus,
+    };
+
+    let commissionResult = null;
+
+    switch (eventType) {
+      case 'success':
+        commissionResult = await processCommission(orderForCommission, eventType);
         console.log(`[PAYPLUS_WEBHOOK] Commission result:`, commissionResult);
         
         // Trigger Priority sync (async)
@@ -208,27 +307,18 @@ async function processWebhookEvent(payload, signature, sourceIp, userAgent) {
         break;
 
       case 'pending':
-        orderUpdate.paymentStatus = 'processing';
         break;
 
       case 'failed':
-        orderUpdate.status = 'failed';
-        orderUpdate.paymentStatus = 'failed';
         break;
 
       case 'cancelled':
-        orderUpdate.status = 'cancelled';
-        orderUpdate.paymentStatus = 'failed';
         break;
 
       case 'refund':
       case 'partial_refund':
-        orderUpdate.paymentStatus = eventType === 'refund' ? 'refunded' : 'partial_refund';
-        orderUpdate.refundAmount = amount;
-        orderUpdate.refundedAt = new Date();
-        
         // Cancel/reduce commission
-        await processCommission(order, eventType);
+        commissionResult = await processCommission(orderForCommission, eventType);
         
         // Trigger credit note creation
         triggerCreditNote(order, paymentEvent, syncMap).catch(err => {
@@ -237,18 +327,38 @@ async function processWebhookEvent(payload, signature, sourceIp, userAgent) {
         break;
 
       case 'chargeback':
-        orderUpdate.status = 'chargeback';
-        orderUpdate.paymentStatus = 'chargeback';
         
         // Cancel commission
-        await processCommission(order, eventType);
+        commissionResult = await processCommission(orderForCommission, eventType);
         
         // Send admin alert
         sendChargebackAlert(order, payload);
         break;
     }
 
-    await Order.updateOne({ _id: order._id }, { $set: orderUpdate });
+    const updatePayload = {
+      ...baseUpdate,
+      ...additionalUpdate,
+    };
+
+    if (Object.keys(updatePayload).length) {
+      await Order.updateOne({ _id: order._id }, { $set: updatePayload });
+    }
+
+    console.log(
+      '[PAYPLUS_WEBHOOK][STATUS_UPDATE]',
+      JSON.stringify({
+        requestId,
+        eventId,
+        orderId: order._id.toString(),
+        eventType,
+        oldStatus: statusResult.oldStatus,
+        newStatus: statusResult.newStatus,
+        oldPaymentStatus: statusResult.oldPaymentStatus,
+        newPaymentStatus: statusResult.newPaymentStatus,
+        commission: commissionResult,
+      }),
+    );
 
     // Mark payment event as processed
     paymentEvent.status = 'processed';
@@ -388,8 +498,9 @@ async function POSTHandler(req) {
   const sourceIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip');
   const userAgent = req.headers.get('user-agent');
   
-  const result = await processWebhookEvent(payload, signature, sourceIp, userAgent);
-  
+  const requestId = req.headers.get('x-request-id') || payload?.requestId || generateEventId(payload);
+  const result = await processWebhookEvent(payload, signature, sourceIp, userAgent, requestId);
+
   // Always return 200 to PayPlus (unless signature is invalid)
   return Response.json(result);
 }
