@@ -1,4 +1,3 @@
-'use server';
 
 import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
