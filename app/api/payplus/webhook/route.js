@@ -29,6 +29,12 @@ import {
 } from '@/lib/orders/status';
 import { applyOrderStatusUpdate } from '@/lib/orders/applyOrderStatusUpdate';
 
+const PAYPLUS_PAYMENT_STATUS = {
+  SUCCESS: "SUCCESS",
+  FAIL: "FAIL",
+  PENDING: "PENDING",
+};
+
 /**
  * Generate unique event ID for idempotency
  */
