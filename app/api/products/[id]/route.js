@@ -22,10 +22,34 @@ function buildProductQuery(id) {
   return conditions.length === 1 ? conditions[0] : { $or: conditions };
 }
 
-async function GETHandler(_req, { params }) {
+async function GETHandler(req, { params }) {
   await connectMongo();
   const doc = await Product.findOne(buildProductQuery(params.id)).lean();
   if (!doc) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  
+  // Multi-Tenant: Verify user can access this product
+  // If product has tenantId, user must belong to same tenant (or be super admin)
+  if (doc.tenantId) {
+    try {
+      const { requireAuthApi } = await import('@/lib/auth/server');
+      const user = await requireAuthApi(req);
+      
+      // Super admin can access all products
+      if (!isSuperAdmin(user)) {
+        const userTenantId = user.tenantId?.toString();
+        const productTenantId = doc.tenantId?.toString();
+        
+        // If user has no tenant or different tenant, deny access
+        if (!userTenantId || userTenantId !== productTenantId) {
+          return NextResponse.json({ error: 'Not found' }, { status: 404 });
+        }
+      }
+    } catch {
+      // Not logged in - can't access tenant-specific products
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+  }
+  
   return NextResponse.json(doc);
 }
 

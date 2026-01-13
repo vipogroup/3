@@ -418,25 +418,32 @@ async function GETHandler(request) {
     const query = {};
 
     // Multi-Tenant: Filter by tenant
-    // Always try to get tenant from request first (URL param, subdomain, etc.)
+    // Priority order:
+    // 1. Tenant from request (URL param, subdomain, headers)
+    // 2. Tenant from logged-in user (any role - customer, agent, business_admin)
+    // 3. No tenant = show global products only
+    
     let tenantId = null;
     let hasTenantContext = false;
+    
+    // 1. Try to get tenant from request first (URL param, subdomain, etc.)
     const tenant = await getCurrentTenant(request);
     if (tenant) {
       tenantId = tenant._id;
       hasTenantContext = true;
     }
     
-    // If no tenant from request, try to get from logged-in business_admin
+    // 2. If no tenant from request, try to get from ANY logged-in user
     if (!tenantId) {
       try {
-        const adminUser = await requireAdminApi(request);
-        if (adminUser?.role === 'business_admin' && adminUser?.tenantId) {
-          tenantId = new ObjectId(adminUser.tenantId);
+        const { requireAuthApi } = await import('@/lib/auth/server');
+        const loggedInUser = await requireAuthApi(request);
+        if (loggedInUser?.tenantId) {
+          tenantId = new ObjectId(loggedInUser.tenantId);
           hasTenantContext = true;
         }
       } catch {
-        // Not admin - that's ok
+        // Not logged in - that's ok, will show global products
       }
     }
     
