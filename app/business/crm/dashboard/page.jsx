@@ -391,11 +391,11 @@ export default function CRMDashboard() {
       {/* Top Navigation - VIPO Style */}
       <header className="h-16 flex items-center justify-between px-4 sm:px-6 bg-white border-b border-gray-200">
         <div className="flex items-center gap-4 sm:gap-6">
-          <Link href="/business" className="text-xl sm:text-2xl font-bold" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <Link href="/business" className="text-xl sm:text-2xl font-bold" style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             VIPO
           </Link>
           <span className="text-gray-300">|</span>
-          <h1 className="text-lg font-bold" style={{ color: '#1e3a8a' }}>מערכת CRM</h1>
+          <h1 className="text-lg font-bold" style={{ color: 'var(--primary)' }}>מערכת CRM</h1>
           
           <nav className="hidden md:flex items-center gap-1 mr-4">
             {mainTabs.map(tab => (
@@ -406,7 +406,7 @@ export default function CRMDashboard() {
                     ? 'text-white' 
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
-                style={activeTab === tab.id ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+                style={activeTab === tab.id ? { background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' } : {}}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}
@@ -451,7 +451,7 @@ export default function CRMDashboard() {
             <button
               onClick={openQRModal}
               className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg text-white transition-colors"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
@@ -475,7 +475,7 @@ export default function CRMDashboard() {
       {showQRModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 text-center">
-            <h3 className="text-xl font-bold mb-4" style={{ color: '#1e3a8a' }}>חיבור WhatsApp</h3>
+            <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--primary)' }}>חיבור WhatsApp</h3>
             <p className="text-gray-600 mb-4">סרוק את הקוד עם אפליקציית WhatsApp בטלפון</p>
             
             {/* Embed the QR page directly using iframe */}
@@ -530,7 +530,7 @@ export default function CRMDashboard() {
                       ? 'text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
-                  style={activeQueue === queue.id ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+                  style={activeQueue === queue.id ? { background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' } : {}}
                 >
                   <span className="ml-1"><QueueIcon type={queue.icon} /></span>
                   {queue.name}
@@ -553,7 +553,7 @@ export default function CRMDashboard() {
                   className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
                     selectedConversation?.phone === conv.phone ? 'bg-cyan-50 border-r-4' : ''
                   }`}
-                  style={selectedConversation?.phone === conv.phone ? { borderRightColor: '#0891b2' } : {}}
+                  style={selectedConversation?.phone === conv.phone ? { borderRightColor: 'var(--secondary)' } : {}}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
@@ -597,13 +597,13 @@ export default function CRMDashboard() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="הערה" style={{ color: '#0891b2' }}>
+                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="הערה" style={{ color: 'var(--secondary)' }}>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                   </button>
-                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="תיוג" style={{ color: '#0891b2' }}>
+                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="תיוג" style={{ color: 'var(--secondary)' }}>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
                   </button>
-                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="תזכורת" style={{ color: '#0891b2' }}>
+                  <button className="p-2 hover:bg-gray-100 rounded-lg" title="תזכורת" style={{ color: 'var(--secondary)' }}>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   </button>
                   <button className="p-2 hover:bg-gray-100 rounded-lg text-red-500" title="סגור">
@@ -625,7 +625,7 @@ export default function CRMDashboard() {
                           ? 'text-white rounded-br-none'
                           : 'bg-white text-gray-900 rounded-bl-none'
                       }`}
-                      style={msg.type === 'outgoing' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+                      style={msg.type === 'outgoing' ? { background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' } : {}}
                     >
                       <p className="break-words text-sm">{msg.message || '[מדיה]'}</p>
                       <div className={`text-xs mt-1 flex items-center gap-1 ${msg.type === 'outgoing' ? 'text-cyan-100' : 'text-gray-400'}`}>
@@ -648,14 +648,14 @@ export default function CRMDashboard() {
                     onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                     placeholder="הקלד הודעה..."
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:border-cyan-500"
-                    style={{ borderColor: connected ? '#0891b2' : undefined }}
+                    style={{ borderColor: connected ? 'var(--secondary)' : undefined }}
                     disabled={!connected}
                   />
                   <button
                     onClick={sendMessage}
                     disabled={sending || !connected || !newMessage.trim()}
                     className="px-6 py-2 text-white rounded-full text-sm disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                   >
                     {sending ? '...' : 'שלח'}
                   </button>
@@ -665,7 +665,7 @@ export default function CRMDashboard() {
           ) : (
             <div className="flex-1 flex items-center justify-center text-gray-400">
               <div className="text-center">
-                <svg className="w-24 h-24 mx-auto mb-4" style={{ color: '#0891b2', opacity: 0.3 }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                <svg className="w-24 h-24 mx-auto mb-4" style={{ color: 'var(--secondary)', opacity: 0.3 }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                 <p className="text-lg">בחר שיחה מהרשימה</p>
               </div>
             </div>
@@ -679,7 +679,7 @@ export default function CRMDashboard() {
               {/* Lead Header */}
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold" style={{ color: '#1e3a8a' }}>פרטי ליד</h3>
+                  <h3 className="font-semibold" style={{ color: 'var(--primary)' }}>פרטי ליד</h3>
                   {/* SLA Badge */}
                   {selectedLead.slaStatus && (
                     <span className={`px-2 py-0.5 text-xs rounded-full ${
@@ -742,7 +742,7 @@ export default function CRMDashboard() {
               {/* Contact Info */}
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg" style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}>
                     {selectedLead.name?.substring(0, 2) || '??'}
                   </div>
                   <div>
@@ -753,13 +753,13 @@ export default function CRMDashboard() {
                 <div className="space-y-2 text-sm">
                   {selectedLead.email && (
                     <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                      <svg className="w-4 h-4" style={{ color: 'var(--secondary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                       <span className="text-gray-600">{selectedLead.email}</span>
                     </div>
                   )}
                   {selectedLead.company && (
                     <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                      <svg className="w-4 h-4" style={{ color: 'var(--secondary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                       <span className="text-gray-600">{selectedLead.company}</span>
                     </div>
                   )}
@@ -768,7 +768,7 @@ export default function CRMDashboard() {
                 {/* Tags */}
                 <div className="flex flex-wrap gap-1 mt-3">
                   {selectedLead.tags?.map((tag, idx) => (
-                    <span key={idx} className="px-2 py-0.5 text-xs rounded-full" style={{ background: 'rgba(8, 145, 178, 0.15)', color: '#0891b2' }}>
+                    <span key={idx} className="px-2 py-0.5 text-xs rounded-full" style={{ background: 'rgba(8, 145, 178, 0.15)', color: 'var(--secondary)' }}>
                       {tag}
                     </span>
                   ))}
@@ -808,8 +808,8 @@ export default function CRMDashboard() {
               {/* Tasks */}
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium" style={{ color: '#1e3a8a' }}>משימות</h4>
-                  <button className="text-sm hover:underline" style={{ color: '#0891b2' }}>+ הוסף</button>
+                  <h4 className="font-medium" style={{ color: 'var(--primary)' }}>משימות</h4>
+                  <button className="text-sm hover:underline" style={{ color: 'var(--secondary)' }}>+ הוסף</button>
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 p-2 bg-yellow-50 rounded-lg text-sm">
@@ -823,13 +823,13 @@ export default function CRMDashboard() {
               {/* Snooze */}
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium" style={{ color: '#1e3a8a' }}>דחיית טיפול</h4>
+                  <h4 className="font-medium" style={{ color: 'var(--primary)' }}>דחיית טיפול</h4>
                   <div className="relative">
                     <button 
                       onClick={() => setShowSnoozeMenu(!showSnoozeMenu)}
                       className="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-50 flex items-center gap-1"
                     >
-                      <svg className="w-4 h-4" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <svg className="w-4 h-4" style={{ color: 'var(--secondary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       השהה
                     </button>
                     {showSnoozeMenu && (
@@ -848,7 +848,7 @@ export default function CRMDashboard() {
               {/* Notes */}
               <div className="p-4 flex-1 overflow-y-auto">
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium" style={{ color: '#1e3a8a' }}>הערות</h4>
+                  <h4 className="font-medium" style={{ color: 'var(--primary)' }}>הערות</h4>
                 </div>
                 {selectedLead.notes && (
                   <div className="bg-gray-50 rounded-lg p-2 mb-3 max-h-32 overflow-y-auto">
@@ -867,7 +867,7 @@ export default function CRMDashboard() {
                     <button 
                       onClick={saveLeadNotes}
                       className="self-end px-4 py-1 text-white text-sm rounded-lg"
-                      style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                      style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                     >
                       שמור הערה
                     </button>
@@ -877,12 +877,12 @@ export default function CRMDashboard() {
             </>
           ) : selectedConversation ? (
             <div className="p-4">
-              <h3 className="font-semibold mb-4" style={{ color: '#1e3a8a' }}>פרטי שיחה</h3>
+              <h3 className="font-semibold mb-4" style={{ color: 'var(--primary)' }}>פרטי שיחה</h3>
               <p className="text-sm text-gray-500 mb-4">מספר: {formatPhone(selectedConversation.phone)}</p>
               <button
                 onClick={() => {/* Create lead */}}
                 className="w-full py-2 text-white rounded-lg text-sm"
-                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
               >
                 + צור ליד חדש
               </button>
@@ -901,10 +901,10 @@ export default function CRMDashboard() {
           <div className="flex-1 p-6 overflow-auto">
             <div className="max-w-7xl mx-auto">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold" style={{ color: '#1e3a8a' }}>לידים</h2>
+                <h2 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>לידים</h2>
                 <button 
                   className="px-4 py-2 text-white rounded-lg text-sm flex items-center gap-2"
-                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                   ליד חדש
@@ -920,7 +920,7 @@ export default function CRMDashboard() {
                     className={`px-3 py-1.5 rounded-full text-xs font-medium ${
                       leadsFilter === status ? 'text-white' : 'bg-gray-100 text-gray-700'
                     }`}
-                    style={leadsFilter === status ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+                    style={leadsFilter === status ? { background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' } : {}}
                   >
                     {status === '' ? 'הכל' : status === 'new' ? 'חדש' : status === 'contacted' ? 'נוצר קשר' : status === 'qualified' ? 'מתאים' : status === 'converted' ? 'הומר' : 'אבוד'}
                   </button>
@@ -962,7 +962,7 @@ export default function CRMDashboard() {
                           <button 
                             onClick={() => { setSelectedLead(lead); setActiveTab('inbox'); }}
                             className="text-xs px-2 py-1 rounded hover:bg-gray-100"
-                            style={{ color: '#0891b2' }}
+                            style={{ color: 'var(--secondary)' }}
                           >
                             צפה
                           </button>
@@ -984,10 +984,10 @@ export default function CRMDashboard() {
           <div className="flex-1 p-6 overflow-auto">
             <div className="max-w-5xl mx-auto">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold" style={{ color: '#1e3a8a' }}>משימות</h2>
+                <h2 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>משימות</h2>
                 <button 
                   className="px-4 py-2 text-white rounded-lg text-sm flex items-center gap-2"
-                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                   משימה חדשה
@@ -1003,7 +1003,7 @@ export default function CRMDashboard() {
                     className={`px-3 py-1.5 rounded-full text-xs font-medium ${
                       tasksFilter === status ? 'text-white' : 'bg-gray-100 text-gray-700'
                     }`}
-                    style={tasksFilter === status ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+                    style={tasksFilter === status ? { background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' } : {}}
                   >
                     {status === '' ? 'הכל' : status === 'pending' ? 'ממתין' : status === 'in_progress' ? 'בתהליך' : 'הושלם'}
                   </button>
@@ -1048,7 +1048,7 @@ export default function CRMDashboard() {
         {/* Tab: Pipeline */}
         {activeTab === 'pipeline' && (
           <div className="flex-1 p-6 overflow-auto">
-            <h2 className="text-2xl font-bold mb-6" style={{ color: '#1e3a8a' }}>Pipeline</h2>
+            <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--primary)' }}>Pipeline</h2>
             <div className="flex gap-4 overflow-x-auto pb-4">
               {[
                 { id: 'lead', label: 'ליד', color: '#3b82f6' },
@@ -1076,7 +1076,7 @@ export default function CRMDashboard() {
                         <p className="font-medium text-sm text-gray-900">{lead.name}</p>
                         <p className="text-xs text-gray-500">{lead.phone}</p>
                         {lead.estimatedValue > 0 && (
-                          <p className="text-xs mt-1 font-medium" style={{ color: '#0891b2' }}>₪{lead.estimatedValue.toLocaleString()}</p>
+                          <p className="text-xs mt-1 font-medium" style={{ color: 'var(--secondary)' }}>₪{lead.estimatedValue.toLocaleString()}</p>
                         )}
                       </div>
                     ))}

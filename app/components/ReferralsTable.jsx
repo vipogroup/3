@@ -43,7 +43,7 @@ export default function ReferralsTable() {
 
       {referrals.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
-          <p className="text-lg mb-2">🎯</p>
+          <p className="text-lg mb-2 text-gray-400">-</p>
           <p>אין עדיין הפניות</p>
           <p className="text-sm mt-2">שתף את הלינק האישי שלך כדי להתחיל להרוויח!</p>
         </div>

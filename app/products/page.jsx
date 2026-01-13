@@ -44,11 +44,11 @@ function ProductsPageContent() {
     return products;
   }, [products, typeFilter]);
 
-  const primaryColor = '#1e3a8a'; // כחול נייבי
-  const secondaryColor = '#0891b2'; // טורקיז
-  const accentColor = '#06b6d4'; // טורקיז בהיר
-  const gradientPrimary = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
-  const gradientReverse = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+  const primaryColor = 'var(--primary)'; // כחול נייבי
+  const secondaryColor = 'var(--secondary)'; // טורקיז
+  const accentColor = 'var(--accent)'; // טורקיז בהיר
+  const gradientPrimary = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
+  const gradientReverse = 'linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%)';
   const warningColor = '#f59e0b'; // כתום לתגיות והנחות
 
   const loadProducts = useCallback(async () => {
@@ -151,7 +151,7 @@ function ProductsPageContent() {
       });
 
       if (res.ok) {
-        alert('🎉 ברכות! הפכת לסוכן בהצלחה!');
+        alert('ברכות! הפכת לסוכן בהצלחה!');
         window.location.href = '/agent';
       } else {
         const data = await res.json();
@@ -595,7 +595,7 @@ function ProductsPageContent() {
                 </div>
                 <div>
                   <h4 className="font-bold text-lg" style={{ color: '#92400e' }}>שיתוף</h4>
-                  <p className="text-sm text-gray-600 mt-1">משתפים את החברים ומשפחה כדי להגדיל את הקבוצה. <strong style={{ color: '#1e3a8a' }}>הפכו לסוכן</strong> כדי לקבל קישור אישי ו-10% עמלה על כל רכישה שהגיעה מהשיתוף שלכם!</p>
+                  <p className="text-sm text-gray-600 mt-1">משתפים את החברים ומשפחה כדי להגדיל את הקבוצה. <strong style={{ color: 'var(--primary)' }}>הפכו לסוכן</strong> כדי לקבל קישור אישי ו-10% עמלה על כל רכישה שהגיעה מהשיתוף שלכם!</p>
                 </div>
               </div>
 
@@ -702,7 +702,7 @@ function CategoryFilters({
     <div className="border-b border-gray-200/50" style={{ background: 'transparent' }}>
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center gap-3">
-          <span className="text-sm font-medium" style={{ color: '#1e3a8a' }}>
+          <span className="text-sm font-medium" style={{ color: 'var(--primary)' }}>
             סינון לפי קטגוריה:
           </span>
           <div className="relative">
@@ -713,10 +713,10 @@ function CategoryFilters({
               style={{
                 border: '2px solid transparent',
                 backgroundImage:
-                  'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                  'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
                 backgroundOrigin: 'border-box',
                 backgroundClip: 'padding-box, border-box',
-                color: '#1e3a8a',
+                color: 'var(--primary)',
                 minWidth: '200px',
                 boxShadow: '0 2px 8px rgba(8, 145, 178, 0.1)',
               }}
@@ -736,7 +736,7 @@ function CategoryFilters({
             </select>
             <div
               className="pointer-events-none absolute inset-y-0 left-3 flex items-center"
-              style={{ color: '#0891b2' }}
+              style={{ color: 'var(--secondary)' }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -762,7 +762,7 @@ function VideoModal({ product, onClose, gradientBackground }) {
         style={{
           border: '2px solid transparent',
           backgroundImage:
-            'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+            'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
           backgroundOrigin: 'border-box',
           backgroundClip: 'padding-box, border-box',
           boxShadow: '0 8px 30px rgba(8, 145, 178, 0.3)',
@@ -771,7 +771,7 @@ function VideoModal({ product, onClose, gradientBackground }) {
         <div
           className="flex justify-between items-center px-4 py-3"
           style={{
-            background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+            background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
           }}
         >
           <h2 className="text-lg font-semibold text-white">{product.name}</h2>
@@ -801,7 +801,7 @@ function VideoModal({ product, onClose, gradientBackground }) {
             onClick={onClose}
             className="px-6 py-2 text-sm font-medium text-white rounded-lg transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
               boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)',
             }}
             onMouseEnter={(e) => {
@@ -812,7 +812,7 @@ function VideoModal({ product, onClose, gradientBackground }) {
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background =
-                'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = '0 2px 8px rgba(8, 145, 178, 0.2)';
             }}
@@ -924,7 +924,7 @@ function CategoryHeader({ group }) {
     <header className="mb-6 text-center space-y-2">
       <h2
         className="text-xl font-bold inline-block relative"
-        style={{ color: '#1e3a8a' }}
+        style={{ color: 'var(--primary)' }}
       >
         {group.label}
         <div
@@ -987,7 +987,7 @@ function GroupTimer({ product }) {
         <div className="flex flex-col items-center">
           <span 
             className="text-sm font-bold text-white px-1.5 py-0.5 rounded"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
           >
             {String(timeLeft.seconds).padStart(2, '0')}
           </span>
@@ -997,7 +997,7 @@ function GroupTimer({ product }) {
         <div className="flex flex-col items-center">
           <span 
             className="text-sm font-bold text-white px-1.5 py-0.5 rounded"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
           >
             {String(timeLeft.minutes).padStart(2, '0')}
           </span>
@@ -1007,7 +1007,7 @@ function GroupTimer({ product }) {
         <div className="flex flex-col items-center">
           <span 
             className="text-sm font-bold text-white px-1.5 py-0.5 rounded"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
           >
             {String(timeLeft.hours).padStart(2, '0')}
           </span>
@@ -1073,7 +1073,7 @@ function ProductCard({
       className="bg-white rounded-xl overflow-hidden group h-full flex flex-col transition-all duration-300"
       style={{
         border: '2px solid transparent',
-        backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+        backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
         boxShadow: '0 4px 15px rgba(8, 145, 178, 0.15)',
@@ -1107,7 +1107,7 @@ function ProductCard({
             <div
               className="absolute top-2 right-2 text-white px-2 py-1 rounded-md text-xs font-bold"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
               }}
             >
               -{discountPercent}%
@@ -1134,7 +1134,7 @@ function ProductCard({
               <span 
                 className="text-2xl font-black"
                 style={{ 
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -1232,7 +1232,7 @@ function ProductCard({
               }}
               className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-bold transition-all duration-300 text-white"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 boxShadow: '0 4px 15px rgba(8, 145, 178, 0.3)',
               }}
               onMouseEnter={(e) => {
@@ -1241,7 +1241,7 @@ function ProductCard({
                 e.currentTarget.style.boxShadow = '0 6px 20px rgba(8, 145, 178, 0.4)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                e.currentTarget.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                 e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.boxShadow = '0 4px 15px rgba(8, 145, 178, 0.3)';
               }}
@@ -1256,7 +1256,7 @@ function ProductCard({
               href="/cart"
               className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-300"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 color: 'white',
               }}
             >

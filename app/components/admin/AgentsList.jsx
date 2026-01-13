@@ -351,7 +351,7 @@ export default function AgentsList() {
                         className="text-xs"
                         style={{ color: '#0891b2' }}
                       >
-                        {copiedAgentId === agent._id ? '✓' : '📋'}
+                        {copiedAgentId === agent._id ? 'V' : 'העתק'}
                       </button>
                     </div>
                   </td>
@@ -433,7 +433,7 @@ export default function AgentsList() {
                       className="text-xs"
                       style={{ color: '#0891b2' }}
                     >
-                      {copiedAgentId === agent._id ? '✓' : '📋'}
+                      {copiedAgentId === agent._id ? 'V' : 'העתק'}
                     </button>
                   </div>
                 </div>

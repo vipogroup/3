@@ -84,14 +84,14 @@ export default function HomePage() {
     { participants: '1-9', price: '₪1,850', highlight: false },
     { participants: '10-19', price: '₪1,600', highlight: false },
     { participants: '20-39', price: '₪1,350', highlight: false },
-    { participants: '40+', price: '₪1,150 🔥', highlight: true },
+    { participants: '40+', price: '₪1,150', highlight: true },
   ];
 
   const audiences = [
-    { title: 'משפחות', desc: 'חיסכון משמעותי על מוצרים לבית', icon: '👨‍👩‍👧‍👦' },
-    { title: 'עסקים קטנים', desc: 'רכישה סיטונאית במחירי מפעל', icon: '🏪' },
-    { title: 'יזמים', desc: 'הזדמנות להרוויח כסוכנים', icon: '💼' },
-    { title: 'מוסדות', desc: 'רכישות גדולות בהנחות משמעותיות', icon: '🏛️' },
+    { title: 'משפחות', desc: 'חיסכון משמעותי על מוצרים לבית', icon: 'F' },
+    { title: 'עסקים קטנים', desc: 'רכישה סיטונאית במחירי מפעל', icon: 'B' },
+    { title: 'יזמים', desc: 'הזדמנות להרוויח כסוכנים', icon: 'E' },
+    { title: 'מוסדות', desc: 'רכישות גדולות בהנחות משמעותיות', icon: 'I' },
   ];
 
   const faqs = [
@@ -140,19 +140,19 @@ export default function HomePage() {
               href="/products"
               className="px-8 py-4 bg-white text-blue-900 font-bold rounded-full text-lg hover:scale-105 transition-transform shadow-xl"
             >
-              למוצרים 🛒
+              למוצרים
             </Link>
             <a
               href="#how-it-works"
               className="px-8 py-4 border-2 border-white text-white font-bold rounded-full text-lg hover:bg-white/10 transition-all"
             >
-              איך זה עובד? 🤔
+              איך זה עובד?
             </a>
           </div>
 
           {products.length > 0 && (
             <div className="mt-8">
-              <h3 className="text-white text-lg mb-4 font-semibold">🔥 מוצרים חמים</h3>
+              <h3 className="text-white text-lg mb-4 font-semibold">מוצרים חמים</h3>
               <div
                 ref={carouselRef}
                 className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"
@@ -298,17 +298,17 @@ export default function HomePage() {
           <div className="bg-gray-50 rounded-2xl p-8 text-center">
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               <div className="p-4">
-                <div className="text-3xl mb-2">1️⃣</div>
+                <div className="text-3xl mb-2 font-bold">1</div>
                 <h4 className="font-bold mb-1">קבלו קישור אישי</h4>
                 <p className="text-sm text-gray-600">הירשמו כסוכנים וקבלו קישור ייחודי</p>
               </div>
               <div className="p-4">
-                <div className="text-3xl mb-2">2️⃣</div>
+                <div className="text-3xl mb-2 font-bold">2</div>
                 <h4 className="font-bold mb-1">שתפו חברים</h4>
                 <p className="text-sm text-gray-600">שלחו את הקישור לחברים ומשפחה</p>
               </div>
               <div className="p-4">
-                <div className="text-3xl mb-2">3️⃣</div>
+                <div className="text-3xl mb-2 font-bold">3</div>
                 <h4 className="font-bold mb-1">הרוויחו עמלה</h4>
                 <p className="text-sm text-gray-600">קבלו עמלה על כל רכישה!</p>
               </div>
@@ -319,7 +319,7 @@ export default function HomePage() {
               className="inline-block px-8 py-3 text-white font-bold rounded-full hover:scale-105 transition-transform"
               style={{ background: gradient }}
             >
-              להירשם כסוכן 🚀
+              להירשם כסוכן
             </Link>
           </div>
         </div>

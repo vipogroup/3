@@ -140,9 +140,10 @@ export default function ProductsList() {
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+          className="text-white px-6 py-2 rounded-lg transition-colors"
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
         >
-          ➕ הוסף מוצר
+          + הוסף מוצר
         </button>
       </div>
 
@@ -222,7 +223,8 @@ export default function ProductsList() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                  className="px-4 py-2 text-white rounded-lg"
+                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                 >
                   {editingProduct ? 'עדכן' : 'הוסף'}
                 </button>
@@ -268,13 +270,13 @@ export default function ProductsList() {
                   onClick={() => handleEdit(product)}
                   className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 text-sm"
                 >
-                  ✏️ ערוך
+                  ערוך
                 </button>
                 <button
                   onClick={() => handleDelete(product._id, product.name)}
                   className="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700 text-sm"
                 >
-                  🗑️ מחק
+                  מחק
                 </button>
               </div>
             </div>

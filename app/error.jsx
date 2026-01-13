@@ -16,7 +16,7 @@ export default function Error({ error, reset }) {
             className="w-32 h-32 mx-auto rounded-full flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%)' }}
           >
-            <span className="text-6xl">⚠️</span>
+            <span className="text-6xl text-red-500">!</span>
           </div>
         </div>
 

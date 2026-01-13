@@ -38,7 +38,7 @@ export default function TransactionsCard() {
     pending: { label: 'ממתין', color: 'bg-yellow-100 text-yellow-800' },
     paid: { label: 'שולם', color: 'bg-green-100 text-green-800' },
     shipped: { label: 'נשלח', color: 'bg-blue-100 text-blue-800' },
-    completed: { label: 'הושלם', color: 'bg-purple-100 text-purple-800' },
+    completed: { label: 'הושלם', color: 'bg-cyan-100 text-cyan-800' },
   };
 
   if (loading) {
@@ -67,9 +67,9 @@ export default function TransactionsCard() {
               ₪{stats.totalAmount.toLocaleString()}
             </p>
           </div>
-          <div className="bg-purple-50 rounded-lg p-4">
+          <div className="bg-cyan-50 rounded-lg p-4">
             <p className="text-sm text-gray-600">ממוצע עסקה</p>
-            <p className="text-2xl font-bold text-purple-600">
+            <p className="text-2xl font-bold text-cyan-600">
               ₪{Math.round(stats.avgAmount).toLocaleString()}
             </p>
           </div>

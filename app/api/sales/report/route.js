@@ -59,7 +59,7 @@ async function GETHandler(req) {
     }
 
     // Check if user is admin
-    if (user.role !== 'admin' && user.role !== 'business_admin') {
+    if (user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin') {
       return NextResponse.json(
         {
           ok: false,

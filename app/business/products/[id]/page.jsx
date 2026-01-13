@@ -62,7 +62,7 @@ export default function EditProductPage() {
           return;
         }
         const authData = await authRes.json();
-        if (authData.user?.role !== 'business_admin' && authData.user?.role !== 'admin') {
+        if (authData.user?.role !== 'business_admin' && authData.user?.role !== 'admin' && authData.user?.role !== 'super_admin') {
           router.push('/login');
           return;
         }

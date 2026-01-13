@@ -58,20 +58,20 @@ export default function ShareProductPage() {
 
   const buildShareText = () => {
     const lines = [
-      `🛍️ *${product?.name}*`,
+      `*${product?.name}*`,
       '',
       product?.description || '',
       '',
-      `💰 מחיר: ₪${product?.price}`,
+      `מחיר: ₪${product?.price}`,
     ];
 
     if (couponCode) {
-      lines.push(`🏷️ קוד קופון: ${couponCode}`);
+      lines.push(`קוד קופון: ${couponCode}`);
     }
 
     const productUrl = getProductShareUrl();
     if (productUrl) {
-      lines.push('', `🔗 לרכישה: ${productUrl}`);
+      lines.push('', `לרכישה: ${productUrl}`);
     }
 
     lines.push('', 'השתמשו בקוד הקופון בקופה לקבלת ההטבה!');

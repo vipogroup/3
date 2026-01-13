@@ -42,7 +42,8 @@ export default function ContactPage() {
             </div>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl shadow-lg transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-2xl shadow-lg transition-all"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
               חזרה לעמוד הבית
             </Link>
@@ -132,14 +133,15 @@ export default function ContactPage() {
 
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-2xl shadow-md hover:shadow-lg transition-all"
+                  className="w-full md:w-auto px-6 py-3 text-white font-semibold rounded-2xl shadow-md hover:shadow-lg transition-all"
+                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                 >
                   שליחה
                 </button>
               </form>
             </div>
 
-            <div className="lg:col-span-2 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl border border-purple-100 p-8">
+            <div className="lg:col-span-2 bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl border border-cyan-100 p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">פרטים נוספים</h2>
               <div className="space-y-4 text-gray-700">
                 <div>

@@ -181,6 +181,29 @@ async function POSTHandler(req) {
     // Check if user has tenantId (business admin)
     const tenantId = payload.tenantId;
     
+    // בדיקת סיסמת עיצוב - רק למנהל ראשי (לא business_admin)
+    const isSuperAdmin = userRole === 'admin' && !tenantId;
+    if (isSuperAdmin) {
+      // בדיקה אם יש שינויים בעיצוב
+      const hasDesignChanges = 
+        incoming.primaryColor || incoming.secondaryColor || incoming.accentColor ||
+        incoming.successColor || incoming.warningColor || incoming.dangerColor ||
+        incoming.backgroundColor || incoming.textColor ||
+        incoming.backgroundGradient || incoming.cardGradient || incoming.buttonGradient;
+      
+      if (hasDesignChanges) {
+        const DESIGN_PASSWORD = '1985';
+        const designPassword = body?.designPassword;
+        
+        if (designPassword !== DESIGN_PASSWORD) {
+          return NextResponse.json(
+            { ok: false, error: 'סיסמת עיצוב שגויה. שינויים בעיצוב דורשים אישור.' },
+            { status: 403 }
+          );
+        }
+      }
+    }
+    
     // SECURITY: business_admin MUST have tenantId - prevent them from editing global settings
     if (userRole === 'business_admin' && !tenantId) {
       console.warn('SECURITY: business_admin without tenantId tried to update settings');

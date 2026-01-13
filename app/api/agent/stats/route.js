@@ -59,7 +59,7 @@ function resolveBaseUrl(req) {
 async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
-    if (user.role !== 'agent' && user.role !== 'admin' && user.role !== 'business_admin') {
+    if (user.role !== 'agent' && user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin') {
       return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
     }
 

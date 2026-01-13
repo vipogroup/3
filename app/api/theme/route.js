@@ -37,18 +37,30 @@ async function GETHandler() {
 /**
  * POST /api/theme
  * Set active theme
- * Body: { themeId: "amazon" | "aliexpress" | ... }
+ * Body: { themeId: "amazon" | "aliexpress" | ..., designPassword?: string }
  */
 async function POSTHandler(req) {
   try {
     // Admin only
-    await requireAdminApi(req);
+    const user = await requireAdminApi(req);
 
     const body = await req.json();
-    const { themeId } = body;
+    const { themeId, designPassword } = body;
 
     if (!themeId || !THEMES[themeId]) {
       return NextResponse.json({ ok: false, error: 'invalid theme ID' }, { status: 400 });
+    }
+
+    // בדיקת סיסמת עיצוב - רק למנהל ראשי (לא business_admin)
+    const isSuperAdmin = user.role === 'admin' && !user.tenantId;
+    if (isSuperAdmin) {
+      const DESIGN_PASSWORD = '1985';
+      if (designPassword !== DESIGN_PASSWORD) {
+        return NextResponse.json(
+          { ok: false, error: 'סיסמת עיצוב שגויה. שינויים בעיצוב דורשים אישור.' },
+          { status: 403 }
+        );
+      }
     }
 
     const db = await getDb();

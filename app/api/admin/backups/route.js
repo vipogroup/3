@@ -117,7 +117,7 @@ async function checkAdmin(req) {
       if (process.env.JWT_SECRET) {
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
         const { payload } = await jwtVerify(decodeURIComponent(tokenValue), secret);
-        if (payload.role === 'admin') return payload;
+        if (payload.role === 'admin' || payload.role === 'super_admin') return payload;
       }
     } catch {
       // Try NextAuth
@@ -128,7 +128,7 @@ async function checkAdmin(req) {
   try {
     const { getToken } = await import('next-auth/jwt');
     const nextAuthToken = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-    if (nextAuthToken?.role === 'admin') {
+    if (nextAuthToken?.role === 'admin' || nextAuthToken?.role === 'super_admin') {
       return {
         userId: nextAuthToken.userId || nextAuthToken.sub,
         email: nextAuthToken.email,

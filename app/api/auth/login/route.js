@@ -86,6 +86,7 @@ async function POSTHandler(req) {
     const jwtPayload = { 
       userId: String(user._id), 
       role: userRole,
+      email: user.email,
     };
     // Multi-Tenant: Include tenantId in JWT if user belongs to a tenant
     if (user.tenantId) {

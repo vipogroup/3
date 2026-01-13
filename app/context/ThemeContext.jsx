@@ -169,14 +169,17 @@ export function ThemeProvider({ children }) {
   );
 
   const saveSettings = useCallback(
-    async (nextSettings) => {
+    async (nextSettings, designPassword = null) => {
       const merged = updateSettings(nextSettings, { source: 'local' });
 
       try {
         const res = await fetch('/api/settings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ settings: merged }),
+          body: JSON.stringify({ 
+            settings: merged,
+            designPassword: designPassword || undefined
+          }),
         });
 
         const data = await res.json().catch(() => ({}));

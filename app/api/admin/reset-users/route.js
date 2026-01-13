@@ -51,7 +51,7 @@ async function DELETEHandler(request) {
     ]);
     
     // מחיקת משתמשים - הגנה על מנהלים ראשיים מוגנים
-    const PROTECTED_ADMINS = ['0587009938@gmail.com'];
+    const PROTECTED_ADMINS = ['m0587009938@gmail.com'];
     const usersDeleted = await db.collection('users').deleteMany({ 
       $and: [
         { role: { $ne: 'super_admin' } },

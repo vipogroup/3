@@ -9,37 +9,37 @@ const REPORT_TYPES = {
     label: 'Social Metadata Audit',
     hebrewLabel: 'ביקורת מטא-דאטה חברתית',
     description: 'בדיקת Open Graph tags, Twitter Cards ותאימות',
-    icon: '🏷️',
-    color: 'bg-purple-100 text-purple-800 border-purple-300',
+    icon: null,
+    color: 'bg-cyan-100 text-cyan-800 border-cyan-300',
   },
   social_preview_shareability: {
     label: 'Social Preview & Shareability',
     hebrewLabel: 'תצוגה מקדימה ושיתוף',
     description: 'סימולציית Preview לפלטפורמות חברתיות',
-    icon: '👁️',
+    icon: null,
     color: 'bg-blue-100 text-blue-800 border-blue-300',
   },
   social_crawlability_discovery: {
     label: 'Crawlability & Discovery',
     hebrewLabel: 'סריקה וגילוי',
     description: 'HTTP headers, redirects, sitemap וזמינות',
-    icon: '🔍',
+    icon: null,
     color: 'bg-cyan-100 text-cyan-800 border-cyan-300',
   },
 };
 
 const TABS = [
-  { id: 'overview', label: '📊 סקירה כללית' },
-  { id: 'scan', label: '🔍 סריקה חדשה' },
-  { id: 'reports', label: '📋 דוחות' },
-  { id: 'history', label: '📜 היסטוריה' },
+  { id: 'overview', label: 'סקירה כללית' },
+  { id: 'scan', label: 'סריקה חדשה' },
+  { id: 'reports', label: 'דוחות' },
+  { id: 'history', label: 'היסטוריה' },
 ];
 
 const PLATFORMS = [
-  { id: 'facebook', label: 'Facebook', icon: '📘' },
-  { id: 'whatsapp', label: 'WhatsApp', icon: '💬' },
-  { id: 'linkedin', label: 'LinkedIn', icon: '💼' },
-  { id: 'twitter', label: 'Twitter/X', icon: '🐦' },
+  { id: 'facebook', label: 'Facebook', icon: 'FB' },
+  { id: 'whatsapp', label: 'WhatsApp', icon: 'WA' },
+  { id: 'linkedin', label: 'LinkedIn', icon: 'LI' },
+  { id: 'twitter', label: 'Twitter/X', icon: 'X' },
 ];
 
 export default function SocialAuditClient() {
@@ -186,7 +186,7 @@ export default function SocialAuditClient() {
       WARN: 'bg-yellow-100 text-yellow-800 border-yellow-300',
       FAIL: 'bg-red-100 text-red-800 border-red-300',
     };
-    const icons = { PASS: '✅', WARN: '⚠️', FAIL: '❌' };
+    const icons = { PASS: 'V', WARN: '!', FAIL: 'X' };
     return (
       <span className={`px-2 py-1 rounded-full text-xs font-medium border ${styles[status] || 'bg-gray-100'}`}>
         {icons[status]} {status}
@@ -253,7 +253,7 @@ export default function SocialAuditClient() {
       <div className={`mb-6 p-4 rounded-xl border-2 ${isSocialReady ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">{isSocialReady ? '✅' : '⚠️'}</span>
+            <span className={`text-3xl ${isSocialReady ? 'text-green-500' : 'text-yellow-500'}`}>{isSocialReady ? 'V' : '!'}</span>
             <div>
               <h2 className="font-bold text-lg">{isSocialReady ? 'האתר מוכן לשיתוף!' : 'נדרשות התאמות'}</h2>
               <p className="text-sm text-gray-600">
@@ -269,7 +269,7 @@ export default function SocialAuditClient() {
             className="px-4 py-2 rounded-lg text-white font-medium disabled:opacity-50"
             style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
           >
-            {scanning ? '⏳ סורק...' : '🔍 סריקה מלאה'}
+            {scanning ? 'סורק...' : 'סריקה מלאה'}
           </button>
         </div>
       </div>
@@ -324,7 +324,7 @@ export default function SocialAuditClient() {
 
           {/* Report Types Overview */}
           <div className="bg-white rounded-xl border p-6">
-            <h3 className="font-bold mb-4 text-lg">📊 סוגי דוחות</h3>
+            <h3 className="font-bold mb-4 text-lg">סוגי דוחות</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {Object.entries(REPORT_TYPES).map(([key, type]) => {
                 const typeReports = reports.filter(r => r.reportType === key);
@@ -354,7 +354,7 @@ export default function SocialAuditClient() {
 
           {/* Platform Status */}
           <div className="bg-white rounded-xl border p-6">
-            <h3 className="font-bold mb-4 text-lg">🌐 סטטוס פלטפורמות</h3>
+            <h3 className="font-bold mb-4 text-lg">סטטוס פלטפורמות</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {PLATFORMS.map(platform => {
                 const platformIssues = reports.reduce((sum, r) => {
@@ -382,7 +382,7 @@ export default function SocialAuditClient() {
           {/* Recent Issues */}
           {reports.some(r => r.issues?.length > 0) && (
             <div className="bg-white rounded-xl border p-6">
-              <h3 className="font-bold mb-4 text-lg">⚠️ בעיות אחרונות</h3>
+              <h3 className="font-bold mb-4 text-lg">בעיות אחרונות</h3>
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {reports.slice(0, 3).flatMap(r => (r.issues || []).slice(0, 3)).map((issue, idx) => (
                   <div
@@ -401,7 +401,7 @@ export default function SocialAuditClient() {
                       {getSeverityBadge(issue.severity)}
                     </div>
                     {issue.recommended_fix && (
-                      <p className="text-xs text-green-700 mt-2 bg-green-50 p-2 rounded">💡 {issue.recommended_fix}</p>
+                      <p className="text-xs text-green-700 mt-2 bg-green-50 p-2 rounded">{issue.recommended_fix}</p>
                     )}
                   </div>
                 ))}
@@ -415,7 +415,7 @@ export default function SocialAuditClient() {
       {activeTab === 'scan' && (
         <div className="space-y-6">
           <div className="bg-gradient-to-r from-blue-900 to-cyan-700 rounded-xl p-6 text-white">
-            <h2 className="text-xl font-bold mb-2">🔍 סריקת Social Audit</h2>
+            <h2 className="text-xl font-bold mb-2">סריקת Social Audit</h2>
             <p className="text-blue-100 mb-4 text-sm">סריקה מקיפה של מטא-דאטה חברתית, תצוגות מקדימות ויכולת גילוי</p>
             <div className="flex flex-wrap gap-3">
               <button
@@ -423,28 +423,28 @@ export default function SocialAuditClient() {
                 disabled={scanning}
                 className="px-6 py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-blue-50 disabled:opacity-50"
               >
-                {scanning ? '⏳ סורק...' : '🚀 סריקה מלאה (3 דוחות)'}
+                {scanning ? 'סורק...' : 'סריקה מלאה (3 דוחות)'}
               </button>
               <button
                 onClick={() => runSocialAudit(['social_metadata_audit'])}
                 disabled={scanning}
                 className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 disabled:opacity-50"
               >
-                🏷️ Metadata בלבד
+                Metadata בלבד
               </button>
               <button
                 onClick={() => runSocialAudit(['social_preview_shareability'])}
                 disabled={scanning}
                 className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 disabled:opacity-50"
               >
-                👁️ Preview בלבד
+                Preview בלבד
               </button>
               <button
                 onClick={() => runSocialAudit(['social_crawlability_discovery'])}
                 disabled={scanning}
                 className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 disabled:opacity-50"
               >
-                🔍 Crawlability בלבד
+                Crawlability בלבד
               </button>
             </div>
           </div>
@@ -455,7 +455,7 @@ export default function SocialAuditClient() {
               scanResult.isSocialReady ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'
             }`}>
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-4xl">{scanResult.isSocialReady ? '✅' : '⚠️'}</span>
+                <span className={`text-4xl ${scanResult.isSocialReady ? 'text-green-500' : 'text-yellow-500'}`}>{scanResult.isSocialReady ? 'V' : '!'}</span>
                 <div>
                   <h3 className="font-bold text-lg">
                     {scanResult.isSocialReady ? 'האתר מוכן לשיתוף!' : 'נמצאו בעיות'}
@@ -490,10 +490,10 @@ export default function SocialAuditClient() {
 
           {/* What gets checked */}
           <div className="bg-white rounded-xl border p-6">
-            <h3 className="font-bold mb-4">📋 מה נבדק?</h3>
+            <h3 className="font-bold mb-4">מה נבדק?</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <h4 className="font-medium text-purple-700 mb-2">🏷️ Metadata Audit</h4>
+                <h4 className="font-medium text-purple-700 mb-2">Metadata Audit</h4>
                 <ul className="text-sm text-gray-600 space-y-1">
                   <li>• og:title, og:description, og:image</li>
                   <li>• og:url, og:type</li>
@@ -504,7 +504,7 @@ export default function SocialAuditClient() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-blue-700 mb-2">👁️ Preview & Shareability</h4>
+                <h4 className="font-medium text-blue-700 mb-2">Preview & Shareability</h4>
                 <ul className="text-sm text-gray-600 space-y-1">
                   <li>• תצוגת Preview לפייסבוק/ווטסאפ</li>
                   <li>• תצוגת Preview ללינקדאין</li>
@@ -515,7 +515,7 @@ export default function SocialAuditClient() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-cyan-700 mb-2">🔍 Crawlability & Discovery</h4>
+                <h4 className="font-medium text-cyan-700 mb-2">Crawlability & Discovery</h4>
                 <ul className="text-sm text-gray-600 space-y-1">
                   <li>• HTTP status codes</li>
                   <li>• Cache-control headers</li>
@@ -551,9 +551,9 @@ export default function SocialAuditClient() {
               className="px-3 py-2 border rounded-lg text-sm"
             >
               <option value="all">כל הסטטוסים</option>
-              <option value="PASS">✅ PASS</option>
-              <option value="WARN">⚠️ WARN</option>
-              <option value="FAIL">❌ FAIL</option>
+              <option value="PASS">PASS</option>
+              <option value="WARN">WARN</option>
+              <option value="FAIL">FAIL</option>
             </select>
             <select
               value={filter.platform}
@@ -640,7 +640,7 @@ export default function SocialAuditClient() {
                           onClick={() => deleteReport(selectedReport.reportId)}
                           className="px-3 py-1.5 bg-red-500/50 rounded text-xs hover:bg-red-500/70"
                         >
-                          🗑️
+                          X
                         </button>
                       </div>
                     </div>
@@ -648,7 +648,7 @@ export default function SocialAuditClient() {
                       {getStatusBadge(selectedReport.status)}
                       <span className="text-lg font-bold">{selectedReport.score}%</span>
                       <span className={`px-2 py-1 rounded text-xs ${selectedReport.isSocialReady ? 'bg-green-500/30' : 'bg-yellow-500/30'}`}>
-                        {selectedReport.isSocialReady ? '✅ Social Ready' : '⚠️ Not Ready'}
+                        {selectedReport.isSocialReady ? 'Social Ready' : 'Not Ready'}
                       </span>
                     </div>
                   </div>
@@ -723,10 +723,10 @@ export default function SocialAuditClient() {
                                 <p className="text-sm font-medium mt-1">{issue.issue_description || issue.issue_type}</p>
                                 <p className="text-xs text-gray-500 mt-1 truncate">{issue.page_url}</p>
                                 {issue.recommended_fix && (
-                                  <p className="text-xs text-green-700 mt-2 bg-green-50 p-2 rounded">💡 {issue.recommended_fix}</p>
+                                  <p className="text-xs text-green-700 mt-2 bg-green-50 p-2 rounded">{issue.recommended_fix}</p>
                                 )}
                                 {issue.technical_fix_hint && (
-                                  <p className="text-xs text-blue-700 mt-1 bg-blue-50 p-2 rounded">🔧 {issue.technical_fix_hint}</p>
+                                  <p className="text-xs text-blue-700 mt-1 bg-blue-50 p-2 rounded">{issue.technical_fix_hint}</p>
                                 )}
                               </div>
                             </div>
@@ -735,7 +735,7 @@ export default function SocialAuditClient() {
                       </div>
                     ) : (
                       <div className="text-center py-8 bg-green-50 rounded-lg">
-                        <span className="text-4xl">✅</span>
+                        <span className="text-4xl text-green-500">V</span>
                         <p className="text-green-700 mt-2">לא נמצאו בעיות!</p>
                       </div>
                     )}
@@ -743,7 +743,7 @@ export default function SocialAuditClient() {
                 </div>
               ) : (
                 <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-10 text-center">
-                  <span className="text-5xl">📋</span>
+                  <span className="text-5xl text-cyan-600">R</span>
                   <p className="text-gray-500 mt-3">בחר דוח מהרשימה לצפייה בפרטים</p>
                 </div>
               )}

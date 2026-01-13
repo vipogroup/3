@@ -482,7 +482,7 @@ export default function NewProductPage() {
                               : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                           }`}
                         >
-                          {editingCategories ? '✓ סיום' : '✎ ערוך'}
+                          {editingCategories ? 'סיום' : 'ערוך'}
                         </button>
                       </div>
                       <div className="flex flex-wrap gap-2">

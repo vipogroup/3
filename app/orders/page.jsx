@@ -48,7 +48,7 @@ export default function OrdersPage() {
       case 'processing':
         return 'bg-blue-100 text-blue-800';
       case 'shipped':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-cyan-100 text-cyan-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -80,7 +80,7 @@ export default function OrdersPage() {
             style={{
               border: '2px solid transparent',
               backgroundImage:
-                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
               boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -90,7 +90,7 @@ export default function OrdersPage() {
               className="animate-spin rounded-full h-12 w-12 mx-auto"
               style={{
                 border: '4px solid rgba(8, 145, 178, 0.2)',
-                borderTopColor: '#0891b2',
+                borderTopColor: 'var(--secondary)',
               }}
             ></div>
             <p className="text-gray-600 mt-4 text-center font-medium">טוען הזמנות...</p>
@@ -109,7 +109,7 @@ export default function OrdersPage() {
             <h1
               className="text-4xl font-bold mb-2"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -119,7 +119,7 @@ export default function OrdersPage() {
             </h1>
             <div
               className="h-1 w-32 rounded-full"
-              style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)' }}
             />
           </div>
 
@@ -136,7 +136,7 @@ export default function OrdersPage() {
                 style={{
                   border: '2px solid transparent',
                   backgroundImage:
-                    'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                    'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
                   backgroundOrigin: 'border-box',
                   backgroundClip: 'padding-box, border-box',
                   boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -144,7 +144,7 @@ export default function OrdersPage() {
               >
                 <svg
                   className="w-24 h-24 mx-auto mb-4"
-                  style={{ color: '#0891b2' }}
+                  style={{ color: 'var(--secondary)' }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -161,16 +161,16 @@ export default function OrdersPage() {
                 <Link
                   href="/shop"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all shadow-md"
-                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background =
-                      'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                      'linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%)';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                     e.currentTarget.style.boxShadow = '0 6px 20px rgba(8, 145, 178, 0.4)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background =
-                      'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                      'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                     e.currentTarget.style.transform = 'translateY(0)';
                     e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
                   }}
@@ -188,7 +188,7 @@ export default function OrdersPage() {
                   style={{
                     border: '2px solid transparent',
                     backgroundImage:
-                      'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                      'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
                     backgroundOrigin: 'border-box',
                     backgroundClip: 'padding-box, border-box',
                     boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -273,9 +273,9 @@ export default function OrdersPage() {
                               }`}
                               style={{
                                 background: isActive
-                                  ? 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                                  ? 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
                                   : '#e5e7eb',
-                                ringColor: isActive ? '#0891b2' : 'transparent',
+                                ringColor: isActive ? 'var(--secondary)' : 'transparent',
                               }}
                             >
                               {isActive ? (
@@ -297,7 +297,7 @@ export default function OrdersPage() {
                       <div
                         className="absolute top-0 right-0 h-full rounded-full transition-all duration-500"
                         style={{
-                          background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)',
+                          background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)',
                           width: order.status === 'cancelled' ? '0%' :
                                  order.status === 'pending' ? '12.5%' :
                                  order.status === 'processing' ? '37.5%' :
@@ -335,7 +335,7 @@ export default function OrdersPage() {
                       onClick={() => setSelectedOrder(order)}
                       className="px-5 py-2.5 rounded-xl font-medium transition-all hover:scale-105"
                       style={{
-                        background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                        background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                         color: 'white',
                       }}
                     >
@@ -360,7 +360,7 @@ export default function OrdersPage() {
             onClick={(e) => e.stopPropagation()}
             style={{
               border: '2px solid transparent',
-              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
               boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25)',
@@ -369,7 +369,7 @@ export default function OrdersPage() {
             {/* Modal Header */}
             <div className="sticky top-0 bg-white p-6 border-b flex items-center justify-between rounded-t-2xl">
               <div>
-                <h2 className="text-2xl font-bold" style={{ color: '#1e3a8a' }}>
+                <h2 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>
                   הזמנה #{selectedOrder._id?.slice(-6)}
                 </h2>
                 <p className="text-sm text-gray-500">
@@ -434,7 +434,7 @@ export default function OrdersPage() {
                         <p className="font-medium text-gray-900 truncate">{item.name || 'מוצר'}</p>
                         <p className="text-sm text-gray-500">כמות: {item.quantity || 1}</p>
                       </div>
-                      <p className="font-bold text-lg" style={{ color: '#1e3a8a' }}>
+                      <p className="font-bold text-lg" style={{ color: 'var(--primary)' }}>
                         ₪{(item.totalPrice || item.unitPrice || item.price || 0).toLocaleString('he-IL')}
                       </p>
                     </div>
@@ -496,7 +496,7 @@ export default function OrdersPage() {
                   )}
                   <div className="flex justify-between text-xl font-bold pt-2 border-t">
                     <span>סה&quot;כ:</span>
-                    <span style={{ color: '#1e3a8a' }}>
+                    <span style={{ color: 'var(--primary)' }}>
                       ₪{(selectedOrder.totals?.totalAmount || selectedOrder.totalAmount || 0).toLocaleString('he-IL')}
                     </span>
                   </div>
@@ -509,7 +509,7 @@ export default function OrdersPage() {
                   href="/shop"
                   className="flex-1 py-3 rounded-xl font-medium text-center transition-all hover:scale-105"
                   style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                    background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                     color: 'white',
                   }}
                 >
@@ -518,7 +518,7 @@ export default function OrdersPage() {
                 <button
                   onClick={() => setSelectedOrder(null)}
                   className="flex-1 py-3 rounded-xl font-medium border-2 transition-all hover:bg-gray-50"
-                  style={{ borderColor: '#1e3a8a', color: '#1e3a8a' }}
+                  style={{ borderColor: 'var(--primary)', color: 'var(--primary)' }}
                 >
                   סגור
                 </button>

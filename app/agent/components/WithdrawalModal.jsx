@@ -17,10 +17,10 @@ const statusColors = {
 };
 
 const PAYMENT_METHODS = [
-  { id: 'bit', label: 'ביט', icon: '💳' },
-  { id: 'paybox', label: 'פייבוקס', icon: '📱' },
-  { id: 'paypal', label: 'פייפל', icon: '🅿️' },
-  { id: 'bank', label: 'העברה בנקאית', icon: '🏦' },
+  { id: 'bit', label: 'ביט', icon: 'B' },
+  { id: 'paybox', label: 'פייבוקס', icon: 'P' },
+  { id: 'paypal', label: 'פייפל', icon: 'PP' },
+  { id: 'bank', label: 'העברה בנקאית', icon: 'BK' },
 ];
 
 export default function WithdrawalModal({

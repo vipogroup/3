@@ -267,7 +267,7 @@ export default function EmergencyBackupPage() {
           return;
         }
         const data = await res.json();
-        if (data.user.role !== 'admin') {
+        if (data.user.role !== 'admin' && data.user.role !== 'super_admin') {
           router.push('/');
           return;
         }
@@ -512,10 +512,10 @@ export default function EmergencyBackupPage() {
 
             <button
               onClick={() => downloadBackup('env')}
-              className="p-4 rounded-lg border-2 border-purple-200 bg-purple-50 hover:bg-purple-100 transition-all text-right"
+              className="p-4 rounded-lg border-2 border-cyan-200 bg-cyan-50 hover:bg-cyan-100 transition-all text-right"
             >
               <div className="flex items-center gap-3">
-                <span className="w-12 h-12 rounded-lg bg-purple-500 text-white flex items-center justify-center">
+                <span className="w-12 h-12 rounded-lg text-white flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
@@ -592,8 +592,8 @@ export default function EmergencyBackupPage() {
                 </div>
                 
                 {/* הוראות ל-Windsurf */}
-                <div className="p-4 rounded-lg bg-purple-50 border border-purple-200">
-                  <h4 className="font-bold text-purple-900 mb-2 flex items-center gap-2">
+                <div className="p-4 rounded-lg bg-cyan-50 border border-cyan-200">
+                  <h4 className="font-bold text-cyan-900 mb-2 flex items-center gap-2">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                     </svg>
@@ -609,7 +609,8 @@ export default function EmergencyBackupPage() {
                         setMessage('הועתק ללוח!');
                         setTimeout(() => setMessage(''), 2000);
                       }}
-                      className="absolute top-2 left-2 px-3 py-1 rounded bg-purple-500 hover:bg-purple-600 text-white text-xs font-medium transition-all"
+                      className="absolute top-2 left-2 px-3 py-1 rounded text-white text-xs font-medium transition-all"
+                      style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                     >
                       העתק
                     </button>
@@ -629,53 +630,53 @@ export default function EmergencyBackupPage() {
             מדריך הקמת מערכת חדשה
           </h2>
           <div className="space-y-4">
-            <div className="p-4 rounded-lg bg-gray-50 border-r-4 border-blue-500 flex items-center justify-between">
+            <div className="p-4 rounded-lg bg-gray-50 border-r-4 flex items-center justify-between" style={{ borderColor: '#0891b2' }}>
               <div>
                 <h3 className="font-bold text-gray-900">שלב 1: יצירת חשבונות</h3>
                 <p className="text-sm text-gray-600 mt-1">צור חשבונות ב-Vercel, MongoDB Atlas, Cloudinary</p>
               </div>
-              <button onClick={() => setInfoModal('step1')} className="w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center font-bold text-sm transition-all">!</button>
+              <button onClick={() => setInfoModal('step1')} className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-sm transition-all" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>!</button>
             </div>
-            <div className="p-4 rounded-lg bg-gray-50 border-r-4 border-green-500 flex items-center justify-between">
+            <div className="p-4 rounded-lg bg-gray-50 border-r-4 flex items-center justify-between" style={{ borderColor: '#0891b2' }}>
               <div>
                 <h3 className="font-bold text-gray-900">שלב 2: שכפול הקוד</h3>
                 <p className="text-sm text-gray-600 mt-1">
                   <code className="bg-gray-200 px-2 py-1 rounded text-xs">git clone https://github.com/vipogroup/vipo-agents-test.git</code>
                 </p>
               </div>
-              <button onClick={() => setInfoModal('step2')} className="w-8 h-8 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold text-sm transition-all">!</button>
+              <button onClick={() => setInfoModal('step2')} className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-sm transition-all" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>!</button>
             </div>
-            <div className="p-4 rounded-lg bg-gray-50 border-r-4 border-purple-500 flex items-center justify-between">
+            <div className="p-4 rounded-lg bg-gray-50 border-r-4 flex items-center justify-between" style={{ borderColor: '#0891b2' }}>
               <div>
                 <h3 className="font-bold text-gray-900">שלב 3: הגדרת משתני סביבה</h3>
                 <p className="text-sm text-gray-600 mt-1">העתק את קובץ .env.local מהגיבוי ועדכן את ה-MONGODB_URI</p>
               </div>
-              <button onClick={() => setInfoModal('step3')} className="w-8 h-8 rounded-full bg-purple-500 hover:bg-purple-600 text-white flex items-center justify-center font-bold text-sm transition-all">!</button>
+              <button onClick={() => setInfoModal('step3')} className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-sm transition-all" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>!</button>
             </div>
-            <div className="p-4 rounded-lg bg-gray-50 border-r-4 border-amber-500 flex items-center justify-between">
+            <div className="p-4 rounded-lg bg-gray-50 border-r-4 flex items-center justify-between" style={{ borderColor: '#0891b2' }}>
               <div>
                 <h3 className="font-bold text-gray-900">שלב 4: התקנה והרצה</h3>
                 <p className="text-sm text-gray-600 mt-1">
                   <code className="bg-gray-200 px-2 py-1 rounded text-xs">npm install && npm run dev</code>
                 </p>
               </div>
-              <button onClick={() => setInfoModal('step4')} className="w-8 h-8 rounded-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center font-bold text-sm transition-all">!</button>
+              <button onClick={() => setInfoModal('step4')} className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-sm transition-all" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>!</button>
             </div>
-            <div className="p-4 rounded-lg bg-gray-50 border-r-4 border-red-500 flex items-center justify-between">
+            <div className="p-4 rounded-lg bg-gray-50 border-r-4 flex items-center justify-between" style={{ borderColor: '#0891b2' }}>
               <div>
                 <h3 className="font-bold text-gray-900">שלב 5: שחזור מסד נתונים</h3>
                 <p className="text-sm text-gray-600 mt-1">היכנס ל-/admin/backups ושחזר מקובץ ה-JSON</p>
               </div>
-              <button onClick={() => setInfoModal('step5')} className="w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center font-bold text-sm transition-all">!</button>
+              <button onClick={() => setInfoModal('step5')} className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-sm transition-all" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>!</button>
             </div>
-            <div className="p-4 rounded-lg bg-gray-50 border-r-4 border-cyan-500 flex items-center justify-between">
+            <div className="p-4 rounded-lg bg-gray-50 border-r-4 flex items-center justify-between" style={{ borderColor: '#0891b2' }}>
               <div>
                 <h3 className="font-bold text-gray-900">שלב 6: העלאה ל-Vercel</h3>
                 <p className="text-sm text-gray-600 mt-1">
                   <code className="bg-gray-200 px-2 py-1 rounded text-xs">vercel --prod</code>
                 </p>
               </div>
-              <button onClick={() => setInfoModal('step6')} className="w-8 h-8 rounded-full bg-cyan-500 hover:bg-cyan-600 text-white flex items-center justify-center font-bold text-sm transition-all">!</button>
+              <button onClick={() => setInfoModal('step6')} className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-sm transition-all" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>!</button>
             </div>
           </div>
         </div>

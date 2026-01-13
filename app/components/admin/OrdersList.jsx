@@ -292,7 +292,7 @@ export default function OrdersList() {
                             {order.agent?.fullName || order.agentName}
                           </div>
                           {order.appliedCouponCode && (
-                            <code className="text-xs bg-purple-50 text-purple-600 px-1 rounded">
+                            <code className="text-xs bg-cyan-50 text-cyan-700 px-1 rounded">
                               {order.appliedCouponCode.toUpperCase()}
                             </code>
                           )}

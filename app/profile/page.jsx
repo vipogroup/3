@@ -222,7 +222,7 @@ export default function ProfilePage() {
       });
 
       if (res.ok) {
-        alert('🎉 ברכות! הפכת לסוכן בהצלחה!');
+        alert('ברכות! הפכת לסוכן בהצלחה!');
         // Full page reload to get new token from cookies
         window.location.href = '/agent';
       } else {
@@ -257,14 +257,14 @@ export default function ProfilePage() {
             <button
               onClick={() => router.push('/login')}
               className="text-white px-6 py-2 rounded-lg transition-all duration-300"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.background =
                   'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)')
               }
               onMouseLeave={(e) =>
                 (e.currentTarget.style.background =
-                  'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)')
+                  'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)')
               }
             >
               חזרה להתחברות
@@ -283,7 +283,7 @@ export default function ProfilePage() {
           <div className="text-center mb-8">
             <div
               className="w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
             >
               <svg
                 className="w-12 h-12 text-white"
@@ -302,7 +302,7 @@ export default function ProfilePage() {
             <h1
               className="text-3xl font-bold mb-3"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -312,7 +312,7 @@ export default function ProfilePage() {
             </h1>
             <span
               className="inline-block text-white text-sm font-medium px-4 py-1 rounded-full"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
             >
               {roleLabel}
             </span>
@@ -323,7 +323,7 @@ export default function ProfilePage() {
             <div
               className="rounded-2xl shadow-xl p-4 sm:p-6 mb-6"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
               }}
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -353,7 +353,7 @@ export default function ProfilePage() {
                 <button
                   onClick={() => setShowAgentModal(true)}
                   className="bg-white font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all shadow-lg hover:shadow-xl w-full sm:w-auto flex items-center justify-center gap-2"
-                  style={{ color: '#1e3a8a' }}
+                  style={{ color: 'var(--primary)' }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = '#f0f9ff';
                     e.currentTarget.style.transform = 'translateY(-2px)';
@@ -383,18 +383,18 @@ export default function ProfilePage() {
             style={{
               border: '2px solid transparent',
               backgroundImage:
-                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
               boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
             }}
           >
-            <h2 className="text-xl font-bold text-center mb-1" style={{ color: '#1e3a8a' }}>
+            <h2 className="text-xl font-bold text-center mb-1" style={{ color: 'var(--primary)' }}>
               מידע אישי
             </h2>
             <div
               className="w-16 h-1 mx-auto mb-6 rounded-full"
-              style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)' }}
             ></div>
 
             <div className="space-y-4">
@@ -433,24 +433,24 @@ export default function ProfilePage() {
               style={{
                 border: '2px solid transparent',
                 backgroundImage:
-                  'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                  'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
                 backgroundOrigin: 'border-box',
                 backgroundClip: 'padding-box, border-box',
                 boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
               }}
             >
-              <h2 className="text-xl font-bold text-center mb-1" style={{ color: '#1e3a8a' }}>
+              <h2 className="text-xl font-bold text-center mb-1" style={{ color: 'var(--primary)' }}>
                 קוד הקופון שלך
               </h2>
               <div
                 className="w-16 h-1 mx-auto mb-6 rounded-full"
-                style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+                style={{ background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)' }}
               ></div>
 
               <div
                 className="rounded-xl p-4 text-center"
                 style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 }}
               >
                 <code className="text-2xl font-bold text-white">{couponCode.toUpperCase()}</code>
@@ -468,12 +468,12 @@ export default function ProfilePage() {
                 className="w-full mt-4 text-white font-medium py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
                 style={{
                   background: 'white',
-                  color: '#1e3a8a',
+                  color: 'var(--primary)',
                   border: '2px solid #1e3a8a',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background =
-                    'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                    'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                   e.currentTarget.style.color = 'white';
                 }}
                 onMouseLeave={(e) => {
@@ -500,21 +500,21 @@ export default function ProfilePage() {
             style={{
               border: '2px solid transparent',
               backgroundImage:
-                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
               boxShadow: '0 4px 15px rgba(8, 145, 178, 0.12)',
             }}
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold" style={{ color: '#1e3a8a' }}>
+              <h2 className="text-xl font-bold" style={{ color: 'var(--primary)' }}>
                 עדכון פרטים
               </h2>
               {!isEditing && (
                 <button
                   onClick={handleEditClick}
                   className="flex items-center gap-2 text-white font-medium px-4 py-2 rounded-lg transition-all duration-300"
-                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background =
                       'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
@@ -522,7 +522,7 @@ export default function ProfilePage() {
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background =
-                      'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                      'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
@@ -600,7 +600,7 @@ export default function ProfilePage() {
                   <button
                     type="submit"
                     className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-all duration-300 disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                     disabled={saving}
                     onMouseEnter={(e) => {
                       if (!saving)
@@ -610,7 +610,7 @@ export default function ProfilePage() {
                     onMouseLeave={(e) => {
                       if (!saving)
                         e.currentTarget.style.background =
-                          'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                          'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                     }}
                   >
                     {saving ? 'שומר...' : 'שמור'}
@@ -638,7 +638,7 @@ export default function ProfilePage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold" style={{ color: '#dc2626' }}>
-                🔐 שינוי סיסמה
+                שינוי סיסמה
               </h2>
               {!showPasswordForm && (
                 <button
@@ -771,7 +771,7 @@ export default function ProfilePage() {
             <div className="text-center mb-6">
               <div
                 className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
-                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
               >
                 <svg
                   className="w-10 h-10 text-white"
@@ -799,10 +799,10 @@ export default function ProfilePage() {
                 border: '2px solid rgba(8, 145, 178, 0.3)',
               }}
             >
-              <h4 className="font-bold mb-3 text-lg" style={{ color: '#1e3a8a' }}>
+              <h4 className="font-bold mb-3 text-lg" style={{ color: 'var(--primary)' }}>
                 מה תקבל כסוכן?
               </h4>
-              <ul className="space-y-2" style={{ color: '#1e3a8a' }}>
+              <ul className="space-y-2" style={{ color: 'var(--primary)' }}>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: '#0891b2' }}>
                     ✓
@@ -858,7 +858,7 @@ export default function ProfilePage() {
                 onClick={handleUpgradeToAgent}
                 disabled={upgrading}
                 className="flex-1 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                 onMouseEnter={(e) => {
                   if (!upgrading)
                     e.currentTarget.style.background =
@@ -867,7 +867,7 @@ export default function ProfilePage() {
                 onMouseLeave={(e) => {
                   if (!upgrading)
                     e.currentTarget.style.background =
-                      'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                      'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                 }}
               >
                 {upgrading ? (

@@ -67,14 +67,14 @@ async function GETHandler(req) {
       query.agentId = new ObjectId(user.userId);
     } else if (agentId) {
       // Admin/Business Admin can see any agent's goals (within their tenant)
-      if (user.role !== 'admin' && user.role !== 'business_admin') {
+      if (user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin') {
         return NextResponse.json(
           { error: "Forbidden: Admin access required to view other agents' goals" },
           { status: 403 },
         );
       }
       query.agentId = new ObjectId(agentId);
-    } else if (user.role !== 'admin' && user.role !== 'business_admin') {
+    } else if (user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin') {
       // Non-admin users can only see their own goals
       query.agentId = new ObjectId(user.userId);
     }

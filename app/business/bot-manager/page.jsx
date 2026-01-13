@@ -1,34 +1,72 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { BotIcons } from '@/components/admin/BotIcons';
 
 export default function BusinessBotManagerPage() {
   const [businessId, setBusinessId] = useState(null);
   const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState('texts');
+  const [activeTab, setActiveTab] = useState('overview');
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
-  // Get businessId from API
+  // Stats calculations
+  const stats = useMemo(() => {
+    if (!config) return { categories: 0, questions: 0, active: 0 };
+    const categories = config.categories?.length || 0;
+    const questions = config.categories?.reduce((sum, cat) => sum + (cat.questions?.length || 0), 0) || 0;
+    const active = config.categories?.filter(c => c.isActive).length || 0;
+    return { categories, questions, active };
+  }, [config]);
+
+  // Filtered categories for search
+  const filteredCategories = useMemo(() => {
+    if (!config?.categories || !searchQuery) return config?.categories || [];
+    return config.categories.filter(cat => 
+      cat.name.includes(searchQuery) ||
+      cat.questions?.some(q => q.question.includes(searchQuery) || q.answer.includes(searchQuery))
+    );
+  }, [config?.categories, searchQuery]);
+
+  const showMessage = (type, text) => {
+    setMessage({ type, text });
+    setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+  };
+
+  // Check auth and get businessId
   useEffect(() => {
-    const getBusinessId = async () => {
+    async function checkAuth() {
       try {
-        const res = await fetch('/api/auth/session');
-        const data = await res.json();
-        if (data?.user?.businessId) {
-          setBusinessId(data.user.businessId);
-        } else if (data?.user?.id) {
-          setBusinessId(data.user.id);
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!res.ok) {
+          router.push('/login');
+          return;
         }
+        const data = await res.json();
+        if (data.user?.role !== 'business_admin' && data.user?.role !== 'admin' && data.user?.role !== 'super_admin') {
+          router.push('/');
+          return;
+        }
+        if (!data.user?.tenantId && data.user?.role === 'business_admin') {
+          router.push('/login');
+          return;
+        }
+        setAuthorized(true);
+        setBusinessId(data.user.tenantId || data.user.id);
       } catch (error) {
-        console.error('Error getting session:', error);
+        console.error('Auth error:', error);
+        router.push('/login');
       }
-    };
-    getBusinessId();
-  }, []);
+    }
+    checkAuth();
+  }, [router]);
 
   useEffect(() => {
     if (businessId) {
@@ -68,14 +106,47 @@ export default function BusinessBotManagerPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setMessage({ type: 'success', text: 'ההגדרות נשמרו בהצלחה!' });
-        setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+        showMessage('success', 'ההגדרות נשמרו בהצלחה!');
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'שגיאה בשמירה' });
+      showMessage('error', 'שגיאה בשמירה');
     } finally {
       setSaving(false);
     }
+  };
+
+  // Export config to JSON file
+  const exportConfig = () => {
+    const dataStr = JSON.stringify(config, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bot-config-business-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showMessage('success', 'הקובץ יוצא בהצלחה!');
+  };
+
+  // Import config from JSON file
+  const importConfig = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const imported = JSON.parse(event.target.result);
+        if (imported.categories) {
+          setConfig(prev => ({ ...prev, ...imported }));
+          showMessage('success', 'הקונפיגורציה יובאה בהצלחה! לחץ שמור להחלת השינויים.');
+        }
+      } catch (err) {
+        showMessage('error', 'שגיאה בקריאת הקובץ');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
   };
 
   const updateText = (section, key, value) => {
@@ -128,8 +199,7 @@ export default function BusinessBotManagerPage() {
       const data = await res.json();
       if (data.success) {
         setConfig(data.config);
-        setMessage({ type: 'success', text: 'קטגוריה נוספה!' });
-        setTimeout(() => setMessage({ type: '', text: '' }), 2000);
+        showMessage('success', 'קטגוריה נוספה!');
       }
     } catch (error) {
       console.error('Error adding category:', error);
@@ -152,8 +222,7 @@ export default function BusinessBotManagerPage() {
       const data = await res.json();
       if (data.success) {
         setConfig(data.config);
-        setMessage({ type: 'success', text: 'שאלה נוספה!' });
-        setTimeout(() => setMessage({ type: '', text: '' }), 2000);
+        showMessage('success', 'שאלה נוספה!');
       }
     } catch (error) {
       console.error('Error adding question:', error);
@@ -169,8 +238,7 @@ export default function BusinessBotManagerPage() {
       const data = await res.json();
       if (data.success) {
         setConfig(data.config);
-        setMessage({ type: 'success', text: 'הקטגוריה נמחקה!' });
-        setTimeout(() => setMessage({ type: '', text: '' }), 2000);
+        showMessage('success', 'הקטגוריה נמחקה!');
       }
     } catch (error) {
       console.error('Error deleting category:', error);
@@ -186,8 +254,7 @@ export default function BusinessBotManagerPage() {
       const data = await res.json();
       if (data.success) {
         setConfig(data.config);
-        setMessage({ type: 'success', text: 'השאלה נמחקה!' });
-        setTimeout(() => setMessage({ type: '', text: '' }), 2000);
+        showMessage('success', 'השאלה נמחקה!');
       }
     } catch (error) {
       console.error('Error deleting question:', error);
@@ -211,50 +278,58 @@ export default function BusinessBotManagerPage() {
   }
 
   const tabs = [
-    { id: 'texts', label: 'טקסטים', icon: 'fa-font' },
-    { id: 'categories', label: 'קטגוריות ושאלות', icon: 'fa-list' },
-    { id: 'buttons', label: 'כפתורים', icon: 'fa-square' },
-    { id: 'settings', label: 'הגדרות', icon: 'fa-cog' }
+    { id: 'overview', label: 'סקירה', icon: BotIcons.chart },
+    { id: 'texts', label: 'טקסטים', icon: BotIcons.text },
+    { id: 'categories', label: 'קטגוריות', icon: BotIcons.list },
+    { id: 'buttons', label: 'כפתורים', icon: BotIcons.button },
+    { id: 'settings', label: 'הגדרות', icon: BotIcons.settings }
   ];
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white shadow-sm border-b sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              <Link href="/business" className="text-gray-500 hover:text-gray-700">
-                <i className="fas fa-arrow-right"></i>
+              <Link href="/business" className="text-gray-500 hover:text-gray-700 transition-colors">
+                {BotIcons.arrowRight}
               </Link>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
-                  <i className="fas fa-robot text-white"></i>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  {BotIcons.robot}
                 </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-800">ניהול בוט צאט</h1>
+                <div className="hidden sm:block">
+                  <h1 className="text-xl font-bold text-gray-800">ניהול בוט צ&apos;אט</h1>
                   <p className="text-sm text-gray-500">דשבורד עסק</p>
                 </div>
               </div>
             </div>
-            <button
-              onClick={saveConfig}
-              disabled={saving}
-              className="px-6 py-2.5 rounded-xl text-white font-medium transition-all hover:scale-105 disabled:opacity-50 flex items-center gap-2"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-            >
-              {saving ? (
-                <>
-                  <i className="fas fa-spinner fa-spin"></i>
-                  שומר...
-                </>
-              ) : (
-                <>
-                  <i className="fas fa-save"></i>
-                  שמור שינויים
-                </>
-              )}
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Export Button */}
+              <button
+                onClick={exportConfig}
+                className="p-2.5 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors hidden sm:flex"
+                title="ייצוא קונפיגורציה"
+              >
+                {BotIcons.download}
+              </button>
+              {/* Import Button */}
+              <label className="p-2.5 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer hidden sm:flex" title="ייבוא קונפיגורציה">
+                {BotIcons.upload}
+                <input type="file" accept=".json" onChange={importConfig} className="hidden" />
+              </label>
+              {/* Save Button */}
+              <button
+                onClick={saveConfig}
+                disabled={saving}
+                className="px-4 sm:px-6 py-2.5 rounded-xl text-white font-medium transition-all hover:scale-105 disabled:opacity-50 flex items-center gap-2"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                {saving ? BotIcons.spinner : BotIcons.save}
+                <span className="hidden sm:inline">{saving ? 'שומר...' : 'שמור'}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -275,21 +350,125 @@ export default function BusinessBotManagerPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 min-w-[120px] px-4 py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 min-w-[100px] px-3 sm:px-4 py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                 activeTab === tab.id
                   ? 'text-white'
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
               style={activeTab === tab.id ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
             >
-              <i className={`fas ${tab.icon}`}></i>
-              {tab.label}
+              {tab.icon}
+              <span className="hidden sm:inline">{tab.label}</span>
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-2xl shadow-sm p-6">
+        <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6">
+          {/* Overview Tab */}
+          {activeTab === 'overview' && (
+            <div className="space-y-6">
+              <h2 className="text-lg font-bold text-gray-800">סקירה כללית</h2>
+              
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl p-4 text-white">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                      {BotIcons.folder}
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{stats.categories}</p>
+                      <p className="text-sm opacity-80">קטגוריות</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl p-4 text-white">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                      {BotIcons.question}
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{stats.questions}</p>
+                      <p className="text-sm opacity-80">שאלות</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl p-4 text-white">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                      {BotIcons.check}
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{stats.active}</p>
+                      <p className="text-sm opacity-80">פעילות</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="border-t pt-6">
+                <h3 className="text-md font-bold text-gray-700 mb-4">פעולות מהירות</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <button
+                    onClick={() => setActiveTab('categories')}
+                    className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center"
+                  >
+                    <div className="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                      {BotIcons.plus}
+                    </div>
+                    <span className="text-sm text-gray-700">הוסף קטגוריה</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('texts')}
+                    className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center"
+                  >
+                    <div className="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                      {BotIcons.text}
+                    </div>
+                    <span className="text-sm text-gray-700">ערוך טקסטים</span>
+                  </button>
+                  <button
+                    onClick={exportConfig}
+                    className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center"
+                  >
+                    <div className="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                      {BotIcons.download}
+                    </div>
+                    <span className="text-sm text-gray-700">ייצא הגדרות</span>
+                  </button>
+                  <label className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center cursor-pointer">
+                    <div className="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                      {BotIcons.upload}
+                    </div>
+                    <span className="text-sm text-gray-700">ייבא הגדרות</span>
+                    <input type="file" accept=".json" onChange={importConfig} className="hidden" />
+                  </label>
+                </div>
+              </div>
+
+              {/* Bot Status */}
+              <div className="border-t pt-6">
+                <h3 className="text-md font-bold text-gray-700 mb-4">מצב הבוט</h3>
+                <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                  <div className={`w-3 h-3 rounded-full ${config.settings?.isActive ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <span className="text-gray-700">{config.settings?.isActive ? 'הבוט פעיל ומוצג באתר' : 'הבוט כבוי'}</span>
+                  <button
+                    onClick={() => updateText('settings', 'isActive', !config.settings?.isActive)}
+                    className="mr-auto px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                    style={{ 
+                      background: config.settings?.isActive ? '#fee2e2' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                      color: config.settings?.isActive ? '#dc2626' : 'white'
+                    }}
+                  >
+                    {config.settings?.isActive ? 'כבה בוט' : 'הפעל בוט'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Texts Tab */}
           {activeTab === 'texts' && (
             <div className="space-y-6">
@@ -375,20 +554,36 @@ export default function BusinessBotManagerPage() {
           {/* Categories Tab */}
           {activeTab === 'categories' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between mb-4">
+              {/* Header with search */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <h2 className="text-lg font-bold text-gray-800">קטגוריות ושאלות</h2>
-                <button
-                  onClick={addCategory}
-                  className="px-4 py-2 rounded-xl text-white font-medium transition-all hover:scale-105 flex items-center gap-2"
-                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-                >
-                  <i className="fas fa-plus"></i>
-                  הוסף קטגוריה
-                </button>
+                <div className="flex items-center gap-3">
+                  {/* Search */}
+                  <div className="relative flex-1 sm:flex-none">
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                      {BotIcons.search}
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="חיפוש..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full sm:w-48 pr-10 pl-4 py-2 rounded-xl border border-gray-200 focus:border-cyan-500 outline-none text-sm"
+                    />
+                  </div>
+                  <button
+                    onClick={addCategory}
+                    className="px-4 py-2 rounded-xl text-white font-medium transition-all hover:scale-105 flex items-center gap-2 whitespace-nowrap"
+                    style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  >
+                    {BotIcons.plus}
+                    <span className="hidden sm:inline">הוסף קטגוריה</span>
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-4">
-                {config.categories.map((category) => (
+                {filteredCategories.map((category) => (
                   <div key={category.id} className="border border-gray-200 rounded-xl overflow-hidden">
                     {/* Category Header */}
                     <div
@@ -396,7 +591,7 @@ export default function BusinessBotManagerPage() {
                       onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
                     >
                       <div className="flex items-center gap-4 flex-1">
-                        <i className={`fas fa-chevron-${expandedCategory === category.id ? 'up' : 'down'} text-gray-400`}></i>
+                        <span className="text-gray-400">{expandedCategory === category.id ? BotIcons.chevronUp : BotIcons.chevronDown}</span>
                         <input
                           type="text"
                           value={category.name}
@@ -431,7 +626,7 @@ export default function BusinessBotManagerPage() {
                         }}
                         className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                       >
-                        <i className="fas fa-trash"></i>
+                        {BotIcons.trash}
                       </button>
                     </div>
 
@@ -453,7 +648,7 @@ export default function BusinessBotManagerPage() {
                                 onClick={() => deleteQuestion(category.id, question.id)}
                                 className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors"
                               >
-                                <i className="fas fa-times"></i>
+                                {BotIcons.close}
                               </button>
                             </div>
                             <div className="flex items-start gap-3">
@@ -473,7 +668,7 @@ export default function BusinessBotManagerPage() {
                           onClick={() => addQuestion(category.id)}
                           className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-cyan-500 hover:text-cyan-600 transition-colors flex items-center justify-center gap-2"
                         >
-                          <i className="fas fa-plus"></i>
+                          {BotIcons.plus}
                           הוסף שאלה
                         </button>
                       </div>
@@ -481,7 +676,7 @@ export default function BusinessBotManagerPage() {
 
                     {expandedCategory === category.id && category.isContact && (
                       <div className="p-4 bg-yellow-50 text-yellow-700 text-sm">
-                        <i className="fas fa-info-circle ml-2"></i>
+                        <span className="ml-2">{BotIcons.info}</span>
                         קטגוריית שיחה עם נציג - לחיצה על קטגוריה זו תפתח טופס יצירת קשר
                       </div>
                     )}

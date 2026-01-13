@@ -80,7 +80,7 @@ export default function CustomerNav() {
                 href={href}
                 className={`${baseLinkClasses} ${
                   isActive
-                    ? 'bg-purple-500 text-white shadow-md'
+                    ? 'bg-cyan-600 text-white shadow-md'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >

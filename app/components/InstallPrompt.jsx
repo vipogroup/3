@@ -166,7 +166,7 @@ export default function InstallPrompt() {
 
             {/* Step 3 */}
             <div className="flex items-start gap-4 p-4 bg-green-50 rounded-xl">
-              <div className="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+              <div className="flex-shrink-0 w-8 h-8 text-white rounded-full flex items-center justify-center font-bold" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                 3
               </div>
               <div className="flex-1">

@@ -23,7 +23,7 @@ export default function SecurityPage() {
         return;
       }
       const data = await res.json();
-      if (data.user.role !== 'admin') {
+      if (data.user.role !== 'admin' && data.user.role !== 'super_admin') {
         router.push('/');
         return;
       }
@@ -224,7 +224,7 @@ export default function SecurityPage() {
                               {log.action || 'פעולה'}
                             </span>
                             {log.category && (
-                              <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">{log.category}</span>
+                              <span className="px-2 py-0.5 bg-cyan-100 text-cyan-700 rounded text-xs">{log.category}</span>
                             )}
                           </div>
                           <p className="text-sm text-gray-900 font-medium">{log.details?.message || log.action || 'אירוע אבטחה'}</p>

@@ -46,7 +46,7 @@ export default function ReferralCard() {
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 border border-blue-200">
       <div className="flex items-center gap-3 mb-4">
-        <span className="text-3xl">🎁</span>
+        <span className="text-3xl text-blue-600">R</span>
         <h3 className="text-xl font-bold text-gray-900">חבר-מביא-חבר</h3>
       </div>
 
@@ -70,13 +70,14 @@ export default function ReferralCard() {
           onClick={handleCopy}
           className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
         >
-          {copied ? '✓ הועתק!' : '📋 העתק לינק'}
+          {copied ? 'הועתק!' : 'העתק לינק'}
         </button>
         <a
           href={wa}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium text-center"
+          className="flex-1 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium text-center"
+          style={{ background: '#25D366' }}
         >
           שתף ב-WhatsApp
         </a>
@@ -98,7 +99,7 @@ export default function ReferralCard() {
 
       {/* Info */}
       <p className="text-xs text-gray-500 mt-4">
-        💡 כל חבר שנרשם דרך הלינק שלך יזוכה לך בנקודות ובונוסים
+        כל חבר שנרשם דרך הלינק שלך יזוכה לך בנקודות ובונוסים
       </p>
     </div>
   );

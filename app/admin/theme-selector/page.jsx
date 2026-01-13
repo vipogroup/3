@@ -24,7 +24,7 @@ export default function ThemeSelectorPage() {
         return;
       }
       const userData = await userRes.json();
-      if (userData.user.role !== 'admin') {
+      if (userData.user.role !== 'admin' && userData.user.role !== 'super_admin') {
         router.push('/');
         return;
       }
@@ -60,13 +60,13 @@ export default function ThemeSelectorPage() {
 
       if (res.ok) {
         setCurrentThemeId(themeId);
-        setMessage('✅ הסגנון עודכן בהצלחה! רענן את הדף לראות את השינויים.');
+        setMessage('הסגנון עודכן בהצלחה! רענן את הדף לראות את השינויים.');
       } else {
-        setMessage('❌ שגיאה בעדכון הסגנון');
+        setMessage('שגיאה בעדכון הסגנון');
       }
     } catch (error) {
       console.error('Theme change error:', error);
-      setMessage('❌ שגיאה בעדכון הסגנון');
+      setMessage('שגיאה בעדכון הסגנון');
     } finally {
       setSaving(false);
     }
@@ -90,7 +90,7 @@ export default function ThemeSelectorPage() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-              🎨 בחירת סגנון עיצוב
+              בחירת סגנון עיצוב
             </h1>
             <p className="text-gray-600">בחר סגנון עיצוב למערכת - בהשראת אתרי e-commerce מובילים</p>
           </div>
@@ -106,7 +106,7 @@ export default function ThemeSelectorPage() {
         {message && (
           <div
             className={`mb-6 p-4 rounded-xl ${
-              message.includes('✅')
+              message.includes('הצלחה')
                 ? 'bg-green-100 border border-green-300 text-green-800'
                 : 'bg-red-100 border border-red-300 text-red-800'
             }`}
@@ -220,7 +220,7 @@ export default function ThemeSelectorPage() {
 
         {/* Instructions */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-6">
-          <h3 className="text-lg font-bold text-blue-900 mb-3">💡 הוראות שימוש</h3>
+          <h3 className="text-lg font-bold text-blue-900 mb-3">הוראות שימוש</h3>
           <ul className="space-y-2 text-sm text-blue-800">
             <li>✓ לחץ על כרטיס סגנון כדי לבחור אותו</li>
             <li>✓ השינויים נשמרים מיד במסד הנתונים</li>

@@ -20,7 +20,7 @@ async function checkAdmin(req) {
     if (!process.env.JWT_SECRET) return null;
     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const { payload } = await jwtVerify(decodeURIComponent(tokenValue), secret);
-    if (payload.role !== 'admin') return null;
+    if (payload.role !== 'admin' && payload.role !== 'super_admin') return null;
     return payload;
   } catch {
     return null;

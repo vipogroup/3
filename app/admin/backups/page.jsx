@@ -33,7 +33,7 @@ function BackupsContent() {
           return;
         }
         const data = await res.json();
-        if (data.user.role !== 'admin') {
+        if (data.user.role !== 'admin' && data.user.role !== 'super_admin') {
           router.push('/');
           return;
         }
@@ -111,36 +111,36 @@ function BackupsContent() {
       setProgress(100);
       
       if (res.ok) {
-        let msg = `✅ ${data.message || actionName + ' הושלם בהצלחה!'}`;
+        let msg = `${data.message || actionName + ' הושלם בהצלחה!'}`;
         
         // If backup saved to folder, show folder info
         if (actionType === 'backup' && data.backupFolder) {
-          msg = `✅ ${data.message}\n\n📁 תיקייה: backups/database/${data.backupFolder}\n📊 אוספים: ${data.collectionsCount}\n📄 מסמכים: ${data.totalDocs}`;
+          msg = `${data.message}\n\nתיקייה: backups/database/${data.backupFolder}\nאוספים: ${data.collectionsCount}\nמסמכים: ${data.totalDocs}`;
         }
         
         // If redirect to Vercel needed, open in new tab
         if (data.redirectToVercel && data.vercelUrl) {
           window.open(data.vercelUrl, '_blank');
-          msg = '✅ נפתח דף Vercel בטאב חדש - בצע Redeploy משם';
+          msg = 'נפתח דף Vercel בטאב חדש - בצע Redeploy משם';
         }
         
         // Show commands if provided
         if (data.commands) {
-          msg += '\n\n📋 פקודות:\n' + data.commands.join('\n');
+          msg += '\n\nפקודות:\n' + data.commands.join('\n');
         }
         if (data.info) {
-          msg += '\n\nℹ️ ' + data.info;
+          msg += '\n\n' + data.info;
         }
         
         setMessage(msg);
         if (actionType === 'backup') await loadBackups();
       } else {
-        setMessage('❌ שגיאה: ' + (data.error || data.details || 'הפעולה נכשלה'));
+        setMessage('שגיאה: ' + (data.error || data.details || 'הפעולה נכשלה'));
       }
     } catch (error) {
       clearInterval(progressInterval);
       setProgress(0);
-      setMessage('❌ שגיאה: ' + error.message);
+      setMessage('שגיאה: ' + error.message);
     } finally {
       setTimeout(() => {
         setIsRunning(false);
@@ -192,15 +192,15 @@ function BackupsContent() {
         window.URL.revokeObjectURL(url);
         a.remove();
         
-        setMessage('✅ גיבוי מלא הורד בהצלחה!\n\nהקובץ כולל:\n• קוד המערכת\n• מסד נתונים\n• קובץ הגדרות (.env.local)\n• הוראות שחזור');
+        setMessage('גיבוי מלא הורד בהצלחה!\n\nהקובץ כולל:\n- קוד המערכת\n- מסד נתונים\n- קובץ הגדרות (.env.local)\n- הוראות שחזור');
       } else {
         const data = await res.json();
-        setMessage('❌ שגיאה: ' + (data.error || 'הגיבוי נכשל'));
+        setMessage('שגיאה: ' + (data.error || 'הגיבוי נכשל'));
       }
     } catch (error) {
       clearInterval(progressInterval);
       setProgress(0);
-      setMessage('❌ שגיאה: ' + error.message);
+      setMessage('שגיאה: ' + error.message);
     } finally {
       setTimeout(() => {
         setIsRunning(false);
@@ -212,7 +212,7 @@ function BackupsContent() {
 
   // שחזור גיבוי והעלאה ל-Vercel
   async function runRestoreAndDeploy(backupName) {
-    if (!confirm(`⚠️ שחזור גיבוי "${backupName}" והעלאה ל-Vercel\n\nפעולה זו תחליף את כל הנתונים הקיימים במערכת ותעלה את השינויים ל-Vercel.\n\nהאם להמשיך?`)) {
+    if (!confirm(`שחזור גיבוי "${backupName}" והעלאה ל-Vercel\n\nפעולה זו תחליף את כל הנתונים הקיימים במערכת ותעלה את השינויים ל-Vercel.\n\nהאם להמשיך?`)) {
       return;
     }
 
@@ -240,23 +240,23 @@ function BackupsContent() {
       setProgress(100);
 
       if (res.ok) {
-        let msg = `✅ ${data.message || 'שחזור והעלאה ל-Vercel הושלמו בהצלחה!'}`;
+        let msg = `${data.message || 'שחזור והעלאה ל-Vercel הושלמו בהצלחה!'}`;
         if (data.restored) {
-          msg += '\n\n📋 קולקציות ששוחזרו:\n';
+          msg += '\n\nקולקציות ששוחזרו:\n';
           msg += data.restored.map(c => `• ${c.name}: ${c.count} רשומות`).join('\n');
         }
         if (data.deployUrl) {
-          msg += `\n\n🚀 Vercel Deploy URL:\n${data.deployUrl}`;
+          msg += `\n\nVercel Deploy URL:\n${data.deployUrl}`;
         }
         setMessage(msg);
         await loadBackups();
       } else {
-        setMessage('❌ שגיאה: ' + (data.error || 'השחזור נכשל'));
+        setMessage('שגיאה: ' + (data.error || 'השחזור נכשל'));
       }
     } catch (error) {
       clearInterval(progressInterval);
       setProgress(0);
-      setMessage('❌ שגיאה: ' + error.message);
+      setMessage('שגיאה: ' + error.message);
     } finally {
       setTimeout(() => {
         setIsRunning(false);
@@ -319,21 +319,21 @@ function BackupsContent() {
   // אייקון לפי סוג פעולה
   function getActionIcon(action) {
     const icons = {
-      backup: '💾',
-      restore: '🔄',
-      deploy: '🚀',
-      update: '📥',
-      gitpush: '📤'
+      backup: 'B',
+      restore: 'R',
+      deploy: 'D',
+      update: 'U',
+      gitpush: 'G'
     };
-    return icons[action] || '📋';
+    return icons[action] || '-';
   }
 
   function getActionColor(action) {
     const colors = {
-      backup: '#16a34a',
+      backup: '#0891b2',
       restore: '#d97706',
-      deploy: '#7c3aed',
-      update: '#2563eb',
+      deploy: '#0891b2',
+      update: '#0891b2',
       gitpush: '#1f2937'
     };
     return colors[action] || '#6b7280';
@@ -494,7 +494,7 @@ function BackupsContent() {
 
         {/* Message */}
         {message && (
-          <div className={`mb-4 p-4 rounded-lg whitespace-pre-line ${message.includes('✅') ? 'bg-green-50 text-green-800' : message.includes('❌') ? 'bg-red-50 text-red-800' : 'bg-blue-50 text-blue-800'}`}>
+          <div className={`mb-4 p-4 rounded-lg whitespace-pre-line ${message.includes('הושלם') || message.includes('הורד') ? 'bg-green-50 text-green-800' : message.includes('שגיאה') ? 'bg-red-50 text-red-800' : 'bg-blue-50 text-blue-800'}`}>
             {message}
           </div>
         )}
@@ -527,9 +527,9 @@ function BackupsContent() {
         {/* Action Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {/* Backup */}
-          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #16a34a, #22c55e)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
+          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
             <div className="flex items-center gap-3 mb-4">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)' }}>
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                 </svg>
@@ -544,22 +544,22 @@ function BackupsContent() {
               onClick={runBackup} 
               disabled={isRunning}
               className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
-              {isRunning ? 'מבצע...' : '1. בצע גיבוי עכשיו'}
+              {isRunning ? 'מבצע...' : '1. גיבוי עכשיו'}
             </button>
           </div>
 
           {/* Full Backup - Code + DB */}
-          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #7c3aed, #a855f7)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
+          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
             <div className="flex items-center gap-3 mb-4">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}>
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                 </svg>
               </span>
               <div>
-                <h3 className="font-bold text-gray-900">גיבוי מלא</h3>
+                <h3 className="font-bold text-gray-900">2. גיבוי מלא</h3>
                 <p className="text-sm text-gray-500">קוד + DB + הגדרות</p>
               </div>
             </div>
@@ -568,22 +568,22 @@ function BackupsContent() {
               onClick={runFullBackup}
               disabled={isRunning}
               className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
-              {isRunning ? 'מגבה...' : 'גיבוי מלא (הורדה)'}
+              {isRunning ? 'מגבה...' : '2. גיבוי מלא (הורדה)'}
             </button>
           </div>
 
           {/* Update System */}
-          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #2563eb, #3b82f6)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
+          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
             <div className="flex items-center gap-3 mb-4">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' }}>
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                 </svg>
               </span>
               <div>
-                <h3 className="font-bold text-gray-900">2. עדכון מערכת</h3>
+                <h3 className="font-bold text-gray-900">3. עדכון מערכת</h3>
                 <p className="text-sm text-gray-500">משיכת קוד חדש מ-GitHub</p>
               </div>
             </div>
@@ -592,13 +592,86 @@ function BackupsContent() {
               onClick={runUpdate}
               disabled={isRunning}
               className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
-              {isRunning ? 'מעדכן...' : '2. עדכן מערכת עכשיו'}
+              {isRunning ? 'מעדכן...' : '3. עדכן מערכת'}
             </button>
           </div>
 
-          {/* Restore */}
+          {/* Start Server - 4 */}
+          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #0891b2, #06b6d4)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)' }}>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                </svg>
+              </span>
+              <div>
+                <h3 className="font-bold text-gray-900">4. הפעל שרת מקומי</h3>
+                <p className="text-sm text-gray-500">סוגר שרת קיים + מפעיל חדש + Auto-Restart</p>
+              </div>
+            </div>
+            <button 
+              type="button"
+              onClick={runServer}
+              disabled={isRunning}
+              className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)' }}
+            >
+              {isRunning ? 'מפעיל...' : '4. הפעל שרת מקומי'}
+            </button>
+            <p className="text-xs text-gray-500 mt-2 text-center">יסגור שרת קיים, יפעיל חדש, ויפעיל מחדש אוטומטית בכל שינוי קוד</p>
+          </div>
+
+          {/* Git Push - 5 */}
+          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1f2937, #374151)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)' }}>
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </span>
+              <div>
+                <h3 className="font-bold text-gray-900">5. Push לGitHub</h3>
+                <p className="text-sm text-gray-500">שמירת שינויים ב-GitHub</p>
+              </div>
+            </div>
+            <button 
+              type="button"
+              onClick={runGitPush}
+              disabled={isRunning}
+              className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)' }}
+            >
+              {isRunning ? 'שולח...' : '5. Push לGitHub'}
+            </button>
+          </div>
+
+          {/* Deploy */}
+          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+              </span>
+              <div>
+                <h3 className="font-bold text-gray-900">6. Deploy לVercel</h3>
+                <p className="text-sm text-gray-500">העלאה לאתר החי באינטרנט</p>
+              </div>
+            </div>
+            <button 
+              type="button"
+              onClick={runDeploy}
+              disabled={isRunning}
+              className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              {isRunning ? 'מעלה...' : '6. Deploy לVercel'}
+            </button>
+          </div>
+
+          {/* Restore - ללא מספר (פעולה נדירה) */}
           <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #d97706, #fbbf24)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
             <div className="flex items-center gap-3 mb-4">
               <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #d97706 0%, #fbbf24 100%)' }}>
@@ -608,7 +681,7 @@ function BackupsContent() {
               </span>
               <div>
                 <h3 className="font-bold text-gray-900">שחזור גיבוי</h3>
-                <p className="text-sm text-gray-500">שחזור מקובץ JSON</p>
+                <p className="text-sm text-gray-500">שחזור מקובץ JSON (פעולה נדירה)</p>
               </div>
             </div>
             <button 
@@ -621,85 +694,12 @@ function BackupsContent() {
               {isRunning ? 'משחזר...' : 'שחזר מגיבוי'}
             </button>
           </div>
-
-          {/* Git Push */}
-          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1f2937, #374151)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)' }}>
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
-              </span>
-              <div>
-                <h3 className="font-bold text-gray-900">4. Push לGitHub</h3>
-                <p className="text-sm text-gray-500">שמירת שינויים ב-GitHub</p>
-              </div>
-            </div>
-            <button 
-              type="button"
-              onClick={runGitPush}
-              disabled={isRunning}
-              className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)' }}
-            >
-              {isRunning ? 'שולח...' : '4. Push לGitHub עכשיו'}
-            </button>
-          </div>
-
-          {/* Deploy */}
-          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #7c3aed, #a78bfa)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)' }}>
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-              </span>
-              <div>
-                <h3 className="font-bold text-gray-900">5. Deploy לVercel</h3>
-                <p className="text-sm text-gray-500">העלאה אוטומטית לפרודקשן</p>
-              </div>
-            </div>
-            <button 
-              type="button"
-              onClick={runDeploy}
-              disabled={isRunning}
-              className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)' }}
-            >
-              {isRunning ? 'מעלה...' : '5. העלה לVercel עכשיו'}
-            </button>
-          </div>
-
-          {/* Start Server */}
-          <div className="p-6 rounded-xl bg-white shadow-md" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #0891b2, #06b6d4)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box' }}>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)' }}>
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                </svg>
-              </span>
-              <div>
-                <h3 className="font-bold text-gray-900">3. הפעל שרת פנימי</h3>
-                <p className="text-sm text-gray-500">סוגר שרת קיים + מפעיל חדש + Auto-Restart</p>
-              </div>
-            </div>
-            <button 
-              type="button"
-              onClick={runServer}
-              disabled={isRunning}
-              className="w-full py-2 px-4 rounded-lg text-white font-medium transition-all disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)' }}
-            >
-              {isRunning ? 'מפעיל...' : '3. הפעל שרת (Auto-Restart)'}
-            </button>
-            <p className="text-xs text-gray-500 mt-2 text-center">יסגור שרת קיים, יפעיל חדש, ויפעיל מחדש אוטומטית בכל שינוי קוד</p>
-          </div>
         </div>
 
         {/* Deploy Hook Setup Guide */}
-        <div className="bg-purple-50 rounded-xl p-6 mb-8" style={{ border: '2px solid #7c3aed' }}>
+        <div className="bg-cyan-50 rounded-xl p-6 mb-8" style={{ border: '2px solid #0891b2' }}>
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
             הגדרת Deploy אוטומטי (Vercel Hook)
@@ -709,7 +709,7 @@ function BackupsContent() {
               להפעלת Deploy אוטומטי ללא צורך בפתיחת Vercel, יש להגדיר Deploy Hook:
             </p>
             <ol className="text-sm text-gray-600 space-y-2 mr-4 list-decimal">
-              <li>היכנס ל-<a href="https://vercel.com/vipos-projects-0154d019/vipo-agents-test/settings/git" target="_blank" rel="noopener noreferrer" className="text-purple-600 underline">Vercel Settings → Git</a></li>
+              <li>היכנס ל-<a href="https://vercel.com/vipos-projects-0154d019/vipo-agents-test/settings/git" target="_blank" rel="noopener noreferrer" style={{ color: '#0891b2' }} className="underline">Vercel Settings → Git</a></li>
               <li>גלול למטה ל-<strong>Deploy Hooks</strong></li>
               <li>לחץ <strong>Create Hook</strong>, תן שם (למשל: dashboard-deploy)</li>
               <li>בחר branch: <code className="bg-gray-100 px-1 rounded">main</code></li>
@@ -806,7 +806,7 @@ function BackupsContent() {
                             onClick={() => runRestoreAndDeploy(backup.name)}
                             disabled={isRunning}
                             className="px-3 py-1.5 rounded-lg text-white text-xs font-medium transition-all disabled:opacity-50 flex items-center gap-1.5"
-                            style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}
+                            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                           >
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -988,7 +988,7 @@ function BackupsContent() {
                 {restoreFile && (
                   <p className="mt-1 text-xs text-green-600">קובץ: {restoreFile.name}</p>
                 )}
-                <p className="mt-2 text-xs text-blue-600">💡 ניתן להעלות קובץ JSON או ZIP מגיבוי מלא</p>
+                <p className="mt-2 text-xs text-blue-600">ניתן להעלות קובץ JSON או ZIP מגיבוי מלא</p>
               </div>
             </div>
 

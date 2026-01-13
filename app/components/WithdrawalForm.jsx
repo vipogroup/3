@@ -56,7 +56,7 @@ export default function WithdrawalForm() {
         throw new Error(data.error || 'Failed to create request');
       }
 
-      setMessage('✅ בקשת המשיכה נשלחה בהצלחה! תטופל בקרוב.');
+      setMessage('בקשת המשיכה נשלחה בהצלחה! תטופל בקרוב.');
       setAmount('');
       setNotes('');
 
@@ -137,7 +137,7 @@ export default function WithdrawalForm() {
 
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
         <p className="text-xs text-gray-600">
-          💡 <strong>שים לב:</strong> הבקשה תטופל על ידי המנהל. לאחר אישור, הסכום יועבר לחשבון הבנק
+          <strong>שים לב:</strong> הבקשה תטופל על ידי המנהל. לאחר אישור, הסכום יועבר לחשבון הבנק
           שלך.
         </p>
       </div>

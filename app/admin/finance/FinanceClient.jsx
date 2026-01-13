@@ -17,15 +17,15 @@ import Link from 'next/link';
  */
 
 const tabs = [
-  { id: 'overview', label: 'סקירה כללית', icon: '📊' },
-  { id: 'transactions', label: 'עסקאות PayPlus', icon: '💳' },
-  { id: 'priority', label: 'מסמכי Priority', icon: '📄' },
-  { id: 'commissions', label: 'עמלות סוכנים', icon: '👥' },
-  { id: 'withdrawals', label: 'בקשות משיכה', icon: '💸' },
-  { id: 'alerts', label: 'חריגות', icon: '⚠️' },
-  { id: 'reconciliation', label: 'התאמות', icon: '🔄' },
-  { id: 'reports', label: 'דוחות מתקדמים', icon: '📈' },
-  { id: 'settings', label: 'הגדרות', icon: '⚙️' },
+  { id: 'overview', label: 'סקירה כללית', icon: null },
+  { id: 'transactions', label: 'עסקאות PayPlus', icon: null },
+  { id: 'priority', label: 'מסמכי Priority', icon: null },
+  { id: 'commissions', label: 'עמלות סוכנים', icon: null },
+  { id: 'withdrawals', label: 'בקשות משיכה', icon: null },
+  { id: 'alerts', label: 'חריגות', icon: null },
+  { id: 'reconciliation', label: 'התאמות', icon: null },
+  { id: 'reports', label: 'דוחות מתקדמים', icon: null },
+  { id: 'settings', label: 'הגדרות', icon: null },
 ];
 
 export default function FinanceClient() {
@@ -521,7 +521,7 @@ function WithdrawalsTab({ data, onRefresh }) {
   const STATUS_LABELS = {
     pending: { label: 'ממתין לאישור', color: 'bg-yellow-100 text-yellow-800' },
     approved: { label: 'מאושר - ממתין לתשלום', color: 'bg-blue-100 text-blue-800' },
-    processing: { label: 'בתהליך תשלום', color: 'bg-purple-100 text-purple-800' },
+    processing: { label: 'בתהליך תשלום', color: 'bg-cyan-100 text-cyan-800' },
     completed: { label: 'הושלם', color: 'bg-green-100 text-green-800' },
     rejected: { label: 'נדחה', color: 'bg-red-100 text-red-800' },
   };
@@ -575,7 +575,8 @@ function WithdrawalsTab({ data, onRefresh }) {
                           <button 
                             onClick={() => handleAction(req._id, 'approve')}
                             disabled={isProcessing}
-                            className="px-2 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600 disabled:opacity-50"
+                            className="px-2 py-1 text-white rounded text-xs disabled:opacity-50"
+                            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                           >
                             {isProcessing ? '...' : 'אישור'}
                           </button>
@@ -595,10 +596,11 @@ function WithdrawalsTab({ data, onRefresh }) {
                           <button 
                             onClick={() => handleAction(req._id, 'pay_via_priority')}
                             disabled={isProcessing}
-                            className="px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 disabled:opacity-50"
+                            className="px-2 py-1 text-white rounded text-xs disabled:opacity-50"
+                            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                             title="יצירת מסמך תשלום ב-Priority ERP"
                           >
-                            {isProcessing ? '...' : '💳 Priority'}
+                            {isProcessing ? '...' : 'Priority'}
                           </button>
                           <button 
                             onClick={() => handleAction(req._id, 'complete')}
@@ -616,7 +618,8 @@ function WithdrawalsTab({ data, onRefresh }) {
                         <button 
                           onClick={() => handleAction(req._id, 'complete')}
                           disabled={isProcessing}
-                          className="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:opacity-50"
+                          className="px-2 py-1 text-white rounded text-xs disabled:opacity-50"
+                          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                         >
                           {isProcessing ? '...' : 'סיום'}
                         </button>
@@ -668,7 +671,8 @@ function AlertsTab({ data, onRefresh }) {
                 </div>
                 <button
                   onClick={() => retryDeadLetter(event.eventId)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+                  className="px-3 py-1 text-white rounded text-sm"
+                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                 >
                   נסה שוב
                 </button>
@@ -684,7 +688,6 @@ function AlertsTab({ data, onRefresh }) {
 
       {/* Priority Errors */}
       <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-        <span>⚠️</span>
         <span>שגיאות Priority ({data.priorityErrors?.length || 0})</span>
       </h3>
       
@@ -856,8 +859,8 @@ function ReportsTab({ data }) {
           <div className="text-sm text-yellow-600">עמלות ששולמו</div>
           <div className="text-2xl font-bold">₪{(data.commissions?.summary?.totalClaimed || 0).toLocaleString()}</div>
         </div>
-        <div className="bg-purple-50 rounded-lg p-4">
-          <div className="text-sm text-purple-600">אחוז סנכרון</div>
+        <div className="bg-cyan-50 rounded-lg p-4">
+          <div className="text-sm text-cyan-600">אחוז סנכרון</div>
           <div className="text-2xl font-bold">{data.priority?.summary?.completionRate || 0}%</div>
         </div>
       </div>
@@ -876,7 +879,7 @@ function SettingsTab({ data }) {
         <div className="bg-gray-50 rounded-lg p-4 border">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold flex items-center gap-2">
-              <span>💳</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
               <span>PayPlus</span>
             </h4>
             <span className={`px-2 py-1 rounded text-xs ${
@@ -893,7 +896,6 @@ function SettingsTab({ data }) {
         <div className="bg-gray-50 rounded-lg p-4 border">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold flex items-center gap-2">
-              <span>📄</span>
               <span>Priority ERP</span>
             </h4>
             <span className={`px-2 py-1 rounded text-xs ${
@@ -910,7 +912,6 @@ function SettingsTab({ data }) {
         <div className="bg-gray-50 rounded-lg p-4 border">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold flex items-center gap-2">
-              <span>👥</span>
               <span>הגדרות עמלות</span>
             </h4>
           </div>

@@ -10,7 +10,7 @@ export default function NotFound() {
             className="w-32 h-32 mx-auto rounded-full flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
           >
-            <span className="text-6xl">🔍</span>
+            <span className="text-6xl text-cyan-600">?</span>
           </div>
         </div>
 

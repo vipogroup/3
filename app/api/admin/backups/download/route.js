@@ -8,7 +8,7 @@ import path from 'path';
 async function GETHandler(req) {
   // בדיקת הרשאות
   const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
+  const token = cookieStore.get('auth_token')?.value || cookieStore.get('token')?.value;
   
   if (!token) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -17,7 +17,7 @@ async function GETHandler(req) {
   let user;
   try {
     user = jwt.verify(token, process.env.JWT_SECRET);
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'super_admin') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
   } catch (err) {

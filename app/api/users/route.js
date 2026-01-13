@@ -20,7 +20,7 @@ async function ensureAdmin(req) {
   if (legacyToken) {
     try {
       const decoded = verifyJwt(legacyToken);
-      if (decoded?.role === 'admin' || decoded?.role === 'business_admin') {
+      if (decoded?.role === 'admin' || decoded?.role === 'super_admin' || decoded?.role === 'business_admin') {
         return decoded;
       }
     } catch (e) {
@@ -34,7 +34,7 @@ async function ensureAdmin(req) {
       req,
       secret: process.env.NEXTAUTH_SECRET,
     });
-    if (nextAuthToken?.role === 'admin' || nextAuthToken?.role === 'business_admin') {
+    if (nextAuthToken?.role === 'admin' || nextAuthToken?.role === 'super_admin' || nextAuthToken?.role === 'business_admin') {
       return {
         userId: nextAuthToken.userId || nextAuthToken.sub,
         email: nextAuthToken.email,
@@ -92,7 +92,7 @@ async function GETHandler(req) {
     if (admin.role === 'business_admin' && admin.tenantId) {
       const { ObjectId } = await import('mongodb');
       filter.tenantId = new ObjectId(admin.tenantId);
-    } else if (admin.role !== 'admin') {
+    } else if (admin.role !== 'admin' && admin.role !== 'super_admin') {
       // Non-admin, non-business_admin - shouldn't happen but just in case
       const tenant = await getCurrentTenant(req);
       if (tenant) {

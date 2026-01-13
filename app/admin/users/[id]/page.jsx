@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const ROLE_LABELS = {
   admin: { label: 'מנהל', color: 'bg-red-100 text-red-800' },
-  agent: { label: 'סוכן', color: 'bg-purple-100 text-purple-800' },
+  agent: { label: 'סוכן', color: 'bg-cyan-100 text-cyan-800' },
   customer: { label: 'לקוח', color: 'bg-blue-100 text-blue-800' },
 };
 
@@ -150,7 +150,7 @@ export default function UserProfilePage() {
               </div>
               
               {user.couponCode && (
-                <code className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-bold">
+                <code className="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-lg text-sm font-bold">
                   {user.couponCode.toUpperCase()}
                 </code>
               )}

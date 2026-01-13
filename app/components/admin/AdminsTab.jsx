@@ -56,7 +56,7 @@ export default function AdminsTab({
           ) : (
             superAdmins.map((admin) => {
               const isCurrentUser = admin._id === currentUserId;
-              const isProtected = admin.protected || admin.email === '0587009938@gmail.com';
+              const isProtected = admin.protected || admin.email === 'm0587009938@gmail.com';
               
               return (
                 <div

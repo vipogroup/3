@@ -201,7 +201,7 @@ export default function TenantsClient() {
   // Reset all tenants (for testing)
   const handleResetAllTenants = async () => {
     const confirmText = 'מחק הכל';
-    const userInput = prompt(`⚠️ אזהרה! פעולה זו תמחק את כל העסקים וכל הנתונים שלהם!\n\nהקלד "${confirmText}" לאישור:`);
+    const userInput = prompt(`אזהרה! פעולה זו תמחק את כל העסקים וכל הנתונים שלהם!\n\nהקלד "${confirmText}" לאישור:`);
     
     if (userInput !== confirmText) {
       if (userInput !== null) alert('הטקסט שהוזן לא תואם. הפעולה בוטלה.');
@@ -221,36 +221,18 @@ export default function TenantsClient() {
         throw new Error(data.error || 'שגיאה באיפוס העסקים');
       }
       
-      alert(`✅ ${data.message}`);
+      alert(`${data.message}`);
       loadTenants();
     } catch (err) {
-      alert(`❌ ${err.message}`);
+      alert(`שגיאה: ${err.message}`);
     } finally {
       setResetting(false);
     }
   };
 
-  // Enter tenant dashboard as super admin - opens in new tab
-  const handleEnterDashboard = async (tenantId) => {
-    try {
-      // Set impersonation cookie/session
-      const res = await fetch('/api/admin/impersonate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ tenantId }),
-      });
-      
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'שגיאה בכניסה לדשבורד');
-      }
-      
-      // Open business dashboard in new tab
-      window.open('/business', '_blank');
-    } catch (err) {
-      alert(err.message);
-    }
+  // Enter tenant dashboard as super admin - opens in new tab with tenantId
+  const handleEnterDashboard = (tenantId) => {
+    window.open(`/business?tenantId=${tenantId}`, '_blank');
   };
 
   const getStatusBadge = (status) => {
@@ -306,7 +288,8 @@ export default function TenantsClient() {
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
+            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-white rounded-lg transition-colors text-sm sm:text-base"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             עסק חדש
@@ -450,18 +433,10 @@ export default function TenantsClient() {
                         >
                           <LayoutDashboard className="w-4 h-4" />
                         </button>
-                        <a
-                          href={`/t/${tenant.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-                          title="פתח אתר עסק"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
                         <button
                           onClick={() => setShowAdminModal(tenant)}
-                          className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg"
+                          className="p-2 hover:bg-cyan-50 rounded-lg"
+                          style={{ color: '#0891b2' }}
                           title="הוסף מנהל עסק"
                         >
                           <UserPlus className="w-4 h-4" />
@@ -568,10 +543,17 @@ export default function TenantsClient() {
         />
       )}
 
-      {/* Business Menu Permissions Modal - Not implemented yet */}
-      {/* {showPermissionsModal && (
-        <div>Permissions modal not implemented</div>
-      )} */}
+      {/* Business Menu Permissions Modal */}
+      {showPermissionsModal && (
+        <MenuPermissionsModal
+          tenant={showPermissionsModal}
+          onClose={() => setShowPermissionsModal(null)}
+          onSave={() => {
+            setShowPermissionsModal(null);
+            loadTenants();
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -704,7 +686,8 @@ function TenantModal({ tenant, onClose, onSave }) {
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="flex-1 py-2 text-white rounded-lg disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
               {saving ? 'שומר...' : (isEdit ? 'עדכון' : 'יצירה')}
             </button>
@@ -767,9 +750,9 @@ function CreateAdminModal({ tenant, onClose, onSave }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" dir="rtl">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
-        <div className="p-6 border-b bg-gradient-to-r from-purple-600 to-indigo-600 rounded-t-xl">
+        <div className="p-6 border-b rounded-t-xl" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
           <h2 className="text-xl font-bold text-white">יצירת מנהל עסק</h2>
-          <p className="text-purple-200 text-sm mt-1">עבור: {tenant.name}</p>
+          <p className="text-cyan-100 text-sm mt-1">עבור: {tenant.name}</p>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
@@ -829,7 +812,7 @@ function CreateAdminModal({ tenant, onClose, onSave }) {
             />
           </div>
 
-          <div className="bg-purple-50 p-3 rounded-lg text-sm text-purple-800">
+          <div className="bg-cyan-50 p-3 rounded-lg text-sm text-cyan-800">
             <strong>שים לב:</strong> המשתמש יקבל הרשאות מלאות לניהול העסק {tenant.name} בלבד.
           </div>
 
@@ -837,9 +820,246 @@ function CreateAdminModal({ tenant, onClose, onSave }) {
             <button
               type="submit"
               disabled={saving || success}
-              className="flex-1 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
+              className="flex-1 py-2 text-white rounded-lg disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
               {saving ? 'יוצר...' : 'צור מנהל עסק'}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-6 py-2 border rounded-lg hover:bg-gray-50"
+            >
+              ביטול
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// Business Menu Permissions Modal
+function MenuPermissionsModal({ tenant, onClose, onSave }) {
+  const [allowedMenus, setAllowedMenus] = useState(tenant?.allowedMenus || []);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  // Menu categories with their items
+  const menuCategories = [
+    {
+      id: 'users',
+      label: 'ניהול משתמשים',
+      items: [
+        { id: 'users', label: 'ניהול משתמשים' },
+        { id: 'agents', label: 'ניהול סוכנים' },
+      ],
+    },
+    {
+      id: 'catalog',
+      label: 'קטלוג ומכירות',
+      items: [
+        { id: 'products', label: 'ניהול מוצרים' },
+        { id: 'products_new', label: 'הוספת מוצר' },
+        { id: 'orders', label: 'ניהול הזמנות' },
+      ],
+    },
+    {
+      id: 'finance',
+      label: 'כספים ודוחות',
+      items: [
+        { id: 'reports', label: 'דוחות' },
+        { id: 'commissions', label: 'עמלות' },
+        { id: 'withdrawals', label: 'בקשות משיכה' },
+        { id: 'transactions', label: 'עסקאות' },
+        { id: 'analytics', label: 'אנליטיקס' },
+      ],
+    },
+    {
+      id: 'settings',
+      label: 'הגדרות ושיווק',
+      items: [
+        { id: 'settings', label: 'הגדרות חנות' },
+        { id: 'marketing', label: 'שיווק' },
+        { id: 'notifications', label: 'התראות' },
+        { id: 'integrations', label: 'אינטגרציות' },
+        { id: 'crm', label: 'CRM' },
+        { id: 'bot_manager', label: 'ניהול בוט צאט' },
+        { id: 'site_texts', label: 'ניהול טקסטים' },
+        { id: 'branding', label: 'מיתוג וצבעים' },
+      ],
+    },
+    {
+      id: 'widgets',
+      label: 'ווידג\'טים',
+      items: [
+        { id: 'new_users_widget', label: 'משתמשים חדשים' },
+        { id: 'recent_orders_widget', label: 'הזמנות אחרונות' },
+      ],
+    },
+  ];
+
+  const toggleMenu = (menuId) => {
+    setAllowedMenus((prev) =>
+      prev.includes(menuId)
+        ? prev.filter((id) => id !== menuId)
+        : [...prev, menuId]
+    );
+  };
+
+  const toggleCategory = (category) => {
+    const categoryItems = category.items.map((item) => item.id);
+    const allSelected = categoryItems.every((id) => allowedMenus.includes(id));
+
+    if (allSelected) {
+      setAllowedMenus((prev) => prev.filter((id) => !categoryItems.includes(id)));
+    } else {
+      setAllowedMenus((prev) => [...new Set([...prev, ...categoryItems])]);
+    }
+  };
+
+  const selectAll = () => {
+    const allMenus = menuCategories.flatMap((cat) => cat.items.map((item) => item.id));
+    setAllowedMenus(allMenus);
+  };
+
+  const clearAll = () => {
+    setAllowedMenus([]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+
+    try {
+      const res = await fetch(`/api/tenants/${tenant._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ allowedMenus }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'שגיאה בשמירת ההרשאות');
+
+      onSave();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" dir="rtl">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+        <div
+          className="p-6 border-b rounded-t-xl"
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+        >
+          <div className="flex items-center gap-3">
+            <Shield className="w-6 h-6 text-white" />
+            <div>
+              <h2 className="text-xl font-bold text-white">הרשאות תפריטים</h2>
+              <p className="text-cyan-100 text-sm mt-1">עבור: {tenant.name}</p>
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          {error && (
+            <div className="bg-red-50 text-red-700 p-3 m-4 rounded-lg text-sm">{error}</div>
+          )}
+
+          {/* Quick actions */}
+          <div className="flex gap-2 p-4 border-b bg-gray-50">
+            <button
+              type="button"
+              onClick={selectAll}
+              className="px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200"
+            >
+              בחר הכל
+            </button>
+            <button
+              type="button"
+              onClick={clearAll}
+              className="px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+            >
+              נקה הכל
+            </button>
+            <span className="text-sm text-gray-500 mr-auto">
+              נבחרו: {allowedMenus.length} תפריטים
+            </span>
+          </div>
+
+          {/* Menu categories */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {menuCategories.map((category) => {
+              const categoryItems = category.items.map((item) => item.id);
+              const selectedCount = categoryItems.filter((id) => allowedMenus.includes(id)).length;
+              const allSelected = selectedCount === categoryItems.length;
+              const someSelected = selectedCount > 0 && !allSelected;
+
+              return (
+                <div key={category.id} className="border rounded-lg overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => toggleCategory(category)}
+                    className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                          allSelected
+                            ? 'bg-cyan-600 border-cyan-600'
+                            : someSelected
+                            ? 'bg-cyan-200 border-cyan-400'
+                            : 'border-gray-300'
+                        }`}
+                      >
+                        {allSelected && <Check className="w-3 h-3 text-white" />}
+                        {someSelected && !allSelected && (
+                          <div className="w-2 h-2 bg-cyan-600 rounded-sm"></div>
+                        )}
+                      </div>
+                      <span className="font-medium text-gray-900">{category.label}</span>
+                    </div>
+                    <span className="text-sm text-gray-500">
+                      {selectedCount}/{categoryItems.length}
+                    </span>
+                  </button>
+
+                  <div className="p-3 grid grid-cols-2 gap-2 bg-white">
+                    {category.items.map((item) => (
+                      <label
+                        key={item.id}
+                        className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={allowedMenus.includes(item.id)}
+                          onChange={() => toggleMenu(item.id)}
+                          className="w-4 h-4 text-cyan-600 rounded border-gray-300 focus:ring-cyan-500"
+                        />
+                        <span className="text-sm text-gray-700">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3 p-4 border-t bg-gray-50">
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex-1 py-2 text-white rounded-lg disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              {saving ? 'שומר...' : 'שמור הרשאות'}
             </button>
             <button
               type="button"

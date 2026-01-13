@@ -4,19 +4,47 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
+// SVG Icons
+const Icons = {
+  link: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>,
+  lock: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>,
+  bolt: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
+  clipboard: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>,
+  save: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>,
+  document: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>,
+  rocket: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /></svg>,
+  money: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+  key: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>,
+  warning: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>,
+  chart: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>,
+  search: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>,
+  building: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>,
+  trendUp: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>,
+  globe: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>,
+  scroll: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>,
+  download: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>,
+  check: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>,
+  plus: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>,
+  copy: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>,
+  clock: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+  cart: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
+  users: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
+  health: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>,
+};
+
 const TYPE_LABELS = {
-  integration: { label: 'אינטגרציה', color: 'bg-purple-100 text-purple-800', icon: '🔗' },
-  security: { label: 'אבטחה', color: 'bg-red-100 text-red-800', icon: '🔒' },
-  performance: { label: 'ביצועים', color: 'bg-blue-100 text-blue-800', icon: '⚡' },
-  audit: { label: 'ביקורת', color: 'bg-yellow-100 text-yellow-800', icon: '📋' },
-  backup: { label: 'גיבוי', color: 'bg-green-100 text-green-800', icon: '💾' },
-  custom: { label: 'כללי', color: 'bg-gray-100 text-gray-800', icon: '📄' },
+  integration: { label: 'אינטגרציה', color: 'bg-cyan-100 text-cyan-800', icon: Icons.link },
+  security: { label: 'אבטחה', color: 'bg-red-100 text-red-800', icon: Icons.lock },
+  performance: { label: 'ביצועים', color: 'bg-blue-100 text-blue-800', icon: Icons.bolt },
+  audit: { label: 'ביקורת', color: 'bg-yellow-100 text-yellow-800', icon: Icons.clipboard },
+  backup: { label: 'גיבוי', color: 'bg-green-100 text-green-800', icon: Icons.save },
+  custom: { label: 'כללי', color: 'bg-gray-100 text-gray-800', icon: Icons.document },
   // Enterprise Report Types
-  executive: { label: 'הנהלה', color: 'bg-indigo-100 text-indigo-800', icon: '🚀' },
-  financial: { label: 'כספים', color: 'bg-emerald-100 text-emerald-800', icon: '💰' },
-  operational: { label: 'תפעולי', color: 'bg-orange-100 text-orange-800', icon: '🔑' },
-  risk: { label: 'סיכונים', color: 'bg-rose-100 text-rose-800', icon: '⚠️' },
-  meta: { label: 'מטא', color: 'bg-cyan-100 text-cyan-800', icon: '📊' },
+  executive: { label: 'הנהלה', color: 'bg-cyan-100 text-cyan-800', icon: Icons.rocket },
+  financial: { label: 'כספים', color: 'bg-emerald-100 text-emerald-800', icon: Icons.money },
+  operational: { label: 'תפעולי', color: 'bg-orange-100 text-orange-800', icon: Icons.key },
+  risk: { label: 'סיכונים', color: 'bg-rose-100 text-rose-800', icon: Icons.warning },
+  meta: { label: 'מטא', color: 'bg-cyan-100 text-cyan-800', icon: Icons.chart },
 };
 
 // Exportable report categories
@@ -28,14 +56,14 @@ const EXPORTABLE_CATEGORIES = [
 ];
 
 const TABS = [
-  { id: 'scan', label: '🔍 סריקה' },
-  { id: 'reports', label: '📊 דוחות' },
-  { id: 'enterprise', label: '🏢 Enterprise' },
-  { id: 'seo', label: '📈 SEO Audits' },
-  { id: 'social', label: '🌐 Social Audits', link: '/admin/social-audit' },
-  { id: 'errors', label: '⚠️ שגיאות' },
-  { id: 'history', label: '📜 היסטוריה' },
-  { id: 'downloads', label: '📥 הורדות' },
+  { id: 'scan', label: 'סריקה', icon: Icons.search },
+  { id: 'reports', label: 'דוחות', icon: Icons.chart },
+  { id: 'enterprise', label: 'Enterprise', icon: Icons.building },
+  { id: 'seo', label: 'SEO Audits', icon: Icons.trendUp },
+  { id: 'social', label: 'Social Audits', icon: Icons.globe, link: '/admin/social-audit' },
+  { id: 'errors', label: 'שגיאות', icon: Icons.warning },
+  { id: 'history', label: 'היסטוריה', icon: Icons.scroll },
+  { id: 'downloads', label: 'הורדות', icon: Icons.download },
 ];
 
 export default function SystemReportsClient() {
@@ -83,12 +111,12 @@ export default function SystemReportsClient() {
   }, [activeTab]);
 
   async function runSystemScan() {
-    console.log('🚀 runSystemScan called, scanning:', scanning);
+    console.log('runSystemScan called, scanning:', scanning);
     if (scanning) {
-      console.log('⚠️ Already scanning, returning');
+      console.log('Already scanning, returning');
       return;
     }
-    console.log('✅ Starting scan...');
+    console.log('Starting scan...');
     setScanning(true);
     setScanProgress({ status: 'running', message: 'מתחיל סריקה...' });
     setEnvAnalysis(null);
@@ -325,7 +353,7 @@ export default function SystemReportsClient() {
     const text = `${report.title}\n${'='.repeat(report.title.length)}\n\nתאריך: ${formatDate(report.createdAt)}\nסיכום: ${report.summary || ''}\n\n${report.content}`;
     try {
       await navigator.clipboard.writeText(text);
-      alert('✅ הדוח הועתק ללוח!');
+      alert('הדוח הועתק ללוח!');
     } catch (err) {
       // Fallback for older browsers
       const textarea = document.createElement('textarea');
@@ -334,7 +362,7 @@ export default function SystemReportsClient() {
       textarea.select();
       document.execCommand('copy');
       document.body.removeChild(textarea);
-      alert('✅ הדוח הועתק ללוח!');
+      alert('הדוח הועתק ללוח!');
     }
   }
 
@@ -410,11 +438,11 @@ export default function SystemReportsClient() {
       {activeTab === 'scan' && (
         <div className="space-y-6">
           <div className="bg-gradient-to-r from-blue-900 to-cyan-700 rounded-xl p-6 text-white">
-            <h2 className="text-xl font-bold mb-2">🔍 סריקת מערכת מלאה</h2>
+            <h2 className="text-xl font-bold mb-2 flex items-center gap-2">{Icons.search} סריקת מערכת מלאה</h2>
             <p className="text-blue-100 mb-4 text-sm">סריקה מקיפה של כל רכיבי המערכת ויצירת 8 דוחות אוטומטיים</p>
             <div className="flex flex-wrap gap-3 items-center">
               <button onClick={runSystemScan} disabled={scanning} className="px-6 py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-blue-50 disabled:opacity-50">
-                {scanning ? '⏳ סורק...' : '🚀 הפעל סריקה מלאה'}
+                {scanning ? <><span className="inline-block animate-spin mr-1">{Icons.clock}</span> סורק...</> : <><span className="inline-block mr-1">{Icons.rocket}</span> הפעל סריקה מלאה</>}
               </button>
               {scanProgress && (
                 <div className={`px-4 py-2 rounded-lg text-sm ${scanProgress.status === 'completed' ? 'bg-green-500/20' : scanProgress.status === 'failed' ? 'bg-red-500/20' : 'bg-blue-500/20'}`}>
@@ -425,35 +453,44 @@ export default function SystemReportsClient() {
           </div>
 
           <div className="bg-white rounded-xl border p-6">
-            <h3 className="font-bold mb-4">📋 אזורים נסרקים</h3>
+            <h3 className="font-bold mb-4 flex items-center gap-2">{Icons.clipboard} אזורים נסרקים</h3>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
               {['Database', 'Users', 'Orders', 'Products', 'Transactions', 'Permissions', 'Integrations', 'Security', 'Payments', 'System Keys'].map(a => (
-                <div key={a} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg text-sm"><span className="text-green-500">✓</span>{a}</div>
+                <div key={a} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg text-sm"><span className="text-green-500">{Icons.check}</span>{a}</div>
               ))}
             </div>
           </div>
 
           <div className="bg-white rounded-xl border p-6">
-            <h3 className="font-bold mb-4">📊 דוחות שיווצרו אוטומטית</h3>
+            <h3 className="font-bold mb-4 flex items-center gap-2">{Icons.chart} דוחות שיווצרו אוטומטית</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {['💰 Financial', '🛒 Orders', '👥 Users', '📋 Audit Trail', '🔗 Integrations', '🔍 Data Integrity', '🔒 Security', '⚡ Health'].map(r => (
-                <div key={r} className="p-3 bg-blue-50 rounded-lg text-sm text-blue-900">{r}</div>
+              {[
+                { icon: Icons.money, name: 'Financial' },
+                { icon: Icons.cart, name: 'Orders' },
+                { icon: Icons.users, name: 'Users' },
+                { icon: Icons.clipboard, name: 'Audit Trail' },
+                { icon: Icons.link, name: 'Integrations' },
+                { icon: Icons.search, name: 'Data Integrity' },
+                { icon: Icons.lock, name: 'Security' },
+                { icon: Icons.health, name: 'Health' }
+              ].map(r => (
+                <div key={r.name} className="p-3 bg-blue-50 rounded-lg text-sm text-blue-900 flex items-center gap-2">{r.icon} {r.name}</div>
               ))}
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-indigo-900 to-purple-700 rounded-xl p-6 text-white">
-            <h3 className="font-bold mb-2">🏢 Enterprise Reports (NEW)</h3>
-            <p className="text-indigo-200 text-sm mb-3">דוחות ברמת הנהלה שנוצרים אוטומטית בסריקה</p>
+          <div className="rounded-xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+            <h3 className="font-bold mb-2 flex items-center gap-2">{Icons.building} Enterprise Reports (NEW)</h3>
+            <p className="text-cyan-100 text-sm mb-3">דוחות ברמת הנהלה שנוצרים אוטומטית בסריקה</p>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
               {[
-                { icon: '🚀', name: 'Go-Live Readiness', critical: true },
-                { icon: '💰', name: 'Financial Reconciliation', critical: true },
-                { icon: '🔑', name: 'Missing Keys Impact' },
-                { icon: '⚠️', name: 'Risk Matrix' },
-                { icon: '📊', name: 'Reports Reliability' },
+                { icon: Icons.rocket, name: 'Go-Live Readiness', critical: true },
+                { icon: Icons.money, name: 'Financial Reconciliation', critical: true },
+                { icon: Icons.key, name: 'Missing Keys Impact' },
+                { icon: Icons.warning, name: 'Risk Matrix' },
+                { icon: Icons.chart, name: 'Reports Reliability' },
               ].map(r => (
-                <div key={r.name} className={`p-2 rounded-lg text-xs ${r.critical ? 'bg-red-500/30 border border-red-400' : 'bg-white/10'}`}>
+                <div key={r.name} className={`p-2 rounded-lg text-xs ${r.critical ? 'bg-red-500/30 border border-red-400' : 'bg-white/10'} flex items-center gap-1`}>
                   <span className="mr-1">{r.icon}</span>{r.name}
                   {r.critical && <span className="block text-red-300 text-[10px]">Critical</span>}
                 </div>
@@ -464,7 +501,7 @@ export default function SystemReportsClient() {
           {/* Environment Variables Log */}
           {envAnalysis && (
             <div className="bg-white rounded-xl border p-6">
-              <h3 className="font-bold mb-4">📋 לוג משתני סביבה - ניתוח ציון</h3>
+              <h3 className="font-bold mb-4 flex items-center gap-2">{Icons.clipboard} לוג משתני סביבה - ניתוח ציון</h3>
               
               {/* Score Summary */}
               <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg">
@@ -490,7 +527,7 @@ export default function SystemReportsClient() {
               {/* Missing Variables */}
               {envAnalysis.missingVars?.length > 0 && (
                 <div className="mb-6">
-                  <h4 className="font-semibold text-red-700 mb-3">⚠️ משתנים חסרים ({envAnalysis.missingVars.length})</h4>
+                  <h4 className="font-semibold text-red-700 mb-3 flex items-center gap-2">{Icons.warning} משתנים חסרים ({envAnalysis.missingVars.length})</h4>
                   <div className="space-y-2">
                     {envAnalysis.missingVars.map(v => (
                       <div key={v.key} className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
@@ -517,12 +554,12 @@ export default function SystemReportsClient() {
               {/* Configured Variables */}
               {envAnalysis.configured?.length > 0 && (
                 <div>
-                  <h4 className="font-semibold text-green-700 mb-3">✅ משתנים מוגדרים ({envAnalysis.configured.length})</h4>
+                  <h4 className="font-semibold text-green-700 mb-3 flex items-center gap-2">{Icons.check} משתנים מוגדרים ({envAnalysis.configured.length})</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {envAnalysis.configured.map(v => (
                       <div key={v.key} className="flex items-center justify-between p-2 bg-green-50 rounded-lg border border-green-200">
                         <div className="flex items-center gap-2">
-                          <span className="text-green-500">✓</span>
+                          <span className="text-green-500">{Icons.check}</span>
                           <code className="text-sm font-mono">{v.key}</code>
                           {v.strength && (
                             <span className={`px-1.5 py-0.5 rounded text-xs ${v.strength === 'strong' ? 'bg-green-200 text-green-800' : v.strength === 'medium' ? 'bg-yellow-200 text-yellow-800' : 'bg-orange-200 text-orange-800'}`}>
@@ -543,21 +580,21 @@ export default function SystemReportsClient() {
           {issuesLog && issuesLog.summary?.totalIssues > 0 && (
             <div className="bg-white rounded-xl border p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg">📋 לוג שגיאות - מה צריך לתקן</h3>
+                <h3 className="font-bold text-lg flex items-center gap-2">{Icons.clipboard} לוג שגיאות - מה צריך לתקן</h3>
                 <div className="flex gap-3 text-sm">
                   {issuesLog.summary.totalErrors > 0 && (
                     <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full font-medium">
-                      🔴 {issuesLog.summary.totalErrors} שגיאות
+                      {issuesLog.summary.totalErrors} שגיאות
                     </span>
                   )}
                   {issuesLog.summary.totalWarnings > 0 && (
                     <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full font-medium">
-                      🟡 {issuesLog.summary.totalWarnings} אזהרות
+                      {issuesLog.summary.totalWarnings} אזהרות
                     </span>
                   )}
                   {issuesLog.summary.totalInfo > 0 && (
                     <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-medium">
-                      🔵 {issuesLog.summary.totalInfo} המלצות
+                      {issuesLog.summary.totalInfo} המלצות
                     </span>
                   )}
                 </div>
@@ -591,13 +628,13 @@ export default function SystemReportsClient() {
                           }`}>
                             <div className="flex items-start gap-3">
                               <span className="text-lg">
-                                {item.severity === 'error' ? '🔴' : item.severity === 'warning' ? '🟡' : '🔵'}
+                                {item.severity === 'error' ? 'X' : item.severity === 'warning' ? '!' : 'i'}
                               </span>
                               <div className="flex-1">
                                 <div className="font-medium text-gray-900">{item.message}</div>
                                 {item.fix && (
                                   <div className="mt-1 text-sm text-gray-600">
-                                    <span className="font-medium text-green-700">💡 פתרון:</span> {item.fix}
+                                    <span className="font-medium text-green-700">פתרון:</span> {item.fix}
                                   </div>
                                 )}
                                 {item.category && (
@@ -620,7 +657,7 @@ export default function SystemReportsClient() {
           {/* All OK Message */}
           {issuesLog && issuesLog.summary?.totalIssues === 0 && (
             <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6 text-center">
-              <div className="text-5xl mb-3">✅</div>
+              <div className="text-5xl mb-3 text-green-500">V</div>
               <h3 className="text-xl font-bold text-green-800 mb-2">מעולה! אין בעיות לתיקון</h3>
               <p className="text-green-600">כל הבדיקות עברו בהצלחה - המערכת תקינה</p>
             </div>
@@ -628,7 +665,7 @@ export default function SystemReportsClient() {
 
           {scans.length > 0 && (
             <div className="bg-white rounded-xl border p-6">
-              <h3 className="font-bold mb-4">📜 סריקות אחרונות</h3>
+              <h3 className="font-bold mb-4">סריקות אחרונות</h3>
               <table className="w-full text-sm">
                 <thead className="bg-gray-50">
                   <tr><th className="text-right p-3">Scan ID</th><th className="text-right p-3">תאריך</th><th className="text-right p-3">ציון</th><th className="text-right p-3">סטטוס</th></tr>
@@ -653,17 +690,17 @@ export default function SystemReportsClient() {
       {activeTab === 'reports' && (
         <div className="space-y-4">
           <div className="flex gap-2 flex-wrap">
-            <button onClick={() => generateReport('integration')} disabled={generating} className="px-3 py-2 bg-purple-600 text-white rounded-lg text-sm disabled:opacity-50">🔗 אינטגרציות</button>
-            <button onClick={() => generateReport('security')} disabled={generating} className="px-3 py-2 bg-red-600 text-white rounded-lg text-sm disabled:opacity-50">🔒 אבטחה</button>
-            <button onClick={() => generateReport('performance')} disabled={generating} className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm disabled:opacity-50">⚡ ביצועים</button>
-            <button onClick={() => generateReport('audit')} disabled={generating} className="px-3 py-2 bg-yellow-600 text-white rounded-lg text-sm disabled:opacity-50">📋 ביקורת</button>
-            <button onClick={() => generateReport('backup')} disabled={generating} className="px-3 py-2 bg-green-600 text-white rounded-lg text-sm disabled:opacity-50">💾 גיבוי</button>
+            <button onClick={() => generateReport('integration')} disabled={generating} className="px-3 py-2 text-white rounded-lg text-sm disabled:opacity-50" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>אינטגרציות</button>
+            <button onClick={() => generateReport('security')} disabled={generating} className="px-3 py-2 text-white rounded-lg text-sm disabled:opacity-50" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>אבטחה</button>
+            <button onClick={() => generateReport('performance')} disabled={generating} className="px-3 py-2 text-white rounded-lg text-sm disabled:opacity-50" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>ביצועים</button>
+            <button onClick={() => generateReport('audit')} disabled={generating} className="px-3 py-2 text-white rounded-lg text-sm disabled:opacity-50" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>ביקורת</button>
+            <button onClick={() => generateReport('backup')} disabled={generating} className="px-3 py-2 text-white rounded-lg text-sm disabled:opacity-50" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>גיבוי</button>
             <button onClick={() => setShowNewReport(true)} className="px-3 py-2 bg-gray-600 text-white rounded-lg text-sm">+ מותאם</button>
           </div>
 
           <div className="flex gap-2 flex-wrap">
             {['all', 'integration', 'security', 'performance', 'audit'].map(f => (
-              <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-full text-sm ${filter === f ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>
+              <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-full text-sm ${filter === f ? 'text-white' : 'bg-gray-100'}`} style={filter === f ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}>
                 {f === 'all' ? 'הכל' : TYPE_LABELS[f]?.icon + ' ' + TYPE_LABELS[f]?.label}
               </button>
             ))}
@@ -699,11 +736,11 @@ export default function SystemReportsClient() {
                         <p className="text-sm opacity-90">{formatDate(selectedReport.createdAt)}</p>
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => copyReportToClipboard(selectedReport)} className="px-3 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600" title="העתק">📋 העתק</button>
-                        <button onClick={() => downloadReport(selectedReport, 'md')} className="p-2 bg-white/20 rounded-lg" title="Markdown">📥</button>
-                        <button onClick={() => downloadReport(selectedReport, 'html')} className="p-2 bg-white/20 rounded-lg" title="HTML">📄</button>
-                        <button onClick={() => downloadReport(selectedReport, 'json')} className="p-2 bg-white/20 rounded-lg" title="JSON">📦</button>
-                        <button onClick={() => deleteReport(selectedReport.id)} className="p-2 bg-red-500/50 rounded-lg" title="מחק">🗑️</button>
+                        <button onClick={() => copyReportToClipboard(selectedReport)} className="px-3 py-2 text-white rounded-lg text-sm" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }} title="העתק">העתק</button>
+                        <button onClick={() => downloadReport(selectedReport, 'md')} className="p-2 bg-white/20 rounded-lg" title="Markdown">MD</button>
+                        <button onClick={() => downloadReport(selectedReport, 'html')} className="p-2 bg-white/20 rounded-lg" title="HTML">HTML</button>
+                        <button onClick={() => downloadReport(selectedReport, 'json')} className="p-2 bg-white/20 rounded-lg" title="JSON">JSON</button>
+                        <button onClick={() => deleteReport(selectedReport.id)} className="p-2 bg-red-500/50 rounded-lg" title="מחק">X</button>
                       </div>
                     </div>
                     {selectedReport.stats?.score > 0 && (
@@ -717,7 +754,7 @@ export default function SystemReportsClient() {
                   <div className="p-6 max-h-[500px] overflow-y-auto" style={{ direction: 'rtl' }} dangerouslySetInnerHTML={{ __html: formatMarkdownToHtml(selectedReport.content) }} />
                 </div>
               ) : (
-                <div className="bg-gray-50 rounded-xl p-10 text-center"><div className="text-6xl mb-4">📊</div><p className="text-gray-500">בחר דוח מהרשימה</p></div>
+                <div className="bg-gray-50 rounded-xl p-10 text-center"><div className="text-6xl mb-4 text-cyan-600">R</div><p className="text-gray-500">בחר דוח מהרשימה</p></div>
               )}
             </div>
           </div>
@@ -728,15 +765,15 @@ export default function SystemReportsClient() {
       {activeTab === 'enterprise' && (
         <div className="space-y-6">
           {/* Enterprise Header */}
-          <div className="bg-gradient-to-r from-indigo-900 to-purple-700 rounded-xl p-6 text-white">
-            <h2 className="text-2xl font-bold mb-2">🏢 Enterprise Reports Dashboard</h2>
-            <p className="text-indigo-200">דוחות ברמת הנהלה להחלטות אסטרטגיות, כספיות ו-Go-Live</p>
+          <div className="rounded-xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+            <h2 className="text-2xl font-bold mb-2">Enterprise Reports Dashboard</h2>
+            <p className="text-cyan-100">דוחות ברמת הנהלה להחלטות אסטרטגיות, כספיות ו-Go-Live</p>
           </div>
 
           {/* Enterprise Reports Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {reports.filter(r => r.isEnterprise || ['executive', 'financial', 'operational', 'risk', 'meta'].includes(r.type)).map(r => (
-              <div key={r.id} onClick={() => loadReport(r.id)} className={`p-5 rounded-xl cursor-pointer transition-all ${selectedReport?.id === r.id ? 'ring-2 ring-indigo-500 bg-indigo-50' : 'bg-white border-2 border-gray-100 hover:border-indigo-200 hover:shadow-lg'}`}>
+              <div key={r.id} onClick={() => loadReport(r.id)} className={`p-5 rounded-xl cursor-pointer transition-all ${selectedReport?.id === r.id ? 'ring-2 ring-cyan-500 bg-cyan-50' : 'bg-white border-2 border-gray-100 hover:border-cyan-200 hover:shadow-lg'}`}>
                 <div className="flex items-center justify-between mb-3">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${TYPE_LABELS[r.type]?.color || 'bg-gray-100'}`}>
                     {TYPE_LABELS[r.type]?.icon} {TYPE_LABELS[r.type]?.label || r.type}
@@ -761,10 +798,10 @@ export default function SystemReportsClient() {
             ))}
             {reports.filter(r => r.isEnterprise || ['executive', 'financial', 'operational', 'risk', 'meta'].includes(r.type)).length === 0 && (
               <div className="col-span-full text-center py-12 bg-gray-50 rounded-xl">
-                <div className="text-5xl mb-4">🏢</div>
+                <div className="text-5xl mb-4 text-cyan-600">E</div>
                 <p className="text-gray-500 mb-4">אין דוחות Enterprise עדיין</p>
-                <button onClick={runSystemScan} disabled={scanning} className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50">
-                  {scanning ? '⏳ סורק...' : '🚀 הפעל סריקה ליצירת דוחות'}
+                <button onClick={runSystemScan} disabled={scanning} className="px-6 py-2 text-white rounded-lg disabled:opacity-50" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  {scanning ? 'סורק...' : 'הפעל סריקה ליצירת דוחות'}
                 </button>
               </div>
             )}
@@ -773,58 +810,58 @@ export default function SystemReportsClient() {
           {/* Selected Enterprise Report View */}
           {selectedReport && ['executive', 'financial', 'operational', 'risk', 'meta'].includes(selectedReport.type) && (
             <div className="bg-white rounded-xl border-2 overflow-hidden">
-              <div className="p-6 text-white" style={{ background: 'linear-gradient(135deg, #312e81 0%, #7c3aed 100%)' }}>
+              <div className="p-6 text-white" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-3xl">{TYPE_LABELS[selectedReport.type]?.icon}</span>
                       <h2 className="text-xl font-bold">{selectedReport.title}</h2>
                     </div>
-                    <p className="text-indigo-200 text-sm">{formatDate(selectedReport.createdAt)} | {selectedReport.createdByName || 'Admin'}</p>
+                    <p className="text-cyan-100 text-sm">{formatDate(selectedReport.createdAt)} | {selectedReport.createdByName || 'Admin'}</p>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => copyReportToClipboard(selectedReport)} className="px-3 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600" title="העתק">
-                      📋 העתק
+                    <button onClick={() => copyReportToClipboard(selectedReport)} className="px-3 py-2 text-white rounded-lg text-sm" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }} title="העתק">
+                      העתק
                     </button>
                     {EXPORTABLE_CATEGORIES.includes(selectedReport.category) && (
                       <>
                         <button onClick={() => exportReport(selectedReport.id, 'csv')} className="px-3 py-2 bg-emerald-500 text-white rounded-lg text-sm hover:bg-emerald-600" title="CSV">
-                          📊 CSV
+                          CSV
                         </button>
                         <button onClick={() => exportReport(selectedReport.id, 'pdf')} className="px-3 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600" title="PDF">
-                          📄 PDF
+                          PDF
                         </button>
                       </>
                     )}
-                    <button onClick={() => downloadReport(selectedReport, 'md')} className="p-2 bg-white/20 rounded-lg" title="Markdown">📥</button>
-                    <button onClick={() => downloadReport(selectedReport, 'html')} className="p-2 bg-white/20 rounded-lg" title="HTML">📄</button>
-                    <button onClick={() => downloadReport(selectedReport, 'json')} className="p-2 bg-white/20 rounded-lg" title="JSON">📦</button>
+                    <button onClick={() => downloadReport(selectedReport, 'md')} className="p-2 bg-white/20 rounded-lg" title="Markdown">MD</button>
+                    <button onClick={() => downloadReport(selectedReport, 'html')} className="p-2 bg-white/20 rounded-lg" title="HTML">HTML</button>
+                    <button onClick={() => downloadReport(selectedReport, 'json')} className="p-2 bg-white/20 rounded-lg" title="JSON">JSON</button>
                   </div>
                 </div>
                 {selectedReport.stats && (
                   <div className="flex gap-4 mt-4">
                     <div className="bg-white/20 rounded-lg px-4 py-2">
                       <div className="text-3xl font-bold">{selectedReport.stats.score}%</div>
-                      <div className="text-xs text-indigo-200">ציון</div>
+                      <div className="text-xs text-cyan-100">ציון</div>
                     </div>
                     <div className="bg-white/20 rounded-lg px-4 py-2">
                       <div className="text-3xl font-bold text-green-300">{selectedReport.stats.passed}</div>
-                      <div className="text-xs text-indigo-200">עברו</div>
+                      <div className="text-xs text-cyan-100">עברו</div>
                     </div>
                     <div className="bg-white/20 rounded-lg px-4 py-2">
                       <div className="text-3xl font-bold text-red-300">{selectedReport.stats.failed}</div>
-                      <div className="text-xs text-indigo-200">נכשלו</div>
+                      <div className="text-xs text-cyan-100">נכשלו</div>
                     </div>
                     <div className="bg-white/20 rounded-lg px-4 py-2">
                       <div className="text-3xl font-bold text-yellow-300">{selectedReport.stats.warnings}</div>
-                      <div className="text-xs text-indigo-200">אזהרות</div>
+                      <div className="text-xs text-cyan-100">אזהרות</div>
                     </div>
                   </div>
                 )}
                 {selectedReport.decision?.readyForProduction !== undefined && (
                   <div className={`mt-4 p-4 rounded-lg ${selectedReport.decision.readyForProduction ? 'bg-green-500/30' : 'bg-red-500/30'}`}>
                     <div className="text-lg font-bold">
-                      {selectedReport.decision.readyForProduction ? '✅ READY FOR PRODUCTION' : '❌ NOT READY FOR PRODUCTION'}
+                      {selectedReport.decision.readyForProduction ? 'READY FOR PRODUCTION' : 'NOT READY FOR PRODUCTION'}
                     </div>
                     {selectedReport.decision.blockers?.length > 0 && (
                       <div className="text-sm mt-2">
@@ -886,7 +923,7 @@ export default function SystemReportsClient() {
                   <div className="text-sm text-blue-100">ציון כללי</div>
                 </div>
                 <div className={`px-4 py-2 rounded-lg border-2 font-bold ${getSeoStatusColor(seoData.overallStatus)}`}>
-                  {seoData.overallStatus === 'PASS' ? '✅ עובר' : seoData.overallStatus === 'WARN' ? '⚠️ אזהרה' : '❌ נכשל'}
+                  {seoData.overallStatus === 'PASS' ? 'עובר' : seoData.overallStatus === 'WARN' ? 'אזהרה' : 'נכשל'}
                 </div>
                 <div className="bg-white/20 rounded-lg px-4 py-2">
                   <div className="text-2xl font-bold text-red-200">{seoData.blockingIssuesCount || 0}</div>
@@ -920,9 +957,9 @@ export default function SystemReportsClient() {
                     {seoData.reports.technical_seo.score}%
                   </div>
                   <div className="text-sm text-gray-600 space-y-1">
-                    <div>🔴 {seoData.reports.technical_seo.summary.critical_issues} קריטי</div>
-                    <div>🟡 {seoData.reports.technical_seo.summary.warning_issues} אזהרות</div>
-                    <div>📄 {seoData.reports.technical_seo.summary.total_pages_scanned} עמודים נסרקו</div>
+                    <div>{seoData.reports.technical_seo.summary.critical_issues} קריטי</div>
+                    <div>{seoData.reports.technical_seo.summary.warning_issues} אזהרות</div>
+                    <div>{seoData.reports.technical_seo.summary.total_pages_scanned} עמודים נסרקו</div>
                   </div>
                 </div>
               )}
@@ -948,9 +985,9 @@ export default function SystemReportsClient() {
                     {seoData.reports.content_coverage.score}%
                   </div>
                   <div className="text-sm text-gray-600 space-y-1">
-                    <div>📝 {seoData.reports.content_coverage.summary.thin_content_pages} תוכן דל</div>
-                    <div>🔗 {seoData.reports.content_coverage.summary.orphan_pages} עמודים יתומים</div>
-                    <div>📊 ממוצע {seoData.reports.content_coverage.summary.avg_word_count} מילים</div>
+                    <div>{seoData.reports.content_coverage.summary.thin_content_pages} תוכן דל</div>
+                    <div>{seoData.reports.content_coverage.summary.orphan_pages} עמודים יתומים</div>
+                    <div>ממוצע {seoData.reports.content_coverage.summary.avg_word_count} מילים</div>
                   </div>
                 </div>
               )}
@@ -976,9 +1013,9 @@ export default function SystemReportsClient() {
                     {seoData.reports.web_vitals.score}%
                   </div>
                   <div className="text-sm text-gray-600 space-y-1">
-                    <div>⚡ LCP: {seoData.reports.web_vitals.summary.lcp_pass_rate}% עוברים</div>
-                    <div>📐 CLS: {seoData.reports.web_vitals.summary.cls_pass_rate}% עוברים</div>
-                    <div>🔧 {seoData.reports.web_vitals.summary.pages_need_attention} עמודים לטיפול</div>
+                    <div>LCP: {seoData.reports.web_vitals.summary.lcp_pass_rate}% עוברים</div>
+                    <div>CLS: {seoData.reports.web_vitals.summary.cls_pass_rate}% עוברים</div>
+                    <div>{seoData.reports.web_vitals.summary.pages_need_attention} עמודים לטיפול</div>
                   </div>
                 </div>
               )}
@@ -1003,7 +1040,7 @@ export default function SystemReportsClient() {
                         <div className="text-sm text-gray-600 mt-1">{issue.page_url}</div>
                         {issue.recommended_fix && (
                           <div className="text-xs text-blue-700 mt-2 bg-blue-50 px-2 py-1 rounded">
-                            💡 {issue.recommended_fix}
+                            {issue.recommended_fix}
                           </div>
                         )}
                       </div>
@@ -1037,8 +1074,8 @@ export default function SystemReportsClient() {
                   className="px-3 py-1.5 border rounded-lg text-sm"
                 >
                   <option value="all">כל החומרות</option>
-                  <option value="critical">🔴 קריטי</option>
-                  <option value="warning">🟡 אזהרה</option>
+                  <option value="critical">קריטי</option>
+                  <option value="warning">אזהרה</option>
                 </select>
                 <span className="text-sm text-gray-500 self-center">
                   {filterSeoIssues(seoData.reports[selectedSeoReport].issues).length} בעיות מוצגות
@@ -1048,7 +1085,7 @@ export default function SystemReportsClient() {
               {/* Recommendations */}
               {seoData.reports[selectedSeoReport].recommendations?.length > 0 && (
                 <div className="bg-blue-50 rounded-lg p-4 mb-4">
-                  <h4 className="font-medium text-blue-900 mb-2">💡 המלצות</h4>
+                  <h4 className="font-medium text-blue-900 mb-2">המלצות</h4>
                   <ul className="space-y-1">
                     {seoData.reports[selectedSeoReport].recommendations.map((rec, idx) => (
                       <li key={idx} className="text-sm text-blue-800 flex items-start gap-2">
@@ -1068,25 +1105,25 @@ export default function SystemReportsClient() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className={`px-2 py-0.5 rounded text-xs font-medium ${issue.severity === 'critical' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                            {issue.severity === 'critical' ? '🔴 קריטי' : '🟡 אזהרה'}
+                            {issue.severity === 'critical' ? 'קריטי' : 'אזהרה'}
                           </span>
                           <span className="text-xs text-gray-500">{issue.error_type || issue.issue_type || issue.metric_name}</span>
                         </div>
                         <div className="font-medium text-gray-900">{issue.issue || `${issue.metric_name}: ${issue.measured_value}`}</div>
-                        <div className="text-sm text-gray-600 mt-1">📍 {issue.page_url}</div>
+                        <div className="text-sm text-gray-600 mt-1">{issue.page_url}</div>
                         {issue.recommended_fix && (
                           <div className="text-xs text-blue-700 mt-2 bg-blue-50 px-2 py-1 rounded">
-                            🔧 {issue.recommended_fix}
+                            {issue.recommended_fix}
                           </div>
                         )}
                         {issue.recommended_action && (
                           <div className="text-xs text-blue-700 mt-2 bg-blue-50 px-2 py-1 rounded">
-                            🔧 {issue.recommended_action}
+                            {issue.recommended_action}
                           </div>
                         )}
                         {issue.technical_fix_hint && (
                           <div className="text-xs text-blue-700 mt-2 bg-blue-50 px-2 py-1 rounded">
-                            🔧 {issue.technical_fix_hint}
+                            {issue.technical_fix_hint}
                           </div>
                         )}
                       </div>
@@ -1124,7 +1161,7 @@ export default function SystemReportsClient() {
           <div className="bg-gradient-to-r from-red-600 to-orange-500 rounded-xl p-6 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold mb-2">⚠️ לוג שגיאות מערכת</h2>
+                <h2 className="text-2xl font-bold mb-2">לוג שגיאות מערכת</h2>
                 <p className="text-red-100">צפה בשגיאות, אזהרות והמלצות לשיפור</p>
               </div>
               <button
@@ -1132,7 +1169,7 @@ export default function SystemReportsClient() {
                 disabled={errorsLoading}
                 className="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 disabled:opacity-50"
               >
-                {errorsLoading ? '⏳ טוען...' : '🔄 רענן'}
+                {errorsLoading ? 'טוען...' : 'רענן'}
               </button>
             </div>
             {errorStats && (
@@ -1164,7 +1201,7 @@ export default function SystemReportsClient() {
           {/* Recommendations Section */}
           {issuesLog && issuesLog.summary?.totalIssues > 0 && (
             <div className="bg-white rounded-xl border p-6">
-              <h3 className="font-bold text-lg mb-4">💡 המלצות לשיפור מהסריקה האחרונה</h3>
+              <h3 className="font-bold text-lg mb-4">המלצות לשיפור מהסריקה האחרונה</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.entries(issuesLog.categories || {}).map(([key, category]) => {
                   if (category.items.length === 0) return null;
@@ -1179,7 +1216,7 @@ export default function SystemReportsClient() {
                       <ul className="mt-2 space-y-1">
                         {category.items.slice(0, 3).map((item, idx) => (
                           <li key={idx} className="text-xs text-gray-700 flex items-start gap-1">
-                            <span>{item.severity === 'error' ? '🔴' : item.severity === 'warning' ? '🟡' : '🔵'}</span>
+                            <span>{item.severity === 'error' ? 'X' : item.severity === 'warning' ? '!' : 'i'}</span>
                             <span className="line-clamp-1">{item.message}</span>
                           </li>
                         ))}
@@ -1196,7 +1233,7 @@ export default function SystemReportsClient() {
 
           {/* Error Logs List */}
           <div className="bg-white rounded-xl border p-6">
-            <h3 className="font-bold text-lg mb-4">📋 לוג שגיאות ({errorLogs.length})</h3>
+            <h3 className="font-bold text-lg mb-4">לוג שגיאות ({errorLogs.length})</h3>
             {errorsLoading ? (
               <div className="text-center py-8">
                 <div className="w-8 h-8 rounded-full animate-spin mx-auto mb-2" style={{ border: '3px solid #ddd', borderTopColor: '#dc2626' }}></div>
@@ -1204,7 +1241,7 @@ export default function SystemReportsClient() {
               </div>
             ) : errorLogs.length === 0 ? (
               <div className="text-center py-12">
-                <div className="text-5xl mb-3">✅</div>
+                <div className="text-5xl mb-3 text-green-500">V</div>
                 <p className="text-gray-500 text-lg">אין שגיאות מערכת!</p>
                 <p className="text-gray-400 text-sm">המערכת פועלת תקין</p>
               </div>
@@ -1225,16 +1262,16 @@ export default function SystemReportsClient() {
                             log.level === 'warn' ? 'bg-yellow-100 text-yellow-700' :
                             'bg-blue-100 text-blue-700'
                           }`}>
-                            {log.level === 'error' ? '🔴 שגיאה' : log.level === 'warn' ? '🟡 אזהרה' : '🔵 מידע'}
+                            {log.level === 'error' ? 'שגיאה' : log.level === 'warn' ? 'אזהרה' : 'מידע'}
                           </span>
                           <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">{log.source}</span>
                           {log.resolved && (
-                            <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">✓ נפתר</span>
+                            <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">נפתר</span>
                           )}
                         </div>
                         <p className="font-medium text-gray-900">{log.message}</p>
                         {log.url && (
-                          <p className="text-xs text-gray-500 mt-1">📍 {log.url}</p>
+                          <p className="text-xs text-gray-500 mt-1">{log.url}</p>
                         )}
                         {log.stack && (
                           <details className="mt-2">
@@ -1277,7 +1314,7 @@ export default function SystemReportsClient() {
       {/* TAB: History */}
       {activeTab === 'history' && (
         <div className="bg-white rounded-xl border p-6">
-          <h3 className="font-bold mb-4">📜 היסטוריית דוחות וסריקות</h3>
+          <h3 className="font-bold mb-4">היסטוריית דוחות וסריקות</h3>
           {reports.length === 0 && scans.length === 0 ? (
             <p className="text-gray-500 text-center py-10">אין היסטוריה</p>
           ) : (
@@ -1303,7 +1340,7 @@ export default function SystemReportsClient() {
       {/* TAB: Downloads */}
       {activeTab === 'downloads' && (
         <div className="bg-white rounded-xl border p-6">
-          <h3 className="font-bold mb-4">📥 מרכז הורדות</h3>
+          <h3 className="font-bold mb-4">מרכז הורדות</h3>
           <p className="text-gray-600 text-sm mb-4">הורד דוחות בפורמטים: CSV, PDF, JSON, HTML, Markdown</p>
           {reports.length === 0 ? (
             <p className="text-gray-500 text-center py-10">אין דוחות להורדה</p>
@@ -1397,12 +1434,12 @@ function NewReportModal({ onClose, onSave }) {
         <div>
           <label className="block text-sm font-medium mb-1">סוג דוח</label>
           <select value={type} onChange={e => setType(e.target.value)} className="w-full px-4 py-2 border-2 rounded-lg">
-            <option value="integration">🔗 אינטגרציה</option>
-            <option value="security">🔒 אבטחה</option>
-            <option value="performance">⚡ ביצועים</option>
-            <option value="audit">📋 ביקורת</option>
-            <option value="backup">💾 גיבוי</option>
-            <option value="custom">📄 כללי</option>
+            <option value="integration">אינטגרציה</option>
+            <option value="security">אבטחה</option>
+            <option value="performance">ביצועים</option>
+            <option value="audit">ביקורת</option>
+            <option value="backup">גיבוי</option>
+            <option value="custom">כללי</option>
           </select>
         </div>
         <div>

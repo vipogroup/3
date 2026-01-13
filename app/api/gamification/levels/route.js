@@ -40,7 +40,7 @@ async function GETHandler(req) {
     const user = await getUserFromRequest(req);
     
     // Check if user is admin
-    if (!user || (user.role !== 'admin' && user.role !== 'business_admin')) {
+    if (!user || (user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin')) {
       return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
     }
 
@@ -76,7 +76,7 @@ async function POSTHandler(req) {
     const user = await getUserFromRequest(req);
     
     // Check if user is admin
-    if (!user || (user.role !== 'admin' && user.role !== 'business_admin')) {
+    if (!user || (user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin')) {
       return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
     }
 

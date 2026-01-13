@@ -167,7 +167,7 @@ async function PUTHandler(request, { params }) {
  * PATCH /api/tenants/[id] - עדכון חלקי (למשל allowedMenus)
  */
 async function PATCHHandler(request, { params }) {
-  return PUT(request, { params });
+  return PUTHandler(request, { params });
 }
 
 /**

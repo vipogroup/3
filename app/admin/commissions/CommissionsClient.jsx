@@ -76,7 +76,7 @@ export default function CommissionsClient() {
 
   // Reset all commissions
   const handleResetAllCommissions = async () => {
-    const confirmText = prompt('⚠️ פעולה זו תמחק את כל העמלות במערכת!\n\nהקלד "אפס עמלות" כדי לאשר:');
+    const confirmText = prompt('פעולה זו תמחק את כל העמלות במערכת!\n\nהקלד "אפס עמלות" כדי לאשר:');
     if (confirmText !== 'אפס עמלות') {
       if (confirmText !== null) alert('הטקסט שהוזן אינו תואם. הפעולה בוטלה.');
       return;
@@ -91,7 +91,7 @@ export default function CommissionsClient() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Failed to reset commissions');
       
-      alert(`✅ איפוס הושלם!\n\nהזמנות שאופסו: ${json.ordersReset || 0}\nמשתמשים שאופסו: ${json.usersReset || 0}`);
+      alert(`איפוס הושלם!\n\nהזמנות שאופסו: ${json.ordersReset || 0}\nמשתמשים שאופסו: ${json.usersReset || 0}`);
       fetchData();
     } catch (err) {
       alert('שגיאה באיפוס העמלות: ' + err.message);
@@ -248,7 +248,7 @@ export default function CommissionsClient() {
             </svg>
           </div>
           <p className="text-red-600 font-medium">{error}</p>
-          <button onClick={fetchData} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <button onClick={fetchData} className="mt-4 px-4 py-2 text-white rounded-lg" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
             נסה שוב
           </button>
         </div>
@@ -288,7 +288,7 @@ export default function CommissionsClient() {
               className="px-4 py-2 rounded-lg font-medium transition-all border-2 disabled:opacity-50"
               style={{ borderColor: '#dc2626', color: '#dc2626' }}
             >
-              {resettingCommissions ? '⏳ מאפס...' : '🗑️ איפוס עמלות'}
+              {resettingCommissions ? 'מאפס...' : 'איפוס עמלות'}
             </button>
             <button
               onClick={() => exportToExcel(data?.agentsSummary, data?.commissions)}
@@ -296,7 +296,7 @@ export default function CommissionsClient() {
               className="px-4 py-2 rounded-lg font-medium transition-all border-2 disabled:opacity-50"
               style={{ borderColor: '#0891b2', color: '#1e3a8a' }}
             >
-              📥 ייצוא Excel
+              ייצוא Excel
             </button>
             <button
               onClick={fetchData}
@@ -383,7 +383,7 @@ export default function CommissionsClient() {
                 <span className="font-medium">רכישה קבוצתית:</span> 100 יום מתאריך ההזמנה
               </p>
               <p className="text-xs text-blue-600 mt-1">
-                💡 לחץ על תאריך השחרור בטבלה כדי לערוך אותו ידנית
+                לחץ על תאריך השחרור בטבלה כדי לערוך אותו ידנית
               </p>
             </div>
           </div>
@@ -504,7 +504,7 @@ export default function CommissionsClient() {
                           <div className="text-xs text-gray-500">{agent.phone}</div>
                         </td>
                         <td className="px-4 py-3">
-                          <code className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-sm">
+                          <code className="px-2 py-1 bg-cyan-100 text-cyan-700 rounded text-sm">
                             {agent.couponCode?.toUpperCase() || '-'}
                           </code>
                         </td>
@@ -552,7 +552,7 @@ export default function CommissionsClient() {
                         <p className="font-bold">{agent.fullName}</p>
                         <p className="text-xs text-gray-500">{agent.phone}</p>
                       </div>
-                      <code className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-sm">
+                      <code className="px-2 py-1 bg-cyan-100 text-cyan-700 rounded text-sm">
                         {agent.couponCode?.toUpperCase() || '-'}
                       </code>
                     </div>
@@ -631,7 +631,7 @@ export default function CommissionsClient() {
                           </td>
                           <td className="px-4 py-3 text-center">
                             {c.orderType === 'group' ? (
-                              <span className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-700">רכישה קבוצתית</span>
+                              <span className="px-2 py-1 text-xs rounded-full bg-cyan-100 text-cyan-700">רכישה קבוצתית</span>
                             ) : (
                               <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">מכירה רגילה</span>
                             )}
@@ -640,7 +640,7 @@ export default function CommissionsClient() {
                             <div className="flex items-start gap-2">
                               <div className="flex-1">
                                 <div className="text-sm font-medium">{c.agent?.fullName || 'לא ידוע'}</div>
-                                <code className="text-xs bg-purple-50 text-purple-600 px-1 rounded">
+                                <code className="text-xs bg-cyan-50 text-cyan-700 px-1 rounded">
                                   {c.agent?.couponCode?.toUpperCase() || '-'}
                                 </code>
                                 {c.agent?.phone && (
@@ -697,7 +697,7 @@ export default function CommissionsClient() {
                                   <button
                                     onClick={() => handleUpdateReleaseDate(c.orderId, editingDateValue)}
                                     disabled={savingDate}
-                                    className="px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600"
+                                    className="px-2 py-1 text-xs text-white rounded" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                                   >
                                     {savingDate ? '...' : 'שמור'}
                                   </button>
@@ -781,13 +781,13 @@ export default function CommissionsClient() {
                           {c.agent?.phone && (
                             <p className="text-xs text-gray-500">{c.agent.phone}</p>
                           )}
-                          <code className="text-xs bg-purple-50 text-purple-600 px-1 rounded">
+                          <code className="text-xs bg-cyan-50 text-cyan-700 px-1 rounded">
                             {c.agent?.couponCode?.toUpperCase() || '-'}
                           </code>
                         </div>
                         <div className="flex flex-col items-end gap-1">
                           {c.orderType === 'group' ? (
-                            <span className="px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-700">קבוצתית</span>
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-cyan-100 text-cyan-700">קבוצתית</span>
                           ) : (
                             <span className="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-700">רגילה</span>
                           )}

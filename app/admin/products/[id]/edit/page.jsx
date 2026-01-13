@@ -356,7 +356,7 @@ export default function EditProductPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center p-8">
         <div className="bg-white rounded-2xl shadow-2xl p-8 text-center max-w-md">
-          <div className="text-6xl mb-4">❌</div>
+          <div className="text-6xl mb-4 text-red-500">X</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-4">{error}</h1>
           <Link
             href={`${basePath}/products`}
@@ -564,7 +564,7 @@ export default function EditProductPage() {
                               : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                           }`}
                         >
-                          {editingCategories ? '✓ סיום' : '✎ ערוך'}
+                          {editingCategories ? 'סיום' : 'ערוך'}
                         </button>
                       </div>
                       <div className="flex flex-wrap gap-2">
@@ -660,7 +660,7 @@ export default function EditProductPage() {
                 {/* Group Purchase Details */}
                 {formData.purchaseType === 'group' && (
                   <div className="md:col-span-2 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
-                    <h3 className="font-bold text-blue-900 mb-3">🏭 פרטי רכישה קבוצתית</h3>
+                    <h3 className="font-bold text-blue-900 mb-3">פרטי רכישה קבוצתית</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-blue-900 mb-1">
@@ -1017,11 +1017,12 @@ export default function EditProductPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className={`flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold text-lg py-4 rounded-xl transition-all shadow-lg ${
+                className={`flex-1 text-white font-bold text-lg py-4 rounded-xl transition-all shadow-lg ${
                   submitting ? 'opacity-75 cursor-not-allowed' : ''
                 }`}
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
               >
-                {submitting ? 'שומר...' : '✓ שמור שינויים'}
+                {submitting ? 'שומר...' : 'שמור שינויים'}
               </button>
               <Link
                 href={`${basePath}/products`}

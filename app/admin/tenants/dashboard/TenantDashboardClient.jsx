@@ -143,8 +143,8 @@ export default function TenantDashboardClient() {
           </div>
           <div className="bg-white p-4 rounded-xl shadow-sm border">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <ShoppingCart className="w-5 h-5 text-purple-600" />
+              <div className="p-2 bg-cyan-100 rounded-lg">
+                <ShoppingCart className="w-5 h-5 text-cyan-600" />
               </div>
               <div>
                 <div className="text-sm text-gray-500">סהכ הזמנות</div>
@@ -279,7 +279,8 @@ export default function TenantDashboardClient() {
                       <button
                         onClick={() => handleRecordPayment(payment.tenantId, payment.tenantName, payment.amountDue)}
                         disabled={processingPayment === payment.tenantId}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm"
+                        className="flex items-center gap-2 px-3 py-1.5 text-white rounded-lg disabled:opacity-50 text-sm"
+                        style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                       >
                         {processingPayment === payment.tenantId ? (
                           <RefreshCw className="w-4 h-4 animate-spin" />

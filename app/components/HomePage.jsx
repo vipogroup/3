@@ -403,7 +403,7 @@ function HomePageContent() {
             fallback="איך זה עובד?"
             as="h2"
             className="section-title"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="steps-container">
             {[1,2,3,4,5,6].map((num, index) => {
@@ -444,7 +444,7 @@ function HomePageContent() {
               textKey="HOME_TRUST_TITLE" 
               fallback="שאנחנו מאוחדים אנחנו חזקים"
               as="h2"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+              style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
             />
             <EditableTextField 
               textKey="HOME_TRUST_TEXT" 
@@ -464,7 +464,7 @@ function HomePageContent() {
             fallback="חבר מביא חבר"
             as="h2"
             className="section-title"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="referral-content">
             <div className="referral-info">
@@ -546,7 +546,7 @@ function HomePageContent() {
               return (
                 <div className="audience-card reveal-on-scroll" key={index}>
                   <div className="audience-icon">
-                    <span style={{color: '#1e3a8a'}}>{svgIcons[icons[index]]}</span>
+                    <span style={{color: 'var(--primary)'}}>{svgIcons[icons[index]]}</span>
                   </div>
                   <EditableTextField textKey={`HOME_TARGET_${num}_TITLE`} fallback={fallbackTitles[index]} as="h3" />
                   <EditableTextField textKey={`HOME_TARGET_${num}_TEXT`} fallback={fallbackDescs[index]} as="p" className="audience-description" />
@@ -565,7 +565,7 @@ function HomePageContent() {
             fallback="שאלות נפוצות"
             as="h2"
             className="section-title"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="faq-timeline">
             {[1,2,3,4,5].map((num, index) => {
@@ -610,7 +610,7 @@ function HomePageContent() {
             fallback="לקוחות מספרים"
             as="h2"
             className="section-title"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="testimonials-slider-wrapper">
             <div className="testimonials-slider">
@@ -662,7 +662,7 @@ function HomePageContent() {
             fallback="מי אנחנו"
             as="h2"
             className="section-title"
-            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           />
           <div className="about-content">
             <EditableTextField 
@@ -798,7 +798,7 @@ function HomePageContent() {
           style={{
             background: editMode 
               ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' 
-              : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              : 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
             color: 'white',
             fontWeight: '600',
           }}
@@ -837,7 +837,7 @@ function HomePageContent() {
             dir="rtl"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold" style={{ color: '#1e3a8a' }}>כניסה למצב עריכה</h3>
+              <h3 className="text-xl font-bold" style={{ color: 'var(--primary)' }}>כניסה למצב עריכה</h3>
               <button 
                 onClick={() => {
                   setShowPasswordModal(false);
@@ -876,7 +876,7 @@ function HomePageContent() {
             <button
               onClick={handlePasswordSubmit}
               className="w-full mt-4 px-4 py-3 rounded-lg text-white font-medium transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
             >
               כניסה
             </button>
@@ -888,7 +888,7 @@ function HomePageContent() {
       {editMode && (
         <div 
           className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-full shadow-lg"
-          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', color: 'white' }}
+          style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', color: 'white' }}
         >
           <span className="flex items-center gap-2 text-sm font-medium">
             <svg className="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">

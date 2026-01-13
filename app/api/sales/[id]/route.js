@@ -136,7 +136,7 @@ async function DELETEHandler(req, { params }) {
     }
 
     // Only admins can delete sales
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'super_admin') {
       return NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
     }
 

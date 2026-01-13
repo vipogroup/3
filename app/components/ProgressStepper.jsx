@@ -29,12 +29,13 @@ export default function ProgressStepper({ currentStep = 1 }) {
                   transition-all duration-300
                   ${
                     step.number < currentStep
-                      ? 'bg-green-500 text-white' // Completed
+                      ? 'text-white' // Completed
                       : step.number === currentStep
-                        ? 'bg-blue-600 text-white ring-4 ring-blue-200' // Current
+                        ? 'text-white ring-4 ring-cyan-200' // Current
                         : 'bg-gray-200 text-gray-500' // Upcoming
                   }
                 `}
+                style={step.number <= currentStep ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
               >
                 {step.number < currentStep ? (
                   // Checkmark for completed steps
@@ -64,8 +65,10 @@ export default function ProgressStepper({ currentStep = 1 }) {
               <div
                 className={`
                   w-16 h-0.5 mx-2 transition-all duration-300
-                  ${step.number < currentStep ? 'bg-green-500' : 'bg-gray-300'}
+                  ${step.number < currentStep ? '' : 'bg-gray-300'}
                 `}
+                style={step.number < currentStep ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+                
               />
             )}
           </div>
@@ -78,7 +81,7 @@ export default function ProgressStepper({ currentStep = 1 }) {
           <span className="text-sm font-medium text-gray-600">
             שלב {currentStep} מתוך {steps.length}
           </span>
-          <span className="text-sm font-semibold text-blue-600">
+          <span className="text-sm font-semibold" style={{ color: '#0891b2' }}>
             {steps[currentStep - 1]?.label}
           </span>
         </div>
@@ -86,8 +89,8 @@ export default function ProgressStepper({ currentStep = 1 }) {
         {/* Progress Bar */}
         <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-            style={{ width: `${(currentStep / steps.length) * 100}%` }}
+            className="h-2 rounded-full transition-all duration-500"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', width: `${(currentStep / steps.length) * 100}%` }}
           />
         </div>
 
@@ -121,8 +124,8 @@ export function CompactProgress({ currentStep = 1, totalSteps = 4 }) {
       </span>
       <div className="w-20 bg-gray-200 rounded-full h-1.5 overflow-hidden">
         <div
-          className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
-          style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+          className="h-1.5 rounded-full transition-all duration-300"
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', width: `${(currentStep / totalSteps) * 100}%` }}
         />
       </div>
     </div>

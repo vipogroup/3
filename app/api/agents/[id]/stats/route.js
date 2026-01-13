@@ -34,7 +34,7 @@ async function GETHandler(req, { params }) {
     const { id } = params;
 
     // Check if user has permission to view these stats
-    if (id !== user.userId && user.role !== 'admin' && user.role !== 'business_admin') {
+    if (id !== user.userId && user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin') {
       return NextResponse.json(
         { error: 'Forbidden: You can only view your own stats' },
         { status: 403 },

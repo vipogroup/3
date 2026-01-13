@@ -47,7 +47,7 @@ function formatDateTime(value) {
 function StatsCard({ title, value, subtitle, accent = 'blue' }) {
   const palette = {
     blue: {
-      text: '#1e3a8a',
+      text: 'var(--primary)',
       border: 'rgba(8, 145, 178, 0.25)',
     },
     green: {
@@ -85,7 +85,7 @@ function WithdrawalRow({ withdrawal, onOpen }) {
           {withdrawal.user?.email || withdrawal.user?.phone || '—'}
         </div>
       </td>
-      <td className="px-4 py-3 text-sm font-semibold" style={{ color: '#1e3a8a' }}>
+      <td className="px-4 py-3 text-sm font-semibold" style={{ color: 'var(--primary)' }}>
         {formatCurrencyILS(withdrawal.amount)}
       </td>
       <td className="px-4 py-3 text-sm text-gray-600">{formatCurrencyILS(withdrawal.snapshotBalance)}</td>
@@ -135,7 +135,7 @@ export default function BusinessWithdrawalsPage() {
           return;
         }
         const data = await res.json();
-        if (data.user?.role !== 'business_admin' && data.user?.role !== 'admin') {
+        if (data.user?.role !== 'business_admin' && data.user?.role !== 'admin' && data.user?.role !== 'super_admin') {
           router.push('/');
           return;
         }
@@ -283,7 +283,7 @@ export default function BusinessWithdrawalsPage() {
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="animate-spin rounded-full h-12 w-12" style={{
           border: '4px solid rgba(8, 145, 178, 0.2)',
-          borderTopColor: '#0891b2',
+          borderTopColor: 'var(--secondary)',
         }}></div>
       </div>
     );
@@ -297,7 +297,7 @@ export default function BusinessWithdrawalsPage() {
             <h1
               className="text-2xl font-bold"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -356,7 +356,7 @@ export default function BusinessWithdrawalsPage() {
                     }`}
                     style={
                       statusFilter === status.value
-                        ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }
+                        ? { background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }
                         : undefined
                     }
                   >
@@ -553,7 +553,7 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
       >
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold" style={{ color: '#1e3a8a' }}>
+            <h2 className="text-xl font-bold" style={{ color: 'var(--primary)' }}>
               ניהול בקשת משיכה
             </h2>
             <p className="text-sm text-gray-500">עדכון סטטוס והעברת הערות לסוכן</p>
@@ -607,7 +607,7 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
                 <p className="text-xs text-gray-500">סכום הבקשה</p>
-                <p className="mt-2 text-lg font-bold" style={{ color: '#1e3a8a' }}>
+                <p className="mt-2 text-lg font-bold" style={{ color: 'var(--primary)' }}>
                   {formatCurrencyILS(withdrawal.amount)}
                 </p>
               </div>
@@ -631,13 +631,13 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
 
             {withdrawal.paymentDetails && (
               <div className="rounded-xl p-4" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.08), rgba(8, 145, 178, 0.08))', border: '1px solid rgba(30, 58, 138, 0.2)' }}>
-                <p className="text-sm font-semibold mb-3" style={{ color: '#1e3a8a' }}>
+                <p className="text-sm font-semibold mb-3" style={{ color: 'var(--primary)' }}>
                   פרטי העברת התשלום
                 </p>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500">אמצעי תשלום:</span>
-                    <span className="font-semibold" style={{ color: '#1e3a8a' }}>
+                    <span className="font-semibold" style={{ color: 'var(--primary)' }}>
                       {withdrawal.paymentDetails.method === 'bit' && 'ביט'}
                       {withdrawal.paymentDetails.method === 'paybox' && 'פייבוקס'}
                       {withdrawal.paymentDetails.method === 'paypal' && 'פייפל'}
@@ -707,7 +707,7 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
                       action === option.value
                         ? option.color === 'red'
                           ? { background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' }
-                          : { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }
+                          : { background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }
                         : undefined
                     }
                   >
@@ -763,7 +763,7 @@ function WithdrawalActionModal({ open, withdrawalId, onClose, onActionComplete }
               <button
                 type="submit"
                 className="w-full rounded-lg px-4 py-2 text-sm font-semibold text-white sm:w-auto"
-                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                 disabled={loading}
               >
                 {loading ? 'מעבד…' : 'שמירת הפעולה'}

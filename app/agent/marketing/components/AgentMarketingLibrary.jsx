@@ -3,15 +3,15 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 
-const DEFAULT_TEMPLATE = `🔥 הזדמנות מיוחדת! 🔥
+const DEFAULT_TEMPLATE = `הזדמנות מיוחדת!
 
 הצטרפו לרכישה קבוצתית ותיהנו ממחירים מטורפים!
 
-🛒 לרכישה: {link}
+לרכישה: {link}
 
-🎁 קוד קופון להנחה: {coupon}
+קוד קופון להנחה: {coupon}
 
-נלחמים ביוקר המחיה - ורוכשים ביחד! 💪`;
+נלחמים ביוקר המחיה - ורוכשים ביחד!`;
 
 function buildShareMessage(asset, { coupon, link, discountPercent }) {
   const template = (asset.messageTemplate ? asset.messageTemplate.trim() : '') || DEFAULT_TEMPLATE;

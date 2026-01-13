@@ -38,7 +38,7 @@ async function POSTHandler(req, { params }) {
   try {
     const token = getAuthToken(req);
     const decoded = verifyJwt(token);
-    if (decoded?.role !== 'admin') {
+    if (decoded?.role !== 'admin' && decoded?.role !== 'super_admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

@@ -308,9 +308,9 @@ export default function IntegrationsClient() {
                   <div className="text-lg font-bold text-red-700">{integrations.priority.stats.failed || 0}</div>
                   <div className="text-xs text-red-600">נכשלו</div>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-2 text-center">
-                  <div className="text-lg font-bold text-purple-700">{integrations.priority.stats.partial || 0}</div>
-                  <div className="text-xs text-purple-600">חלקי</div>
+                <div className="bg-cyan-50 rounded-lg p-2 text-center">
+                  <div className="text-lg font-bold text-cyan-700">{integrations.priority.stats.partial || 0}</div>
+                  <div className="text-xs text-cyan-600">חלקי</div>
                 </div>
               </div>
             )}

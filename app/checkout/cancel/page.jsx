@@ -27,7 +27,7 @@ function CheckoutCancelContent() {
               className="w-20 h-20 mx-auto rounded-full flex items-center justify-center"
               style={{ background: 'rgba(239, 68, 68, 0.1)' }}
             >
-              <span className="text-5xl">❌</span>
+              <span className="text-5xl text-red-500">X</span>
             </div>
           </div>
 
@@ -56,7 +56,7 @@ function CheckoutCancelContent() {
           {/* Info Box */}
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-8 text-right">
             <p className="text-amber-800 text-sm">
-              <strong>💡 טיפ:</strong> אם נתקלת בבעיה בתשלום, ניתן לנסות אמצעי תשלום אחר או ליצור קשר עם התמיכה.
+              <strong>טיפ:</strong> אם נתקלת בבעיה בתשלום, ניתן לנסות אמצעי תשלום אחר או ליצור קשר עם התמיכה.
             </p>
           </div>
 

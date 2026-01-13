@@ -126,7 +126,7 @@ export default function BusinessHomePageTextsEditor() {
   if (loading) {
     return (
       <div style={{ padding: '40px', textAlign: 'center' }}>
-        <div style={{ fontSize: '1.2rem', color: '#0891b2' }}>טוען טקסטים...</div>
+        <div style={{ fontSize: '1.2rem', color: 'var(--secondary)' }}>טוען טקסטים...</div>
       </div>
     );
   }
@@ -139,7 +139,7 @@ export default function BusinessHomePageTextsEditor() {
           <h1 style={{ 
             fontSize: '1.8rem', 
             fontWeight: '700', 
-            background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+            background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
@@ -189,7 +189,7 @@ export default function BusinessHomePageTextsEditor() {
             overflow: 'hidden',
             boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08)',
             border: '2px solid transparent',
-            backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+            backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
             backgroundOrigin: 'border-box',
             backgroundClip: 'padding-box, border-box',
           }}>
@@ -219,13 +219,13 @@ export default function BusinessHomePageTextsEditor() {
                   width: '8px',
                   height: '40px',
                   borderRadius: '4px',
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
                 }} />
                 <div style={{ textAlign: 'right' }}>
                   <h2 style={{ 
                     fontSize: '1.2rem', 
                     fontWeight: '600',
-                    color: '#1e3a8a',
+                    color: 'var(--primary)',
                     margin: 0
                   }}>
                     {section.sectionLabel}
@@ -244,7 +244,7 @@ export default function BusinessHomePageTextsEditor() {
                 height="24" 
                 viewBox="0 0 24 24" 
                 fill="none" 
-                stroke="#0891b2" 
+                stroke="var(--secondary)" 
                 strokeWidth="2"
                 style={{
                   transform: expandedSections[section.sectionId] ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -270,7 +270,7 @@ export default function BusinessHomePageTextsEditor() {
                         <label style={{ 
                           fontWeight: '600', 
                           fontSize: '1rem',
-                          color: '#1e3a8a'
+                          color: 'var(--primary)'
                         }}>
                           {field.label}
                         </label>
@@ -291,7 +291,7 @@ export default function BusinessHomePageTextsEditor() {
                           color: '#6b7280',
                           marginTop: '4px'
                         }}>
-                          📍 {field.previewLocation}
+                          {field.previewLocation}
                         </div>
                       )}
                     </div>
@@ -346,7 +346,7 @@ export default function BusinessHomePageTextsEditor() {
                               padding: '8px 20px',
                               background: saving[field.textId] 
                                 ? '#9ca3af'
-                                : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                                : 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                               color: 'white',
                               border: 'none',
                               borderRadius: '6px',

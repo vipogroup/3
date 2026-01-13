@@ -55,7 +55,7 @@ export default function AdminUsersGrouped() {
 
   const roleLabels = {
     admin: { label: 'מנהל', color: 'bg-red-100 text-red-800' },
-    business_admin: { label: 'בעל עסק', color: 'bg-purple-100 text-purple-800' },
+    business_admin: { label: 'בעל עסק', color: 'bg-cyan-100 text-cyan-800' },
     agent: { label: 'סוכן', color: 'bg-green-100 text-green-800' },
     customer: { label: 'לקוח', color: 'bg-blue-100 text-blue-800' },
   };

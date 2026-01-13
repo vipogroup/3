@@ -89,8 +89,8 @@ export default function CartPage() {
     fetchUser();
   }, []);
 
-  const gradientPrimary = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
-  const gradientReverse = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+  const gradientPrimary = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
+  const gradientReverse = 'linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%)';
 
   const formatCurrency = (value) =>
     `₪${value.toLocaleString('he-IL', { minimumFractionDigits: 0 })}`;
@@ -224,7 +224,7 @@ export default function CartPage() {
             href="/shop"
             className="inline-block text-white font-medium px-6 py-3 rounded-lg transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
               boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)',
             }}
             onMouseEnter={(e) => {
@@ -235,7 +235,7 @@ export default function CartPage() {
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background =
-                'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = '0 2px 8px rgba(8, 145, 178, 0.2)';
             }}
@@ -351,7 +351,7 @@ export default function CartPage() {
               <h1
                 className="text-3xl font-bold mb-1"
                 style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -414,7 +414,7 @@ export default function CartPage() {
                   style={{
                     background: 'white',
                     border: '2px solid transparent',
-                    backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                    backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
                     backgroundOrigin: 'border-box',
                     backgroundClip: 'padding-box, border-box',
                     opacity: selectedItems[item.productId] ? 1 : 0.6,
@@ -460,7 +460,7 @@ export default function CartPage() {
                           <span 
                             className="text-lg font-black"
                             style={{ 
-                              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                              background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                               WebkitBackgroundClip: 'text',
                               WebkitTextFillColor: 'transparent',
                             }}
@@ -494,7 +494,7 @@ export default function CartPage() {
                         className="flex items-center rounded-xl overflow-hidden"
                         style={{
                           border: '2px solid transparent',
-                          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
                           backgroundOrigin: 'border-box',
                           backgroundClip: 'padding-box, border-box',
                         }}
@@ -528,7 +528,7 @@ export default function CartPage() {
                         <p 
                           className="text-lg font-black"
                           style={{ 
-                            background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                            background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                           }}
@@ -548,7 +548,7 @@ export default function CartPage() {
             style={{
               border: '2px solid transparent',
               backgroundImage:
-                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
               boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -558,7 +558,7 @@ export default function CartPage() {
               <h2
                 className="text-2xl font-bold mb-1"
                 style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -593,7 +593,7 @@ export default function CartPage() {
                       style={{
                         background: isApplying
                           ? '#9CA3AF'
-                          : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                          : 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                         boxShadow: isApplying ? 'none' : '0 2px 8px rgba(8, 145, 178, 0.2)',
                       }}
                       onMouseEnter={(e) => {
@@ -606,7 +606,7 @@ export default function CartPage() {
                       onMouseLeave={(e) => {
                         if (!isApplying) {
                           e.currentTarget.style.background =
-                            'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                            'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                           e.currentTarget.style.transform = 'translateY(0)';
                         }
                       }}
@@ -699,7 +699,7 @@ export default function CartPage() {
               <span 
                 className="text-2xl font-black"
                 style={{ 
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -720,7 +720,7 @@ export default function CartPage() {
               disabled={selectedItemsList.length === 0}
               className="w-full text-white font-bold py-3 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
-                background: selectedItemsList.length === 0 ? '#9ca3af' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: selectedItemsList.length === 0 ? '#9ca3af' : 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 boxShadow: selectedItemsList.length === 0 ? 'none' : '0 4px 12px rgba(8, 145, 178, 0.3)',
               }}
               onMouseEnter={(e) => {
@@ -734,7 +734,7 @@ export default function CartPage() {
               onMouseLeave={(e) => {
                 if (selectedItemsList.length > 0) {
                   e.currentTarget.style.background =
-                    'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                    'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
                 }
@@ -752,7 +752,7 @@ export default function CartPage() {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background =
-                  'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                  'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                 e.currentTarget.style.color = 'white';
                 e.currentTarget.style.transform = 'translateY(-2px)';
               }}

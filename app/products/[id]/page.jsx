@@ -285,7 +285,7 @@ export default function ProductPage() {
             href="/products"
             className="inline-block text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
               boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)',
             }}
             onMouseEnter={(e) => {
@@ -296,7 +296,7 @@ export default function ProductPage() {
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background =
-                'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = '0 2px 8px rgba(8, 145, 178, 0.2)';
             }}
@@ -511,7 +511,7 @@ export default function ProductPage() {
           )}
           
           {/* Product Name */}
-          <h1 className="text-xl font-bold leading-snug mb-2" style={{ color: '#1e3a8a' }}>
+          <h1 className="text-xl font-bold leading-snug mb-2" style={{ color: 'var(--primary)' }}>
             {product.name}
           </h1>
           
@@ -521,7 +521,7 @@ export default function ProductPage() {
             <span 
               className="text-3xl font-bold"
               style={{ 
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
@@ -686,7 +686,7 @@ export default function ProductPage() {
                 </div>
                 <div className="bg-white rounded-lg p-2.5 text-center" style={{ border: '1px solid rgba(245, 158, 11, 0.2)' }}>
                   <div className="text-gray-500 text-xs mb-0.5">משלוח</div>
-                  <div className="font-bold flex items-center justify-center gap-1" style={{ color: '#0891b2' }}>
+                  <div className="font-bold flex items-center justify-center gap-1" style={{ color: 'var(--secondary)' }}>
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M5 2a2 2 0 00-2 2v14l3.5-2 3.5 2 3.5-2 3.5 2V4a2 2 0 00-2-2H5zm2.5 3a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm6.207.293a1 1 0 00-1.414 0l-6 6a1 1 0 101.414 1.414l6-6a1 1 0 000-1.414zM12.5 10a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" clipRule="evenodd" />
                     </svg>
@@ -701,7 +701,7 @@ export default function ProductPage() {
           {product.stockCount > 0 && (
             <div className="flex items-center gap-2 mb-3">
               <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#0891b2' }} />
-              <span className="text-sm font-medium" style={{ color: '#0891b2' }}>במלאי</span>
+              <span className="text-sm font-medium" style={{ color: 'var(--secondary)' }}>במלאי</span>
             </div>
           )}
 
@@ -735,7 +735,7 @@ export default function ProductPage() {
                 className="flex-1 h-14 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
                 style={{
                   border: '2px solid transparent',
-                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
                   backgroundOrigin: 'border-box',
                   backgroundClip: 'padding-box, border-box',
                   color: '#1e3a8a',
@@ -751,7 +751,7 @@ export default function ProductPage() {
               <button
                 onClick={handleBuyNow}
                 className="flex-[2] h-14 rounded-xl font-bold text-white transition-all flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
               >
                 {product.purchaseType === 'group' ? 'הצטרף עכשיו' : 'קנה עכשיו'}
               </button>
@@ -774,7 +774,7 @@ export default function ProductPage() {
                     className="w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
                   >
-                    <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <svg className="w-5 h-5" style={{ color: 'var(--secondary)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
@@ -810,7 +810,7 @@ export default function ProductPage() {
                       >
                         <div 
                           className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
-                          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                          style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                         >
                           <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -837,7 +837,7 @@ export default function ProductPage() {
                     className="w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
                   >
-                    <svg className="w-5 h-5" style={{ color: '#1e3a8a' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <svg className="w-5 h-5" style={{ color: 'var(--primary)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                   </div>
@@ -893,7 +893,7 @@ export default function ProductPage() {
                     className="w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
                   >
-                    <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <svg className="w-5 h-5" style={{ color: 'var(--secondary)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </div>
@@ -938,7 +938,7 @@ export default function ProductPage() {
                     className="w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
                   >
-                    <svg className="w-5 h-5" style={{ color: '#1e3a8a' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <svg className="w-5 h-5" style={{ color: 'var(--primary)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
                   </div>
@@ -983,7 +983,7 @@ export default function ProductPage() {
                     className="w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
                   >
-                    <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <svg className="w-5 h-5" style={{ color: 'var(--secondary)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                   </div>
@@ -1033,7 +1033,7 @@ export default function ProductPage() {
                       className="w-10 h-10 rounded-xl flex items-center justify-center"
                       style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
                     >
-                      <svg className="w-5 h-5" style={{ color: '#1e3a8a' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <svg className="w-5 h-5" style={{ color: 'var(--primary)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                     </div>
@@ -1079,7 +1079,7 @@ export default function ProductPage() {
                     className="w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}
                   >
-                    <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <svg className="w-5 h-5" style={{ color: 'var(--secondary)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h7" />
                     </svg>
                   </div>
@@ -1114,7 +1114,7 @@ export default function ProductPage() {
 
           {/* Back Link */}
           <div className="bg-white px-4 py-4 pb-32">
-            <Link href="/shop" className="inline-flex items-center gap-2 font-medium text-sm" style={{ color: '#0891b2' }}>
+            <Link href="/shop" className="inline-flex items-center gap-2 font-medium text-sm" style={{ color: 'var(--secondary)' }}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>

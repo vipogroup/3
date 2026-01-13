@@ -18,7 +18,7 @@ function getToken(req) {
 
 async function ensureAdmin(req) {
   const decoded = verifyJwt(getToken(req));
-  if (decoded?.role !== 'admin' && decoded?.role !== 'business_admin') {
+  if (decoded?.role !== 'admin' && decoded?.role !== 'super_admin' && decoded?.role !== 'business_admin') {
     return null;
   }
   
@@ -209,7 +209,7 @@ async function DELETEHandler(req, { params }) {
     }
     
     // הגנה על מנהלים מוגנים - בדיקת המייל הספציפי
-    const PROTECTED_ADMINS = ['0587009938@gmail.com'];
+    const PROTECTED_ADMINS = ['m0587009938@gmail.com'];
     if (PROTECTED_ADMINS.includes(user.email) || user.protected === true) {
       // בדיקת סיסמת-על
       const body = await req.json().catch(() => ({}));

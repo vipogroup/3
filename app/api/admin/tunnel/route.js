@@ -12,7 +12,7 @@ let currentTunnelUrl = null;
 async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'super_admin') {
       return NextResponse.json({ error: 'forbidden' }, { status: 403 });
     }
 
@@ -29,7 +29,7 @@ async function GETHandler(req) {
 async function POSTHandler(req) {
   try {
     const user = await requireAuthApi(req);
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'super_admin') {
       return NextResponse.json({ error: 'forbidden' }, { status: 403 });
     }
 
@@ -103,7 +103,7 @@ async function POSTHandler(req) {
 async function DELETEHandler(req) {
   try {
     const user = await requireAuthApi(req);
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'super_admin') {
       return NextResponse.json({ error: 'forbidden' }, { status: 403 });
     }
 

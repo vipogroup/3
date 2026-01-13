@@ -511,7 +511,7 @@ export default function NotificationsManagerClient() {
         <header className="flex flex-col gap-3 sm:gap-4 pb-6 sm:pb-8">
           <div className="flex items-start sm:items-center justify-between">
             <div className="flex items-start sm:items-center gap-3">
-              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg flex-shrink-0">
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                 <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
@@ -541,9 +541,10 @@ export default function NotificationsManagerClient() {
               className={classNames(
                 'rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold transition-all',
                 tab === 'templates'
-                  ? 'bg-blue-600 text-white shadow-lg'
+                  ? 'text-white shadow-lg'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300',
               )}
+              style={tab === 'templates' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
             >
               תבניות התראה
             </button>
@@ -553,9 +554,10 @@ export default function NotificationsManagerClient() {
               className={classNames(
                 'rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold transition-all',
                 tab === 'scheduled'
-                  ? 'bg-emerald-600 text-white shadow-lg'
+                  ? 'text-white shadow-lg'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300',
               )}
+              style={tab === 'scheduled' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
             >
               שליחות מתוזמנות
             </button>
@@ -814,9 +816,9 @@ export default function NotificationsManagerClient() {
                             />
                           </div>
                         </div>
-                        <div className="w-full lg:max-w-[240px] space-y-3 sm:space-y-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 p-4 sm:p-5 text-xs sm:text-sm">
-                          <div className="flex items-center gap-1.5 sm:gap-2 border-b border-blue-200 pb-2">
-                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-full lg:max-w-[240px] space-y-3 sm:space-y-4 rounded-xl bg-gradient-to-br from-cyan-50 to-blue-50 border-2 border-cyan-200 p-4 sm:p-5 text-xs sm:text-sm">
+                          <div className="flex items-center gap-1.5 sm:gap-2 border-b border-cyan-200 pb-2">
+                            <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <p className="text-sm sm:text-base font-bold text-gray-900">פרטי תבנית</p>
@@ -921,8 +923,9 @@ export default function NotificationsManagerClient() {
                               'rounded-xl px-6 py-2.5 sm:px-4 sm:py-2 text-sm font-semibold transition-all w-full sm:w-auto',
                               savingTemplate
                                 ? 'bg-gray-300 text-gray-500 cursor-wait'
-                                : 'bg-blue-600 text-white shadow-lg hover:scale-[1.01]',
+                                : 'text-white shadow-lg hover:scale-[1.01]',
                             )}
+                            style={!savingTemplate ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
                           >
                             {savingTemplate ? 'שומר...' : 'שמור תבנית'}
                           </button>
@@ -934,8 +937,9 @@ export default function NotificationsManagerClient() {
                               'rounded-xl px-6 py-2.5 sm:px-4 sm:py-2 text-sm font-semibold transition-all w-full sm:w-auto flex items-center justify-center gap-2',
                               sendingTest
                                 ? 'bg-gray-300 text-gray-500 cursor-wait'
-                                : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:scale-[1.01]',
+                                : 'text-white shadow-lg hover:scale-[1.01]',
                             )}
+                            style={!sendingTest ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
                           >
                             {sendingTest ? (
                               <>
@@ -961,8 +965,9 @@ export default function NotificationsManagerClient() {
                               'rounded-xl px-6 py-2.5 sm:px-4 sm:py-2 text-sm font-semibold transition-all w-full sm:w-auto flex items-center justify-center gap-2',
                               sendingLive
                                 ? 'bg-gray-300 text-gray-500 cursor-wait'
-                                : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white shadow-lg hover:scale-[1.01]',
+                                : 'text-white shadow-lg hover:scale-[1.01]',
                             )}
+                            style={!sendingLive ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
                           >
                             {sendingLive ? (
                               <>
@@ -1069,9 +1074,9 @@ export default function NotificationsManagerClient() {
 
                 {/* Preview Tab */}
                 {subTab === 'preview' && (
-                  <div className="rounded-2xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-4 sm:p-6">
-                    <div className="flex items-center gap-2 mb-3 sm:mb-4 border-b border-purple-200 pb-2 sm:pb-3">
-                      <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="rounded-2xl border-2 border-cyan-200 bg-gradient-to-br from-cyan-50 to-blue-50 p-4 sm:p-6">
+                    <div className="flex items-center gap-2 mb-3 sm:mb-4 border-b border-cyan-200 pb-2 sm:pb-3">
+                      <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
                       <h3 className="text-sm sm:text-base font-bold text-gray-900">תצוגה מקדימה - כך ההתראה תיראה</h3>
@@ -1079,7 +1084,7 @@ export default function NotificationsManagerClient() {
                     <div className="mx-auto max-w-sm">
                       <div className="rounded-2xl border border-gray-300 bg-white p-3 sm:p-4 shadow-xl">
                         <div className="flex items-start gap-2.5 sm:gap-3">
-                          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
                             <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>

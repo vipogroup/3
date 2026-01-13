@@ -179,7 +179,7 @@ function CompassIcon({ className = 'w-16 h-16' }) {
 }
 
 export default function EmptyState({
-  icon = <PackageIcon className="w-16 h-16 text-purple-500" />,
+  icon = <PackageIcon className="w-16 h-16" style={{ color: '#0891b2' }} />,
   title = 'אין נתונים',
   description = 'לא נמצאו פריטים להצגה',
   action,
@@ -209,7 +209,8 @@ export default function EmptyState({
     <div className={`text-center py-12 px-4 ${className}`}>
       {/* Icon */}
       <div
-        className="mb-4 flex justify-center text-purple-500"
+        className="mb-4 flex justify-center"
+        style={{ color: '#0891b2' }}
         aria-hidden={typeof icon !== 'string'}
       >
         {renderIcon(icon)}
@@ -225,7 +226,8 @@ export default function EmptyState({
       {action && (
         <button
           onClick={action.onClick}
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="inline-flex items-center gap-2 text-white font-semibold py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
         >
           {action.icon && renderActionIcon(action.icon)}
           <span>{action.label}</span>
@@ -242,7 +244,7 @@ export default function EmptyState({
 export function NoDataEmpty({ onRefresh }) {
   return (
     <EmptyState
-      icon={<ChartIcon className="w-16 h-16 text-blue-500" />}
+      icon={<ChartIcon className="w-16 h-16" style={{ color: '#0891b2' }} />}
       title="אין נתונים להצגה"
       description="לא נמצאו נתונים. נסה לרענן את הדף או לבדוק את החיבור."
       action={
@@ -259,7 +261,7 @@ export function NoDataEmpty({ onRefresh }) {
 export function NoResultsEmpty({ onClear }) {
   return (
     <EmptyState
-      icon={<SearchIcon className="w-16 h-16 text-indigo-500" />}
+      icon={<SearchIcon className="w-16 h-16" style={{ color: '#0891b2' }} />}
       title="לא נמצאו תוצאות"
       description="לא מצאנו תוצאות התואמות לחיפוש שלך. נסה מילות חיפוש אחרות."
       action={
@@ -276,7 +278,7 @@ export function NoResultsEmpty({ onClear }) {
 export function NoTransactionsEmpty({ onCreate }) {
   return (
     <EmptyState
-      icon={<CreditCardIcon className="w-16 h-16 text-emerald-500" />}
+      icon={<CreditCardIcon className="w-16 h-16" style={{ color: '#0891b2' }} />}
       title="אין עסקאות עדיין"
       description="כשתתחיל למכור, העסקאות שלך יופיעו כאן."
       action={
@@ -293,7 +295,7 @@ export function NoTransactionsEmpty({ onCreate }) {
 export function NoReferralsEmpty() {
   return (
     <EmptyState
-      icon={<UsersIcon className="w-16 h-16 text-purple-500" />}
+      icon={<UsersIcon className="w-16 h-16" style={{ color: '#0891b2' }} />}
       title="אין הפניות עדיין"
       description="שתף את קישור ההפניה שלך והתחל להרוויח עמלות!"
       action={{
@@ -312,7 +314,7 @@ export function NoReferralsEmpty() {
 export function NoUsersEmpty({ onCreate }) {
   return (
     <EmptyState
-      icon={<UserIcon className="w-16 h-16 text-blue-500" />}
+      icon={<UserIcon className="w-16 h-16" style={{ color: '#0891b2' }} />}
       title="אין משתמשים במערכת"
       description="התחל בהוספת משתמשים למערכת."
       action={
@@ -354,7 +356,8 @@ export function ErrorState({
         {onRetry && (
           <button
             onClick={onRetry}
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="inline-flex items-center gap-2 text-white font-semibold py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -389,7 +392,7 @@ export function ErrorState({
       {/* Help Link */}
       <p className="text-sm text-gray-500 mt-6">
         צריך עזרה?{' '}
-        <a href="/support" className="text-blue-600 hover:text-blue-700 underline">
+        <a href="/support" style={{ color: '#0891b2' }} className="hover:opacity-80 underline">
           צור קשר עם התמיכה
         </a>
       </p>
@@ -434,7 +437,7 @@ export function LoadingState({ message = 'טוען...' }) {
 export function NotFoundState({ onGoHome }) {
   return (
     <div className="text-center py-12 px-4">
-      <div className="mb-4 flex justify-center text-indigo-500">
+      <div className="mb-4 flex justify-center" style={{ color: '#0891b2' }}>
         <CompassIcon className="w-20 h-20" />
       </div>
       <h1 className="text-4xl font-bold text-gray-900 mb-2">404</h1>
@@ -444,7 +447,8 @@ export function NotFoundState({ onGoHome }) {
       </p>
       <button
         onClick={onGoHome || (() => (window.location.href = '/'))}
-        className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+        className="inline-flex items-center gap-2 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+        style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path

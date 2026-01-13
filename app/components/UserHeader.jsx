@@ -48,7 +48,7 @@ export default function UserHeader() {
           setUser(userData);
           
           // Filter admin nav items based on permissions
-          if (userData && userData.role === 'admin') {
+          if (userData && (userData.role === 'admin' || userData.role === 'super_admin')) {
             const hasPermissionFn = (permission) => hasPermission(userData, permission);
             const filteredItems = getFilteredNavItems(userData, hasPermissionFn);
             setAdminNavItems(filteredItems);
@@ -218,8 +218,8 @@ export default function UserHeader() {
       style={{
         borderBottom: '2px solid transparent',
         backgroundImage: isTenantPage 
-          ? 'linear-gradient(#ecfeff, #ecfeff), linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)'
-          : 'linear-gradient(white, white), linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)',
+          ? 'linear-gradient(#ecfeff, #ecfeff), linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)'
+          : 'linear-gradient(white, white), linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)',
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
         backgroundColor: isTenantPage ? '#ecfeff' : 'white',
@@ -231,7 +231,7 @@ export default function UserHeader() {
             href="/"
             className="font-bold text-3xl cursor-pointer hover:opacity-80 transition-opacity"
             style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -384,7 +384,7 @@ export default function UserHeader() {
           )}
 
           {/* Admin Dashboard Icon - Only for admins (not when impersonating, not on tenant pages) */}
-          {user && role === 'admin' && !isImpersonating && !isTenantPage && (
+          {user && (role === 'admin' || role === 'super_admin') && !isImpersonating && !isTenantPage && (
             <Link
               href="/admin"
               className="relative p-2 rounded-full transition-all duration-300"
@@ -468,7 +468,7 @@ export default function UserHeader() {
                   style={{
                     border: '2px solid transparent',
                     backgroundImage:
-                      'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                      'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
                     backgroundOrigin: 'border-box',
                     backgroundClip: 'padding-box, border-box',
                     boxShadow: '0 8px 25px rgba(8, 145, 178, 0.25)',
@@ -523,12 +523,12 @@ export default function UserHeader() {
                             });
                             const data = await res.json();
                             if (data.ok) {
-                              alert('✅ ' + (data.message || 'התראה נשלחה בהצלחה!'));
+                              alert(data.message || 'התראה נשלחה בהצלחה!');
                             } else {
-                              alert('❌ ' + (data.error || 'שגיאה בשליחת התראה'));
+                              alert('שגיאה: ' + (data.error || 'שגיאה בשליחת התראה'));
                             }
                           } catch (err) {
-                            alert('❌ שגיאה: ' + err.message);
+                            alert('שגיאה: ' + err.message);
                           }
                         }}
                         className="flex items-center gap-2 w-full text-right px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 transition-colors"
@@ -554,7 +554,7 @@ export default function UserHeader() {
                             });
                             const resetData = await resetRes.json();
                             if (!resetRes.ok) {
-                              alert('❌ שגיאה במחיקת רישומים: ' + (resetData.error || 'Unknown error'));
+                              alert('שגיאה במחיקת רישומים: ' + (resetData.error || 'Unknown error'));
                               return;
                             }
                             
@@ -571,10 +571,10 @@ export default function UserHeader() {
                             const { subscribeToPush } = await import('@/app/lib/pushClient');
                             await subscribeToPush({ tags: [], forcePrompt: true });
                             
-                            alert('✅ ההתראות אופסו ונרשמו מחדש בהצלחה! נסה לשלוח התראת בדיקה.');
+                            alert('ההתראות אופסו ונרשמו מחדש בהצלחה! נסה לשלוח התראת בדיקה.');
                           } catch (err) {
                             console.error('Reset push error:', err);
-                            alert('❌ שגיאה: ' + err.message);
+                            alert('שגיאה: ' + err.message);
                           }
                         }}
                         className="flex items-center gap-2 w-full text-right px-4 py-2 text-sm text-orange-600 hover:bg-orange-50 transition-colors"
@@ -594,7 +594,7 @@ export default function UserHeader() {
                     <Link
                       href="/about"
                       className="flex items-center gap-2 px-4 py-2 text-sm font-medium"
-                      style={{ color: '#1e3a8a' }}
+                      style={{ color: 'var(--primary)' }}
                       onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(30, 58, 138, 0.1)')}
                       onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                     >
@@ -710,7 +710,7 @@ export default function UserHeader() {
                         <Link
                           href="/join"
                           className="flex items-center gap-2 px-4 py-2 text-sm font-medium"
-                          style={{ color: '#0891b2' }}
+                          style={{ color: 'var(--secondary)' }}
                           onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(8, 145, 178, 0.1)')}
                           onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                         >
@@ -854,7 +854,7 @@ export default function UserHeader() {
               href={loginHref}
               className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 boxShadow: '0 2px 8px rgba(8, 145, 178, 0.2)',
                 color: '#fff',
               }}
@@ -864,7 +864,7 @@ export default function UserHeader() {
                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.3)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                e.currentTarget.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                 e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(8, 145, 178, 0.2)';
               }}

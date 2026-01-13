@@ -61,13 +61,13 @@ export default function UsersList() {
       let usersList = data.items || data.users || [];
       
       // Separate super admins for dedicated tab (admin role with isSuperAdmin or protected flag)
-      const admins = usersList.filter(u => (u.role === 'admin' && (u.isSuperAdmin || u.protected)) || u.email === '0587009938@gmail.com');
+      const admins = usersList.filter(u => (u.role === 'admin' && (u.isSuperAdmin || u.protected)) || u.email === 'm0587009938@gmail.com');
       setSuperAdmins(admins);
       
       // Remove only protected admins from regular users list, keep business_admin and regular admins
       usersList = usersList.filter(u => {
         // Keep business_admin and regular non-protected admins in main list
-        if (u.email === '0587009938@gmail.com') return false;
+        if (u.email === 'm0587009938@gmail.com') return false;
         if (u.role === 'admin' && (u.isSuperAdmin || u.protected)) return false;
         return true;
       });
@@ -180,7 +180,7 @@ export default function UsersList() {
         throw new Error(data.error || 'Failed to reset password');
       }
 
-      alert(`✅ הסיסמה אופסה בהצלחה!\n\nהסיסמה החדשה: ${defaultPassword}\n\nיש להעביר למשתמש את הסיסמה החדשה.`);
+      alert(`הסיסמה אופסה בהצלחה!\n\nהסיסמה החדשה: ${defaultPassword}\n\nיש להעביר למשתמש את הסיסמה החדשה.`);
       
     } catch (err) {
       setError(err.message || 'איפוס סיסמה נכשל');
@@ -283,7 +283,7 @@ export default function UsersList() {
   // Reset all users (for testing)
   async function handleResetAllUsers() {
     const confirmText = 'מחק משתמשים';
-    const userInput = prompt(`⚠️ אזהרה! פעולה זו תמחק את כל המשתמשים וכל הנתונים שלהם!\n(חוץ מ-Super Admin)\n\nהקלד "${confirmText}" לאישור:`);
+    const userInput = prompt(`אזהרה! פעולה זו תמחק את כל המשתמשים וכל הנתונים שלהם!\n(חוץ מ-Super Admin)\n\nהקלד "${confirmText}" לאישור:`);
     
     if (userInput !== confirmText) {
       if (userInput !== null) alert('הטקסט שהוזן לא תואם. הפעולה בוטלה.');
@@ -303,10 +303,10 @@ export default function UsersList() {
         throw new Error(data.error || 'שגיאה באיפוס המשתמשים');
       }
       
-      alert(`✅ ${data.message}`);
+      alert(`${data.message}`);
       fetchUsers(searchQuery, roleFilter);
     } catch (err) {
-      alert(`❌ ${err.message}`);
+      alert(`שגיאה: ${err.message}`);
     } finally {
       setResettingAll(false);
     }
@@ -398,7 +398,7 @@ export default function UsersList() {
     { value: 'customer', label: 'לקוח', color: 'bg-blue-100 text-blue-800' },
     { value: 'agent', label: 'סוכן', color: 'bg-green-100 text-green-800' },
     { value: 'admin', label: 'מנהל', color: 'bg-red-100 text-red-800' },
-    { value: 'business_admin', label: 'מנהל עסק', color: 'bg-purple-100 text-purple-800' },
+    { value: 'business_admin', label: 'מנהל עסק', color: 'bg-cyan-100 text-cyan-800' },
   ];
 
   const filteredUsers = roleFilter === 'all' ? users : users.filter(u => u.role === roleFilter);
@@ -541,7 +541,7 @@ export default function UsersList() {
                 className="px-4 py-2.5 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-all disabled:opacity-50"
                 title="מחיקת כל המשתמשים (לבדיקות)"
               >
-                {resettingAll ? 'מוחק...' : '⚠️ איפוס'}
+                {resettingAll ? 'מוחק...' : 'איפוס'}
               </button>
             )}
           </form>

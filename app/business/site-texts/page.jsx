@@ -30,7 +30,7 @@ export default function BusinessSiteTextsPage() {
         <h1 style={{ 
           fontSize: '1.8rem', 
           fontWeight: '700', 
-          background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+          background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
@@ -56,7 +56,7 @@ export default function BusinessSiteTextsPage() {
             padding: '24px',
             boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08)',
             border: '2px solid transparent',
-            backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+            backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
             backgroundOrigin: 'border-box',
             backgroundClip: 'padding-box, border-box',
             cursor: 'pointer',
@@ -74,7 +74,7 @@ export default function BusinessSiteTextsPage() {
               width: '50px', 
               height: '50px', 
               borderRadius: '10px',
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -89,7 +89,7 @@ export default function BusinessSiteTextsPage() {
               fontSize: '1.2rem', 
               fontWeight: '600', 
               marginBottom: '8px',
-              color: '#1e3a8a'
+              color: 'var(--primary)'
             }}>דף הבית</h2>
             <p style={{ 
               color: '#6b7280', 
@@ -101,7 +101,7 @@ export default function BusinessSiteTextsPage() {
             <div style={{ 
               marginTop: '16px',
               fontSize: '0.85rem',
-              color: '#0891b2',
+              color: 'var(--secondary)',
               fontWeight: '500',
               display: 'flex',
               alignItems: 'center',
@@ -123,7 +123,7 @@ export default function BusinessSiteTextsPage() {
             padding: '24px',
             boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08)',
             border: '2px solid transparent',
-            backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+            backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
             backgroundOrigin: 'border-box',
             backgroundClip: 'padding-box, border-box',
             cursor: 'pointer',
@@ -141,7 +141,7 @@ export default function BusinessSiteTextsPage() {
               width: '50px', 
               height: '50px', 
               borderRadius: '10px',
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -157,7 +157,7 @@ export default function BusinessSiteTextsPage() {
               fontSize: '1.2rem', 
               fontWeight: '600', 
               marginBottom: '8px',
-              color: '#1e3a8a'
+              color: 'var(--primary)'
             }}>דף החנות</h2>
             <p style={{ 
               color: '#6b7280', 
@@ -169,7 +169,7 @@ export default function BusinessSiteTextsPage() {
             <div style={{ 
               marginTop: '16px',
               fontSize: '0.85rem',
-              color: '#0891b2',
+              color: 'var(--secondary)',
               fontWeight: '500',
               display: 'flex',
               alignItems: 'center',

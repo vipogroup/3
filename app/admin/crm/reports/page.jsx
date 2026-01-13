@@ -94,10 +94,10 @@ export default function CrmReportsPage() {
         {/* Main Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'סה"כ לידים', value: stats?.leads?.total || 0, icon: '👥' },
-            { label: 'לידים חדשים', value: stats?.leads?.new || 0, icon: '✨' },
-            { label: 'שיעור המרה', value: `${stats?.leads?.conversionRate || 0}%`, icon: '📈' },
-            { label: 'ערך פיפליין', value: `₪${(stats?.pipeline?.totalValue || 0).toLocaleString()}`, icon: '💰' },
+            { label: 'סה"כ לידים', value: stats?.leads?.total || 0, icon: 'U' },
+            { label: 'לידים חדשים', value: stats?.leads?.new || 0, icon: '+' },
+            { label: 'שיעור המרה', value: `${stats?.leads?.conversionRate || 0}%`, icon: '%' },
+            { label: 'ערך פיפליין', value: `₪${(stats?.pipeline?.totalValue || 0).toLocaleString()}`, icon: '$' },
           ].map((stat, i) => (
             <div
               key={i}

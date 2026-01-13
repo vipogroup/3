@@ -646,7 +646,7 @@ function CheckoutClient() {
           style={{
             border: '2px solid transparent',
             backgroundImage:
-              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
             backgroundOrigin: 'border-box',
             backgroundClip: 'padding-box, border-box',
             boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -656,7 +656,7 @@ function CheckoutClient() {
             className="animate-spin rounded-full h-12 w-12 mx-auto"
             style={{
               border: '4px solid rgba(8, 145, 178, 0.2)',
-              borderTopColor: '#0891b2',
+              borderTopColor: 'var(--secondary)',
             }}
           ></div>
           <p className="text-gray-600 mt-4 text-center font-medium">טוען...</p>
@@ -677,18 +677,18 @@ function CheckoutClient() {
             href="/cart"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all shadow-md"
             style={{
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
               color: 'white',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background =
-                'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                'linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%)';
               e.currentTarget.style.transform = 'translateY(-2px)';
               e.currentTarget.style.boxShadow = '0 6px 20px rgba(8, 145, 178, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background =
-                'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
             }}
@@ -711,7 +711,7 @@ function CheckoutClient() {
           style={{
             border: '2px solid transparent',
             backgroundImage:
-              'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
             backgroundOrigin: 'border-box',
             backgroundClip: 'padding-box, border-box',
             boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -721,7 +721,7 @@ function CheckoutClient() {
             <h1
               className="text-3xl font-bold mb-2"
               style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -731,7 +731,7 @@ function CheckoutClient() {
             </h1>
             <div
               className="h-1 w-24 rounded-full mb-3"
-              style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)' }}
             />
             <div className="flex items-center gap-3 flex-wrap">
               <div
@@ -739,7 +739,7 @@ function CheckoutClient() {
                 style={{
                   background:
                     'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
-                  color: '#1e3a8a',
+                  color: 'var(--primary)',
                   border: '1px solid rgba(8, 145, 178, 0.3)',
                 }}
               >
@@ -757,7 +757,7 @@ function CheckoutClient() {
                 style={{
                   background:
                     'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
-                  color: '#1e3a8a',
+                  color: 'var(--primary)',
                   border: '1px solid rgba(8, 145, 178, 0.3)',
                 }}
               >
@@ -781,7 +781,7 @@ function CheckoutClient() {
             style={{
               border: '2px solid transparent',
               backgroundImage:
-                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
               boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -795,12 +795,12 @@ function CheckoutClient() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all"
                 style={{
                   backgroundColor: expandAll
-                    ? 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                    ? 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
                     : 'white',
-                  border: '2px solid #1e3a8a',
-                  color: expandAll ? 'white' : '#1e3a8a',
+                  border: '2px solid var(--primary)',
+                  color: expandAll ? 'white' : 'var(--primary)',
                   background: expandAll
-                    ? 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                    ? 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
                     : 'white',
                 }}
               >
@@ -835,7 +835,7 @@ function CheckoutClient() {
             <section
               className="border-2 rounded-xl p-4"
               style={{
-                borderColor: openSections[1] || expandAll ? '#0891b2' : '#e5e7eb',
+                borderColor: openSections[1] || expandAll ? 'var(--secondary)' : '#e5e7eb',
                 background:
                   openSections[1] || expandAll
                     ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)'
@@ -853,7 +853,7 @@ function CheckoutClient() {
                     style={{
                       background:
                         openSections[1] || expandAll
-                          ? 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                          ? 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
                           : '#e5e7eb',
                     }}
                   >
@@ -873,7 +873,7 @@ function CheckoutClient() {
                   <h2
                     className="text-xl font-bold"
                     style={{
-                      background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                      background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                       backgroundClip: 'text',
@@ -886,7 +886,7 @@ function CheckoutClient() {
                   className="w-6 h-6 transition-transform duration-300"
                   style={{
                     transform: openSections[1] || expandAll ? 'rotate(180deg)' : 'rotate(0deg)',
-                    color: '#1e3a8a',
+                    color: 'var(--primary)',
                   }}
                   fill="none"
                   stroke="currentColor"
@@ -967,7 +967,7 @@ function CheckoutClient() {
             <section
               className="border-2 rounded-xl p-4"
               style={{
-                borderColor: openSections[2] || expandAll ? '#0891b2' : '#e5e7eb',
+                borderColor: openSections[2] || expandAll ? 'var(--secondary)' : '#e5e7eb',
                 background:
                   openSections[2] || expandAll
                     ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)'
@@ -985,7 +985,7 @@ function CheckoutClient() {
                     style={{
                       background:
                         openSections[2] || expandAll
-                          ? 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                          ? 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
                           : '#e5e7eb',
                     }}
                   >
@@ -1001,7 +1001,7 @@ function CheckoutClient() {
                   <h2
                     className="text-xl font-bold"
                     style={{
-                      background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                      background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                       backgroundClip: 'text',
@@ -1014,7 +1014,7 @@ function CheckoutClient() {
                   className="w-6 h-6 transition-transform duration-300"
                   style={{
                     transform: openSections[2] || expandAll ? 'rotate(180deg)' : 'rotate(0deg)',
-                    color: '#1e3a8a',
+                    color: 'var(--primary)',
                   }}
                   fill="none"
                   stroke="currentColor"
@@ -1042,7 +1042,7 @@ function CheckoutClient() {
                         className="flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all"
                         style={{
                           border: formData.deliveryMethod === 'pickup' 
-                            ? '2px solid #0891b2' 
+                            ? '2px solid var(--secondary)' 
                             : '2px solid #e5e7eb',
                           background: formData.deliveryMethod === 'pickup'
                             ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'
@@ -1056,14 +1056,14 @@ function CheckoutClient() {
                           checked={formData.deliveryMethod === 'pickup'}
                           onChange={handleChange}
                           className="w-5 h-5"
-                          style={{ accentColor: '#0891b2' }}
+                          style={{ accentColor: 'var(--secondary)' }}
                         />
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <svg className="w-5 h-5" style={{ color: '#1e3a8a' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5" style={{ color: 'var(--primary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
-                            <span className="font-bold" style={{ color: '#1e3a8a' }}>איסוף עצמי</span>
+                            <span className="font-bold" style={{ color: 'var(--primary)' }}>איסוף עצמי</span>
                           </div>
                           <p className="text-sm text-green-600 font-medium mt-1">חינם</p>
                         </div>
@@ -1075,7 +1075,7 @@ function CheckoutClient() {
                           className="flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all"
                           style={{
                             border: formData.deliveryMethod === 'shipping' 
-                              ? '2px solid #0891b2' 
+                              ? '2px solid var(--secondary)' 
                               : '2px solid #e5e7eb',
                             background: formData.deliveryMethod === 'shipping'
                               ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'
@@ -1089,16 +1089,16 @@ function CheckoutClient() {
                             checked={formData.deliveryMethod === 'shipping'}
                             onChange={handleChange}
                             className="w-5 h-5"
-                            style={{ accentColor: '#0891b2' }}
+                            style={{ accentColor: 'var(--secondary)' }}
                           />
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <svg className="w-5 h-5" style={{ color: '#1e3a8a' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-5 h-5" style={{ color: 'var(--primary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                               </svg>
-                              <span className="font-bold" style={{ color: '#1e3a8a' }}>משלוח עד הבית</span>
+                              <span className="font-bold" style={{ color: 'var(--primary)' }}>משלוח עד הבית</span>
                             </div>
-                            <p className="text-sm font-medium mt-1" style={{ color: '#0891b2' }}>
+                            <p className="text-sm font-medium mt-1" style={{ color: 'var(--secondary)' }}>
                               +{shippingPrice.toLocaleString('he-IL')} ₪
                             </p>
                           </div>
@@ -1169,7 +1169,7 @@ function CheckoutClient() {
             <section
               className="border-2 rounded-xl p-4"
               style={{
-                borderColor: openSections[3] || expandAll ? '#0891b2' : '#e5e7eb',
+                borderColor: openSections[3] || expandAll ? 'var(--secondary)' : '#e5e7eb',
                 background:
                   openSections[3] || expandAll
                     ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.02) 0%, rgba(8, 145, 178, 0.02) 100%)'
@@ -1187,7 +1187,7 @@ function CheckoutClient() {
                     style={{
                       background:
                         openSections[3] || expandAll
-                          ? 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
+                          ? 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
                           : '#e5e7eb',
                     }}
                   >
@@ -1208,7 +1208,7 @@ function CheckoutClient() {
                   <h2
                     className="text-xl font-bold"
                     style={{
-                      background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                      background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                       backgroundClip: 'text',
@@ -1221,7 +1221,7 @@ function CheckoutClient() {
                   className="w-6 h-6 transition-transform duration-300"
                   style={{
                     transform: openSections[3] || expandAll ? 'rotate(180deg)' : 'rotate(0deg)',
-                    color: '#1e3a8a',
+                    color: 'var(--primary)',
                   }}
                   fill="none"
                   stroke="currentColor"
@@ -1242,7 +1242,7 @@ function CheckoutClient() {
                     className="flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all"
                     style={{
                       border: '2px solid',
-                      borderColor: formData.paymentMethod === 'credit_card' ? '#0891b2' : '#e5e7eb',
+                      borderColor: formData.paymentMethod === 'credit_card' ? 'var(--secondary)' : '#e5e7eb',
                       background:
                         formData.paymentMethod === 'credit_card'
                           ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'
@@ -1257,11 +1257,11 @@ function CheckoutClient() {
                       onChange={handleChange}
                       onBlur={(e) => validateField(e.target.name, e.target.value)}
                       className="w-5 h-5"
-                      style={{ accentColor: '#0891b2' }}
+                      style={{ accentColor: 'var(--secondary)' }}
                     />
                     <svg
                       className="w-5 h-5"
-                      style={{ color: '#1e3a8a' }}
+                      style={{ color: 'var(--primary)' }}
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -1278,7 +1278,7 @@ function CheckoutClient() {
                     className="flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all"
                     style={{
                       border: '2px solid',
-                      borderColor: formData.paymentMethod === 'paypal' ? '#0891b2' : '#e5e7eb',
+                      borderColor: formData.paymentMethod === 'paypal' ? 'var(--secondary)' : '#e5e7eb',
                       background:
                         formData.paymentMethod === 'paypal'
                           ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'
@@ -1293,11 +1293,11 @@ function CheckoutClient() {
                       onChange={handleChange}
                       onBlur={(e) => validateField(e.target.name, e.target.value)}
                       className="w-5 h-5"
-                      style={{ accentColor: '#0891b2' }}
+                      style={{ accentColor: 'var(--secondary)' }}
                     />
                     <svg
                       className="w-5 h-5"
-                      style={{ color: '#1e3a8a' }}
+                      style={{ color: 'var(--primary)' }}
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -1314,7 +1314,7 @@ function CheckoutClient() {
                     style={{
                       border: '2px solid',
                       borderColor:
-                        formData.paymentMethod === 'bank_transfer' ? '#0891b2' : '#e5e7eb',
+                        formData.paymentMethod === 'bank_transfer' ? 'var(--secondary)' : '#e5e7eb',
                       background:
                         formData.paymentMethod === 'bank_transfer'
                           ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'
@@ -1329,11 +1329,11 @@ function CheckoutClient() {
                       onChange={handleChange}
                       onBlur={(e) => validateField(e.target.name, e.target.value)}
                       className="w-5 h-5"
-                      style={{ accentColor: '#0891b2' }}
+                      style={{ accentColor: 'var(--secondary)' }}
                     />
                     <svg
                       className="w-5 h-5"
-                      style={{ color: '#1e3a8a' }}
+                      style={{ color: 'var(--primary)' }}
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -1385,14 +1385,14 @@ function CheckoutClient() {
                 background:
                   processing || !formData.agreeToTerms
                     ? '#d1d5db'
-                    : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                    : 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 color: processing || !formData.agreeToTerms ? '#6b7280' : 'white',
                 cursor: processing || !formData.agreeToTerms ? 'not-allowed' : 'pointer',
               }}
               onMouseEnter={(e) => {
                 if (!processing && formData.agreeToTerms) {
                   e.currentTarget.style.background =
-                    'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
+                    'linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%)';
                   e.currentTarget.style.transform = 'translateY(-2px)';
                   e.currentTarget.style.boxShadow = '0 10px 25px rgba(8, 145, 178, 0.3)';
                 }
@@ -1400,7 +1400,7 @@ function CheckoutClient() {
               onMouseLeave={(e) => {
                 if (!processing && formData.agreeToTerms) {
                   e.currentTarget.style.background =
-                    'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                    'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.25)';
                 }
@@ -1441,7 +1441,7 @@ function CheckoutClient() {
             style={{
               border: '2px solid transparent',
               backgroundImage:
-                'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
               boxShadow: '0 4px 20px rgba(8, 145, 178, 0.15)',
@@ -1451,7 +1451,7 @@ function CheckoutClient() {
               <h2
                 className="text-2xl font-bold mb-1"
                 style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -1461,14 +1461,14 @@ function CheckoutClient() {
               </h2>
               <div
                 className="h-1 w-20 rounded-full mb-2"
-                style={{ background: 'linear-gradient(90deg, #1e3a8a 0%, #0891b2 100%)' }}
+                style={{ background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)' }}
               />
               <div
                 className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium inline-flex"
                 style={{
                   background:
                     'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)',
-                  color: '#1e3a8a',
+                  color: 'var(--primary)',
                   border: '1px solid rgba(8, 145, 178, 0.3)',
                 }}
               >
@@ -1541,7 +1541,7 @@ function CheckoutClient() {
                     disabled={applyingCoupon || !couponInput.trim()}
                     className="px-4 py-2 rounded-xl font-semibold text-white transition whitespace-nowrap flex-shrink-0"
                     style={{
-                      background: applyingCoupon || !couponInput.trim() ? '#d1d5db' : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                      background: applyingCoupon || !couponInput.trim() ? '#d1d5db' : 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                       cursor: applyingCoupon || !couponInput.trim() ? 'not-allowed' : 'pointer',
                     }}
                   >

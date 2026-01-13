@@ -210,7 +210,7 @@ export default function TenantStorePage() {
       });
 
       if (res.ok) {
-        alert('🎉 ברכות! הפכת לסוכן בהצלחה!');
+        alert('ברכות! הפכת לסוכן בהצלחה!');
         window.location.href = '/agent';
       } else {
         const data = await res.json();

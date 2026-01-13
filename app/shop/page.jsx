@@ -26,10 +26,10 @@ function ShopPageContent() {
     }
   };
 
-  const gradientPrimary = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
-  const gradientReverse = 'linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%)';
-  const primaryColor = '#1e3a8a';
-  const secondaryColor = '#0891b2';
+  const gradientPrimary = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
+  const gradientReverse = 'linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%)';
+  const primaryColor = 'var(--primary)';
+  const secondaryColor = 'var(--secondary)';
 
   useEffect(() => {
     async function fetchUser() {
@@ -124,7 +124,7 @@ function ShopPageContent() {
       {/* Hero Section */}
       <div 
         className="relative pt-8 pb-16 px-4"
-        style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+        style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
       >
         {/* VIPO Title */}
         <div className="text-center mb-8">
@@ -143,7 +143,7 @@ function ShopPageContent() {
                 {/* Badge */}
                 <div 
                   className="absolute top-0 right-0 text-white text-[9px] font-bold px-2 py-1 rounded-bl-lg"
-                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
                 >
                   <EditableTextField textKey="SHOP_CARD_BADGE_AVAILABLE" fallback="משלוח מהיר" as="span" />
                 </div>
@@ -164,7 +164,7 @@ function ShopPageContent() {
                 {/* Button */}
                 <div 
                   className="text-white px-4 py-2 rounded-full font-bold text-sm"
-                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', border: '2px solid #1e3a8a' }}
+                  style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', border: '2px solid #1e3a8a' }}
                 >
                   <EditableTextField textKey="SHOP_CARD_BTN_AVAILABLE" fallback="לחץ כאן" as="span" />
                 </div>
@@ -324,7 +324,7 @@ function ShopPageContent() {
           style={{
             background: editMode 
               ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' 
-              : 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+              : 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
             color: 'white',
             fontWeight: '600',
           }}
@@ -402,7 +402,7 @@ function ShopPageContent() {
             <button
               onClick={handlePasswordSubmit}
               className="w-full mt-4 px-4 py-3 rounded-lg text-white font-medium transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
             >
               <EditableTextField textKey="SHOP_PWD_MODAL_BTN" fallback="כניסה" as="span" />
             </button>
@@ -414,7 +414,7 @@ function ShopPageContent() {
       {editMode && (
         <div 
           className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-full shadow-lg"
-          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', color: 'white' }}
+          style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', color: 'white' }}
         >
           <span className="flex items-center gap-2 text-sm font-medium">
             <svg className="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -135,7 +135,7 @@ export default function CheckoutPage() {
       }
 
       // Success
-      alert('✅ ההזמנה בוצעה בהצלחה!\n\nמספר הזמנה: ' + orderData.orderId);
+      alert('ההזמנה בוצעה בהצלחה!\n\nמספר הזמנה: ' + orderData.orderId);
       router.push('/customer');
     } catch (error) {
       console.error('Checkout error:', error);
@@ -166,7 +166,7 @@ export default function CheckoutPage() {
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-gray-900">🛒 סל קניות ותשלום</h1>
+            <h1 className="text-3xl font-bold text-gray-900">סל קניות ותשלום</h1>
             <Link href="/products" className="text-purple-600 hover:text-purple-700 font-semibold">
               ← חזור למוצרים
             </Link>
@@ -180,7 +180,6 @@ export default function CheckoutPage() {
               {/* Customer Details */}
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <span>👤</span>
                   <span>פרטים אישיים</span>
                 </h2>
 
@@ -235,7 +234,6 @@ export default function CheckoutPage() {
               {/* Shipping Address */}
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <span>📦</span>
                   <span>כתובת למשלוח</span>
                 </h2>
 
@@ -288,7 +286,6 @@ export default function CheckoutPage() {
               {/* Payment Method */}
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <span>💳</span>
                   <span>אמצעי תשלום</span>
                 </h2>
 
@@ -302,7 +299,7 @@ export default function CheckoutPage() {
                       onChange={handleChange}
                       className="w-5 h-5 text-purple-600"
                     />
-                    <span className="mr-3 font-semibold text-gray-900">💳 כרטיס אשראי</span>
+                    <span className="mr-3 font-semibold text-gray-900">כרטיס אשראי</span>
                   </label>
 
                   <label className="flex items-center p-4 border-2 border-gray-300 rounded-xl cursor-pointer hover:border-purple-600 transition-all">
@@ -314,7 +311,7 @@ export default function CheckoutPage() {
                       onChange={handleChange}
                       className="w-5 h-5 text-purple-600"
                     />
-                    <span className="mr-3 font-semibold text-gray-900">💰 PayPal</span>
+                    <span className="mr-3 font-semibold text-gray-900">PayPal</span>
                   </label>
 
                   <label className="flex items-center p-4 border-2 border-gray-300 rounded-xl cursor-pointer hover:border-purple-600 transition-all">
@@ -326,7 +323,7 @@ export default function CheckoutPage() {
                       onChange={handleChange}
                       className="w-5 h-5 text-purple-600"
                     />
-                    <span className="mr-3 font-semibold text-gray-900">🏦 העברה בנקאית</span>
+                    <span className="mr-3 font-semibold text-gray-900">העברה בנקאית</span>
                   </label>
                 </div>
               </div>
@@ -385,7 +382,7 @@ export default function CheckoutPage() {
                     מעבד...
                   </span>
                 ) : (
-                  '✅ אשר הזמנה ושלם'
+                  'אשר הזמנה ושלם'
                 )}
               </button>
             </form>
@@ -443,7 +440,7 @@ export default function CheckoutPage() {
               {/* Security Badge */}
               <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-2xl">🔒</span>
+                  <span className="text-2xl text-green-600">S</span>
                   <span className="font-bold text-green-900">תשלום מאובטח</span>
                 </div>
                 <p className="text-sm text-green-800">התשלום שלך מוגן בהצפנה ברמה הגבוהה ביותר</p>

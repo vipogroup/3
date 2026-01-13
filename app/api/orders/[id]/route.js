@@ -65,7 +65,7 @@ async function GETHandler(req, { params }) {
 async function DELETEHandler(req, { params }) {
   try {
     const user = await requireAuthApi(req);
-    if (user.role !== 'admin' && user.role !== 'business_admin') {
+    if (user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -102,7 +102,7 @@ async function DELETEHandler(req, { params }) {
 async function PUTHandler(req, { params }) {
   try {
     const user = await requireAuthApi(req);
-    if (user.role !== 'admin' && user.role !== 'business_admin') {
+    if (user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

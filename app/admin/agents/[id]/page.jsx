@@ -105,8 +105,8 @@ export default function AgentDetailPage() {
       </div>
 
       {/* Coupon Details */}
-      <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
-        <h3 className="font-semibold text-purple-900 mb-3">🎟️ קוד הקופון של הסוכן</h3>
+      <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-4 mb-6">
+        <h3 className="font-semibold text-cyan-900 mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg> קוד הקופון של הסוכן</h3>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-3">
             <code className="text-2xl font-bold text-purple-700 bg-white px-4 py-2 rounded-lg border border-purple-100">
@@ -115,9 +115,10 @@ export default function AgentDetailPage() {
             <button
               onClick={() => navigator.clipboard.writeText(couponCode)}
               disabled={couponCode === '---'}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
+              className="px-4 py-2 text-white rounded-lg disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
-              📋 העתק קוד
+              העתק קוד
             </button>
           </div>
           <div className="flex flex-wrap gap-3 text-sm">
@@ -147,7 +148,7 @@ export default function AgentDetailPage() {
               <p className="text-sm text-gray-600">{'סה&quot;כ כניסות'}</p>
               <p className="text-3xl font-bold text-blue-600">{stats?.totalVisits || 0}</p>
             </div>
-            <div className="text-4xl">👥</div>
+            <div className="text-4xl text-blue-600">U</div>
           </div>
         </div>
 
@@ -157,7 +158,7 @@ export default function AgentDetailPage() {
               <p className="text-sm text-gray-600">{'סה&quot;כ הפניות'}</p>
               <p className="text-3xl font-bold text-green-600">{stats?.totalReferrals || 0}</p>
             </div>
-            <div className="text-4xl">🤝</div>
+            <div className="text-4xl text-green-600">R</div>
           </div>
         </div>
 
@@ -167,7 +168,7 @@ export default function AgentDetailPage() {
               <p className="text-sm text-gray-600">{'סה&quot;כ מכירות'}</p>
               <p className="text-3xl font-bold text-purple-600">{stats?.totalSales || 0}</p>
             </div>
-            <div className="text-4xl">🛒</div>
+            <div className="text-4xl text-purple-600">S</div>
           </div>
         </div>
 
@@ -177,7 +178,7 @@ export default function AgentDetailPage() {
               <p className="text-sm text-gray-600">שיעור המרה</p>
               <p className="text-3xl font-bold text-orange-600">{conversionRate}%</p>
             </div>
-            <div className="text-4xl">📈</div>
+            <div className="text-4xl text-orange-600">%</div>
           </div>
         </div>
       </div>
@@ -187,12 +188,12 @@ export default function AgentDetailPage() {
         <div className="border-b">
           <div className="flex gap-4 px-6">
             <button className="py-4 px-2 border-b-2 border-blue-600 font-medium text-blue-600">
-              📊 כניסות למוצרים
+              כניסות למוצרים
             </button>
             <button className="py-4 px-2 text-gray-600 hover:text-gray-900">
-              👥 משתמשים מופנים
+              משתמשים מופנים
             </button>
-            <button className="py-4 px-2 text-gray-600 hover:text-gray-900">🛒 מכירות</button>
+            <button className="py-4 px-2 text-gray-600 hover:text-gray-900">מכירות</button>
           </div>
         </div>
 
@@ -202,7 +203,7 @@ export default function AgentDetailPage() {
 
           {visits.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
-              <p className="text-4xl mb-2">📭</p>
+              <p className="text-4xl mb-2 text-gray-400">-</p>
               <p>עדיין אין כניסות למוצרים דרך הלינק של הסוכן</p>
             </div>
           ) : (
@@ -247,16 +248,16 @@ export default function AgentDetailPage() {
                   <h4 className="font-semibold mb-2">{product.productName}</h4>
                   <div className="space-y-1 text-sm">
                     <p>
-                      👥 כניסות: <span className="font-bold">{product.visits}</span>
+                      כניסות: <span className="font-bold">{product.visits}</span>
                     </p>
                     <p>
-                      🛒 רכישות: <span className="font-bold">{product.purchases}</span>
+                      רכישות: <span className="font-bold">{product.purchases}</span>
                     </p>
                     <p>
-                      {'💰 סה&quot;כ:'} <span className="font-bold">₪{product.totalRevenue}</span>
+                      {'סה&quot;כ:'} <span className="font-bold">₪{product.totalRevenue}</span>
                     </p>
                     <p>
-                      📈 המרה:{' '}
+                      המרה:{' '}
                       <span className="font-bold">
                         {product.visits > 0
                           ? ((product.purchases / product.visits) * 100).toFixed(1)
@@ -275,7 +276,7 @@ export default function AgentDetailPage() {
       {/* Commission Summary */}
       <div className="bg-white rounded-lg shadow p-6 mt-6">
         <h3 className="text-xl font-bold mb-4" style={{ color: '#1e3a8a' }}>
-          💰 סיכום עמלות
+          סיכום עמלות
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="p-4 rounded-lg" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%)' }}>
@@ -360,7 +361,7 @@ export default function AgentDetailPage() {
       {/* Referrals List */}
       {referrals.length > 0 && (
         <div className="bg-white rounded-lg shadow p-6 mt-6">
-          <h3 className="text-xl font-bold mb-4">👥 משתמשים שהופנו על ידי הסוכן</h3>
+          <h3 className="text-xl font-bold mb-4">משתמשים שהופנו על ידי הסוכן</h3>
           <div className="space-y-2">
             {referrals.map((ref) => (
               <div

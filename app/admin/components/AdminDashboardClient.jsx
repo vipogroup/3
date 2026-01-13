@@ -244,7 +244,7 @@ function ChartBarIcon({ className = 'w-10 h-10' }) {
 function getRoleBadge(role) {
   switch (role) {
     case 'agent':
-      return { label: 'סוכן', className: 'bg-purple-100 text-purple-700', Icon: AgentIcon };
+      return { label: 'סוכן', className: 'bg-cyan-100 text-cyan-700', Icon: AgentIcon };
     case 'admin':
       return { label: 'מנהל', className: 'bg-red-100 text-red-700', Icon: ShieldIcon };
     default:
@@ -300,7 +300,7 @@ export default function AdminDashboardClient() {
       }
       const userData = await userRes.json();
 
-      if (userData.user.role !== 'admin') {
+      if (userData.user.role !== 'admin' && userData.user.role !== 'super_admin') {
         router.push('/');
         return;
       }
@@ -476,7 +476,7 @@ export default function AdminDashboardClient() {
                         try {
                           if (navigator.clipboard && navigator.clipboard.writeText) {
                             await navigator.clipboard.writeText(data.tunnelUrl);
-                            alert(`✅ Tunnel פעיל!\n\nכתובת HTTPS למובייל:\n${data.tunnelUrl}\n\n(הועתק ללוח)`);
+                            alert(`Tunnel פעיל!\n\nכתובת HTTPS למובייל:\n${data.tunnelUrl}\n\n(הועתק ללוח)`);
                           } else {
                             prompt('Tunnel פעיל! העתק את הקישור:', data.tunnelUrl);
                           }
@@ -484,11 +484,11 @@ export default function AdminDashboardClient() {
                           prompt('Tunnel פעיל! העתק את הקישור:', data.tunnelUrl);
                         }
                       } else {
-                        alert('❌ ' + (data.error || 'שגיאה ביצירת tunnel'));
+                        alert('שגיאה: ' + (data.error || 'שגיאה ביצירת tunnel'));
                       }
                     }
                   } catch (err) {
-                    alert('❌ שגיאה: ' + err.message);
+                    alert('שגיאה: ' + err.message);
                   }
                   setTunnelLoading(false);
                 }}
@@ -511,7 +511,7 @@ export default function AdminDashboardClient() {
                     try {
                       if (navigator.clipboard && navigator.clipboard.writeText) {
                         await navigator.clipboard.writeText(tunnelUrl);
-                        alert('✅ הועתק!\n\n' + tunnelUrl);
+                        alert('הועתק!\n\n' + tunnelUrl);
                       } else {
                         // Fallback for non-HTTPS
                         prompt('העתק את הקישור:', tunnelUrl);
@@ -589,8 +589,8 @@ export default function AdminDashboardClient() {
               )}
               {/* Multi-Tenant: ניהול עסקים - Super Admin only */}
               {isSuperAdmin && (
-              <Link href="/admin/tenants" className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 transition-all border border-purple-200">
-                <svg className="w-5 h-5" style={{ color: '#7c3aed' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <Link href="/admin/tenants" className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 transition-all border border-cyan-200">
+                <svg className="w-5 h-5" style={{ color: '#0891b2' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
                 </svg>
                 <span className="text-sm font-medium text-purple-900">ניהול עסקים</span>
@@ -685,7 +685,7 @@ export default function AdminDashboardClient() {
               </Link>
               )}
               {canAccess(ADMIN_PERMISSIONS.VIEW_COMMISSIONS) && (
-              <Link href="/dashboard/admin/withdrawals" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
+              <Link href="/admin/withdrawals" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
                 <CoinStackIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
                 <span className="text-sm font-medium text-gray-900">בקשות משיכה</span>
               </Link>
@@ -758,12 +758,12 @@ export default function AdminDashboardClient() {
                     });
                     const data = await res.json();
                     if (data.ok) {
-                      alert(`✅ התראה נשלחה ל-${data.sent || 0} משתמשים`);
+                      alert(`התראה נשלחה ל-${data.sent || 0} משתמשים`);
                     } else {
-                      alert('❌ ' + (data.error || 'שגיאה בשליחה'));
+                      alert('שגיאה: ' + (data.error || 'שגיאה בשליחה'));
                     }
                   } catch (err) {
-                    alert('❌ שגיאה: ' + err.message);
+                    alert('שגיאה: ' + err.message);
                   }
                 }}
                 className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all"
@@ -797,7 +797,7 @@ export default function AdminDashboardClient() {
               {canAccess(ADMIN_PERMISSIONS.VIEW_SETTINGS) && (
               <Link href="/admin/system-reports" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
                 <ChartBarIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
-                <span className="text-sm font-medium text-gray-900">📊 דוחות מערכת</span>
+                <span className="text-sm font-medium text-gray-900">דוחות מערכת</span>
               </Link>
               )}
               {canAccess(ADMIN_PERMISSIONS.VIEW_SETTINGS) && (
@@ -806,6 +806,14 @@ export default function AdminDashboardClient() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
                 <span className="text-sm font-medium text-gray-900">Social Audits</span>
+              </Link>
+              )}
+              {canAccess(ADMIN_PERMISSIONS.VIEW_SETTINGS) && (
+              <Link href="/admin/branding" className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 transition-all border border-cyan-200">
+                <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+                <span className="text-sm font-medium text-cyan-900">ניהול צבעים</span>
               </Link>
               )}
               {canAccess(ADMIN_PERMISSIONS.VIEW_SETTINGS) && (
@@ -1060,8 +1068,8 @@ export default function AdminDashboardClient() {
                 </svg>
                 <span className="text-sm font-medium text-gray-900">באגים</span>
               </Link>
-              <Link href="/admin/tasks?filter=features" className="flex items-center gap-3 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 transition-all">
-                <svg className="w-5 h-5" style={{ color: '#7c3aed' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <Link href="/admin/tasks?filter=features" className="flex items-center gap-3 p-3 rounded-lg bg-cyan-50 hover:bg-cyan-100 transition-all">
+                <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
                 <span className="text-sm font-medium text-gray-900">פיצרים חדשים</span>
@@ -1107,8 +1115,8 @@ export default function AdminDashboardClient() {
                 </svg>
                 <span className="text-sm font-medium text-gray-900">סריקת מערכת</span>
               </Link>
-              <Link href="/admin/system-reports?tab=enterprise" className="flex items-center gap-3 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 transition-all">
-                <svg className="w-5 h-5" style={{ color: '#7c3aed' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <Link href="/admin/system-reports?tab=enterprise" className="flex items-center gap-3 p-3 rounded-lg bg-cyan-50 hover:bg-cyan-100 transition-all">
+                <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
                 <span className="text-sm font-medium text-gray-900">Enterprise</span>

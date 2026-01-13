@@ -6,53 +6,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { formatCurrencyILS } from '@/app/utils/date';
 import { useTheme } from '@/app/context/ThemeContext';
-import { getAllPresets, applyPreset } from '@/app/lib/themePresets';
 import TunnelButton from './TunnelButton';
-
-function PaletteIcon({ className = 'w-5 h-5' }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 3.5a8.5 8.5 0 018.5 8.5c0 2.1-1.4 3.5-3.5 3.5h-1.75a1.75 1.75 0 100 3.5h.25c.83 0 1.5.67 1.5 1.5S16.33 22 15.5 22H12A8.5 8.5 0 113.5 13c0-5.25 3.5-9.5 8.5-9.5z"
-      />
-      <circle cx="7.5" cy="10" r="1.2" fill="currentColor" />
-      <circle cx="9.5" cy="6.5" r="1.2" fill="currentColor" />
-      <circle cx="14.5" cy="6.5" r="1.2" fill="currentColor" />
-      <circle cx="17" cy="10.5" r="1.2" fill="currentColor" />
-    </svg>
-  );
-}
 
 function HomeIcon({ className = 'w-5 h-5' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
         d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-5v-5h-4v5H5a1 1 0 01-1-1v-9.5z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function BrushIcon({ className = 'w-5 h-5' }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M14.5 2.75L21.25 9.5 12 18.75l-4 1 1-4L18.5 4.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M9 14.5L4 19.5l1.5 1.5 5-5"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
@@ -169,26 +129,6 @@ function LinkedinIcon({ className = 'w-5 h-5' }) {
   );
 }
 
-function LightbulbIcon({ className = 'w-6 h-6' }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 3a6.5 6.5 0 00-4 11.7V17a1 1 0 001 1h6a1 1 0 001-1v-2.3A6.5 6.5 0 0012 3z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M10 21h4M10.5 18.5h3"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 function SaveIcon({ className = 'w-5 h-5' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -211,14 +151,6 @@ function SaveIcon({ className = 'w-5 h-5' }) {
   );
 }
 
-function StepBadge({ index }) {
-  return (
-    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-sm font-semibold text-white">
-      {index}
-    </span>
-  );
-}
-
 export default function SettingsForm() {
   const pathname = usePathname();
   const isBusinessPage = pathname?.startsWith('/business');
@@ -235,7 +167,10 @@ export default function SettingsForm() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [activeTab, setActiveTab] = useState('presets');
+  const [activeTab, setActiveTab] = useState('general');
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [designPassword, setDesignPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const initialSettings = useMemo(() => ({ ...themeSettings }), [themeSettings]);
   const [settings, setSettings] = useState(initialSettings);
@@ -256,38 +191,63 @@ export default function SettingsForm() {
     updateSettings(newSettings);
   };
 
-  const handlePresetSelect = (presetName) => {
-    const presetSettings = applyPreset(presetName);
-    if (presetSettings) {
-      const newSettings = { ...settings, ...presetSettings };
-      setSettings(newSettings);
-      updateSettings(newSettings);
-      setSuccess(`סגנון ${presetName} הוחל בהצלחה!`);
-      setTimeout(() => setSuccess(''), 3000);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+    
+    // בדיקה אם זה דשבורד מנהל ראשי ויש שינויים בעיצוב
+    const isAdminDashboard = !isBusinessPage;
+    const hasDesignChanges = 
+      JSON.stringify(initialSettings.primaryColor) !== JSON.stringify(settings.primaryColor) ||
+      JSON.stringify(initialSettings.secondaryColor) !== JSON.stringify(settings.secondaryColor) ||
+      JSON.stringify(initialSettings.backgroundGradient) !== JSON.stringify(settings.backgroundGradient) ||
+      JSON.stringify(initialSettings.cardGradient) !== JSON.stringify(settings.cardGradient) ||
+      JSON.stringify(initialSettings.buttonGradient) !== JSON.stringify(settings.buttonGradient);
+    
+    // אם זה מנהל ראשי ויש שינויים בעיצוב - דרוש סיסמה
+    if (isAdminDashboard && hasDesignChanges) {
+      setShowPasswordModal(true);
+      return;
+    }
+    
+    // אחרת - שמור ישירות
+    await performSave();
+  };
+  
+  const performSave = async (password = null) => {
     setSaving(true);
+    setPasswordError('');
 
     try {
-      await saveSettings(settings);
+      await saveSettings(settings, password);
       setSuccess('ההגדרות נשמרו בהצלחה! השינויים יוחלו על כל האתר.');
       setTimeout(() => setSuccess(''), 3000);
+      setShowPasswordModal(false);
+      setDesignPassword('');
     } catch (err) {
-      setError(err.message || 'שגיאה בשמירת ההגדרות');
+      if (err.message?.includes('סיסמה') || err.message?.includes('password')) {
+        setPasswordError(err.message);
+      } else {
+        setError(err.message || 'שגיאה בשמירת ההגדרות');
+        setShowPasswordModal(false);
+      }
     } finally {
       setSaving(false);
     }
   };
+  
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (!designPassword) {
+      setPasswordError('נא להזין סיסמה');
+      return;
+    }
+    performSave(designPassword);
+  };
 
   const tabs = [
-    { id: 'presets', label: 'תצוגה מקדימה', Icon: PaletteIcon },
     { id: 'general', label: 'כללי', Icon: HomeIcon },
-    { id: 'colors', label: 'צבעים', Icon: BrushIcon },
     { id: 'contact', label: 'יצירת קשר', Icon: PhoneIcon },
     { id: 'social', label: 'רשתות חברתיות', Icon: GlobeIcon },
     { id: 'features', label: 'תכונות', Icon: CogIcon },
@@ -398,156 +358,6 @@ export default function SettingsForm() {
           onSubmit={handleSubmit}
           className="bg-white rounded-b-lg sm:rounded-b-xl shadow-md p-4 sm:p-6"
         >
-          {/* Presets Tab */}
-          {activeTab === 'presets' && (
-            <div className="space-y-6">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
-                תצוגה מקדימה - בחר סגנון
-              </h2>
-              <p className="text-gray-600 text-sm sm:text-base mb-6 sm:mb-8">
-                בחר סגנון מוכן של אתר מכירות מפורסם. כל הצבעים והעיצוב של המערכת ישתנו מיידית!
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {getAllPresets().map((preset) => {
-                  const gradientPreview =
-                    preset.colors?.backgroundGradient || preset.backgroundGradient || '';
-                  const secondaryGradient =
-                    preset.cardGradient || preset.colors?.cardGradient || '';
-                  const buttonPreview =
-                    preset.buttonGradient ||
-                    preset.colors?.buttonGradient ||
-                    preset.colors?.primaryColor ||
-                    '#4f46e5';
-
-                  return (
-                    <button
-                      key={preset.id}
-                      type="button"
-                      onClick={() => handlePresetSelect(preset.id)}
-                      className="relative bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 transition-all duration-300 text-left"
-                      style={{
-                        borderColor: '#e5e7eb',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = '#0891b2';
-                        e.currentTarget.style.transform = 'scale(1.02)';
-                        e.currentTarget.style.boxShadow =
-                          '0 20px 25px -5px rgba(8, 145, 178, 0.1), 0 10px 10px -5px rgba(8, 145, 178, 0.04)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = '#e5e7eb';
-                        e.currentTarget.style.transform = 'scale(1)';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    >
-                      {/* Preview Gradient */}
-                      <div
-                        className="h-20 sm:h-24 mb-4 sm:mb-5 rounded-xl shadow-md flex items-center justify-center text-5xl sm:text-6xl text-white"
-                        style={{
-                          background: gradientPreview || preset.colors?.primaryColor || '#4f46e5',
-                        }}
-                      >
-                        <span className="drop-shadow-lg">{preset.preview}</span>
-                      </div>
-
-                      {/* Name */}
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 text-center">
-                        {preset.name}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-sm sm:text-base text-gray-600 mb-4 text-center">
-                        {preset.description}
-                      </p>
-
-                      {/* Color Swatches */}
-                      <div className="grid grid-cols-4 gap-2 mb-4">
-                        <div
-                          className="h-12 rounded-lg shadow-md"
-                          style={{ backgroundColor: preset.colors.primaryColor }}
-                          title="Primary"
-                        ></div>
-                        <div
-                          className="h-12 rounded-lg shadow-md"
-                          style={{ backgroundColor: preset.colors.secondaryColor }}
-                          title="Secondary"
-                        ></div>
-                        <div
-                          className="h-12 rounded-lg shadow-md"
-                          style={{ backgroundColor: preset.colors.accentColor }}
-                          title="Accent"
-                        ></div>
-                        <div
-                          className="h-12 rounded-lg shadow-md"
-                          style={{ backgroundColor: preset.colors.successColor }}
-                          title="Success"
-                        ></div>
-                      </div>
-
-                      {/* Gradient Preview */}
-                      {(gradientPreview || secondaryGradient) && (
-                        <div className="space-y-2 mb-4">
-                          {gradientPreview && (
-                            <div
-                              className="h-11 rounded-lg shadow-inner border border-white/40"
-                              style={{
-                                background: gradientPreview,
-                              }}
-                              title="Gradient"
-                            ></div>
-                          )}
-                          {secondaryGradient && (
-                            <div
-                              className="h-9 rounded-lg shadow-inner border border-white/60"
-                              style={{
-                                background: secondaryGradient,
-                              }}
-                              title="Card Gradient"
-                            ></div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Apply Button */}
-                      <div className="text-center">
-                        <span
-                          className="inline-block text-white font-bold px-6 py-2 rounded-xl shadow-md"
-                          style={{
-                            background: buttonPreview,
-                          }}
-                        >
-                          החל סגנון
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Info Card */}
-              <div className="mt-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl p-6 text-white">
-                <div className="flex items-center gap-2 mb-3">
-                  <LightbulbIcon className="w-6 h-6" />
-                  <h3 className="text-xl font-bold">איך זה עובד?</h3>
-                </div>
-                <ul className="space-y-2">
-                  {[
-                    'בחר סגנון מהאפשרויות למעלה',
-                    'הצבעים ישתנו מיידית בכל המערכת',
-                    'אפשר לערוך ידנית בטאב "צבעים"',
-                    'לחץ "שמור הגדרות" לשמירה קבועה',
-                  ].map((step, index) => (
-                    <li key={step} className="flex items-start gap-3">
-                      <StepBadge index={index + 1} />
-                      <span className="text-sm sm:text-base">{step}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          )}
-
           {/* General Tab */}
           {activeTab === 'general' && (
             <div className="space-y-6">
@@ -610,130 +420,6 @@ export default function SettingsForm() {
 
               {/* Mobile Tunnel Button */}
               <TunnelButton />
-            </div>
-          )}
-
-          {/* Colors Tab */}
-          {activeTab === 'colors' && (
-            <div className="space-y-6">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
-                ערכת צבעים
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[
-                  { key: 'primaryColor', label: 'צבע ראשי', desc: 'כפתורים וקישורים' },
-                  { key: 'secondaryColor', label: 'צבע משני', desc: 'אלמנטים משניים' },
-                  { key: 'accentColor', label: 'צבע הדגשה', desc: 'הדגשות ואייקונים' },
-                  { key: 'successColor', label: 'צבע הצלחה', desc: 'הודעות הצלחה' },
-                  { key: 'warningColor', label: 'צבע אזהרה', desc: 'הודעות אזהרה' },
-                  { key: 'dangerColor', label: 'צבע שגיאה', desc: 'הודעות שגיאה' },
-                  { key: 'backgroundColor', label: 'צבע רקע', desc: 'רקע האתר' },
-                  { key: 'textColor', label: 'צבע טקסט', desc: 'טקסט ראשי' },
-                ].map((color) => (
-                  <div
-                    key={color.key}
-                    className="flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl"
-                  >
-                    <input
-                      type="color"
-                      value={settings[color.key]}
-                      onChange={(e) => handleChange(color.key, e.target.value)}
-                      className="w-16 h-16 border-2 rounded-lg cursor-pointer"
-                    />
-                    <div className="flex-1">
-                      <div className="font-bold text-gray-900">{color.label}</div>
-                      <div className="text-sm text-gray-600">{color.desc}</div>
-                      <div className="text-xs font-mono text-gray-500 mt-1">
-                        {settings[color.key]}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900">גרדיאנטים מתקדמים</h3>
-                  <p className="text-sm text-gray-600">
-                    כאן ניתן לעדכן את הערכים של הגרדיאנטים (אפשר להזין גם צבע אחיד בצורת HEX).
-                  </p>
-                </div>
-
-                {[
-                  { key: 'backgroundGradient', label: 'גרדיאנט רקע', desc: 'הרקע הכללי של האתר' },
-                  { key: 'cardGradient', label: 'גרדיאנט כרטיסים', desc: 'רקע כרטיסי תוכן' },
-                  { key: 'buttonGradient', label: 'גרדיאנט כפתורים', desc: 'רקע כפתורי פעולה' },
-                ].map((gradient) => (
-                  <div
-                    key={gradient.key}
-                    className="p-4 border-2 border-purple-200 rounded-xl bg-purple-50/60 flex flex-col gap-3"
-                  >
-                    <div className="flex items-center justify-between gap-4 flex-wrap">
-                      <div>
-                        <div className="font-bold text-gray-900">{gradient.label}</div>
-                        <div className="text-sm text-gray-600">{gradient.desc}</div>
-                      </div>
-                      <div
-                        className="h-12 w-36 rounded-lg shadow-inner border border-white/60"
-                        style={{ background: settings[gradient.key] }}
-                        title={settings[gradient.key] || ''}
-                      ></div>
-                    </div>
-                    <input
-                      type="text"
-                      value={settings[gradient.key] || ''}
-                      onChange={(e) => handleChange(gradient.key, e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:border-purple-500 font-mono text-sm"
-                      placeholder="לדוגמה: linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #ec4899 100%)"
-                      dir="ltr"
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* Preview */}
-              <div className="mt-8 p-6 border-2 border-dashed border-gray-300 rounded-xl">
-                <h3 className="text-lg font-bold mb-4">תצוגה מקדימה</h3>
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    style={{ backgroundColor: settings.primaryColor }}
-                    className="px-6 py-2 text-white rounded-lg"
-                  >
-                    Primary
-                  </button>
-                  <button
-                    style={{ backgroundColor: settings.secondaryColor }}
-                    className="px-6 py-2 text-white rounded-lg"
-                  >
-                    Secondary
-                  </button>
-                  <button
-                    style={{ backgroundColor: settings.accentColor }}
-                    className="px-6 py-2 text-white rounded-lg"
-                  >
-                    Accent
-                  </button>
-                  <button
-                    style={{ backgroundColor: settings.successColor }}
-                    className="px-6 py-2 text-white rounded-lg"
-                  >
-                    Success
-                  </button>
-                  <button
-                    style={{ backgroundColor: settings.warningColor }}
-                    className="px-6 py-2 text-white rounded-lg"
-                  >
-                    Warning
-                  </button>
-                  <button
-                    style={{ backgroundColor: settings.dangerColor }}
-                    className="px-6 py-2 text-white rounded-lg"
-                  >
-                    Danger
-                  </button>
-                </div>
-              </div>
             </div>
           )}
 
@@ -878,7 +564,7 @@ export default function SettingsForm() {
                         onChange={(e) => handleChange(feature.key, e.target.checked)}
                         className="sr-only peer"
                       />
-                      <div className="w-14 h-8 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:right-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-purple-600"></div>
+                      <div className="w-14 h-8 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-cyan-300 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:right-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-cyan-600"></div>
                     </label>
                   </div>
                 ))}
@@ -1057,9 +743,10 @@ export default function SettingsForm() {
             <button
               type="submit"
               disabled={saving}
-              className={`inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all shadow-lg ${
+              className={`inline-flex items-center gap-2 px-8 py-3 text-white font-bold rounded-xl transition-all shadow-lg ${
                 saving ? 'opacity-75 cursor-not-allowed' : ''
               }`}
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
               {saving ? (
                 <span>שומר...</span>
@@ -1072,6 +759,76 @@ export default function SettingsForm() {
             </button>
           </div>
         </form>
+        
+        {/* Password Modal - רק למנהל ראשי */}
+        {showPasswordModal && !isBusinessPage && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8">
+              <div className="text-center mb-6">
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">הגנה על העיצוב</h3>
+                <p className="text-gray-600 text-sm">
+                  שינויים בעיצוב המערכת דורשים סיסמת אישור
+                </p>
+              </div>
+              
+              <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-900 mb-2">
+                    סיסמת עיצוב
+                  </label>
+                  <input
+                    type="password"
+                    value={designPassword}
+                    onChange={(e) => {
+                      setDesignPassword(e.target.value);
+                      setPasswordError('');
+                    }}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-red-500 text-center text-lg tracking-widest"
+                    placeholder="••••"
+                    autoFocus
+                    disabled={saving}
+                  />
+                  {passwordError && (
+                    <p className="text-red-600 text-sm mt-2 font-semibold">{passwordError}</p>
+                  )}
+                </div>
+                
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPasswordModal(false);
+                      setDesignPassword('');
+                      setPasswordError('');
+                    }}
+                    disabled={saving}
+                    className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold rounded-xl transition-all disabled:opacity-50"
+                  >
+                    ביטול
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={saving || !designPassword}
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold rounded-xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {saving ? 'שומר...' : 'אישור'}
+                  </button>
+                </div>
+              </form>
+              
+              <div className="mt-6 p-4 bg-yellow-50 border-2 border-yellow-200 rounded-xl">
+                <p className="text-xs text-yellow-800 text-center">
+                  סיסמה זו מגנה על העיצוב של המערכת מפני שינויים לא מורשים
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

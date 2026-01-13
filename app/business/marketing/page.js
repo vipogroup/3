@@ -17,7 +17,7 @@ export default function BusinessMarketingPage() {
           return;
         }
         const data = await res.json();
-        if (data.user?.role !== 'business_admin' && data.user?.role !== 'admin') {
+        if (data.user?.role !== 'business_admin' && data.user?.role !== 'admin' && data.user?.role !== 'super_admin') {
           router.push('/');
           return;
         }

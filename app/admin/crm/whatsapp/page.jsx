@@ -175,7 +175,7 @@ export default function WhatsAppPage() {
             </p>
             {connected && (
               <p className="text-sm text-green-700 mt-1">
-                מוכן לשליחת הודעות למשקיעים 🚀
+                מוכן לשליחת הודעות למשקיעים
               </p>
             )}
           </div>

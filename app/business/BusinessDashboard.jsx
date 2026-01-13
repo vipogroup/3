@@ -89,7 +89,7 @@ export default function BusinessDashboard() {
     const styles = {
       pending: 'bg-yellow-100 text-yellow-800',
       processing: 'bg-blue-100 text-blue-800',
-      shipped: 'bg-purple-100 text-purple-800',
+      shipped: 'bg-cyan-100 text-cyan-800',
       delivered: 'bg-green-100 text-green-800',
       cancelled: 'bg-red-100 text-red-800',
     };
@@ -122,7 +122,7 @@ export default function BusinessDashboard() {
           <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-4">שגיאה</h1>
           <p className="text-gray-600 mb-6">{error}</p>
-          <Link href="/" className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <Link href="/" className="px-6 py-3 text-white rounded-lg" style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}>
             חזרה לדף הבית
           </Link>
         </div>
@@ -140,7 +140,7 @@ export default function BusinessDashboard() {
               {tenant?.branding?.logo ? (
                 <img src={tenant.branding.logo} alt="לוגו" className="w-12 h-12 rounded-lg object-cover" />
               ) : (
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}>
                   <Building2 className="w-6 h-6 text-white" />
                 </div>
               )}
@@ -186,7 +186,7 @@ export default function BusinessDashboard() {
                   ? 'text-white'
                   : 'bg-white text-gray-600 hover:bg-gray-100'
               }`}
-              style={activeTab === tab.id ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+              style={activeTab === tab.id ? { background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' } : {}}
             >
               <tab.icon className="w-4 h-4" />
               {tab.label}
@@ -201,7 +201,7 @@ export default function BusinessDashboard() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white p-4 rounded-xl shadow-sm border">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+                  <div className="p-2 rounded-lg" style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}>
                     <DollarSign className="w-5 h-5 text-white" />
                   </div>
                   <div>
@@ -223,8 +223,8 @@ export default function BusinessDashboard() {
               </div>
               <div className="bg-white p-4 rounded-xl shadow-sm border">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <Package className="w-5 h-5 text-purple-600" />
+                  <div className="p-2 bg-cyan-100 rounded-lg">
+                    <Package className="w-5 h-5 text-cyan-600" />
                   </div>
                   <div>
                     <div className="text-sm text-gray-500">מוצרים פעילים</div>
@@ -299,8 +299,8 @@ export default function BusinessDashboard() {
                 href="/business/settings"
                 className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow"
               >
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Palette className="w-5 h-5 text-purple-600" />
+                <div className="p-2 bg-cyan-100 rounded-lg">
+                  <Palette className="w-5 h-5 text-cyan-600" />
                 </div>
                 <span className="font-medium">מיתוג החנות</span>
               </Link>
@@ -372,7 +372,7 @@ function ProductsManager({ tenantId }) {
         <Link
           href="/business/products/new"
           className="flex items-center gap-2 px-4 py-2 text-white rounded-lg"
-          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+          style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
         >
           <Plus className="w-4 h-4" />
           מוצר חדש
@@ -465,7 +465,7 @@ function OrdersManager() {
     const styles = {
       pending: 'bg-yellow-100 text-yellow-800',
       processing: 'bg-blue-100 text-blue-800',
-      shipped: 'bg-purple-100 text-purple-800',
+      shipped: 'bg-cyan-100 text-cyan-800',
       delivered: 'bg-green-100 text-green-800',
       cancelled: 'bg-red-100 text-red-800',
     };
@@ -731,7 +731,7 @@ function SettingsManager({ tenant, onUpdate }) {
         onClick={handleSave}
         disabled={saving}
         className="px-6 py-3 text-white font-medium rounded-lg disabled:opacity-50"
-        style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+        style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
       >
         {saving ? 'שומר...' : 'שמור שינויים'}
       </button>

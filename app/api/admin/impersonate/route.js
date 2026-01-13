@@ -19,12 +19,15 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
  * רק Super Admin יכול להתחזות
  */
 async function POSTHandler(request) {
+  console.log('[IMPERSONATE API] POST request received');
   try {
     const authResult = await requireAdminGuard(request);
+    console.log('[IMPERSONATE API] Auth result:', authResult.ok ? 'OK' : authResult.error);
     if (!authResult.ok) {
       return NextResponse.json({ error: authResult.error }, { status: authResult.status });
     }
     const user = authResult.user;
+    console.log('[IMPERSONATE API] User:', user.email, 'Role:', user.role);
     
     // Only super admin can impersonate
     if (!isSuperAdmin(user)) {

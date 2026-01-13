@@ -25,7 +25,7 @@ async function ordersCollection() {
 async function POSTHandler(req, { params }) {
   try {
     const user = await requireAuthApi(req);
-    if (!user || (user.role !== 'admin' && user.role !== 'business_admin')) {
+    if (!user || (user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

@@ -168,20 +168,20 @@ export default function AgentProductsPage() {
 
   const buildShareText = (product) => {
     const lines = [
-      `🛍️ *${product.name}*`,
+      `*${product.name}*`,
       '',
       product.description,
       '',
-      `💰 מחיר: ₪${product.price}`,
+      `מחיר: ₪${product.price}`,
     ];
 
     if (couponCode) {
-      lines.push(`🏷️ קוד קופון: ${couponCode}`);
+      lines.push(`קוד קופון: ${couponCode}`);
     }
 
     const productUrl = getProductShareUrl(product);
     if (productUrl) {
-      lines.push('', `🔗 לרכישה: ${productUrl}`);
+      lines.push('', `לרכישה: ${productUrl}`);
     }
 
     lines.push('', 'השתמשו בקוד הקופון בקופה לקבלת ההטבה!');
@@ -333,7 +333,7 @@ export default function AgentProductsPage() {
                         className="font-semibold px-4 py-3 rounded-xl transition-all"
                         style={themeStyles.outlinePrimary}
                       >
-                        {copiedId === product._id ? '✔' : 'העתק'}
+                        {copiedId === product._id ? 'V' : 'העתק'}
                       </button>
                     </div>
                     {!hasCoupon && (
@@ -403,22 +403,22 @@ export default function AgentProductsPage() {
           className="mt-8 rounded-2xl shadow-xl p-8 text-white"
           style={themeStyles.primaryGradient}
         >
-          <h2 className="text-2xl font-bold mb-4">💡 איך זה עובד?</h2>
+          <h2 className="text-2xl font-bold mb-4">איך זה עובד?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <div className="text-4xl mb-2">1️⃣</div>
+              <div className="text-4xl mb-2 font-bold">1</div>
               <h3 className="font-bold mb-2">בחר מוצר</h3>
               <p className="text-white">בחר מוצר מהרשימה והעתק את קוד הקופון האישי שלך</p>
             </div>
             <div>
-              <div className="text-4xl mb-2">2️⃣</div>
+              <div className="text-4xl mb-2 font-bold">2</div>
               <h3 className="font-bold mb-2">שתף</h3>
               <p className="text-blue-100">
                 שתף את קוד הקופון יחד עם קישור המוצר ב-WhatsApp, רשתות חברתיות או מייל
               </p>
             </div>
             <div>
-              <div className="text-4xl mb-2">3️⃣</div>
+              <div className="text-4xl mb-2 font-bold">3</div>
               <h3 className="font-bold mb-2">הרווח</h3>
               <p className="text-blue-100">קבל עמלה על כל רכישה שמתבצעת עם הקוד שלך!</p>
             </div>

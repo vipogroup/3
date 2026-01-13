@@ -13,7 +13,7 @@ async function GETHandler(req) {
   try {
     // Verify admin user
     const user = await requireAuthApi(req);
-    if (!user || user.role !== 'admin') {
+    if (!user || (user.role !== 'admin' && user.role !== 'super_admin')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -31,7 +31,7 @@ async function POSTHandler(req) {
   try {
     // Verify admin user
     const user = await requireAuthApi(req);
-    if (!user || user.role !== 'admin') {
+    if (!user || (user.role !== 'admin' && user.role !== 'super_admin')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

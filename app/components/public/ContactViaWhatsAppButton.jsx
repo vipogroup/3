@@ -11,7 +11,8 @@ export default function ContactViaWhatsAppButton({ sourceLabel }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold bg-green-500 text-white hover:bg-green-600 shadow-md w-full sm:w-auto"
+      className="inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold text-white shadow-md w-full sm:w-auto"
+      style={{ background: '#25D366' }}
     >
       דברו איתי בוואטסאפ
     </a>
