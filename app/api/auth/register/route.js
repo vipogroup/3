@@ -78,8 +78,9 @@ async function POSTHandler(req) {
       );
     }
 
-    // Always register as customer - users can upgrade to agent later
-    const normalizedRole = 'customer';
+    // If role is 'agent' (from /register-agent page), create as agent directly
+    // Otherwise, register as customer
+    const normalizedRole = role === 'agent' ? 'agent' : 'customer';
 
     const db = await getDb();
     const users = db.collection('users');
@@ -160,7 +161,18 @@ async function POSTHandler(req) {
     const r = await users.insertOne(doc);
     const newUserId = r.insertedId;
 
-    // Note: Agent coupons are generated when user upgrades to agent via /api/users/upgrade-to-agent
+    // Generate agent coupon if registered directly as agent
+    if (normalizedRole === 'agent') {
+      try {
+        await generateAgentCoupon(newUserId, tenantId);
+        console.log('AGENT_COUPON_GENERATED', { userId: String(newUserId), tenantId: tenantId ? String(tenantId) : null });
+      } catch (couponErr) {
+        console.error('AGENT_COUPON_ERROR', couponErr);
+        // Don't block registration if coupon generation fails
+      }
+    }
+
+    // Note: Agent coupons are also generated when user upgrades to agent via /api/users/upgrade-to-agent
 
     // Prevent self-referral (if somehow user referred themselves)
     if (doc.referredBy && String(doc.referredBy) === String(newUserId)) {
