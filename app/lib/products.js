@@ -138,6 +138,22 @@ export async function refreshProductsFromApi({ includeInactive = false } = {}) {
 export async function fetchProductById(id) {
   if (!id) return null;
 
+  // First, try to fetch directly from API (supports tenant products via share links)
+  if (typeof fetch !== 'undefined') {
+    try {
+      const response = await fetch(`${API_PRODUCTS_URL}/${id}`, { cache: 'no-store' });
+      if (response.ok) {
+        const product = await response.json();
+        if (product && product._id) {
+          return normalizeProductShape(product);
+        }
+      }
+    } catch (err) {
+      console.error('fetchProductById direct API error:', err);
+    }
+  }
+
+  // Fallback: search in cached products list
   if (typeof window !== 'undefined') {
     scheduleApiSync({ force: true });
     if (apiSyncPromise) {
