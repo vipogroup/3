@@ -95,23 +95,27 @@ async function GETHandler(req) {
       // Load tenant-specific settings from Tenant model
       const tenantDoc = await db.collection('tenants').findOne({ _id: tenant._id });
       if (tenantDoc) {
+        // Check if tenant uses global branding (default is true)
+        const useGlobalBranding = tenantDoc.branding?.useGlobalBranding !== false;
+        
         // Merge tenant branding/settings with defaults
+        // If useGlobalBranding is true, use DEFAULT colors instead of tenant-specific
         settings = withDefaultSettings({
           siteName: tenantDoc.name || DEFAULT_SETTINGS.siteName,
           siteDescription: tenantDoc.seo?.description || DEFAULT_SETTINGS.siteDescription,
           siteLogo: tenantDoc.branding?.logo || DEFAULT_SETTINGS.siteLogo,
           siteFavicon: tenantDoc.branding?.favicon || DEFAULT_SETTINGS.siteFavicon,
-          primaryColor: tenantDoc.branding?.primaryColor || DEFAULT_SETTINGS.primaryColor,
-          secondaryColor: tenantDoc.branding?.secondaryColor || DEFAULT_SETTINGS.secondaryColor,
-          accentColor: tenantDoc.branding?.accentColor || DEFAULT_SETTINGS.accentColor,
-          successColor: tenantDoc.branding?.successColor || DEFAULT_SETTINGS.successColor,
-          warningColor: tenantDoc.branding?.warningColor || DEFAULT_SETTINGS.warningColor,
-          dangerColor: tenantDoc.branding?.dangerColor || DEFAULT_SETTINGS.dangerColor,
-          backgroundColor: tenantDoc.branding?.backgroundColor || DEFAULT_SETTINGS.backgroundColor,
-          textColor: tenantDoc.branding?.textColor || DEFAULT_SETTINGS.textColor,
-          backgroundGradient: tenantDoc.branding?.backgroundGradient || '',
-          cardGradient: tenantDoc.branding?.cardGradient || '',
-          buttonGradient: tenantDoc.branding?.buttonGradient || '',
+          primaryColor: useGlobalBranding ? DEFAULT_SETTINGS.primaryColor : (tenantDoc.branding?.primaryColor || DEFAULT_SETTINGS.primaryColor),
+          secondaryColor: useGlobalBranding ? DEFAULT_SETTINGS.secondaryColor : (tenantDoc.branding?.secondaryColor || DEFAULT_SETTINGS.secondaryColor),
+          accentColor: useGlobalBranding ? DEFAULT_SETTINGS.accentColor : (tenantDoc.branding?.accentColor || DEFAULT_SETTINGS.accentColor),
+          successColor: useGlobalBranding ? DEFAULT_SETTINGS.successColor : (tenantDoc.branding?.successColor || DEFAULT_SETTINGS.successColor),
+          warningColor: useGlobalBranding ? DEFAULT_SETTINGS.warningColor : (tenantDoc.branding?.warningColor || DEFAULT_SETTINGS.warningColor),
+          dangerColor: useGlobalBranding ? DEFAULT_SETTINGS.dangerColor : (tenantDoc.branding?.dangerColor || DEFAULT_SETTINGS.dangerColor),
+          backgroundColor: useGlobalBranding ? DEFAULT_SETTINGS.backgroundColor : (tenantDoc.branding?.backgroundColor || DEFAULT_SETTINGS.backgroundColor),
+          textColor: useGlobalBranding ? DEFAULT_SETTINGS.textColor : (tenantDoc.branding?.textColor || DEFAULT_SETTINGS.textColor),
+          backgroundGradient: useGlobalBranding ? '' : (tenantDoc.branding?.backgroundGradient || ''),
+          cardGradient: useGlobalBranding ? '' : (tenantDoc.branding?.cardGradient || ''),
+          buttonGradient: useGlobalBranding ? '' : (tenantDoc.branding?.buttonGradient || ''),
           contactEmail: tenantDoc.contact?.email || DEFAULT_SETTINGS.contactEmail,
           contactPhone: tenantDoc.contact?.phone || DEFAULT_SETTINGS.contactPhone,
           whatsappNumber: tenantDoc.contact?.whatsapp || DEFAULT_SETTINGS.whatsappNumber,
