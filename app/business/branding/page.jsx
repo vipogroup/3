@@ -16,11 +16,16 @@ export default function BusinessBrandingPage() {
   const [isUsingGlobal, setIsUsingGlobal] = useState(true);
   const [message, setMessage] = useState({ type: '', text: '' });
   
-  // צבעים נבחרים
+  // צבעים נבחרים - 8 קטגוריות מלאות
   const [colors, setColors] = useState({
-    primary: 'var(--primary)',
-    secondary: 'var(--secondary)',
-    accent: '#6366f1',
+    primary: '#1e3a8a',
+    secondary: '#0891b2',
+    accent: '#06b6d4',
+    success: '#16a34a',
+    warning: '#eab308',
+    danger: '#dc2626',
+    background: '#f7fbff',
+    text: '#0d1b2a',
   });
   const [logo, setLogo] = useState({ url: '', maxWidth: 150 });
 
@@ -291,9 +296,11 @@ export default function BusinessBrandingPage() {
             <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
               <h2 className="text-lg font-bold mb-4">צבעים</h2>
               <p className="text-sm text-gray-600 mb-4">
-                בחר 3 צבעים שיייצגו את המותג שלך
+                התאם את צבעי המותג שלך - 8 קטגוריות לשליטה מלאה
               </p>
               
+              {/* צבעים ראשיים */}
+              <h3 className="text-sm font-bold text-gray-800 mb-3 mt-2">צבעי מותג</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {/* צבע ראשי */}
                 <div>
@@ -359,10 +366,123 @@ export default function BusinessBrandingPage() {
                 </div>
               </div>
 
-              {/* הערה על צבעי סטטוס */}
-              <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                <p className="text-sm text-yellow-800">
-                  <strong>שים לב:</strong> צבעי סטטוס (ירוק להצלחה, אדום לשגיאה) נשארים קבועים כדי לשמור על חווית משתמש עקבית.
+              {/* צבעי סטטוס */}
+              <h3 className="text-sm font-bold text-gray-800 mb-3 mt-6">צבעי סטטוס</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* הצלחה */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    הצלחה (ירוק)
+                  </label>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="color"
+                      value={colors.success}
+                      onChange={(e) => setColors(prev => ({ ...prev, success: e.target.value }))}
+                      className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-200"
+                    />
+                    <input
+                      type="text"
+                      value={colors.success}
+                      onChange={(e) => setColors(prev => ({ ...prev, success: e.target.value }))}
+                      className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg font-mono text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* התראה */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    התראה (צהוב)
+                  </label>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="color"
+                      value={colors.warning}
+                      onChange={(e) => setColors(prev => ({ ...prev, warning: e.target.value }))}
+                      className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-200"
+                    />
+                    <input
+                      type="text"
+                      value={colors.warning}
+                      onChange={(e) => setColors(prev => ({ ...prev, warning: e.target.value }))}
+                      className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg font-mono text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* שגיאה */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    שגיאה/מחיקה (אדום)
+                  </label>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="color"
+                      value={colors.danger}
+                      onChange={(e) => setColors(prev => ({ ...prev, danger: e.target.value }))}
+                      className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-200"
+                    />
+                    <input
+                      type="text"
+                      value={colors.danger}
+                      onChange={(e) => setColors(prev => ({ ...prev, danger: e.target.value }))}
+                      className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg font-mono text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* צבעי רקע וטקסט */}
+              <h3 className="text-sm font-bold text-gray-800 mb-3 mt-6">רקע וטקסט</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* רקע */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    צבע רקע
+                  </label>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="color"
+                      value={colors.background}
+                      onChange={(e) => setColors(prev => ({ ...prev, background: e.target.value }))}
+                      className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-200"
+                    />
+                    <input
+                      type="text"
+                      value={colors.background}
+                      onChange={(e) => setColors(prev => ({ ...prev, background: e.target.value }))}
+                      className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg font-mono text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* טקסט */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    צבע טקסט
+                  </label>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="color"
+                      value={colors.text}
+                      onChange={(e) => setColors(prev => ({ ...prev, text: e.target.value }))}
+                      className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-200"
+                    />
+                    <input
+                      type="text"
+                      value={colors.text}
+                      onChange={(e) => setColors(prev => ({ ...prev, text: e.target.value }))}
+                      className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg font-mono text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* הערה */}
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-800">
+                  <strong>טיפ:</strong> צבעי המותג (ראשי, משני, הדגשה) משמשים לכפתורים וכותרות. צבעי הסטטוס משמשים להודעות הצלחה/שגיאה.
                 </p>
               </div>
             </div>

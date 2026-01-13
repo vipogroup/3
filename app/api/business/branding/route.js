@@ -6,11 +6,16 @@ import { ObjectId } from 'mongodb';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-// Default colors
+// Default colors - 8 קטגוריות מלאות
 const DEFAULT_COLORS = {
   primary: '#1e3a8a',
   secondary: '#0891b2',
   accent: '#06b6d4',
+  success: '#16a34a',
+  warning: '#eab308',
+  danger: '#dc2626',
+  background: '#f7fbff',
+  text: '#0d1b2a',
 };
 
 // בדיקת הרשאות מנהל עסק
@@ -66,6 +71,11 @@ export async function GET(request) {
         primary: tenant.branding?.primaryColor || DEFAULT_COLORS.primary,
         secondary: tenant.branding?.secondaryColor || DEFAULT_COLORS.secondary,
         accent: tenant.branding?.accentColor || DEFAULT_COLORS.accent,
+        success: tenant.branding?.successColor || DEFAULT_COLORS.success,
+        warning: tenant.branding?.warningColor || DEFAULT_COLORS.warning,
+        danger: tenant.branding?.dangerColor || DEFAULT_COLORS.danger,
+        background: tenant.branding?.backgroundColor || DEFAULT_COLORS.background,
+        text: tenant.branding?.textColor || DEFAULT_COLORS.text,
       },
       logo: {
         url: tenant.branding?.logo || '',
@@ -119,6 +129,11 @@ export async function POST(request) {
       brandingUpdate.primaryColor = colors.primary;
       brandingUpdate.secondaryColor = colors.secondary;
       brandingUpdate.accentColor = colors.accent;
+      brandingUpdate.successColor = colors.success;
+      brandingUpdate.warningColor = colors.warning;
+      brandingUpdate.dangerColor = colors.danger;
+      brandingUpdate.backgroundColor = colors.background;
+      brandingUpdate.textColor = colors.text;
     }
     
     if (logo?.url) {

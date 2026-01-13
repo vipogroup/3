@@ -545,8 +545,8 @@ function SettingsManager({ tenant, onUpdate }) {
     },
     branding: {
       logo: tenant?.branding?.logo || '',
-      primaryColor: tenant?.branding?.primaryColor || '#3B82F6',
-      secondaryColor: tenant?.branding?.secondaryColor || '#1E40AF',
+      primaryColor: tenant?.branding?.primaryColor || '#1e3a8a',
+      secondaryColor: tenant?.branding?.secondaryColor || '#0891b2',
     },
     social: {
       facebook: tenant?.social?.facebook || '',
