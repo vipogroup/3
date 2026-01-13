@@ -85,7 +85,12 @@ async function POSTHandler(req) {
 
     console.log('Referral click logged for agent:', agent._id, 'refCode:', refCode);
 
-    return NextResponse.json({ ok: true, tracked: true });
+    // Return tenantId so client can store it for product filtering
+    return NextResponse.json({ 
+      ok: true, 
+      tracked: true,
+      tenantId: agent.tenantId?.toString() || null 
+    });
   } catch (error) {
     console.error('REFERRAL_TRACK_ERROR:', error);
     return NextResponse.json({ ok: false, error: 'server error' }, { status: 500 });

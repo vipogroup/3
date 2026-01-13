@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
+import { cookies } from 'next/headers';
 
 import { connectMongo } from '@/lib/mongoose';
 import Product from '@/models/Product';
@@ -443,7 +444,22 @@ async function GETHandler(request) {
           hasTenantContext = true;
         }
       } catch {
-        // Not logged in - that's ok, will show global products
+        // Not logged in - that's ok, will check cookie next
+      }
+    }
+    
+    // 3. If still no tenant, check refTenant cookie (set by referral links)
+    if (!tenantId) {
+      try {
+        const cookieStore = cookies();
+        const refTenantCookie = cookieStore.get('refTenant');
+        if (refTenantCookie?.value && ObjectId.isValid(refTenantCookie.value)) {
+          tenantId = new ObjectId(refTenantCookie.value);
+          hasTenantContext = true;
+          console.log('Using tenant from refTenant cookie:', refTenantCookie.value);
+        }
+      } catch (err) {
+        // Cookie not available or invalid
       }
     }
     

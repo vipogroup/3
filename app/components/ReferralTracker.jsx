@@ -42,6 +42,13 @@ export default function ReferralTracker() {
                 // Mark as logged for this session
                 sessionStorage.setItem(sessionKey, '1');
                 console.log('Referral click logged');
+                
+                // Store tenantId in cookie for product filtering
+                if (data.tenantId) {
+                  document.cookie = `refTenant=${encodeURIComponent(data.tenantId)}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+                  localStorage.setItem('refTenantId', data.tenantId);
+                  console.log('Tenant ID stored:', data.tenantId);
+                }
               }
             })
             .catch((err) => console.error('Failed to log referral click:', err));
