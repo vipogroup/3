@@ -146,22 +146,32 @@ async function POSTHandler(req) {
       });
 
       // 2. Order confirmation to customer
-      await pushToUsers([String(me.id)], {
-        title: 'ההזמנה שלך התקבלה!',
-        body: `תודה על הרכישה! סכום: ${totalAmount.toLocaleString('he-IL')} ₪`,
-        icon: '/icons/192.png',
-        url: `/orders/${orderId}`,
-        data: { type: 'order_confirmation', orderId: String(orderId) },
+      await sendTemplateNotification({
+        templateType: 'order_confirmation',
+        variables: {
+          order_id: String(orderId),
+        },
+        audienceUserIds: [String(me.id)],
+        payloadOverrides: {
+          url: `/orders/${orderId}`,
+          data: { type: 'order_confirmation', orderId: String(orderId) },
+        },
+        tenantId: tenantId ? String(tenantId) : null,
       });
 
       // 3. If order has agent referral - notify agent
       if (refAgentId && commissionAmount > 0) {
-        await pushToUsers([String(refAgentId)], {
-          title: 'עמלה חדשה!',
-          body: `בוצעה רכישה דרך הקופון שלך. עמלה: ${commissionAmount.toLocaleString('he-IL')} ₪`,
-          icon: '/icons/192.png',
-          url: '/agent',
-          data: { type: 'agent_commission_awarded', orderId: String(orderId), commission: commissionAmount },
+        await sendTemplateNotification({
+          templateType: 'agent_commission_awarded',
+          variables: {
+            commission_percent: '10',
+          },
+          audienceUserIds: [String(refAgentId)],
+          payloadOverrides: {
+            url: '/agent',
+            data: { type: 'agent_commission_awarded', orderId: String(orderId), commission: commissionAmount },
+          },
+          tenantId: tenantId ? String(tenantId) : null,
         });
 
         // 4. Admin notification about agent sale
