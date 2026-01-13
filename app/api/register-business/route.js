@@ -76,9 +76,10 @@ async function POSTHandler(req) {
       branding: {
         logo: null,
         favicon: null,
-        primaryColor: '#3B82F6',
-        secondaryColor: '#1E40AF',
-        accentColor: '#10B981',
+        primaryColor: '#1e3a8a',
+        secondaryColor: '#0891b2',
+        accentColor: '#06b6d4',
+        useGlobalBranding: true,
       },
       contact: {
         email: contact?.email || normalizedEmail,

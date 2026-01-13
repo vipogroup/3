@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { THEME_PRESETS } from '@/app/lib/themePresets';
 
 export default function BusinessBrandingPage() {
   const router = useRouter();
@@ -28,6 +29,7 @@ export default function BusinessBrandingPage() {
     text: '#0d1b2a',
   });
   const [logo, setLogo] = useState({ url: '', maxWidth: 150 });
+  const [selectedPreset, setSelectedPreset] = useState(null);
 
   // טעינת נתונים
   const loadData = useCallback(async () => {
@@ -122,6 +124,24 @@ export default function BusinessBrandingPage() {
       setMessage({ type: 'error', text: 'שגיאה בשמירה' });
     } finally {
       setSaving(false);
+    }
+  };
+
+  // בחירת Preset
+  const handlePresetSelect = (presetId) => {
+    setSelectedPreset(presetId);
+    const preset = THEME_PRESETS[presetId];
+    if (preset?.colors) {
+      setColors({
+        primary: preset.colors.primaryColor || '#1e3a8a',
+        secondary: preset.colors.secondaryColor || '#0891b2',
+        accent: preset.colors.accentColor || '#06b6d4',
+        success: preset.colors.successColor || '#16a34a',
+        warning: preset.colors.warningColor || '#f59e0b',
+        danger: preset.colors.dangerColor || '#dc2626',
+        background: preset.colors.backgroundColor || '#f7fbff',
+        text: preset.colors.textColor || '#0d1b2a',
+      });
     }
   };
 
@@ -258,6 +278,52 @@ export default function BusinessBrandingPage() {
         {/* הגדרות מותאמות - רק אם לא גלובלי */}
         {!isUsingGlobal && (
           <>
+            {/* ערכות עיצוב מוכנות */}
+            <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
+              <h2 className="text-lg font-bold mb-4">ערכות עיצוב מוכנות</h2>
+              <p className="text-sm text-gray-600 mb-4">בחר ערכה מוכנה או התאם ידנית</p>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {Object.entries(THEME_PRESETS).map(([id, preset]) => (
+                  <button
+                    key={id}
+                    onClick={() => handlePresetSelect(id)}
+                    className={`p-3 rounded-xl border-2 transition-all text-right ${
+                      selectedPreset === id 
+                        ? 'border-blue-500 bg-blue-50 scale-105' 
+                        : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                    }`}
+                  >
+                    <div 
+                      className="h-8 rounded-lg mb-2"
+                      style={{ 
+                        background: preset.colors.backgroundGradient || 
+                          `linear-gradient(135deg, ${preset.colors.primaryColor} 0%, ${preset.colors.secondaryColor} 100%)` 
+                      }}
+                    />
+                    <p className="font-medium text-xs sm:text-sm truncate">{preset.name}</p>
+                  </button>
+                ))}
+                
+                {/* התאמה ידנית */}
+                <button
+                  onClick={() => setSelectedPreset(null)}
+                  className={`p-3 rounded-xl border-2 transition-all text-right ${
+                    selectedPreset === null 
+                      ? 'border-blue-500 bg-blue-50 scale-105' 
+                      : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                  }`}
+                >
+                  <div className="h-8 rounded-lg mb-2 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </div>
+                  <p className="font-medium text-xs sm:text-sm">התאמה ידנית</p>
+                </button>
+              </div>
+            </div>
+
             {/* לוגו */}
             <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
               <h2 className="text-lg font-bold mb-4">לוגו העסק</h2>
