@@ -10,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const DEFAULT_COLORS = {
   primary: '#1e3a8a',
   secondary: '#0891b2',
-  accent: '#6366f1',
+  accent: '#06b6d4',
 };
 
 // בדיקת הרשאות מנהל עסק

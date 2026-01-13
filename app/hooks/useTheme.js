@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 export const THEMES = {
   amazon: {
     name: 'Amazon',
-    icon: '📦',
+    icon: 'box',
     primary: 'orange-500',
     secondary: 'slate-800',
     gradient: 'from-orange-50 via-orange-100 to-yellow-50',
@@ -14,7 +14,7 @@ export const THEMES = {
   },
   aliexpress: {
     name: 'AliExpress',
-    icon: '🛍️',
+    icon: 'shopping-bag',
     primary: 'red-600',
     secondary: 'orange-500',
     gradient: 'from-red-50 via-orange-50 to-yellow-50',
@@ -24,7 +24,7 @@ export const THEMES = {
   },
   alibaba: {
     name: 'Alibaba',
-    icon: '🏭',
+    icon: 'factory',
     primary: 'orange-600',
     secondary: 'amber-500',
     gradient: 'from-orange-50 via-amber-50 to-orange-100',
@@ -34,7 +34,7 @@ export const THEMES = {
   },
   ebay: {
     name: 'eBay',
-    icon: '🎯',
+    icon: 'target',
     primary: 'blue-600',
     secondary: 'yellow-400',
     gradient: 'from-blue-50 via-sky-50 to-yellow-50',
@@ -44,7 +44,7 @@ export const THEMES = {
   },
   etsy: {
     name: 'Etsy',
-    icon: '🎨',
+    icon: 'palette',
     primary: 'orange-500',
     secondary: 'slate-700',
     gradient: 'from-orange-50 via-amber-50 to-orange-100',
@@ -54,7 +54,7 @@ export const THEMES = {
   },
   walmart: {
     name: 'Walmart',
-    icon: '⭐',
+    icon: 'star',
     primary: 'blue-600',
     secondary: 'yellow-400',
     gradient: 'from-blue-50 via-sky-50 to-blue-100',
@@ -64,7 +64,7 @@ export const THEMES = {
   },
   shopify: {
     name: 'Shopify',
-    icon: '🛒',
+    icon: 'cart',
     primary: 'green-600',
     secondary: 'emerald-500',
     gradient: 'from-green-50 via-emerald-50 to-teal-50',
@@ -74,7 +74,7 @@ export const THEMES = {
   },
   wish: {
     name: 'Wish',
-    icon: '💙',
+    icon: 'heart',
     primary: 'sky-500',
     secondary: 'blue-400',
     gradient: 'from-sky-50 via-blue-50 to-cyan-50',

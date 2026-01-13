@@ -68,9 +68,9 @@ const TenantSchema = new mongoose.Schema(
     branding: {
       logo: { type: String, default: null },
       favicon: { type: String, default: null },
-      primaryColor: { type: String, default: '#3B82F6' },
-      secondaryColor: { type: String, default: '#1E40AF' },
-      accentColor: { type: String, default: '#10B981' },
+      primaryColor: { type: String, default: '#1e3a8a' },
+      secondaryColor: { type: String, default: '#0891b2' },
+      accentColor: { type: String, default: '#06b6d4' },
     },
     
     // === פרטי קשר ===

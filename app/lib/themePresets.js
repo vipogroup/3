@@ -4,7 +4,7 @@ export const THEME_PRESETS = {
   'vipo-turquoise': {
     name: 'VIPO כחול-טורקיז',
     description: 'העיצוב החדש - גרדיאנט כחול-טורקיז מודרני ומקצועי',
-    preview: '💎',
+    preview: 'diamond',
     colors: {
       primaryColor: '#0891b2', // Turquoise
       secondaryColor: '#1e3a8a', // Deep Blue
@@ -29,7 +29,7 @@ export const THEME_PRESETS = {
   vipo: {
     name: 'VIPO קלאסי',
     description: 'סגנון VIPO המקורי - סגול ורוד',
-    preview: '🎨',
+    preview: 'palette',
     colors: {
       primaryColor: '#3498db',
       secondaryColor: '#2980b9',
@@ -55,7 +55,7 @@ export const THEME_PRESETS = {
   amazon: {
     name: 'Amazon',
     description: 'סגנון אמזון - כתום וכחול מקצועי',
-    preview: '🛒',
+    preview: 'cart',
     colors: {
       primaryColor: '#FF9900', // Amazon Orange (הצבע המפורסם של אמזון)
       secondaryColor: '#232F3E', // Amazon Dark Blue (הכחול הכהה של הלוגו)
@@ -71,7 +71,7 @@ export const THEME_PRESETS = {
   aliexpress: {
     name: 'AliExpress',
     description: 'סגנון עליאקספרס - אדום ולבן דינמי',
-    preview: '🏪',
+    preview: 'store',
     colors: {
       primaryColor: '#FF4747', // AliExpress Red (האדום המפורסם)
       secondaryColor: '#E62E04', // AliExpress Deep Red
@@ -87,7 +87,7 @@ export const THEME_PRESETS = {
   ebay: {
     name: 'eBay',
     description: 'סגנון איביי - צבעוני ומרגש',
-    preview: '🎯',
+    preview: 'target',
     colors: {
       primaryColor: '#3665F3', // eBay Blue (הצבע המרכזי החדש)
       secondaryColor: '#E53238', // eBay Red (הלוגו הקלאסי)
@@ -103,7 +103,7 @@ export const THEME_PRESETS = {
   walmart: {
     name: 'Walmart',
     description: 'סגנון וולמארט - כחול וצהוב בהיר',
-    preview: '🏬',
+    preview: 'building',
     colors: {
       primaryColor: '#0071CE', // Walmart Blue (הכחול המפורסם)
       secondaryColor: '#FFC220', // Walmart Spark Yellow (צהוב הניצוץ)
@@ -119,7 +119,7 @@ export const THEME_PRESETS = {
   etsy: {
     name: 'Etsy',
     description: 'סגנון אטסי - כתום חם ואורגני',
-    preview: '🎨',
+    preview: 'palette',
     colors: {
       primaryColor: '#F56400', // Etsy Orange (הכתום המקורי)
       secondaryColor: '#222222', // Etsy Black
@@ -135,7 +135,7 @@ export const THEME_PRESETS = {
   shopify: {
     name: 'Shopify',
     description: 'סגנון שופיפיי - ירוק מנטה מודרני',
-    preview: '🛍️',
+    preview: 'shopping-bag',
     colors: {
       primaryColor: '#5C6AC4', // Shopify Purple (הסגול החדש)
       secondaryColor: '#008060', // Shopify Green (הירוק הקלאסי)
