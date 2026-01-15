@@ -587,6 +587,15 @@ export default function AdminDashboardClient() {
                 <span className="text-sm font-medium text-gray-900">ניהול סוכנים</span>
               </Link>
               )}
+              {/* יומן התראות - Super Admin only */}
+              {isSuperAdmin && (
+              <Link href="/admin/notification-logs" className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 transition-all border border-cyan-200">
+                <svg className="w-5 h-5" style={{ color: '#0891b2' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span className="text-sm font-medium text-purple-900">יומן התראות</span>
+              </Link>
+              )}
               {/* Multi-Tenant: ניהול עסקים - Super Admin only */}
               {isSuperAdmin && (
               <Link href="/admin/tenants" className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 transition-all border border-cyan-200">
