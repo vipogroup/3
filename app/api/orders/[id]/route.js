@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
 import { getDb } from '@/lib/db';
-import { requireAuthApi } from '@/lib/auth/server';
+import { requireAuthApi, requireAdminApi } from '@/lib/auth/server';
 import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 import {
   ORDER_STATUS,
@@ -33,8 +33,20 @@ async function GETHandler(req, { params }) {
     const order = await col.findOne({ _id: new ObjectId(id) });
     if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
+    if (!isSuperAdmin(user) && user.tenantId) {
+      const orderTenantId = order.tenantId?.toString();
+      const userTenantId = user.tenantId?.toString();
+      if (!orderTenantId || orderTenantId !== userTenantId) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      }
+    }
+
     // Check access: admin, order owner (createdBy), or agent
-    const isAdmin = user.role === 'admin';
+    let isAdmin = false;
+    try {
+      await requireAdminApi(req);
+      isAdmin = true;
+    } catch {}
     const isOwner = String(order.createdBy) === String(user.id) || 
                    (user.email && order.customer?.email === user.email);
     const isAgent = String(order.agentId) === String(user.id);
@@ -58,16 +70,15 @@ async function GETHandler(req, { params }) {
   } catch (e) {
     console.error(e);
     const status = e?.status || 500;
-    return NextResponse.json({ error: status === 401 ? 'Unauthorized' : 'Server error' }, { status });
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
 async function DELETEHandler(req, { params }) {
   try {
-    const user = await requireAuthApi(req);
-    if (user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = await requireAdminApi(req);
 
     const { id } = params || {};
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
@@ -81,8 +92,8 @@ async function DELETEHandler(req, { params }) {
     if (!isSuperAdmin(user) && user.tenantId) {
       const orderTenantId = order.tenantId?.toString();
       const userTenantId = user.tenantId?.toString();
-      if (orderTenantId && orderTenantId !== userTenantId) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      if (!orderTenantId || orderTenantId !== userTenantId) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
       }
     }
     
@@ -95,16 +106,15 @@ async function DELETEHandler(req, { params }) {
   } catch (e) {
     console.error(e);
     const status = e?.status || 500;
-    return NextResponse.json({ error: status === 401 ? 'Unauthorized' : 'Server error' }, { status });
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
 async function PUTHandler(req, { params }) {
   try {
-    const user = await requireAuthApi(req);
-    if (user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'business_admin') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = await requireAdminApi(req);
 
     const { id } = params || {};
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
@@ -117,8 +127,8 @@ async function PUTHandler(req, { params }) {
     if (!isSuperAdmin(user) && user.tenantId) {
       const orderTenantId = order.tenantId?.toString();
       const userTenantId = user.tenantId?.toString();
-      if (orderTenantId && orderTenantId !== userTenantId) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      if (!orderTenantId || orderTenantId !== userTenantId) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
       }
     }
 
@@ -173,7 +183,9 @@ async function PUTHandler(req, { params }) {
   } catch (e) {
     console.error(e);
     const status = e?.status || 500;
-    return NextResponse.json({ error: status === 401 ? 'Unauthorized' : 'Server error' }, { status });
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
@@ -188,9 +200,22 @@ async function PATCHHandler(req, { params }) {
     const order = await col.findOne({ _id: new ObjectId(id) });
     if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
+    if (!isSuperAdmin(user) && user.tenantId) {
+      const orderTenantId = order.tenantId?.toString();
+      const userTenantId = user.tenantId?.toString();
+      if (!orderTenantId || orderTenantId !== userTenantId) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      }
+    }
+
     const isOwner = String(order.agentId) === String(user.id) ||
                    String(order.createdBy) === String(user.id);
-    if (!(user.role === 'admin' || isOwner)) {
+    let isAdmin = false;
+    try {
+      await requireAdminApi(req);
+      isAdmin = true;
+    } catch {}
+    if (!(isAdmin || isOwner)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -262,7 +287,9 @@ async function PATCHHandler(req, { params }) {
   } catch (e) {
     console.error(e);
     const status = e?.status || 500;
-    return NextResponse.json({ error: status === 401 ? 'Unauthorized' : 'Server error' }, { status });
+    const message =
+      status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Server error';
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
