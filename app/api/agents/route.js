@@ -147,7 +147,23 @@ async function POSTHandler(req) {
 
     if (createdId) {
       try {
-        await generateAgentCoupon({ fullName, agentId: createdId });
+        const couponResult = await generateAgentCoupon({ fullName, agentId: createdId });
+        // Also update directly via MongoDB to ensure sync
+        if (couponResult?.couponCode) {
+          await col.updateOne(
+            { _id: createdId },
+            { 
+              $set: { 
+                couponCode: couponResult.couponCode,
+                couponSlug: couponResult.couponSlug,
+                couponSequence: couponResult.couponSequence,
+                couponStatus: 'active',
+                discountPercent: 10,
+                commissionPercent: 12
+              } 
+            }
+          );
+        }
       } catch (couponError) {
         console.error('AGENT_COUPON_GENERATION_ERROR', couponError);
       }

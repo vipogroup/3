@@ -475,6 +475,8 @@ async function POSTHandler(req) {
       ...rest,
     };
 
+    const { insertedId: orderId } = await ordersCol.insertOne(orderDoc);
+
     try {
       const customerData = rest?.customer || {};
       if (customerData.address || customerData.city || customerData.zipCode) {

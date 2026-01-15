@@ -127,13 +127,17 @@ async function GETHandler(req) {
 
 async function POSTHandler(req) {
   try {
-    await requireAdminApi(req);
+    const admin = await requireAdminApi(req);
 
     await dbConnect();
 
-    const { action, orderId, notes } = await req.json();
+    const body = await req.json();
+    const { action, orderId, notes, startDate, endDate } = body || {};
 
     if (action === 'mark_reconciled') {
+      if (!orderId) {
+        return NextResponse.json({ error: 'orderId is required' }, { status: 400 });
+      }
       const syncMap = await IntegrationSyncMap.findOne({ orderId });
       if (!syncMap) {
         return NextResponse.json({ error: 'Sync map not found' }, { status: 404 });
@@ -141,7 +145,7 @@ async function POSTHandler(req) {
 
       syncMap.reconciled = true;
       syncMap.reconciledAt = new Date();
-      syncMap.reconciledBy = session.user.id;
+      syncMap.reconciledBy = admin.id || admin._id || null;
       syncMap.reconciliationNotes = notes;
       await syncMap.save();
 
@@ -152,7 +156,9 @@ async function POSTHandler(req) {
     }
 
     if (action === 'close_period') {
-      const { startDate, endDate } = await req.json();
+      if (!startDate || !endDate) {
+        return NextResponse.json({ error: 'startDate and endDate are required' }, { status: 400 });
+      }
       
       // Mark all items in period as reconciled
       const result = await IntegrationSyncMap.updateMany(
@@ -165,7 +171,7 @@ async function POSTHandler(req) {
           $set: {
             reconciled: true,
             reconciledAt: new Date(),
-            reconciledBy: session.user.id,
+            reconciledBy: admin.id || admin._id || null,
             reconciliationNotes: `Period closed: ${startDate} - ${endDate}`,
           },
         }

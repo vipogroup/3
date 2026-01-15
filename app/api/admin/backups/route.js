@@ -4,6 +4,8 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
+import { requireSuperAdminApi } from '@/lib/auth/server';
+import { isSuperAdminUser } from '@/lib/superAdmins';
 import { logAdminActivity } from '@/lib/auditMiddleware';
 import { rateLimiters } from '@/lib/rateLimit';
 
@@ -104,42 +106,18 @@ async function cleanupOldBackups(backupsDir) {
 
 // Helper to check if user is admin
 async function checkAdmin(req) {
-  const cookieHeader = req.headers.get('cookie') || '';
-  // Check both auth_token and legacy token cookies
-  const authTokenMatch = cookieHeader.match(/auth_token=([^;]+)/);
-  const legacyTokenMatch = cookieHeader.match(/token=([^;]+)/);
-  const tokenValue = authTokenMatch?.[1] || legacyTokenMatch?.[1];
-  
-  // Try legacy JWT first
-  if (tokenValue) {
-    try {
-      const { jwtVerify } = await import('jose');
-      if (process.env.JWT_SECRET) {
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-        const { payload } = await jwtVerify(decodeURIComponent(tokenValue), secret);
-        if (payload.role === 'admin' || payload.role === 'super_admin') return payload;
-      }
-    } catch {
-      // Try NextAuth
-    }
-  }
-  
-  // Try NextAuth token
   try {
-    const { getToken } = await import('next-auth/jwt');
-    const nextAuthToken = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-    if (nextAuthToken?.role === 'admin' || nextAuthToken?.role === 'super_admin') {
-      return {
-        userId: nextAuthToken.userId || nextAuthToken.sub,
-        email: nextAuthToken.email,
-        role: nextAuthToken.role
-      };
-    }
+    const user = await requireSuperAdminApi(req);
+    if (!isSuperAdminUser(user)) return null;
+    const userId = user.userId || user.id || user._id || null;
+    return {
+      ...user,
+      userId,
+      userEmail: user.email || user.userEmail || null,
+    };
   } catch {
-    // No valid token
+    return null;
   }
-  
-  return null;
 }
 
 // GET - List backups
@@ -209,6 +187,11 @@ async function GETHandler(req) {
 
 // POST - Run backup action
 async function POSTHandler(req) {
+  const rateLimit = rateLimiters.admin(req);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
+  }
+
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

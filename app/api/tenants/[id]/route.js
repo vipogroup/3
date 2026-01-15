@@ -44,7 +44,7 @@ async function GETHandler(request, { params }) {
       db.collection('users').countDocuments({ tenantId: tenant._id }),
       db.collection('products').countDocuments({ tenantId: tenant._id }),
       db.collection('orders').aggregate([
-        { $match: { tenantId: tenant._id, paymentStatus: 'success' } },
+        { $match: { tenantId: tenant._id, paymentStatus: { $in: ['success', 'final-success'] } } },
         { $group: { _id: null, total: { $sum: '$totalAmount' } } },
       ]).toArray(),
     ]);

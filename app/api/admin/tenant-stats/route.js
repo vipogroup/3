@@ -55,7 +55,7 @@ async function GETHandler(request) {
     const tenantStats = await Promise.all(tenants.map(async (tenant) => {
       const matchQuery = { 
         tenantId: tenant._id,
-        paymentStatus: 'success',
+        paymentStatus: { $in: ['success', 'final-success'] },
       };
       
       if (startDate) {

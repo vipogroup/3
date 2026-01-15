@@ -2,8 +2,10 @@ import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
+import { requireSuperAdminApi } from '@/lib/auth/server';
 import { connectMongo } from '@/lib/mongoose';
 import Product from '@/models/Product';
+import { isSuperAdmin } from '@/lib/tenant';
 
 const updatedProducts = [
   {
@@ -56,7 +58,7 @@ const updatedProducts = [
     imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&h=600&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=800&fit=crop',
-      'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800&h=800&fit=crop',
+      'https://images.unsplash.com/photo-1615663245858-ac93bb7c39e7?w=800&h=800&fit=crop',
       'https://images.unsplash.com/photo-1563297007-0686b7003af7?w=800&h=800&fit=crop',
     ],
     inStock: true,
@@ -209,6 +211,19 @@ const updatedProducts = [
 ];
 
 async function POSTHandler(request) {
+  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
+  const user = await requireSuperAdminApi(request);
+  if (!isSuperAdmin(user)) {
+    return NextResponse.json({ error: 'Forbidden - Super Admin access required' }, { status: 403 });
+  }
+
+  if (process.env.ALLOW_DANGEROUS_SEED !== 'true') {
+    return NextResponse.json({ error: 'Forbidden - Dangerous seed disabled' }, { status: 403 });
+  }
+
   try {
     await connectMongo();
 

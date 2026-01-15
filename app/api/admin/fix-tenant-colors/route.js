@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
-import { verifyJWT } from '@/lib/auth';
-import { cookies } from 'next/headers';
+import { requireAuthApi } from '@/lib/auth/server';
+import { isSuperAdminUser } from '@/lib/superAdmins';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,15 +20,8 @@ const CORRECT_COLORS = {
 export async function POST(request) {
   try {
     // בדיקת הרשאות - רק super_admin
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value || cookieStore.get('token')?.value;
-    
-    if (!token) {
-      return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
-    }
-    
-    const decoded = verifyJWT(token);
-    if (!decoded || !['admin', 'super_admin'].includes(decoded.role)) {
+    const user = await requireAuthApi(request);
+    if (!isSuperAdminUser(user)) {
       return NextResponse.json({ error: 'רק מנהל ראשי יכול לבצע פעולה זו' }, { status: 403 });
     }
 

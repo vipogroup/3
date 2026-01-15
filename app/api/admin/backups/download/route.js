@@ -1,27 +1,23 @@
 import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
+import { requireSuperAdminApi } from '@/lib/auth/server';
+import { rateLimiters } from '@/lib/rateLimit';
 import fs from 'fs';
 import path from 'path';
 
 async function GETHandler(req) {
-  // בדיקת הרשאות
-  const cookieStore = await cookies();
-  const token = cookieStore.get('auth_token')?.value || cookieStore.get('token')?.value;
-  
-  if (!token) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const rateLimit = rateLimiters.admin(req);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
   }
 
-  let user;
+  // בדיקת הרשאות
   try {
-    user = jwt.verify(token, process.env.JWT_SECRET);
-    if (user.role !== 'admin' && user.role !== 'super_admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    await requireSuperAdminApi(req);
   } catch (err) {
-    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    const status = err?.status || 401;
+    const message = status === 403 ? 'Forbidden' : 'Unauthorized';
+    return NextResponse.json({ error: message }, { status });
   }
 
   try {

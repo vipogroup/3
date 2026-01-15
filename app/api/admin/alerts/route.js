@@ -1,26 +1,15 @@
 import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
-import { rateLimiters } from '@/lib/rateLimit';
+import { requireAdminApi } from '@/lib/auth/server';
+import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
 const ALERTS_COLLECTION = 'system_alerts';
 
 // Helper to check if user is admin
 async function checkAdmin(req) {
-  const cookieHeader = req.headers.get('cookie') || '';
-  const authTokenMatch = cookieHeader.match(/auth_token=([^;]+)/);
-  const legacyTokenMatch = cookieHeader.match(/token=([^;]+)/);
-  const tokenValue = authTokenMatch?.[1] || legacyTokenMatch?.[1];
-  
-  if (!tokenValue) return null;
-  
   try {
-    const { jwtVerify } = await import('jose');
-    if (!process.env.JWT_SECRET) return null;
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-    const { payload } = await jwtVerify(decodeURIComponent(tokenValue), secret);
-    if (payload.role !== 'admin' && payload.role !== 'super_admin') return null;
-    return payload;
+    return await requireAdminApi(req);
   } catch {
     return null;
   }
@@ -28,15 +17,16 @@ async function checkAdmin(req) {
 
 // GET - Fetch active alerts
 async function GETHandler(req) {
-  // Rate limiting
-  const rateLimit = rateLimiters.admin(req);
-  if (!rateLimit.allowed) {
-    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
-  }
-
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Rate limiting
+  const identifier = buildRateLimitKey(req, user.id || user._id);
+  const rateLimit = rateLimiters.admin(req, identifier);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
   }
 
   try {
@@ -72,6 +62,17 @@ async function GETHandler(req) {
 
 // POST - Create a new alert
 async function POSTHandler(req) {
+  const user = await checkAdmin(req);
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const identifier = buildRateLimitKey(req, user.id || user._id);
+  const rateLimit = rateLimiters.adminAlertsCreate(req, identifier);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
+  }
+
   try {
     const body = await req.json();
     const { 
@@ -94,6 +95,7 @@ async function POSTHandler(req) {
       message,
       source: source || 'system',
       metadata: metadata || {},
+      createdBy: user.email || null,
       read: false,
       readAt: null,
       readBy: null,
@@ -114,6 +116,12 @@ async function PATCHHandler(req) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const identifier = buildRateLimitKey(req, user.id || user._id);
+  const rateLimit = rateLimiters.admin(req, identifier);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
   }
 
   try {
@@ -159,6 +167,12 @@ async function DELETEHandler(req) {
   const user = await checkAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const identifier = buildRateLimitKey(req, user.id || user._id);
+  const rateLimit = rateLimiters.admin(req, identifier);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
   }
 
   try {

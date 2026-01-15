@@ -1,6 +1,7 @@
 // app/api/products/[id]/route.js
 import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import mongoose from 'mongoose';
 
 import { connectMongo } from '@/lib/mongoose';
@@ -8,7 +9,7 @@ import Product from '@/models/Product';
 import Catalog from '@/models/Catalog';
 import { requireAdminApi } from '@/lib/auth/server';
 import { updateProductInPriority, deactivateProductInPriority } from '@/lib/priority/productSyncService';
-import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
+import { getCurrentTenant, isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
 
 function buildProductQuery(id) {
   const conditions = [];
@@ -26,21 +27,59 @@ async function GETHandler(req, { params }) {
   await connectMongo();
   const doc = await Product.findOne(buildProductQuery(params.id)).lean();
   if (!doc) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+  let authUser = null;
+  try {
+    const { requireAuthApi } = await import('@/lib/auth/server');
+    authUser = await requireAuthApi(req);
+  } catch {}
+
+  if (!isSuperAdmin(authUser)) {
+    let tenantId = null;
+    let hasTenantContext = false;
+
+    const tenant = await getCurrentTenant(req);
+    if (tenant?._id) {
+      tenantId = tenant._id?.toString?.() ?? String(tenant._id);
+      hasTenantContext = true;
+    }
+
+    if (!tenantId && authUser?.tenantId) {
+      tenantId = authUser.tenantId?.toString?.() ?? String(authUser.tenantId);
+      hasTenantContext = true;
+    }
+
+    if (!tenantId) {
+      try {
+        const cookieStore = cookies();
+        const refTenantCookie = cookieStore.get('refTenant');
+        if (refTenantCookie?.value && mongoose.Types.ObjectId.isValid(refTenantCookie.value)) {
+          tenantId = refTenantCookie.value;
+          hasTenantContext = true;
+        }
+      } catch {}
+    }
+
+    const docTenantId = doc.tenantId?.toString?.();
+    if (hasTenantContext) {
+      if (!docTenantId || docTenantId !== String(tenantId)) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      }
+    } else {
+      if (docTenantId) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      }
+    }
+  }
   
   // Multi-Tenant: Products are publicly viewable for customers
   // Anyone can view a product (including via share links from agents)
   // Only active products should be shown to non-admins
   if (!doc.active) {
-    // Check if user is admin/business_admin to see inactive products
-    try {
-      const { requireAuthApi } = await import('@/lib/auth/server');
-      const user = await requireAuthApi(req);
-      const isAdmin = user.role === 'admin' || user.role === 'business_admin' || isSuperAdmin(user);
-      if (!isAdmin) {
-        return NextResponse.json({ error: 'Not found' }, { status: 404 });
-      }
-    } catch {
-      // Not logged in - can't see inactive products
+    const isAdmin =
+      authUser &&
+      (authUser.role === 'admin' || authUser.role === 'business_admin' || isSuperAdmin(authUser));
+    if (!isAdmin) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
   }
@@ -61,10 +100,10 @@ async function PUTHandler(req, { params }) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
     
-    if (!isSuperAdmin(admin) && admin.tenantId) {
+    if (!isSuperAdmin(admin)) {
       const productTenantId = existingProduct.tenantId?.toString();
       const adminTenantId = admin.tenantId?.toString();
-      if (productTenantId && productTenantId !== adminTenantId) {
+      if (!adminTenantId || !productTenantId || productTenantId !== adminTenantId) {
         return NextResponse.json({ error: 'Forbidden - Product belongs to another tenant' }, { status: 403 });
       }
     }
@@ -173,6 +212,9 @@ async function PUTHandler(req, { params }) {
         const typeFilter = isGroupPurchase 
           ? { $or: [{ purchaseType: 'group' }, { type: 'group' }] }
           : { $and: [{ purchaseType: { $ne: 'group' } }, { type: { $ne: 'group' } }] };
+
+        const tenantFilter = currentProduct?.tenantId ? { tenantId: currentProduct.tenantId } : { tenantId: null };
+        const scopeFilter = { $and: [tenantFilter, typeFilter] };
         
         console.log('[POSITION] Updating position for product:', currentProduct?.name, 'from', oldPosition, 'to', newPosition, 'type:', productType);
         
@@ -181,20 +223,20 @@ async function PUTHandler(req, { params }) {
         const productsWithoutPosition = await Product.find({
           position: { $exists: false },
           _id: { $ne: currentProduct._id },
-          ...typeFilter
+          ...scopeFilter
         }).lean();
         
         // Also get products with null position
         const productsWithNullPosition = await Product.find({
           position: null,
           _id: { $ne: currentProduct._id },
-          ...typeFilter
+          ...scopeFilter
         }).lean();
         
         // Get highest current position for this type
         const highestPositionProduct = await Product.findOne({
           position: { $exists: true, $ne: null },
-          ...typeFilter
+          ...scopeFilter
         }).sort({ position: -1 }).lean();
         
         let nextPosition = (highestPositionProduct?.position || 0) + 1;
@@ -215,7 +257,7 @@ async function PUTHandler(req, { params }) {
               { 
                 position: { $gte: newPosition, $lt: oldPosition },
                 _id: { $ne: currentProduct._id },
-                ...typeFilter
+                ...scopeFilter
               },
               { $inc: { position: 1 } }
             );
@@ -225,7 +267,7 @@ async function PUTHandler(req, { params }) {
               { 
                 position: { $gt: oldPosition, $lte: newPosition },
                 _id: { $ne: currentProduct._id },
-                ...typeFilter
+                ...scopeFilter
               },
               { $inc: { position: -1 } }
             );
@@ -235,7 +277,7 @@ async function PUTHandler(req, { params }) {
               { 
                 position: { $gte: newPosition },
                 _id: { $ne: currentProduct._id },
-                ...typeFilter
+                ...scopeFilter
               },
               { $inc: { position: 1 } }
             );
@@ -251,10 +293,11 @@ async function PUTHandler(req, { params }) {
     }
 
     if (body.catalogId || body.catalogSlug) {
+      const catalogTenantFilter = existingProduct.tenantId ? { tenantId: existingProduct.tenantId } : { tenantId: null };
       let catalogDoc = null;
 
       if (body.catalogId) {
-        catalogDoc = await Catalog.findById(body.catalogId).lean();
+        catalogDoc = await Catalog.findOne({ _id: body.catalogId, ...catalogTenantFilter }).lean();
         if (!catalogDoc) {
           return NextResponse.json(
             { error: 'Catalog not found for provided catalogId' },
@@ -264,6 +307,7 @@ async function PUTHandler(req, { params }) {
       } else if (body.catalogSlug) {
         catalogDoc = await Catalog.findOne({
           slug: String(body.catalogSlug).trim().toLowerCase(),
+          ...catalogTenantFilter,
         }).lean();
         if (!catalogDoc) {
           return NextResponse.json(
@@ -316,10 +360,10 @@ async function DELETEHandler(req, { params }) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
     
-    if (!isSuperAdmin(admin) && admin.tenantId) {
+    if (!isSuperAdmin(admin)) {
       const productTenantId = existingProduct.tenantId?.toString();
       const adminTenantId = admin.tenantId?.toString();
-      if (productTenantId && productTenantId !== adminTenantId) {
+      if (!adminTenantId || !productTenantId || productTenantId !== adminTenantId) {
         return NextResponse.json({ error: 'Forbidden - Product belongs to another tenant' }, { status: 403 });
       }
     }

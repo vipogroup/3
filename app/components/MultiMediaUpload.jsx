@@ -30,7 +30,10 @@ export default function MultiMediaUpload({
     formData.append('upload_preset', 'vipo_unsigned');
     formData.append('folder', 'vipo-products');
 
-    const cloudName = 'dckhhnoqh';
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    if (!cloudName) {
+      throw new Error('חסר NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME בקובץ ENV');
+    }
     // Use specific endpoint for videos vs images
     const resourceType = isVideo ? 'video' : 'image';
     const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;

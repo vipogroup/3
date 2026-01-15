@@ -1,26 +1,22 @@
 import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
+import { requireSuperAdminApi } from '@/lib/auth/server';
+import { rateLimiters } from '@/lib/rateLimit';
 import { logAdminActivity } from '@/lib/auditMiddleware';
 
 async function POSTHandler(req) {
-  // בדיקת הרשאות
-  const cookieStore = await cookies();
-  const token = cookieStore.get('auth_token')?.value || cookieStore.get('token')?.value;
-  
-  if (!token) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const rateLimit = rateLimiters.admin(req);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: rateLimit.message }, { status: 429 });
   }
 
   let user;
   try {
-    user = jwt.verify(token, process.env.JWT_SECRET);
-    if (user.role !== 'admin' && user.role !== 'super_admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    user = await requireSuperAdminApi(req);
   } catch (err) {
-    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    const status = err?.status || 401;
+    const message = status === 403 ? 'Forbidden' : 'Unauthorized';
+    return NextResponse.json({ error: message }, { status });
   }
 
   try {
@@ -101,8 +97,8 @@ async function POSTHandler(req) {
       await logAdminActivity({
         action: 'restore',
         entity: 'system',
-        userId: user.userId,
-        userEmail: user.email,
+        userId: user.id || user._id || null,
+        userEmail: user.email || null,
         description: 'שחזור מקובץ ZIP',
         metadata: { 
           fileName: file.name,

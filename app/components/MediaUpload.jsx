@@ -52,7 +52,10 @@ export default function MediaUpload({
       formData.append('upload_preset', 'vipo_unsigned');
       formData.append('folder', 'vipo-products');
 
-      const cloudName = 'dckhhnoqh';
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      if (!cloudName) {
+        throw new Error('חסר NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME בקובץ ENV');
+      }
       // Use 'auto' resource type to let Cloudinary detect the file type
       const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
 

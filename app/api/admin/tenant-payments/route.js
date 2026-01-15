@@ -43,7 +43,7 @@ async function GETHandler(request) {
         {
           $match: {
             tenantId: tenant._id,
-            paymentStatus: 'success',
+            paymentStatus: { $in: ['success', 'final-success'] },
             tenantPaidOut: { $ne: true },
           }
         },
@@ -132,8 +132,9 @@ async function POSTHandler(request) {
       createdAt: now,
       createdBy: authResult.user._id,
     };
-    
-    await db.collection('tenant_payments').insertOne(payment);
+
+    const { insertedId } = await db.collection('tenant_payments').insertOne(payment);
+    payment._id = insertedId;
     
     // Update tenant billing
     await db.collection('tenants').updateOne(
@@ -152,14 +153,14 @@ async function POSTHandler(request) {
     await db.collection('orders').updateMany(
       {
         tenantId: new ObjectId(tenantId),
-        paymentStatus: 'success',
+        paymentStatus: { $in: ['success', 'final-success'] },
         tenantPaidOut: { $ne: true },
       },
       {
         $set: {
           tenantPaidOut: true,
           tenantPaidOutAt: now,
-          tenantPaymentId: payment._id,
+          tenantPaymentId: insertedId,
         }
       }
     );
