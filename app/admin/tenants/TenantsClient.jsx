@@ -567,6 +567,14 @@ function TenantModal({ tenant, onClose, onSave }) {
     subdomain: tenant?.subdomain || '',
     platformCommissionRate: tenant?.platformCommissionRate || 5,
     status: tenant?.status || 'pending',
+    // Contact fields
+    contactAddress: tenant?.contact?.address || '',
+    contactWhatsapp: tenant?.contact?.whatsapp || '',
+    // Admin fields (only for new tenant)
+    adminName: '',
+    adminEmail: '',
+    adminPhone: '',
+    adminPassword: '',
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -576,15 +584,34 @@ function TenantModal({ tenant, onClose, onSave }) {
     setSaving(true);
     setError('');
 
+    // Validate admin fields for new tenant
+    if (!isEdit) {
+      if (!formData.adminEmail || !formData.adminPassword || !formData.adminName) {
+        setError('יש למלא שם, מייל וסיסמה למנהל העסק');
+        setSaving(false);
+        return;
+      }
+      if (formData.adminPassword.length < 6) {
+        setError('הסיסמה חייבת להכיל לפחות 6 תווים');
+        setSaving(false);
+        return;
+      }
+    }
+
     try {
       const url = isEdit ? `/api/tenants/${tenant._id}` : '/api/tenants';
       const method = isEdit ? 'PUT' : 'POST';
+
+      // Prepare data - include admin info only for new tenant
+      const submitData = isEdit 
+        ? { name: formData.name, slug: formData.slug, domain: formData.domain, subdomain: formData.subdomain, platformCommissionRate: formData.platformCommissionRate, status: formData.status, contactAddress: formData.contactAddress, contactWhatsapp: formData.contactWhatsapp }
+        : { ...formData, createAdmin: true };
 
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       });
 
       const data = await res.json();
@@ -600,87 +627,181 @@ function TenantModal({ tenant, onClose, onSave }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" dir="rtl">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
-        <div className="p-6 border-b">
-          <h2 className="text-xl font-bold">{isEdit ? 'עריכת עסק' : 'יצירת עסק חדש'}</h2>
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b rounded-t-xl" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}>
+          <h2 className="text-xl font-bold text-white">{isEdit ? 'עריכת עסק' : 'יצירת עסק חדש'}</h2>
+          {!isEdit && <p className="text-cyan-100 text-sm mt-1">כולל יצירת מנהל עסק</p>}
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
             <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">{error}</div>
           )}
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">שם העסק *</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              required
-            />
+          {/* Business Info Section */}
+          <div className="pb-3 border-b">
+            <h3 className="font-medium text-gray-900 mb-3">פרטי העסק</h3>
+            
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">שם העסק *</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Slug (מזהה) *</label>
+                <input
+                  type="text"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/^-+|-+$/g, '') })}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 font-mono"
+                  required
+                  placeholder="my-business"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">דומיין</label>
+                  <input
+                    type="text"
+                    value={formData.domain}
+                    onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                    placeholder="shop.example.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Subdomain</label>
+                  <input
+                    type="text"
+                    value={formData.subdomain}
+                    onChange={(e) => setFormData({ ...formData, subdomain: e.target.value })}
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                    placeholder="shop"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">עמלת פלטפורמה (%)</label>
+                  <input
+                    type="number"
+                    value={formData.platformCommissionRate}
+                    onChange={(e) => setFormData({ ...formData, platformCommissionRate: Number(e.target.value) })}
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                    min="0"
+                    max="100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">סטטוס</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                  >
+                    <option value="pending">ממתין</option>
+                    <option value="active">פעיל</option>
+                    <option value="inactive">לא פעיל</option>
+                    <option value="suspended">מושהה</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Slug (מזהה) *</label>
-            <input
-              type="text"
-              value={formData.slug}
-              onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/^-+|-+$/g, '') })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 font-mono"
-              required
-              placeholder="my-business"
-            />
-          </div>
+          {/* Contact Info Section */}
+          <div className="pb-3 border-b">
+            <h3 className="font-medium text-gray-900 mb-3">פרטי קשר העסק</h3>
+            
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">כתובת</label>
+                <input
+                  type="text"
+                  value={formData.contactAddress}
+                  onChange={(e) => setFormData({ ...formData, contactAddress: e.target.value })}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                  placeholder="רחוב, עיר"
+                />
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">דומיין</label>
-              <input
-                type="text"
-                value={formData.domain}
-                onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="shop.example.com"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Subdomain</label>
-              <input
-                type="text"
-                value={formData.subdomain}
-                onChange={(e) => setFormData({ ...formData, subdomain: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="shop"
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">וואטסאפ</label>
+                <input
+                  type="tel"
+                  value={formData.contactWhatsapp}
+                  onChange={(e) => setFormData({ ...formData, contactWhatsapp: e.target.value })}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                  placeholder="050-1234567"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">עמלת פלטפורמה (%)</label>
-              <input
-                type="number"
-                value={formData.platformCommissionRate}
-                onChange={(e) => setFormData({ ...formData, platformCommissionRate: Number(e.target.value) })}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                min="0"
-                max="100"
-              />
+          {/* Admin Info Section - Only for new tenant */}
+          {!isEdit && (
+            <div className="pt-2">
+              <h3 className="font-medium text-gray-900 mb-3">פרטי מנהל העסק</h3>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">שם מלא *</label>
+                  <input
+                    type="text"
+                    value={formData.adminName}
+                    onChange={(e) => setFormData({ ...formData, adminName: e.target.value })}
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                    required
+                    placeholder="ישראל ישראלי"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">אימייל *</label>
+                  <input
+                    type="email"
+                    value={formData.adminEmail}
+                    onChange={(e) => setFormData({ ...formData, adminEmail: e.target.value })}
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                    required
+                    placeholder="admin@business.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">טלפון</label>
+                  <input
+                    type="tel"
+                    value={formData.adminPhone}
+                    onChange={(e) => setFormData({ ...formData, adminPhone: e.target.value })}
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                    placeholder="050-1234567"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">סיסמה *</label>
+                  <input
+                    type="password"
+                    value={formData.adminPassword}
+                    onChange={(e) => setFormData({ ...formData, adminPassword: e.target.value })}
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                    required
+                    minLength={6}
+                    placeholder="לפחות 6 תווים"
+                  />
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">סטטוס</label>
-              <select
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="pending">ממתין</option>
-                <option value="active">פעיל</option>
-                <option value="inactive">לא פעיל</option>
-                <option value="suspended">מושהה</option>
-              </select>
-            </div>
-          </div>
+          )}
 
           <div className="flex gap-3 pt-4">
             <button

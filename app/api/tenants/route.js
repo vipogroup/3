@@ -9,6 +9,7 @@ import { getDb } from '@/lib/db';
 import { requireAdminGuard } from '@/lib/auth/requireAuth';
 import { isSuperAdmin } from '@/lib/tenant';
 import { ObjectId } from 'mongodb';
+import { hashPassword } from '@/lib/auth/hash';
 
 /**
  * GET /api/tenants - קבלת רשימת כל העסקים
@@ -100,7 +101,13 @@ async function POSTHandler(request) {
     }
     
     const body = await request.json();
-    const { name, slug, domain, subdomain, ownerId, platformCommissionRate = 5 } = body;
+    const { 
+      name, slug, domain, subdomain, ownerId, platformCommissionRate = 5, status = 'pending',
+      // Contact fields
+      contactAddress, contactWhatsapp,
+      // Admin fields for creating admin with tenant
+      createAdmin, adminName, adminEmail, adminPhone, adminPassword
+    } = body;
     
     // Validation
     if (!name || !slug) {
@@ -109,8 +116,35 @@ async function POSTHandler(request) {
         { status: 400 }
       );
     }
+
+    // Validate admin fields if creating admin
+    if (createAdmin) {
+      if (!adminName || !adminEmail || !adminPassword) {
+        return NextResponse.json(
+          { error: 'יש למלא שם, מייל וסיסמה למנהל העסק' },
+          { status: 400 }
+        );
+      }
+      if (adminPassword.length < 6) {
+        return NextResponse.json(
+          { error: 'הסיסמה חייבת להכיל לפחות 6 תווים' },
+          { status: 400 }
+        );
+      }
+    }
     
     const db = await getDb();
+
+    // Check if admin email already exists
+    if (createAdmin && adminEmail) {
+      const existingUser = await db.collection('users').findOne({ email: adminEmail.toLowerCase() });
+      if (existingUser) {
+        return NextResponse.json(
+          { error: 'כתובת המייל כבר קיימת במערכת' },
+          { status: 400 }
+        );
+      }
+    }
     
     // Check for duplicate slug
     const existingSlug = await db.collection('tenants').findOne({ slug: slug.toLowerCase() });
@@ -149,7 +183,7 @@ async function POSTHandler(request) {
       domain: domain ? domain.toLowerCase().trim() : null,
       subdomain: subdomain ? subdomain.toLowerCase().trim() : null,
       ownerId: ownerId ? new ObjectId(ownerId) : null,
-      status: 'pending',
+      status: status || 'pending',
       platformCommissionRate: Math.min(100, Math.max(0, platformCommissionRate)),
       branding: {
         logo: null,
@@ -159,10 +193,10 @@ async function POSTHandler(request) {
         accentColor: '#10B981',
       },
       contact: {
-        email: null,
-        phone: null,
-        whatsapp: null,
-        address: null,
+        email: adminEmail ? adminEmail.toLowerCase().trim() : null,
+        phone: adminPhone ? adminPhone.trim() : null,
+        whatsapp: contactWhatsapp ? contactWhatsapp.trim() : (adminPhone ? adminPhone.trim() : null),
+        address: contactAddress ? contactAddress.trim() : null,
       },
       social: {},
       seo: {},
@@ -199,6 +233,7 @@ async function POSTHandler(request) {
     };
     
     const result = await db.collection('tenants').insertOne(newTenant);
+    const tenantId = result.insertedId;
     
     // If ownerId provided, update user to be business_admin
     if (ownerId) {
@@ -206,17 +241,47 @@ async function POSTHandler(request) {
         { _id: new ObjectId(ownerId) },
         { 
           $set: { 
-            tenantId: result.insertedId,
+            tenantId: tenantId,
             role: 'admin',
           } 
         }
       );
     }
+
+    // Create admin user if requested
+    let createdAdmin = null;
+    if (createAdmin && adminEmail && adminPassword) {
+      const hashedPassword = await hashPassword(adminPassword);
+      
+      const newAdmin = {
+        fullName: adminName.trim(),
+        email: adminEmail.toLowerCase().trim(),
+        phone: adminPhone ? adminPhone.trim() : null,
+        password: hashedPassword,
+        role: 'business_admin',
+        tenantId: tenantId,
+        isActive: true,
+        emailVerified: true,
+        createdAt: new Date(),
+        createdBy: user._id,
+      };
+      
+      const adminResult = await db.collection('users').insertOne(newAdmin);
+      createdAdmin = { ...newAdmin, _id: adminResult.insertedId };
+      delete createdAdmin.password;
+
+      // Update tenant with ownerId
+      await db.collection('tenants').updateOne(
+        { _id: tenantId },
+        { $set: { ownerId: adminResult.insertedId } }
+      );
+    }
     
     return NextResponse.json({
       ok: true,
-      tenant: { ...newTenant, _id: result.insertedId },
-      message: 'העסק נוצר בהצלחה',
+      tenant: { ...newTenant, _id: tenantId },
+      admin: createdAdmin,
+      message: createAdmin ? 'העסק והמנהל נוצרו בהצלחה' : 'העסק נוצר בהצלחה',
     });
   } catch (error) {
     console.error('POST /api/tenants error:', error);
