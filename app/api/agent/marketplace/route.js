@@ -20,9 +20,12 @@ export async function GET(req) {
     const db = await getDb();
     const agentId = new ObjectId(user.id);
 
-    // Get all active tenants
+    // Get all visible tenants (active, pending, or no status for backwards compatibility)
+    // Exclude only suspended/inactive businesses
     const tenants = await db.collection('tenants')
-      .find({ status: 'active' })
+      .find({ 
+        status: { $nin: ['suspended', 'inactive'] }
+      })
       .project({ 
         name: 1, 
         slug: 1, 
