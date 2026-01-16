@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
 import { isSuperAdmin } from '@/lib/superAdmins';
 import AdminPermissionsModal from './AdminPermissionsModal';
@@ -31,6 +32,8 @@ export default function UsersList() {
   const [superAdmins, setSuperAdmins] = useState([]);
   const [resettingAll, setResettingAll] = useState(false);
 
+  const [isBusinessAdminUser, setIsBusinessAdminUser] = useState(false);
+
   const getCurrentUser = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' });
@@ -38,9 +41,11 @@ export default function UsersList() {
         const data = await res.json();
         const userId = data.user?._id || data.user?.id || data.sub;
         const email = data.user?.email || '';
+        const role = data.user?.role || '';
         setCurrentUserId(userId);
         setCurrentUserEmail(email);
         setIsSuperAdminUser(isSuperAdmin(email));
+        setIsBusinessAdminUser(role === 'business_admin');
       }
     } catch (err) {
       console.error('Failed to get current user:', err);
@@ -394,7 +399,11 @@ export default function UsersList() {
     );
   }
 
-  const roleOptions = [
+  // Role options for changing user roles - Business admins can only set customer/agent
+  const roleOptions = isBusinessAdminUser ? [
+    { value: 'customer', label: 'לקוח', color: 'bg-blue-100 text-blue-800' },
+    { value: 'agent', label: 'סוכן', color: 'bg-green-100 text-green-800' },
+  ] : [
     { value: 'customer', label: 'לקוח', color: 'bg-blue-100 text-blue-800' },
     { value: 'agent', label: 'סוכן', color: 'bg-green-100 text-green-800' },
     { value: 'admin', label: 'מנהל', color: 'bg-red-100 text-red-800' },
@@ -403,11 +412,17 @@ export default function UsersList() {
 
   const filteredUsers = roleFilter === 'all' ? users : users.filter(u => u.role === roleFilter);
 
-  const filterOptions = [
+  // Filter options - Business admins see only customers and agents
+  const filterOptions = isBusinessAdminUser ? [
+    { value: 'all', label: 'הכל', count: users.length },
+    { value: 'customer', label: 'לקוחות', count: users.filter(u => u.role === 'customer').length },
+    { value: 'agent', label: 'סוכנים', count: users.filter(u => u.role === 'agent').length },
+  ] : [
     { value: 'all', label: 'הכל', count: users.length },
     { value: 'customer', label: 'לקוחות', count: users.filter(u => u.role === 'customer').length },
     { value: 'agent', label: 'סוכנים', count: users.filter(u => u.role === 'agent').length },
     { value: 'admin', label: 'מנהלים', count: users.filter(u => u.role === 'admin').length },
+    { value: 'business_admin', label: 'מנהלי עסק', count: users.filter(u => u.role === 'business_admin').length },
   ];
 
   return (
@@ -717,8 +732,22 @@ export default function UsersList() {
                               boxShadow: '0 8px 25px rgba(8, 145, 178, 0.25)',
                             }}
                           >
+                            {/* View Profile */}
+                            <Link
+                              href={`/admin/users/${user._id}`}
+                              className="flex items-center gap-2 w-full px-3 py-2 text-sm text-right transition-colors border-b border-gray-100"
+                              style={{ color: '#1e3a8a' }}
+                              onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)'}
+                              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              </svg>
+                              צפה בפרופיל
+                            </Link>
+                            
                             {/* Role Change */}
-                            {isSuperAdminUser && !isCurrentUser && (
+                            {(isSuperAdminUser || isBusinessAdminUser) && !isCurrentUser && (
                               <div className="px-3 py-2 border-b border-gray-100">
                                 <p className="text-xs text-gray-500 mb-1">שנה תפקיד:</p>
                                 <select
