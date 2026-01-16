@@ -129,8 +129,45 @@ async function PATCHHandler(req, { params }) {
 
     const body = await req.json();
     const updates = {};
-    if (body.fullName) updates.fullName = String(body.fullName);
-    if (body.phone) updates.phone = String(body.phone);
+    
+    // Basic fields
+    if (body.fullName !== undefined) updates.fullName = String(body.fullName);
+    if (body.phone !== undefined) updates.phone = String(body.phone);
+    if (body.email !== undefined) updates.email = String(body.email).toLowerCase();
+    if (body.address !== undefined) updates.address = String(body.address);
+    if (body.city !== undefined) updates.city = String(body.city);
+    if (body.zipCode !== undefined) updates.zipCode = String(body.zipCode);
+    if (body.vatId !== undefined) updates.vatId = String(body.vatId);
+    if (body.companyName !== undefined) updates.companyName = String(body.companyName);
+    
+    // Agent-specific fields
+    if (body.commissionPercent !== undefined) {
+      updates.commissionPercent = Math.min(100, Math.max(0, Number(body.commissionPercent) || 0));
+    }
+    if (body.discountPercent !== undefined) {
+      updates.discountPercent = Math.min(100, Math.max(0, Number(body.discountPercent) || 0));
+    }
+    if (body.couponCode !== undefined) updates.couponCode = String(body.couponCode).toUpperCase();
+    
+    // Bank details (for agents)
+    if (body.bankDetails !== undefined) {
+      updates.bankDetails = {
+        bankName: body.bankDetails.bankName || '',
+        branchNumber: body.bankDetails.branchNumber || '',
+        accountNumber: body.bankDetails.accountNumber || '',
+        accountName: body.bankDetails.accountName || '',
+      };
+    }
+    
+    // Payout preferences
+    if (body.paypalEmail !== undefined) updates.paypalEmail = String(body.paypalEmail);
+    if (body.preferredPayoutMethod !== undefined) {
+      if (['bank', 'paypal', 'check'].includes(body.preferredPayoutMethod)) {
+        updates.preferredPayoutMethod = body.preferredPayoutMethod;
+      }
+    }
+    
+    // Status flags
     if (Object.prototype.hasOwnProperty.call(body, 'isActive')) {
       updates.isActive = Boolean(body.isActive);
     }
@@ -322,8 +359,57 @@ async function DELETEHandler(req, { params }) {
     const deleteQuery = isSuperAdminFlag 
       ? { _id: objectId } 
       : withTenant({ _id: objectId }, tenantObjectId);
+    
+    // מחיקה משתלשלת - מחיקת כל הנתונים הקשורים למשתמש
+    const db = await getDb();
+    const userId = objectId;
+    
+    const cascadeDeleteResults = await Promise.allSettled([
+      // חיבורים לעסקים (סוכנים)
+      db.collection('agentbusinesses').deleteMany({ agentId: userId }),
+      // עמלות
+      db.collection('commissions').deleteMany({ agentId: userId }),
+      // קופונים שיצר
+      db.collection('coupons').deleteMany({ createdBy: userId }),
+      // התראות
+      db.collection('notifications').deleteMany({ userId }),
+      // בקשות משיכה
+      db.collection('withdrawals').deleteMany({ agentId: userId }),
+      // הזמנות כלקוח
+      db.collection('orders').updateMany(
+        { customerId: userId },
+        { $set: { customerId: null, customerDeleted: true, customerDeletedAt: new Date() } }
+      ),
+      // לידים CRM
+      db.collection('leads').deleteMany({ assignedTo: userId }),
+      // משימות CRM
+      db.collection('tasks').deleteMany({ assignedTo: userId }),
+      // הודעות CRM
+      db.collection('messages').deleteMany({ userId }),
+      // פעילויות
+      db.collection('activities').deleteMany({ userId }),
+      // רמות גיימיפיקציה
+      db.collection('usergamification').deleteMany({ userId }),
+    ]);
+    
+    // מחיקת המשתמש עצמו
     await col.deleteOne(deleteQuery);
-    return NextResponse.json({ success: true });
+    
+    // לוג למעקב
+    const deletedCounts = {};
+    const collections = [
+      'agentbusinesses', 'commissions', 'coupons', 'notifications', 
+      'withdrawals', 'orders', 'leads', 'tasks', 'messages', 'activities', 'usergamification'
+    ];
+    cascadeDeleteResults.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        deletedCounts[collections[index]] = result.value?.deletedCount || result.value?.modifiedCount || 0;
+      }
+    });
+    
+    console.log(`User ${user.email || user.fullName} (${userId}) deleted with cascade:`, deletedCounts);
+    
+    return NextResponse.json({ success: true, deletedCounts });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });

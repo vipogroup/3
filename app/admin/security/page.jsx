@@ -13,7 +13,12 @@ export default function SecurityPage() {
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [securityLogs, setSecurityLogs] = useState([]);
   const [logsLoading, setLogsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('scan'); // 'scan' | 'logs'
+  const [activeTab, setActiveTab] = useState('scan'); // 'scan' | 'logs' | 'auth'
+  
+  // Auth settings state
+  const [authSettings, setAuthSettings] = useState({ emailVerificationEnabled: false });
+  const [authSettingsLoading, setAuthSettingsLoading] = useState(false);
+  const [authSettingsSaving, setAuthSettingsSaving] = useState(false);
 
   const checkAuth = useCallback(async () => {
     try {
@@ -69,12 +74,51 @@ export default function SecurityPage() {
     }
   }, []);
 
+  const loadAuthSettings = useCallback(async () => {
+    setAuthSettingsLoading(true);
+    try {
+      const res = await fetch('/api/admin/settings/auth');
+      if (res.ok) {
+        const data = await res.json();
+        setAuthSettings(data.settings || { emailVerificationEnabled: false });
+      }
+    } catch (error) {
+      console.error('Failed to load auth settings:', error);
+    } finally {
+      setAuthSettingsLoading(false);
+    }
+  }, []);
+
+  const toggleEmailVerification = async () => {
+    setAuthSettingsSaving(true);
+    try {
+      const newValue = !authSettings.emailVerificationEnabled;
+      const res = await fetch('/api/admin/settings/auth', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailVerificationEnabled: newValue }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAuthSettings(data.settings);
+      } else {
+        alert('שגיאה בעדכון ההגדרה');
+      }
+    } catch (error) {
+      console.error('Failed to update auth settings:', error);
+      alert('שגיאה בעדכון ההגדרה');
+    } finally {
+      setAuthSettingsSaving(false);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       runSecurityScan();
       loadSecurityLogs();
+      loadAuthSettings();
     }
-  }, [user, runSecurityScan, loadSecurityLogs]);
+  }, [user, runSecurityScan, loadSecurityLogs, loadAuthSettings]);
 
   if (loading) {
     return (
@@ -169,6 +213,14 @@ export default function SecurityPage() {
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
               לוג אבטחה
+          </button>
+          <button
+            onClick={() => setActiveTab('auth')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'auth' ? 'text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+            style={activeTab === 'auth' ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
+              הגדרות אימות
           </button>
         </div>
 
@@ -409,6 +461,90 @@ export default function SecurityPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
             <p className="text-gray-500">לחץ על סרוק שוב להפעלת סריקת אבטחה</p>
+          </div>
+        )}
+
+        {/* Auth Settings Tab */}
+        {activeTab === 'auth' && (
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+            <div className="p-4 border-b border-gray-200">
+              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
+                הגדרות אימות משתמשים
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">שליטה באופן האימות של משתמשים חדשים</p>
+            </div>
+            <div className="p-6">
+              {authSettingsLoading ? (
+                <div className="text-center py-8">
+                  <div className="w-8 h-8 rounded-full animate-spin mx-auto mb-2" style={{ border: '3px solid #ddd', borderTopColor: '#0891b2' }}></div>
+                  <p className="text-gray-500 text-sm">טוען הגדרות...</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Email Verification Toggle */}
+                  <div className="p-5 rounded-xl border-2 border-gray-200 hover:border-cyan-300 transition-all">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${authSettings.emailVerificationEnabled ? 'bg-green-100' : 'bg-gray-100'}`}>
+                            <svg className={`w-5 h-5 ${authSettings.emailVerificationEnabled ? 'text-green-600' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-gray-900">אימות מייל בהרשמה</h3>
+                            <p className="text-sm text-gray-500">משתמשים חדשים יקבלו קוד 6 ספרות למייל</p>
+                          </div>
+                        </div>
+                        <div className={`text-xs px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 ${authSettings.emailVerificationEnabled ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                          {authSettings.emailVerificationEnabled ? (
+                            <>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                              מופעל - משתמשים חייבים לאמת מייל לפני סיום ההרשמה
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                              מבוטל - הרשמה ישירה ללא אימות מייל
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={toggleEmailVerification}
+                        disabled={authSettingsSaving}
+                        className={`relative w-14 h-8 rounded-full transition-all duration-300 ${authSettings.emailVerificationEnabled ? 'bg-green-500' : 'bg-gray-300'} ${authSettingsSaving ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                      >
+                        <span className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ${authSettings.emailVerificationEnabled ? 'right-1' : 'left-1'}`}></span>
+                      </button>
+                    </div>
+                    {authSettings.updatedAt && (
+                      <p className="text-xs text-gray-400 mt-4 pt-3 border-t border-gray-100">
+                        עודכן לאחרונה: {new Date(authSettings.updatedAt).toLocaleString('he-IL')}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Info Box */}
+                  <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
+                    <div className="flex gap-3">
+                      <svg className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div>
+                        <h4 className="font-medium text-blue-900 mb-1">מתי להשתמש?</h4>
+                        <ul className="text-sm text-blue-800 space-y-1">
+                          <li>כבה את האימות בזמן <strong>בדיקות ופיתוח</strong> להרשמה מהירה</li>
+                          <li>הפעל את האימות ב<strong>פרודקשן</strong> למניעת ספאם וחשבונות מזויפים</li>
+                          <li>נדרש הגדרת <code className="bg-blue-100 px-1 rounded">RESEND_API_KEY</code> לשליחת מיילים</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

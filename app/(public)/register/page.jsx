@@ -35,8 +35,21 @@ function RegisterPageContent() {
   const [countdown, setCountdown] = useState(0);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [notificationError, setNotificationError] = useState('');
+  const [emailVerificationRequired, setEmailVerificationRequired] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // Fetch auth settings on mount
+  React.useEffect(() => {
+    fetch('/api/admin/settings/auth')
+      .then(res => res.json())
+      .then(data => {
+        setEmailVerificationRequired(data?.settings?.emailVerificationEnabled || false);
+      })
+      .catch(() => {
+        setEmailVerificationRequired(false);
+      });
+  }, []);
 
   // Countdown timer
   React.useEffect(() => {
@@ -198,7 +211,33 @@ function RegisterPageContent() {
 
     setLoading(true);
 
-    // הרשמה ישירה ללא אימות מייל (מבוטל זמנית)
+    // Check if email verification is required
+    if (emailVerificationRequired) {
+      // Send verification code first
+      try {
+        const codeRes = await fetch('/api/auth/send-email-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const codeData = await codeRes.json();
+        
+        if (!codeRes.ok) {
+          throw new Error(codeData?.message || 'שליחת קוד אימות נכשלה');
+        }
+        
+        setCountdown(60);
+        setShowVerifyModal(true);
+        setLoading(false);
+        return;
+      } catch (e) {
+        setErr(e.message || 'שגיאה בשליחת קוד אימות');
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Direct registration (no email verification)
     try {
       const tenantSlug = searchParams.get('tenant');
       const res = await fetch('/api/auth/register', {

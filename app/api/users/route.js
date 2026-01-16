@@ -150,13 +150,19 @@ async function POSTHandler(req) {
     }
 
     const body = await req.json();
-    const { fullName, email, phone, role, password, tenantId } = body || {};
+    const { 
+      fullName, email, phone, role, password, tenantId,
+      // Additional fields
+      address, city, zipCode, vatId, companyName,
+      commissionPercent, discountPercent, couponCode,
+      bankDetails, paypalEmail, preferredPayoutMethod
+    } = body || {};
 
     if (!fullName || (!email && !phone) || !role || !password) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
     }
 
-    if (!['admin', 'super_admin', 'business_admin', 'agent'].includes(role)) {
+    if (!['admin', 'super_admin', 'business_admin', 'agent', 'customer'].includes(role)) {
       return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
     }
 
@@ -187,6 +193,36 @@ async function POSTHandler(req) {
       createdAt: now,
       updatedAt: now,
     };
+
+    // Additional fields
+    if (address) doc.address = String(address);
+    if (city) doc.city = String(city);
+    if (zipCode) doc.zipCode = String(zipCode);
+    if (vatId) doc.vatId = String(vatId);
+    if (companyName) doc.companyName = String(companyName);
+    
+    // Agent-specific fields
+    if (role === 'agent') {
+      doc.commissionPercent = Math.min(100, Math.max(0, Number(commissionPercent) || 12));
+      doc.discountPercent = Math.min(100, Math.max(0, Number(discountPercent) || 10));
+      if (couponCode) doc.couponCode = String(couponCode).toUpperCase();
+      doc.commissionBalance = 0;
+      doc.commissionOnHold = 0;
+      doc.totalSales = 0;
+      
+      if (bankDetails) {
+        doc.bankDetails = {
+          bankName: bankDetails.bankName || '',
+          branchNumber: bankDetails.branchNumber || '',
+          accountNumber: bankDetails.accountNumber || '',
+          accountName: bankDetails.accountName || '',
+        };
+      }
+      if (paypalEmail) doc.paypalEmail = String(paypalEmail);
+      if (preferredPayoutMethod && ['bank', 'paypal', 'check'].includes(preferredPayoutMethod)) {
+        doc.preferredPayoutMethod = preferredPayoutMethod;
+      }
+    }
 
     // Multi-Tenant: Add tenantId for business_admin users
     if (tenantId && (role === 'business_admin' || role === 'agent')) {

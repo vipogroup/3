@@ -34,6 +34,33 @@ export default function UsersList() {
 
   const [isBusinessAdminUser, setIsBusinessAdminUser] = useState(false);
 
+  // Create User Modal State
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [creatingUser, setCreatingUser] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    password: '',
+    role: 'customer',
+    address: '',
+    city: '',
+    zipCode: '',
+    vatId: '',
+    companyName: '',
+    commissionPercent: 12,
+    discountPercent: 10,
+    couponCode: '',
+    paypalEmail: '',
+    preferredPayoutMethod: 'bank',
+    bankDetails: {
+      bankName: '',
+      branchNumber: '',
+      accountNumber: '',
+      accountName: '',
+    },
+  });
+
   const getCurrentUser = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' });
@@ -285,6 +312,79 @@ export default function UsersList() {
     }
   }
 
+  // Create User Functions
+  const resetCreateForm = () => {
+    setCreateForm({
+      fullName: '',
+      email: '',
+      phone: '',
+      password: '',
+      role: 'customer',
+      address: '',
+      city: '',
+      zipCode: '',
+      vatId: '',
+      companyName: '',
+      commissionPercent: 12,
+      discountPercent: 10,
+      couponCode: '',
+      paypalEmail: '',
+      preferredPayoutMethod: 'bank',
+      bankDetails: {
+        bankName: '',
+        branchNumber: '',
+        accountNumber: '',
+        accountName: '',
+      },
+    });
+  };
+
+  const updateCreateForm = (field, value) => {
+    setCreateForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const updateCreateBankDetails = (field, value) => {
+    setCreateForm(prev => ({
+      ...prev,
+      bankDetails: { ...prev.bankDetails, [field]: value }
+    }));
+  };
+
+  const handleCreateUser = async () => {
+    if (!createForm.fullName || (!createForm.email && !createForm.phone) || !createForm.password) {
+      setError('יש למלא שם מלא, אימייל/טלפון וסיסמה');
+      return;
+    }
+
+    setCreatingUser(true);
+    setError('');
+    
+    try {
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(createForm),
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'שגיאה ביצירת משתמש');
+      }
+
+      // Add the new user to the list
+      setUsers(prev => [data.user, ...prev]);
+      setShowCreateModal(false);
+      resetCreateForm();
+      alert('המשתמש נוצר בהצלחה!');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCreatingUser(false);
+    }
+  };
+
   // Reset all users (for testing)
   async function handleResetAllUsers() {
     const confirmText = 'מחק משתמשים';
@@ -485,19 +585,34 @@ export default function UsersList() {
       <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-3 sm:p-4 mb-4">
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h2
-                className="text-base sm:text-lg font-bold"
-                style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                רשימת משתמשים
-              </h2>
-              <p className="text-sm text-gray-600 mt-1">סה״כ {filteredUsers.length} משתמשים</p>
+            <div className="flex items-center gap-3">
+              <div>
+                <h2
+                  className="text-base sm:text-lg font-bold"
+                  style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  רשימת משתמשים
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">סה״כ {filteredUsers.length} משתמשים</p>
+              </div>
+              {isSuperAdminUser && (
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
+                  style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  הוסף משתמש
+                </button>
+              )}
             </div>
             <div className="flex flex-wrap gap-2">
               {filterOptions.map((option) => (
@@ -1178,6 +1293,296 @@ export default function UsersList() {
         onClose={handleClosePermissionsModal}
         onSave={handleSavePermissions}
       />
+
+      {/* Create User Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowCreateModal(false)}>
+          <div 
+            className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              border: '2px solid transparent',
+              backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white p-4 border-b flex items-center justify-between">
+              <h3 
+                className="text-xl font-bold"
+                style={{
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                הוספת משתמש חדש
+              </h3>
+              <button
+                type="button"
+                onClick={() => { setShowCreateModal(false); resetCreateForm(); }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-4 space-y-4">
+              {/* Basic Info */}
+              <div className="bg-gray-50 rounded-xl p-4">
+                <h4 className="font-bold text-gray-900 mb-3">פרטים בסיסיים</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">שם מלא *</label>
+                    <input
+                      type="text"
+                      value={createForm.fullName}
+                      onChange={(e) => updateCreateForm('fullName', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                      placeholder="שם מלא"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">אימייל *</label>
+                    <input
+                      type="email"
+                      value={createForm.email}
+                      onChange={(e) => updateCreateForm('email', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                      placeholder="email@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">טלפון</label>
+                    <input
+                      type="tel"
+                      value={createForm.phone}
+                      onChange={(e) => updateCreateForm('phone', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                      placeholder="050-1234567"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">סיסמה *</label>
+                    <input
+                      type="password"
+                      value={createForm.password}
+                      onChange={(e) => updateCreateForm('password', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                      placeholder="סיסמה"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">תפקיד *</label>
+                    <select
+                      value={createForm.role}
+                      onChange={(e) => updateCreateForm('role', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                    >
+                      <option value="customer">לקוח</option>
+                      <option value="agent">סוכן</option>
+                      <option value="business_admin">מנהל עסק</option>
+                      <option value="admin">מנהל</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">ת.ז / ח.פ</label>
+                    <input
+                      type="text"
+                      value={createForm.vatId}
+                      onChange={(e) => updateCreateForm('vatId', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                      placeholder="מספר זהות או ח.פ"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm text-gray-600 mb-1">שם חברה</label>
+                    <input
+                      type="text"
+                      value={createForm.companyName}
+                      onChange={(e) => updateCreateForm('companyName', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                      placeholder="שם החברה"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Address */}
+              <div className="bg-gray-50 rounded-xl p-4">
+                <h4 className="font-bold text-gray-900 mb-3">כתובת</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm text-gray-600 mb-1">כתובת</label>
+                    <input
+                      type="text"
+                      value={createForm.address}
+                      onChange={(e) => updateCreateForm('address', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                      placeholder="רחוב ומספר"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">עיר</label>
+                    <input
+                      type="text"
+                      value={createForm.city}
+                      onChange={(e) => updateCreateForm('city', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                      placeholder="עיר"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">מיקוד</label>
+                    <input
+                      type="text"
+                      value={createForm.zipCode}
+                      onChange={(e) => updateCreateForm('zipCode', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                      placeholder="מיקוד"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Agent Settings - Only show when role is agent */}
+              {createForm.role === 'agent' && (
+                <>
+                  <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-4">
+                    <h4 className="font-bold text-gray-900 mb-3">הגדרות סוכן</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">אחוז עמלה</label>
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={createForm.commissionPercent}
+                          onChange={(e) => updateCreateForm('commissionPercent', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">אחוז הנחה</label>
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={createForm.discountPercent}
+                          onChange={(e) => updateCreateForm('discountPercent', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">קוד קופון</label>
+                        <input
+                          type="text"
+                          value={createForm.couponCode}
+                          onChange={(e) => updateCreateForm('couponCode', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm uppercase"
+                          placeholder="AGENT123"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <h4 className="font-bold text-gray-900 mb-3">פרטי בנק להעברת עמלות</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">שם הבנק</label>
+                        <input
+                          type="text"
+                          value={createForm.bankDetails.bankName}
+                          onChange={(e) => updateCreateBankDetails('bankName', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                          placeholder="לאומי / פועלים / דיסקונט..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">מספר סניף</label>
+                        <input
+                          type="text"
+                          value={createForm.bankDetails.branchNumber}
+                          onChange={(e) => updateCreateBankDetails('branchNumber', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                          placeholder="123"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">מספר חשבון</label>
+                        <input
+                          type="text"
+                          value={createForm.bankDetails.accountNumber}
+                          onChange={(e) => updateCreateBankDetails('accountNumber', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                          placeholder="123456789"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">שם בעל החשבון</label>
+                        <input
+                          type="text"
+                          value={createForm.bankDetails.accountName}
+                          onChange={(e) => updateCreateBankDetails('accountName', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                          placeholder="שם בעל החשבון"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">אימייל PayPal</label>
+                        <input
+                          type="email"
+                          value={createForm.paypalEmail}
+                          onChange={(e) => updateCreateForm('paypalEmail', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                          placeholder="paypal@example.com"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">שיטת תשלום מועדפת</label>
+                        <select
+                          value={createForm.preferredPayoutMethod}
+                          onChange={(e) => updateCreateForm('preferredPayoutMethod', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                        >
+                          <option value="bank">העברה בנקאית</option>
+                          <option value="paypal">PayPal</option>
+                          <option value="check">צ&apos;ק</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-white p-4 border-t flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => { setShowCreateModal(false); resetCreateForm(); }}
+                className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-all"
+              >
+                ביטול
+              </button>
+              <button
+                type="button"
+                onClick={handleCreateUser}
+                disabled={creatingUser}
+                className="px-6 py-2 rounded-lg text-white font-medium transition-all disabled:opacity-50"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                {creatingUser ? 'יוצר משתמש...' : 'צור משתמש'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

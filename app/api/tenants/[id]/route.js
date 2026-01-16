@@ -231,6 +231,10 @@ async function DELETEHandler(request, { params }) {
       db.collection('categories').deleteMany({ tenantId }),
       // הגדרות
       db.collection('settings').deleteMany({ tenantId }),
+      // חיבורי סוכנים לעסק
+      db.collection('agentbusinesses').deleteMany({ tenantId }),
+      // פעילויות
+      db.collection('activities').deleteMany({ tenantId }),
     ]);
     
     // מחיקת משתמשים השייכים לעסק
@@ -244,7 +248,8 @@ async function DELETEHandler(request, { params }) {
     const collections = [
       'orders', 'products', 'commissions', 'withdrawals', 'transactions',
       'coupons', 'notifications', 'gamificationlevels', 'leads', 'messages',
-      'tasks', 'automations', 'templates', 'categories', 'settings'
+      'tasks', 'automations', 'templates', 'categories', 'settings',
+      'agentbusinesses', 'activities'
     ];
     deleteResults.forEach((result, index) => {
       if (result.status === 'fulfilled' && result.value?.deletedCount) {
