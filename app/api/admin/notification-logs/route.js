@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { requireAuth } from '@/lib/auth/requireAuth';
+import { requireAdminGuard } from '@/lib/auth/requireAuth';
 import { getNotificationLogs, getNotificationStats } from '@/lib/notifications/logger';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
   try {
-    const auth = await requireAuth(request, ['super_admin', 'admin']);
-    if (auth.error) {
+    const auth = await requireAdminGuard(request);
+    if (!auth.ok) {
       return NextResponse.json({ error: auth.error }, { status: auth.status || 401 });
     }
 

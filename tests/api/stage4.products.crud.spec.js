@@ -25,7 +25,13 @@ async function register(role) {
   const res = await request(base)
     .post('/api/auth/register')
     .set('x-automation-key', process.env.AUTOMATION_KEY || 'test-automation-key')
-    .send({ fullName: `${role.toUpperCase()} CRUD`, phone, role, password: '12345678A!' });
+    .send({
+      fullName: `${role.toUpperCase()} CRUD`,
+      phone,
+      role,
+      email: `${phone}@example.com`,
+      password: '12345678A!',
+    });
   return { phone, password: '12345678A!', res };
 }
 
