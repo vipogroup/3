@@ -570,14 +570,18 @@ function TenantModal({ tenant, onClose, onSave }) {
     // Contact fields
     contactAddress: tenant?.contact?.address || '',
     contactWhatsapp: tenant?.contact?.whatsapp || '',
-    // Admin fields (only for new tenant)
-    adminName: '',
-    adminEmail: '',
-    adminPhone: '',
+    // Admin fields
+    adminId: tenant?.admin?._id || '',
+    adminName: tenant?.admin?.fullName || '',
+    adminEmail: tenant?.admin?.email || '',
+    adminPhone: tenant?.admin?.phone || '',
     adminPassword: '',
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [generatedPassword, setGeneratedPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -612,9 +616,23 @@ function TenantModal({ tenant, onClose, onSave }) {
       const url = isEdit ? `/api/tenants/${tenant._id}` : '/api/tenants';
       const method = isEdit ? 'PUT' : 'POST';
 
-      // Prepare data - include admin info only for new tenant
+      // Prepare data - include admin info for both new and edit
       const submitData = isEdit 
-        ? { name: formData.name, slug: formData.slug, domain: formData.domain, subdomain: formData.subdomain, platformCommissionRate: formData.platformCommissionRate, status: formData.status, contactAddress: formData.contactAddress, contactWhatsapp: formData.contactWhatsapp }
+        ? { 
+            name: formData.name, 
+            slug: formData.slug, 
+            domain: formData.domain, 
+            subdomain: formData.subdomain, 
+            platformCommissionRate: formData.platformCommissionRate, 
+            status: formData.status, 
+            contactAddress: formData.contactAddress, 
+            contactWhatsapp: formData.contactWhatsapp,
+            // Admin update info
+            adminId: formData.adminId,
+            adminName: formData.adminName,
+            adminEmail: formData.adminEmail,
+            adminPhone: formData.adminPhone,
+          }
         : { ...formData, createAdmin: true };
 
       const res = await fetch(url, {
@@ -756,47 +774,54 @@ function TenantModal({ tenant, onClose, onSave }) {
             </div>
           </div>
 
-          {/* Admin Info Section - Only for new tenant */}
-          {!isEdit && (
-            <div className="pt-2">
-              <h3 className="font-medium text-gray-900 mb-3">פרטי מנהל העסק</h3>
-              
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">שם מלא *</label>
-                  <input
-                    type="text"
-                    value={formData.adminName}
-                    onChange={(e) => setFormData({ ...formData, adminName: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
-                    required
-                    placeholder="ישראל ישראלי"
-                  />
-                </div>
+          {/* Admin Info Section */}
+          <div className="pt-2">
+            <h3 className="font-medium text-gray-900 mb-3">פרטי מנהל העסק</h3>
+            
+            {isEdit && !formData.adminId && (
+              <div className="bg-yellow-50 text-yellow-700 p-3 rounded-lg text-sm mb-3">
+                לעסק זה אין מנהל מוגדר
+              </div>
+            )}
+            
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">שם מלא {!isEdit && '*'}</label>
+                <input
+                  type="text"
+                  value={formData.adminName}
+                  onChange={(e) => setFormData({ ...formData, adminName: e.target.value })}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                  required={!isEdit}
+                  placeholder="ישראל ישראלי"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">אימייל *</label>
-                  <input
-                    type="email"
-                    value={formData.adminEmail}
-                    onChange={(e) => setFormData({ ...formData, adminEmail: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
-                    required
-                    placeholder="admin@business.com"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">אימייל {!isEdit && '*'}</label>
+                <input
+                  type="email"
+                  value={formData.adminEmail}
+                  onChange={(e) => setFormData({ ...formData, adminEmail: e.target.value })}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                  required={!isEdit}
+                  placeholder="admin@business.com"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">טלפון</label>
-                  <input
-                    type="tel"
-                    value={formData.adminPhone}
-                    onChange={(e) => setFormData({ ...formData, adminPhone: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
-                    placeholder="050-1234567"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">טלפון</label>
+                <input
+                  type="tel"
+                  value={formData.adminPhone}
+                  onChange={(e) => setFormData({ ...formData, adminPhone: e.target.value })}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                  placeholder="050-1234567"
+                />
+              </div>
 
+              {/* Password - required for new, optional reset for edit */}
+              {!isEdit ? (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">סיסמה *</label>
                   <input
@@ -809,9 +834,86 @@ function TenantModal({ tenant, onClose, onSave }) {
                     placeholder="לפחות 8 תווים, מספר ואות"
                   />
                 </div>
-              </div>
+              ) : formData.adminId && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">איפוס סיסמה</label>
+                  {!showResetPassword ? (
+                    <button
+                      type="button"
+                      onClick={() => setShowResetPassword(true)}
+                      className="px-4 py-2 text-sm border border-orange-500 text-orange-600 rounded-lg hover:bg-orange-50"
+                    >
+                      🔑 איפוס סיסמה למנהל
+                    </button>
+                  ) : (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
+                        placeholder="הזן סיסמה חדשה (8+ תווים, מספר ואות)"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (newPassword.length < 8 || !/\d/.test(newPassword) || !/[a-zA-Zא-ת]/.test(newPassword)) {
+                              setError('הסיסמה חייבת להכיל לפחות 8 תווים, מספר ואות');
+                              return;
+                            }
+                            try {
+                              const res = await fetch(`/api/users/${formData.adminId}/reset-password`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                credentials: 'include',
+                                body: JSON.stringify({ password: newPassword }),
+                              });
+                              const data = await res.json();
+                              if (!res.ok) throw new Error(data.error || 'שגיאה באיפוס הסיסמה');
+                              setGeneratedPassword(newPassword);
+                              setNewPassword('');
+                            } catch (err) {
+                              setError(err.message);
+                            }
+                          }}
+                          className="px-3 py-1 text-sm text-white rounded-lg"
+                          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                        >
+                          אפס סיסמה
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setShowResetPassword(false); setNewPassword(''); }}
+                          className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50"
+                        >
+                          ביטול
+                        </button>
+                      </div>
+                      {generatedPassword && (
+                        <div className="bg-green-50 border border-green-200 p-3 rounded-lg">
+                          <p className="text-sm text-green-800 font-medium">סיסמה חדשה:</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <code className="bg-white px-3 py-1 rounded border text-lg font-mono">{generatedPassword}</code>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(generatedPassword);
+                              }}
+                              className="px-2 py-1 text-xs bg-gray-100 rounded hover:bg-gray-200"
+                            >
+                              העתק
+                            </button>
+                          </div>
+                          <p className="text-xs text-green-600 mt-2">שלח את הסיסמה למנהל העסק</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-          )}
+          </div>
 
           <div className="flex gap-3 pt-4">
             <button

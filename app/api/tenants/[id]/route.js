@@ -147,6 +147,22 @@ async function PUTHandler(request, { params }) {
       { $set: updateData }
     );
     
+    // Update admin user if provided (Super Admin only)
+    if (isSuperAdmin(user) && body.adminId && ObjectId.isValid(body.adminId)) {
+      const adminUpdate = {};
+      if (body.adminName) adminUpdate.fullName = body.adminName;
+      if (body.adminEmail) adminUpdate.email = body.adminEmail;
+      if (body.adminPhone !== undefined) adminUpdate.phone = body.adminPhone;
+      
+      if (Object.keys(adminUpdate).length > 0) {
+        adminUpdate.updatedAt = new Date();
+        await db.collection('users').updateOne(
+          { _id: new ObjectId(body.adminId), tenantId: tenant._id },
+          { $set: adminUpdate }
+        );
+      }
+    }
+    
     const updatedTenant = await db.collection('tenants').findOne({ _id: new ObjectId(id) });
     
     return NextResponse.json({

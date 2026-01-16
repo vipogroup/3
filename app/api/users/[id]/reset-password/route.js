@@ -19,14 +19,12 @@ function getClientIp(request) {
   }
 }
 
-function validateAdminPassword(password) {
+function validatePassword(password) {
   if (typeof password !== 'string') return false;
-  if (password.length < 10) return false;
-  const hasUpper = /[A-Z]/.test(password);
-  const hasLower = /[a-z]/.test(password);
+  if (password.length < 8) return false;
+  const hasLetter = /[a-zA-Zא-ת]/.test(password);
   const hasDigit = /\d/.test(password);
-  const hasSymbol = /[^A-Za-z0-9]/.test(password);
-  return hasUpper && hasLower && hasDigit && hasSymbol;
+  return hasLetter && hasDigit;
 }
 
 async function usersCollection() {
@@ -51,12 +49,11 @@ async function POSTHandler(req, { params }) {
       return NextResponse.json({ error: 'Missing password' }, { status: 400 });
     }
 
-    if (!validateAdminPassword(password)) {
+    if (!validatePassword(password)) {
       return NextResponse.json(
         {
           error: 'weak_password',
-          message:
-            'סיסמת מנהל חייבת להיות באורך 10 תווים לפחות ולכלול אות גדולה, אות קטנה, ספרה ותו מיוחד',
+          message: 'הסיסמה חייבת להכיל לפחות 8 תווים, מספר אחד ואות אחת',
         },
         { status: 400 },
       );

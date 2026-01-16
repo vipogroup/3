@@ -46,13 +46,17 @@ async function GETHandler(request) {
       .sort({ createdAt: -1 })
       .toArray();
     
-    // Calculate stats for each tenant
+    // Calculate stats and get admin info for each tenant
     const tenantsWithStats = await Promise.all(
       tenants.map(async (tenant) => {
-        const [ordersCount, usersCount, productsCount] = await Promise.all([
+        const [ordersCount, usersCount, productsCount, adminUser] = await Promise.all([
           db.collection('orders').countDocuments({ tenantId: tenant._id }),
           db.collection('users').countDocuments({ tenantId: tenant._id }),
           db.collection('products').countDocuments({ tenantId: tenant._id }),
+          db.collection('users').findOne(
+            { tenantId: tenant._id, role: 'business_admin' },
+            { projection: { _id: 1, fullName: 1, email: 1, phone: 1 } }
+          ),
         ]);
         
         return {
@@ -63,6 +67,12 @@ async function GETHandler(request) {
             totalUsers: usersCount,
             totalProducts: productsCount,
           },
+          admin: adminUser ? {
+            _id: adminUser._id,
+            fullName: adminUser.fullName || '',
+            email: adminUser.email || '',
+            phone: adminUser.phone || '',
+          } : null,
         };
       })
     );
