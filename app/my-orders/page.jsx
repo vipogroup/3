@@ -9,12 +9,29 @@ import MainLayout from '@/app/components/layout/MainLayout';
 export default function MyOrdersPage() {
   const router = useRouter();
   const [orders, setOrders] = useState([]);
+  const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedBusiness, setSelectedBusiness] = useState(null); // null = all
 
   const fetchOrders = useCallback(async () => {
     try {
+      // Try the new grouped API first
+      const groupedRes = await fetch('/api/customer/orders');
+      if (groupedRes.ok) {
+        const groupedData = await groupedRes.json();
+        if (groupedData.ok) {
+          setBusinesses(groupedData.businesses || []);
+          // Flatten all orders for backward compatibility
+          const allOrders = groupedData.businesses?.flatMap(b => b.orders) || [];
+          setOrders(allOrders);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Fallback to old API
       const res = await fetch('/api/my-orders');
       if (!res.ok) {
         if (res.status === 401) {
@@ -36,6 +53,11 @@ export default function MyOrdersPage() {
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
+
+  // Filter orders by selected business
+  const filteredOrders = selectedBusiness
+    ? businesses.find(b => b.tenantId === selectedBusiness)?.orders || []
+    : orders;
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -123,13 +145,83 @@ export default function MyOrdersPage() {
             />
           </div>
 
+          {/* Business Filter - Only show if there are multiple businesses */}
+          {businesses.length > 1 && (
+            <div className="mb-6">
+              <p className="text-sm text-gray-500 mb-3">עסקים שקניתי מהם:</p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedBusiness(null)}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                    selectedBusiness === null
+                      ? 'text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  style={selectedBusiness === null ? {
+                    background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
+                  } : {}}
+                >
+                  הכל ({orders.length})
+                </button>
+                {businesses.map((business) => (
+                  <button
+                    key={business.tenantId || 'global'}
+                    onClick={() => setSelectedBusiness(business.tenantId)}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
+                      selectedBusiness === business.tenantId
+                        ? 'text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                    style={selectedBusiness === business.tenantId ? {
+                      background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
+                    } : {}}
+                  >
+                    {business.tenantLogo ? (
+                      <Image
+                        src={business.tenantLogo}
+                        alt={business.tenantName}
+                        width={20}
+                        height={20}
+                        className="w-5 h-5 rounded-full object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <div 
+                        className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+                        style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)' }}
+                      >
+                        {business.tenantName?.charAt(0) || 'W'}
+                      </div>
+                    )}
+                    <span>{business.tenantName}</span>
+                    <span className="opacity-70">({business.ordersCount})</span>
+                  </button>
+                ))}
+              </div>
+              
+              {/* Quick link to selected business shop */}
+              {selectedBusiness && businesses.find(b => b.tenantId === selectedBusiness)?.tenantSlug && (
+                <Link
+                  href={`/t/${businesses.find(b => b.tenantId === selectedBusiness).tenantSlug}`}
+                  className="inline-flex items-center gap-2 mt-3 text-sm font-medium hover:underline"
+                  style={{ color: 'var(--primary)' }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  קנה עוד מ{businesses.find(b => b.tenantId === selectedBusiness).tenantName}
+                </Link>
+              )}
+            </div>
+          )}
+
           {error && (
             <div className="bg-red-50 border-2 border-red-200 text-red-700 px-6 py-4 rounded-xl mb-6">
               {error}
             </div>
           )}
 
-          {orders.length === 0 ? (
+          {filteredOrders.length === 0 ? (
             <div className="text-center py-16">
               <div
                 className="bg-white rounded-xl p-12"
@@ -181,7 +273,7 @@ export default function MyOrdersPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <div
                   key={order._id}
                   className="bg-white rounded-xl p-6 transition-all hover:shadow-lg"

@@ -10,6 +10,9 @@ export default function OrdersList() {
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [exporting, setExporting] = useState(false);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
 
   useEffect(() => {
     fetchOrders();
@@ -107,6 +110,42 @@ export default function OrdersList() {
     { value: 'cancelled', label: 'בוטל', color: 'bg-red-100 text-red-800' },
   ];
 
+  // Export orders to CSV
+  async function handleExport() {
+    try {
+      setExporting(true);
+      setError('');
+      
+      const params = new URLSearchParams();
+      if (dateFrom) params.append('from', dateFrom);
+      if (dateTo) params.append('to', dateTo);
+      if (filter !== 'all') params.append('status', filter);
+      
+      const url = `/api/business/orders/export${params.toString() ? '?' + params.toString() : ''}`;
+      const res = await fetch(url, { credentials: 'include' });
+      
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'שגיאה בייצוא');
+      }
+      
+      // Download the CSV file
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `orders-export-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      setError(err.message || 'שגיאה בייצוא הנתונים');
+    } finally {
+      setExporting(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -153,35 +192,98 @@ export default function OrdersList() {
             </h2>
             <p className="text-gray-600">סה״כ {filteredOrders.length} הזמנות</p>
           </div>
+          <button
+            onClick={handleExport}
+            disabled={exporting}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+            style={{
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+            }}
+          >
+            {exporting ? (
+              <>
+                <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                מייצא...
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                הורד דוח CSV
+              </>
+            )}
+          </button>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-4">
-          <div className="flex-1">
-            <input
-              type="text"
-              placeholder="חיפוש לפי מזהה, אימייל או טלפון..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 border-2 rounded-xl transition-all"
-              style={{ borderColor: '#e5e7eb' }}
-              onFocus={(e) => (e.target.style.borderColor = '#0891b2')}
-              onBlur={(e) => (e.target.style.borderColor = '#e5e7eb')}
-            />
+        <div className="flex flex-col gap-4 mb-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="חיפוש לפי מזהה, אימייל או טלפון..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-2 border-2 rounded-xl transition-all"
+                style={{ borderColor: '#e5e7eb' }}
+                onFocus={(e) => (e.target.style.borderColor = '#0891b2')}
+                onBlur={(e) => (e.target.style.borderColor = '#e5e7eb')}
+              />
+            </div>
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="px-4 py-2 border-2 rounded-xl transition-all"
+              style={{ borderColor: '#e5e7eb', minWidth: '200px' }}
+            >
+              <option value="all">כל הסטטוסים</option>
+              {statusOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
           </div>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="px-4 py-2 border-2 rounded-xl transition-all"
-            style={{ borderColor: '#e5e7eb', minWidth: '200px' }}
-          >
-            <option value="all">כל הסטטוסים</option>
-            {statusOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+          {/* Date filters for export */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-gray-600 whitespace-nowrap">מתאריך:</label>
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="px-3 py-2 border-2 rounded-xl transition-all text-sm"
+                style={{ borderColor: '#e5e7eb' }}
+                onFocus={(e) => (e.target.style.borderColor = '#0891b2')}
+                onBlur={(e) => (e.target.style.borderColor = '#e5e7eb')}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-gray-600 whitespace-nowrap">עד תאריך:</label>
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="px-3 py-2 border-2 rounded-xl transition-all text-sm"
+                style={{ borderColor: '#e5e7eb' }}
+                onFocus={(e) => (e.target.style.borderColor = '#0891b2')}
+                onBlur={(e) => (e.target.style.borderColor = '#e5e7eb')}
+              />
+            </div>
+            {(dateFrom || dateTo) && (
+              <button
+                type="button"
+                onClick={() => { setDateFrom(''); setDateTo(''); }}
+                className="text-sm text-gray-500 hover:text-gray-700 underline"
+              >
+                נקה תאריכים
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

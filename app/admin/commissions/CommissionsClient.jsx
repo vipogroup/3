@@ -56,7 +56,8 @@ function exportToExcel(agentsSummary, commissions) {
   URL.revokeObjectURL(url);
 }
 
-export default function CommissionsClient() {
+export default function CommissionsClient({ basePath = '/admin' }) {
+  const isBusiness = basePath === '/business';
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -68,11 +69,63 @@ export default function CommissionsClient() {
     to: '',
   });
   const [selectedAgent, setSelectedAgent] = useState(null);
+  const [agentDetails, setAgentDetails] = useState(null);
+  const [loadingAgentDetails, setLoadingAgentDetails] = useState(false);
   const [editingDateId, setEditingDateId] = useState(null);
   const [editingDateValue, setEditingDateValue] = useState('');
   const [savingDate, setSavingDate] = useState(false);
   const [releasingId, setReleasingId] = useState(null);
+  const [exporting, setExporting] = useState(false);
   const [resettingCommissions, setResettingCommissions] = useState(false);
+
+  // Export commissions to CSV (for business)
+  const handleExportCSV = async () => {
+    try {
+      setExporting(true);
+      const params = new URLSearchParams();
+      if (filters.agentId) params.append('agentId', filters.agentId);
+      if (filters.status) params.append('status', filters.status);
+      if (filters.from) params.append('from', filters.from);
+      if (filters.to) params.append('to', filters.to);
+      
+      const url = `/api/business/commissions/export${params.toString() ? '?' + params.toString() : ''}`;
+      const res = await fetch(url, { credentials: 'include' });
+      
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'שגיאה בייצוא');
+      }
+      
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `commissions-export-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      alert(err.message || 'שגיאה בייצוא הנתונים');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  // Fetch agent sales details
+  const fetchAgentDetails = async (agentId) => {
+    try {
+      setLoadingAgentDetails(true);
+      const res = await fetch(`/api/business/commissions/agent/${agentId}`, { credentials: 'include' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to fetch');
+      setAgentDetails(json);
+    } catch (err) {
+      alert('שגיאה בטעינת פרטי הסוכן: ' + err.message);
+    } finally {
+      setLoadingAgentDetails(false);
+    }
+  };
 
   // Reset all commissions
   const handleResetAllCommissions = async () => {
@@ -264,7 +317,7 @@ export default function CommissionsClient() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Link href="/admin" className="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="חזרה לדשבורד">
+            <Link href={basePath} className="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="חזרה לדשבורד">
               <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -282,26 +335,43 @@ export default function CommissionsClient() {
             </h1>
           </div>
           <div className="flex gap-2 flex-wrap">
+            {!isBusiness && (
+              <button
+                onClick={handleResetAllCommissions}
+                disabled={resettingCommissions}
+                className="px-4 py-2 rounded-lg font-medium transition-all border-2 disabled:opacity-50"
+                style={{ borderColor: '#dc2626', color: '#dc2626' }}
+              >
+                {resettingCommissions ? 'מאפס...' : 'איפוס עמלות'}
+              </button>
+            )}
             <button
-              onClick={handleResetAllCommissions}
-              disabled={resettingCommissions}
-              className="px-4 py-2 rounded-lg font-medium transition-all border-2 disabled:opacity-50"
-              style={{ borderColor: '#dc2626', color: '#dc2626' }}
+              onClick={isBusiness ? handleExportCSV : () => exportToExcel(data?.agentsSummary, data?.commissions)}
+              disabled={!data || exporting}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-white disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
-              {resettingCommissions ? 'מאפס...' : 'איפוס עמלות'}
-            </button>
-            <button
-              onClick={() => exportToExcel(data?.agentsSummary, data?.commissions)}
-              disabled={!data}
-              className="px-4 py-2 rounded-lg font-medium transition-all border-2 disabled:opacity-50"
-              style={{ borderColor: '#0891b2', color: '#1e3a8a' }}
-            >
-              ייצוא Excel
+              {exporting ? (
+                <>
+                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  מייצא...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  הורד דוח CSV
+                </>
+              )}
             </button>
             <button
               onClick={fetchData}
-              className="px-4 py-2 rounded-lg text-white font-medium transition-all"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              className="px-4 py-2 rounded-lg font-medium transition-all border-2"
+              style={{ borderColor: '#0891b2', color: '#1e3a8a' }}
             >
               רענן נתונים
             </button>
@@ -522,16 +592,28 @@ export default function CommissionsClient() {
                           ₪{agent.totalEarned?.toLocaleString() || 0}
                         </td>
                         <td className="px-4 py-3 text-center">
-                          <button
-                            onClick={() => {
-                              setFilters({ ...filters, agentId: agent.agentId });
-                              setActiveTab('orders');
-                            }}
-                            className="px-3 py-1 text-sm rounded-lg text-white"
-                            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-                          >
-                            צפה בעמלות
-                          </button>
+                          <div className="flex gap-2 justify-center">
+                            <button
+                              onClick={() => {
+                                setFilters({ ...filters, agentId: agent.agentId });
+                                setActiveTab('orders');
+                              }}
+                              className="px-3 py-1 text-sm rounded-lg text-white"
+                              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                            >
+                              צפה בעמלות
+                            </button>
+                            {isBusiness && (
+                              <button
+                                onClick={() => fetchAgentDetails(agent.agentId)}
+                                className="px-3 py-1 text-sm rounded-lg border-2"
+                                style={{ borderColor: '#0891b2', color: '#1e3a8a' }}
+                                title="פירוט מכירות"
+                              >
+                                📋
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -579,16 +661,27 @@ export default function CommissionsClient() {
                         <span className="text-gray-500 text-sm">סה״כ הרוויח:</span>
                         <span className="mr-1 font-bold" style={{ color: '#0891b2' }}>₪{agent.totalEarned?.toLocaleString() || 0}</span>
                       </div>
-                      <button
-                        onClick={() => {
-                          setFilters({ ...filters, agentId: agent.agentId });
-                          setActiveTab('orders');
-                        }}
-                        className="px-3 py-1 text-sm rounded-lg text-white"
-                        style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-                      >
-                        צפה בעמלות
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            setFilters({ ...filters, agentId: agent.agentId });
+                            setActiveTab('orders');
+                          }}
+                          className="px-3 py-1 text-sm rounded-lg text-white"
+                          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+                        >
+                          צפה בעמלות
+                        </button>
+                        {isBusiness && (
+                          <button
+                            onClick={() => fetchAgentDetails(agent.agentId)}
+                            className="px-3 py-1 text-sm rounded-lg border-2"
+                            style={{ borderColor: '#0891b2', color: '#1e3a8a' }}
+                          >
+                            📋
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))
@@ -875,6 +968,165 @@ export default function CommissionsClient() {
                     </div>
                   );
                 })
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Agent Details Modal */}
+        {agentDetails && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div 
+              className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+              style={{
+                border: '2px solid transparent',
+                backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              {/* Modal Header */}
+              <div className="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
+                <h3 
+                  className="text-xl font-bold"
+                  style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  פירוט מכירות - {agentDetails.agent?.fullName}
+                </h3>
+                <button
+                  onClick={() => setAgentDetails(null)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-all"
+                >
+                  <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {loadingAgentDetails ? (
+                <div className="p-8 text-center">
+                  <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-gray-500">טוען פרטי סוכן...</p>
+                </div>
+              ) : (
+                <div className="p-4 space-y-4">
+                  {/* Agent Info */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl">
+                    <div>
+                      <p className="text-sm text-gray-500">שם סוכן</p>
+                      <p className="font-medium">{agentDetails.agent?.fullName}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">טלפון</p>
+                      <p className="font-medium">{agentDetails.agent?.phone || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">אימייל</p>
+                      <p className="font-medium">{agentDetails.agent?.email || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">קוד קופון</p>
+                      <code className="px-2 py-1 bg-cyan-100 text-cyan-700 rounded">
+                        {agentDetails.agent?.couponCode?.toUpperCase() || '-'}
+                      </code>
+                    </div>
+                    {agentDetails.agent?.vatId && (
+                      <div>
+                        <p className="text-sm text-gray-500">ת.ז / ח.פ</p>
+                        <p className="font-medium">{agentDetails.agent.vatId}</p>
+                      </div>
+                    )}
+                    {agentDetails.agent?.bankDetails?.bankName && (
+                      <div className="md:col-span-2">
+                        <p className="text-sm text-gray-500">פרטי בנק</p>
+                        <p className="font-medium">
+                          {agentDetails.agent.bankDetails.bankName} | 
+                          סניף {agentDetails.agent.bankDetails.branchNumber} | 
+                          חשבון {agentDetails.agent.bankDetails.accountNumber}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Summary */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="p-3 bg-blue-50 rounded-xl text-center">
+                      <p className="text-xs text-gray-500">סה״כ הזמנות</p>
+                      <p className="text-lg font-bold" style={{ color: '#1e3a8a' }}>{agentDetails.summary?.totalOrders || 0}</p>
+                    </div>
+                    <div className="p-3 bg-green-50 rounded-xl text-center">
+                      <p className="text-xs text-gray-500">סה״כ מכירות</p>
+                      <p className="text-lg font-bold" style={{ color: '#16a34a' }}>₪{agentDetails.summary?.totalSales?.toLocaleString() || 0}</p>
+                    </div>
+                    <div className="p-3 bg-cyan-50 rounded-xl text-center">
+                      <p className="text-xs text-gray-500">סה״כ עמלות</p>
+                      <p className="text-lg font-bold" style={{ color: '#0891b2' }}>₪{agentDetails.summary?.totalCommissions?.toLocaleString() || 0}</p>
+                    </div>
+                    <div className="p-3 bg-yellow-50 rounded-xl text-center">
+                      <p className="text-xs text-gray-500">ממתין לשחרור</p>
+                      <p className="text-lg font-bold" style={{ color: '#eab308' }}>₪{agentDetails.summary?.pendingCommissions?.toLocaleString() || 0}</p>
+                    </div>
+                  </div>
+
+                  {/* Sales Table */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead style={{ borderBottom: '2px solid #0891b2' }}>
+                        <tr>
+                          <th className="px-3 py-2 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>תאריך</th>
+                          <th className="px-3 py-2 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>מוצרים</th>
+                          <th className="px-3 py-2 text-right text-xs font-semibold" style={{ color: '#1e3a8a' }}>לקוח</th>
+                          <th className="px-3 py-2 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>סכום</th>
+                          <th className="px-3 py-2 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>עמלה</th>
+                          <th className="px-3 py-2 text-center text-xs font-semibold" style={{ color: '#1e3a8a' }}>סטטוס</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {agentDetails.sales?.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="px-3 py-8 text-center text-gray-500">אין מכירות להצגה</td>
+                          </tr>
+                        ) : (
+                          agentDetails.sales?.map((sale) => {
+                            const statusInfo = STATUS_LABELS[sale.commissionStatus] || STATUS_LABELS.pending;
+                            return (
+                              <tr key={sale.orderId} className="border-b border-gray-100 hover:bg-gray-50">
+                                <td className="px-3 py-2 text-xs">
+                                  {new Date(sale.orderDate).toLocaleDateString('he-IL')}
+                                </td>
+                                <td className="px-3 py-2">
+                                  {sale.items?.map((item, i) => (
+                                    <div key={i} className="text-xs">
+                                      {item.name} {item.sku ? `(${item.sku})` : ''} x{item.quantity}
+                                    </div>
+                                  ))}
+                                </td>
+                                <td className="px-3 py-2">
+                                  <div className="text-xs">{sale.customer?.name}</div>
+                                  <div className="text-xs text-gray-500">{sale.customer?.phone}</div>
+                                </td>
+                                <td className="px-3 py-2 text-center">₪{sale.totalAmount?.toLocaleString()}</td>
+                                <td className="px-3 py-2 text-center font-bold" style={{ color: '#16a34a' }}>
+                                  ₪{sale.commissionAmount?.toLocaleString()}
+                                </td>
+                                <td className="px-3 py-2 text-center">
+                                  <span className={`px-2 py-0.5 text-xs rounded-full ${statusInfo.color}`}>
+                                    {statusInfo.label}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               )}
             </div>
           </div>

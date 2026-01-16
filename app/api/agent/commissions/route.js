@@ -55,6 +55,13 @@ async function GETHandler(req) {
     }
     const userId = new ObjectId(user.id);
 
+    // Multi-Tenant: Get tenantId filter from query params
+    const { searchParams } = new URL(req.url);
+    const tenantIdParam = searchParams.get('tenantId');
+    const tenantFilter = tenantIdParam && ObjectId.isValid(tenantIdParam) 
+      ? { tenantId: new ObjectId(tenantIdParam) } 
+      : {};
+
     const usersCollection = db.collection('users');
     const ordersCollection = db.collection('orders');
     const groupPurchasesCollection = db.collection('grouppurchases');
@@ -69,7 +76,8 @@ async function GETHandler(req) {
         .find({ 
           $or: [{ agentId: userId }, { refAgentId: userId }], 
           commissionAmount: { $gt: 0 },
-          status: { $in: ['paid', 'completed', 'shipped'] }  // Only show commissions for paid orders
+          status: { $in: ['paid', 'completed', 'shipped'] },
+          ...tenantFilter  // Multi-Tenant: Filter by tenant if provided
         })
         .project({
           commissionAmount: 1,
@@ -82,6 +90,7 @@ async function GETHandler(req) {
           groupPurchaseId: 1,
           totalAmount: 1,
           items: 1,
+          tenantId: 1,  // Include tenantId in response
         })
         .sort({ createdAt: -1 })
         .toArray(),
@@ -93,10 +102,11 @@ async function GETHandler(req) {
 
     const commissionOnHold = Number(userDoc[0].commissionOnHold || 0);
 
-    // Get total completed withdrawals
+    // Get total completed withdrawals (filtered by tenant if provided)
     const withdrawalsCollection = db.collection('withdrawalRequests');
+    const withdrawalMatch = { userId: userId, status: 'completed', ...tenantFilter };
     const completedWithdrawalsAgg = await withdrawalsCollection.aggregate([
-      { $match: { userId: userId, status: 'completed' } },
+      { $match: withdrawalMatch },
       { $group: { _id: null, totalWithdrawn: { $sum: '$amount' } } },
     ]).toArray();
     const totalWithdrawn = completedWithdrawalsAgg[0]?.totalWithdrawn || 0;

@@ -3,28 +3,12 @@ export const dynamic = 'force-dynamic';
 
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
-import { createPayPlusSession, validatePayPlusConfig } from '@/lib/payplus/client';
+import { createPayPlusSession, createPayPlusSessionForTenant, validatePayPlusConfig } from '@/lib/payplus/client';
 import { requireAuthApi } from '@/lib/auth/server';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
 
 async function POSTHandler(req) {
   try {
-    // Check PayPlus configuration first
-    const configStatus = validatePayPlusConfig();
-    if (!configStatus.ok) {
-      console.error('PAYPLUS_NOT_CONFIGURED:', configStatus.message);
-      // Return 503 Service Unavailable with clear message
-      return Response.json(
-        {
-          ok: false,
-          error: 'payment_not_configured',
-          message: 'שירות התשלום אינו זמין כרגע. אנא פנה לתמיכה.',
-          fallback: true,
-        },
-        { status: 503 },
-      );
-    }
-
     const body = await req.json();
     if (!body?.orderId) {
       return Response.json({ error: 'order_id_required' }, { status: 400 });
@@ -52,15 +36,48 @@ async function POSTHandler(req) {
       return Response.json({ error: 'order_not_found' }, { status: 404 });
     }
 
+    // Multi-Tenant: Get tenant-specific PayPlus config if order has tenantId
+    let tenant = null;
+    if (order.tenantId) {
+      tenant = await db.collection('tenants').findOne({ _id: new ObjectId(order.tenantId) });
+    }
+
+    // Check payment mode - 'platform' = use global config, 'independent' = use tenant config
+    // Default is 'platform' (payments go through main admin)
+    const paymentMode = tenant?.paymentMode || 'platform';
+    
+    // Check if we should use tenant config (independent mode with valid PayPlus setup)
+    const hasTenantConfig = paymentMode === 'independent' && 
+      tenant?.payplus?.enabled && 
+      tenant.payplus.apiKey && 
+      tenant.payplus.secretKey;
+    
+    if (!hasTenantConfig) {
+      // Use platform (global) config - either because paymentMode is 'platform' 
+      // or because independent mode doesn't have valid PayPlus config
+      const configStatus = validatePayPlusConfig();
+      if (!configStatus.ok) {
+        console.error('PAYPLUS_NOT_CONFIGURED:', configStatus.message);
+        return Response.json(
+          {
+            ok: false,
+            error: 'payment_not_configured',
+            message: 'שירות התשלום אינו זמין כרגע. אנא פנה לתמיכה.',
+            fallback: true,
+          },
+          { status: 503 },
+        );
+      }
+    }
+
     const url = new URL(req.url);
     const successUrl = `${url.origin}/checkout/success?orderId=${order._id}`;
     const cancelUrl = `${url.origin}/checkout/cancel?orderId=${order._id}`;
 
-    const session = await createPayPlusSession({
-      order,
-      successUrl,
-      cancelUrl,
-    });
+    // Use tenant-specific or global PayPlus session
+    const session = hasTenantConfig
+      ? await createPayPlusSessionForTenant({ order, successUrl, cancelUrl, tenant })
+      : await createPayPlusSession({ order, successUrl, cancelUrl });
 
     const setFields = {
       paymentProvider: session.provider,

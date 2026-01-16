@@ -192,6 +192,7 @@ export default async function VideoSharePage({ params, searchParams }) {
   const agent = ref ? await findAgentByCode(ref) : null;
   const couponCode = normalizeReferralCode(ref || agent?.couponCode || agent?.referralId || '');
   const discountPercent = agent?.discountPercent ?? null;
+  const agentTenantId = agent?.tenantId?.toString() || null;
 
   const thumbnail = asset.thumbnailUrl || getVideoThumbnail(asset.mediaUrl);
   const purchaseUrl = couponCode ? `/r/${encodeURIComponent(couponCode)}` : '/products';
@@ -200,7 +201,7 @@ export default async function VideoSharePage({ params, searchParams }) {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-white via-sky-50 to-white">
-      {couponCode ? <ReferralCookieSetter couponCode={couponCode} /> : null}
+      {couponCode ? <ReferralCookieSetter couponCode={couponCode} tenantId={agentTenantId} /> : null}
       <div className="max-w-5xl mx-auto px-4 py-10">
         <header className="text-center mb-10">
           <p className="text-sm text-cyan-600 font-semibold tracking-wide mb-2">VIPO</p>

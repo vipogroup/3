@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 const THIRTY_DAYS = 30 * 24 * 60 * 60;
 
-export default function ReferralCookieSetter({ couponCode }) {
+export default function ReferralCookieSetter({ couponCode, tenantId }) {
   useEffect(() => {
     if (!couponCode || typeof document === 'undefined') {
       return;
@@ -16,10 +16,16 @@ export default function ReferralCookieSetter({ couponCode }) {
     try {
       document.cookie = `refSource=${encodeURIComponent(couponCode)}; ${commonAttributes}`;
       document.cookie = `autoCoupon=${encodeURIComponent(couponCode)}; ${commonAttributes}`;
+      
+      // Multi-Tenant: Set tenant cookie for product filtering
+      if (tenantId) {
+        document.cookie = `refTenant=${encodeURIComponent(tenantId)}; ${commonAttributes}`;
+        localStorage.setItem('refTenantId', tenantId);
+      }
     } catch (err) {
       console.error('[ReferralCookieSetter] Failed to set referral cookies', err);
     }
-  }, [couponCode]);
+  }, [couponCode, tenantId]);
 
   return null;
 }

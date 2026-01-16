@@ -52,14 +52,54 @@ export async function GET(req, context) {
         url: req.url,
         action: 'click',
         createdAt: new Date(),
+        // Multi-Tenant: Store tenantId for tracking
+        ...(agent.tenantId && { tenantId: agent.tenantId }),
       });
       console.log('Referral click logged for agent:', agent._id);
+
+      // Use request URL origin for redirect
+      const url = new URL(req.url);
+      
+      // Multi-Tenant: If agent belongs to a tenant, redirect to tenant store
+      let redirectUrl;
+      if (agent.tenantId) {
+        const tenants = db.collection('tenants');
+        const tenant = await tenants.findOne({ _id: agent.tenantId });
+        if (tenant?.slug) {
+          redirectUrl = new URL(`/t/${tenant.slug}`, url.origin);
+        } else {
+          redirectUrl = new URL('/shop', url.origin);
+        }
+      } else {
+        redirectUrl = new URL('/shop', url.origin);
+      }
+      
+      const response = NextResponse.redirect(redirectUrl);
+
+      const cookieOptions = {
+        path: '/',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: url.protocol === 'https:',
+      };
+
+      // Set referral and coupon cookies
+      response.cookies.set('refSource', code, cookieOptions);
+      response.cookies.set('autoCoupon', code, cookieOptions);
+      
+      // Multi-Tenant: Set tenant cookie for product filtering
+      if (agent.tenantId) {
+        response.cookies.set('refTenant', agent.tenantId.toString(), cookieOptions);
+      }
+
+      return response;
     }
   } catch (err) {
     console.error('Error logging referral click:', err);
   }
 
-  // Use request URL origin for redirect
+  // Fallback: redirect to shop if agent not found
   const url = new URL(req.url);
   const redirectUrl = new URL('/shop', url.origin);
   
@@ -73,7 +113,7 @@ export async function GET(req, context) {
     secure: url.protocol === 'https:',
   };
 
-  // Set referral and coupon cookies
+  // Set referral and coupon cookies even without agent found
   response.cookies.set('refSource', code, cookieOptions);
   response.cookies.set('autoCoupon', code, cookieOptions);
 

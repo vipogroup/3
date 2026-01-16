@@ -29,7 +29,7 @@ async function POSTHandler(req) {
     }
 
     const body = await req.json();
-    const { amount, notes, paymentDetails } = body;
+    const { amount, notes, paymentDetails, tenantId: requestTenantId } = body;
 
     // Validation
     if (!amount || typeof amount !== 'number' || amount < 1) {
@@ -50,6 +50,11 @@ async function POSTHandler(req) {
     // Note: We allow multiple withdrawal requests as long as there's available balance.
     // The balance calculation already accounts for amounts locked in pending requests (commissionOnHold).
 
+    // Multi-Tenant: Build tenant filter if tenantId provided
+    const tenantFilter = requestTenantId && ObjectId.isValid(requestTenantId)
+      ? { tenantId: new ObjectId(requestTenantId) }
+      : {};
+
     // Get user's current balance AND calculate available commissions from orders
     // This matches the calculation in /api/agent/commissions
     const [userData, availableOrders] = await Promise.all([
@@ -61,7 +66,8 @@ async function POSTHandler(req) {
         $or: [{ agentId: userObjectId }, { refAgentId: userObjectId }],
         commissionAmount: { $gt: 0 },
         commissionStatus: 'available', // Only available commissions can be withdrawn
-        status: { $in: ['paid', 'completed', 'shipped'] }
+        status: { $in: ['paid', 'completed', 'shipped'] },
+        ...tenantFilter  // Multi-Tenant: Filter by tenant if provided
       }).project({ commissionAmount: 1 }).toArray()
     ]);
 
@@ -155,10 +161,15 @@ async function POSTHandler(req) {
     const snapshotBalance = lockedDoc.commissionBalance ?? 0;
     const snapshotOnHold = lockedDoc.commissionOnHold ?? 0;
 
-    // Multi-Tenant: Get tenantId
-    const db2 = await getDb();
-    const fullUser = await db2.collection('users').findOne({ _id: userObjectId });
-    const tenantId = fullUser?.tenantId || null;
+    // Multi-Tenant: Use requestTenantId if provided, otherwise fallback to user's tenantId
+    let tenantId = null;
+    if (requestTenantId && ObjectId.isValid(requestTenantId)) {
+      tenantId = new ObjectId(requestTenantId);
+    } else {
+      const db2 = await getDb();
+      const fullUser = await db2.collection('users').findOne({ _id: userObjectId });
+      tenantId = fullUser?.tenantId || null;
+    }
 
     // Create withdrawal request with tenantId
     const doc = {
@@ -230,8 +241,15 @@ async function GETHandler(req) {
     }
     const userObjectId = new ObjectId(user.id);
 
+    // Multi-Tenant: Get tenantId filter from query params
+    const { searchParams } = new URL(req.url);
+    const tenantIdParam = searchParams.get('tenantId');
+    const tenantFilter = tenantIdParam && ObjectId.isValid(tenantIdParam)
+      ? { tenantId: new ObjectId(tenantIdParam) }
+      : {};
+
     const requests = await withdrawals
-      .find({ userId: userObjectId })
+      .find({ userId: userObjectId, ...tenantFilter })
       .sort({ createdAt: -1 })
       .toArray();
 

@@ -143,6 +143,36 @@ const TenantSchema = new mongoose.Schema(
       },
     },
     
+    // === מודל תשלום ===
+    // 'platform' = תשלומים עוברים דרך מנהל ראשי (ברירת מחדל)
+    // 'independent' = תשלומים עוברים ישירות לעסק (דורש חיבור PayPlus)
+    paymentMode: {
+      type: String,
+      enum: ['platform', 'independent'],
+      default: 'platform',
+    },
+    
+    // === PayPlus - סליקה לכל עסק ===
+    payplus: {
+      enabled: { type: Boolean, default: false },
+      apiKey: { type: String, default: null },
+      secretKey: { type: String, default: null },
+      terminalId: { type: String, default: null },
+      webhookSecret: { type: String, default: null },
+      testMode: { type: Boolean, default: true },
+    },
+    
+    // === Priority ERP - לכל עסק ===
+    priority: {
+      enabled: { type: Boolean, default: false },
+      apiUrl: { type: String, default: null },
+      username: { type: String, default: null },
+      password: { type: String, default: null },
+      companyId: { type: String, default: null },
+      priceListCode: { type: String, default: null },
+      warehouseCode: { type: String, default: null },
+    },
+    
     // === סטטיסטיקות ===
     stats: {
       totalSales: { type: Number, default: 0 },
