@@ -420,21 +420,35 @@ async function GETHandler(request) {
 
     // Multi-Tenant: Filter by tenant
     // Priority order:
-    // 1. Tenant from request (URL param, subdomain, headers)
-    // 2. Tenant from logged-in user (any role - customer, agent, business_admin)
-    // 3. No tenant = show global products only
+    // 1. Tenant from URL query param (e.g., ?tenant=slug)
+    // 2. Tenant from request headers/subdomain
+    // 3. Tenant from logged-in user (any role - customer, agent, business_admin)
+    // 4. No tenant = show global products only
     
     let tenantId = null;
     let hasTenantContext = false;
     
-    // 1. Try to get tenant from request first (URL param, subdomain, etc.)
-    const tenant = await getCurrentTenant(request);
-    if (tenant) {
-      tenantId = tenant._id;
-      hasTenantContext = true;
+    // 1. Check for tenant slug in URL query param first
+    const tenantSlugParam = searchParams.get('tenant');
+    if (tenantSlugParam) {
+      const { getTenantBySlug } = await import('@/lib/tenant');
+      const tenantFromSlug = await getTenantBySlug(tenantSlugParam);
+      if (tenantFromSlug) {
+        tenantId = tenantFromSlug._id;
+        hasTenantContext = true;
+      }
     }
     
-    // 2. If no tenant from request, try to get from ANY logged-in user
+    // 2. Try to get tenant from request headers/subdomain
+    if (!tenantId) {
+      const tenant = await getCurrentTenant(request);
+      if (tenant) {
+        tenantId = tenant._id;
+        hasTenantContext = true;
+      }
+    }
+    
+    // 3. If no tenant from request, try to get from ANY logged-in user
     if (!tenantId) {
       try {
         const { requireAuthApi } = await import('@/lib/auth/server');
@@ -448,7 +462,7 @@ async function GETHandler(request) {
       }
     }
     
-    // 3. If still no tenant, check refTenant cookie (set by referral links)
+    // 4. If still no tenant, check refTenant cookie (set by referral links)
     if (!tenantId) {
       try {
         const cookieStore = cookies();
