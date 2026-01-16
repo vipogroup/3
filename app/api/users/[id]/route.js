@@ -222,11 +222,16 @@ async function DELETEHandler(req, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    let tenantObjectId;
-    try {
-      tenantObjectId = getTenantIdOrThrow(decoded);
-    } catch {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    // Super admin can delete any user (no tenantId restriction)
+    const isSuperAdminFlag = isSuperAdmin(decoded);
+    
+    let tenantObjectId = null;
+    if (!isSuperAdminFlag) {
+      try {
+        tenantObjectId = getTenantIdOrThrow(decoded);
+      } catch {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     const { id } = params || {};
@@ -236,7 +241,10 @@ async function DELETEHandler(req, { params }) {
     }
 
     const col = await usersCollection();
-    const user = await col.findOne(withTenant({ _id: objectId }, tenantObjectId));
+    // Super admin sees all users, regular admin sees only their tenant's users
+    const user = isSuperAdminFlag 
+      ? await col.findOne({ _id: objectId })
+      : await col.findOne(withTenant({ _id: objectId }, tenantObjectId));
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -269,7 +277,11 @@ async function DELETEHandler(req, { params }) {
     }
 
     if (user.role === 'admin') {
-      const adminCount = await col.countDocuments(withTenant({ role: 'admin' }, tenantObjectId));
+      // Super admin counts all admins, regular admin counts only their tenant's admins
+      const adminQuery = isSuperAdminFlag 
+        ? { role: 'admin' } 
+        : withTenant({ role: 'admin' }, tenantObjectId);
+      const adminCount = await col.countDocuments(adminQuery);
       if (adminCount <= 1) {
         return NextResponse.json(
           { error: 'לא ניתן למחוק את המנהל האחרון במערכת' },
@@ -278,7 +290,11 @@ async function DELETEHandler(req, { params }) {
       }
     }
 
-    await col.deleteOne(withTenant({ _id: objectId }, tenantObjectId));
+    // Super admin can delete any user, regular admin deletes only their tenant's users
+    const deleteQuery = isSuperAdminFlag 
+      ? { _id: objectId } 
+      : withTenant({ _id: objectId }, tenantObjectId);
+    await col.deleteOne(deleteQuery);
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error(e);

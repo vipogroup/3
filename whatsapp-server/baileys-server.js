@@ -6,7 +6,7 @@
 
 const express = require('express');
 const cors = require('cors');
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
+const { default: makeWASocket, useMultiFileAuthState: getMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const qrcode = require('qrcode-terminal');
 const pino = require('pino');
 const path = require('path');
@@ -37,7 +37,7 @@ if (!fs.existsSync(AUTH_FOLDER)) {
 // Initialize WhatsApp connection
 async function startWhatsApp() {
   try {
-    const { state, saveCreds } = await useMultiFileAuthState(AUTH_FOLDER);
+    const { state, saveCreds } = await getMultiFileAuthState(AUTH_FOLDER);
     const { version } = await fetchLatestBaileysVersion();
 
     sock = makeWASocket({
