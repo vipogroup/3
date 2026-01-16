@@ -951,8 +951,16 @@ function CreateAdminModal({ tenant, onClose, onSave }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSaving(true);
     setError('');
+
+    // Password validation
+    const pwd = formData.password;
+    if (pwd.length < 8 || !/\d/.test(pwd) || !/[a-zA-Zא-ת]/.test(pwd)) {
+      setError('הסיסמה חייבת להכיל לפחות 8 תווים, מספר אחד ואות אחת');
+      return;
+    }
+
+    setSaving(true);
 
     try {
       const res = await fetch('/api/users', {
@@ -1040,8 +1048,8 @@ function CreateAdminModal({ tenant, onClose, onSave }) {
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
               required
-              minLength={6}
-              placeholder="לפחות 6 תווים"
+              minLength={8}
+              placeholder="לפחות 8 תווים, מספר ואות"
             />
           </div>
 

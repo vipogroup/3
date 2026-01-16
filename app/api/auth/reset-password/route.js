@@ -19,7 +19,7 @@ function getClientIp(request) {
 }
 
 function validatePasswordStrength(password, role) {
-  const minLength = role === 'admin' ? 10 : 6;
+  const minLength = role === 'admin' ? 10 : 8;
   if (password.length < minLength) {
     return false;
   }
@@ -51,8 +51,8 @@ async function POSTHandler(request) {
       return NextResponse.json({ ok: false, error: 'missing_fields' }, { status: 400 });
     }
 
-    if (password.length < 6) {
-      return NextResponse.json({ ok: false, error: 'password_too_short' }, { status: 400 });
+    if (password.length < 8 || !/\d/.test(password) || !/[a-zA-Zא-ת]/.test(password)) {
+      return NextResponse.json({ ok: false, error: 'password_too_weak' }, { status: 400 });
     }
 
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');

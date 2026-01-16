@@ -166,6 +166,11 @@ async function POSTHandler(req) {
       return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
     }
 
+    // Password validation: 8+ chars, 1 number, 1 letter
+    if (password.length < 8 || !/\d/.test(password) || !/[a-zA-Zא-ת]/.test(password)) {
+      return NextResponse.json({ error: 'הסיסמה חייבת להכיל לפחות 8 תווים, מספר ואות' }, { status: 400 });
+    }
+
     const db = await getDb();
     const col = db.collection('users');
 

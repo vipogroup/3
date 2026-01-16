@@ -76,7 +76,17 @@ function LoginPageContent() {
 
       if (!res.ok) {
         const data = await res.json();
-        setErr(data.error || 'שגיאה בהתחברות');
+        // Translate common errors to Hebrew
+        const errorMsg = data.message || data.error || '';
+        if (errorMsg.includes('Invalid email') || errorMsg.includes('Invalid password') || errorMsg.includes('invalid credentials')) {
+          setErr('אימייל או סיסמה שגויים');
+        } else if (errorMsg.includes('not found') || errorMsg.includes('not exist')) {
+          setErr('משתמש לא קיים במערכת');
+        } else if (errorMsg.includes('TOO_MANY')) {
+          setErr('יותר מדי ניסיונות. נסה שוב מאוחר יותר.');
+        } else {
+          setErr(errorMsg || 'שגיאה בהתחברות');
+        }
         setLoading(false);
         return;
       }
@@ -218,7 +228,7 @@ function LoginPageContent() {
                   onFocus={(e) => (e.currentTarget.style.borderColor = '#0891b2')}
                   onBlur={(e) => (e.currentTarget.style.borderColor = '#d1d5db')}
                   aria-describedby="password-help"
-                  minLength={6}
+                  minLength={8}
                 />
                 <button
                   type="button"
@@ -233,7 +243,7 @@ function LoginPageContent() {
                 </button>
               </div>
               <p id="password-help" className="text-xs text-gray-500 mt-1">
-                ניתן להשתמש בסיסמה של לפחות 6 תווים
+                לפחות 8 תווים, מספר ואות
               </p>
             </div>
 

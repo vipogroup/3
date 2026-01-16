@@ -20,8 +20,8 @@ export default function ResetPasswordPage({ params }) {
       return;
     }
 
-    if (password.length < 6) {
-      setStatus({ type: 'error', message: 'הסיסמה חייבת לכלול לפחות 6 תווים' });
+    if (password.length < 8 || !/\d/.test(password) || !/[a-zA-Zא-ת]/.test(password)) {
+      setStatus({ type: 'error', message: 'הסיסמה חייבת לכלול לפחות 8 תווים, מספר ואות' });
       return;
     }
 
@@ -80,7 +80,7 @@ export default function ResetPasswordPage({ params }) {
                 id="password"
                 type="password"
                 required
-                minLength={6}
+                minLength={8}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
@@ -100,7 +100,7 @@ export default function ResetPasswordPage({ params }) {
                 id="confirmPassword"
                 type="password"
                 required
-                minLength={6}
+                minLength={8}
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
