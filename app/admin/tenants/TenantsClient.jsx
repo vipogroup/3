@@ -591,8 +591,18 @@ function TenantModal({ tenant, onClose, onSave }) {
         setSaving(false);
         return;
       }
-      if (formData.adminPassword.length < 6) {
-        setError('הסיסמה חייבת להכיל לפחות 6 תווים');
+      if (formData.adminPassword.length < 8) {
+        setError('הסיסמה חייבת להכיל לפחות 8 תווים, מספר אחד ואות אחת');
+        setSaving(false);
+        return;
+      }
+      if (!/\d/.test(formData.adminPassword)) {
+        setError('הסיסמה חייבת להכיל לפחות מספר אחד');
+        setSaving(false);
+        return;
+      }
+      if (!/[a-zA-Zא-ת]/.test(formData.adminPassword)) {
+        setError('הסיסמה חייבת להכיל לפחות אות אחת');
         setSaving(false);
         return;
       }
@@ -795,8 +805,8 @@ function TenantModal({ tenant, onClose, onSave }) {
                     onChange={(e) => setFormData({ ...formData, adminPassword: e.target.value })}
                     className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500"
                     required
-                    minLength={6}
-                    placeholder="לפחות 6 תווים"
+                    minLength={8}
+                    placeholder="לפחות 8 תווים, מספר ואות"
                   />
                 </div>
               </div>

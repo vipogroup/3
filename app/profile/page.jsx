@@ -174,8 +174,18 @@ export default function ProfilePage() {
       return;
     }
 
-    if (passwordData.newPassword.length < 6) {
-      setPasswordError('הסיסמה החדשה חייבת להכיל לפחות 6 תווים');
+    if (passwordData.newPassword.length < 8) {
+      setPasswordError('הסיסמה החדשה חייבת להכיל לפחות 8 תווים, מספר אחד ואות אחת');
+      return;
+    }
+
+    if (!/\d/.test(passwordData.newPassword)) {
+      setPasswordError('הסיסמה החדשה חייבת להכיל לפחות מספר אחד');
+      return;
+    }
+
+    if (!/[a-zA-Zא-ת]/.test(passwordData.newPassword)) {
+      setPasswordError('הסיסמה החדשה חייבת להכיל לפחות אות אחת');
       return;
     }
 
@@ -707,7 +717,7 @@ export default function ProfilePage() {
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                    placeholder="הזן סיסמה חדשה (לפחות 6 תווים)"
+                    placeholder="לפחות 8 תווים, מספר ואות"
                   />
                 </div>
                 <div>

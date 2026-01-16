@@ -27,8 +27,14 @@ async function POSTHandler(req) {
     if (!owner?.phone?.trim()) {
       return NextResponse.json({ error: 'מספר טלפון הוא שדה חובה' }, { status: 400 });
     }
-    if (!owner?.password || owner.password.length < 6) {
-      return NextResponse.json({ error: 'הסיסמה חייבת להכיל לפחות 6 תווים' }, { status: 400 });
+    if (!owner?.password || owner.password.length < 8) {
+      return NextResponse.json({ error: 'הסיסמה חייבת להכיל לפחות 8 תווים, מספר אחד ואות אחת' }, { status: 400 });
+    }
+    if (!/\d/.test(owner.password)) {
+      return NextResponse.json({ error: 'הסיסמה חייבת להכיל לפחות מספר אחד' }, { status: 400 });
+    }
+    if (!/[a-zA-Zא-ת]/.test(owner.password)) {
+      return NextResponse.json({ error: 'הסיסמה חייבת להכיל לפחות אות אחת' }, { status: 400 });
     }
 
     const db = await getDb();

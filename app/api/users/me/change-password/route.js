@@ -24,6 +24,17 @@ async function POSTHandler(req) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
     }
 
+    // Validate password strength
+    if (newPassword.length < 8) {
+      return NextResponse.json({ error: 'הסיסמה חייבת להכיל לפחות 8 תווים' }, { status: 400 });
+    }
+    if (!/\d/.test(newPassword)) {
+      return NextResponse.json({ error: 'הסיסמה חייבת להכיל לפחות מספר אחד' }, { status: 400 });
+    }
+    if (!/[a-zA-Zא-ת]/.test(newPassword)) {
+      return NextResponse.json({ error: 'הסיסמה חייבת להכיל לפחות אות אחת' }, { status: 400 });
+    }
+
     const col = await usersCollection();
     const user = await col.findOne({ _id: new ObjectId(decoded.userId) });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });

@@ -70,8 +70,16 @@ export default function RegisterBusinessPage() {
       setError('יש להזין מספר טלפון');
       return false;
     }
-    if (!formData.password || formData.password.length < 6) {
-      setError('הסיסמה חייבת להכיל לפחות 6 תווים');
+    if (!formData.password || formData.password.length < 8) {
+      setError('הסיסמה חייבת להכיל לפחות 8 תווים, מספר אחד ואות אחת');
+      return false;
+    }
+    if (!/\d/.test(formData.password)) {
+      setError('הסיסמה חייבת להכיל לפחות מספר אחד');
+      return false;
+    }
+    if (!/[a-zA-Zא-ת]/.test(formData.password)) {
+      setError('הסיסמה חייבת להכיל לפחות אות אחת');
       return false;
     }
     if (formData.password !== formData.confirmPassword) {
@@ -322,9 +330,9 @@ export default function RegisterBusinessPage() {
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       className="w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
-                      placeholder="לפחות 6 תווים"
+                      placeholder="לפחות 8 תווים, מספר ואות"
                       required
-                      minLength={6}
+                      minLength={8}
                     />
                   </div>
                 </div>

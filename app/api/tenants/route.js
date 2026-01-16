@@ -125,9 +125,21 @@ async function POSTHandler(request) {
           { status: 400 }
         );
       }
-      if (adminPassword.length < 6) {
+      if (adminPassword.length < 8) {
         return NextResponse.json(
-          { error: 'הסיסמה חייבת להכיל לפחות 6 תווים' },
+          { error: 'הסיסמה חייבת להכיל לפחות 8 תווים, מספר אחד ואות אחת' },
+          { status: 400 }
+        );
+      }
+      if (!/\d/.test(adminPassword)) {
+        return NextResponse.json(
+          { error: 'הסיסמה חייבת להכיל לפחות מספר אחד' },
+          { status: 400 }
+        );
+      }
+      if (!/[a-zA-Zא-ת]/.test(adminPassword)) {
+        return NextResponse.json(
+          { error: 'הסיסמה חייבת להכיל לפחות אות אחת' },
           { status: 400 }
         );
       }
