@@ -1,8 +1,6 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { getDb } from '@/lib/db';
-import { connectMongo } from '@/lib/mongoose';
-import Notification from '@/models/Notification';
 import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
 import { pushToUsers } from '@/lib/pushSender';
 
@@ -128,8 +126,8 @@ const handler = NextAuth({
             
             // Create admin notification for new Google user
             try {
-              await connectMongo();
-              await Notification.create({
+              const notifications = db.collection('notifications');
+              await notifications.insertOne({
                 type: 'new_user',
                 message: `נרשם משתמש חדש (Google): ${newUserData.fullName || email}`,
                 payload: {
@@ -138,6 +136,11 @@ const handler = NextAuth({
                   fullName: newUserData.fullName,
                   provider: 'google',
                 },
+                read: false,
+                tenantId: null,
+                __v: 0,
+                createdAt: new Date(),
+                updatedAt: new Date(),
               });
               console.log('[GOOGLE_AUTH] Admin notification created for new user');
             } catch (notifyErr) {

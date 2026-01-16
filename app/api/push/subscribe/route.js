@@ -63,6 +63,7 @@ async function POSTHandler(req) {
       consentVersion,
       consentMeta,
       lastConsentAction,
+      tenantId: user?.tenantId ? String(user.tenantId) : null,
     });
 
     return NextResponse.json({ ok: true });

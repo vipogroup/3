@@ -78,6 +78,8 @@ export default function PushNotificationBanner({ role = 'customer' }) {
       if (!permission.granted) {
         if (permission.reason === 'ios_install_required') {
           setError('יש להתקין את האפליקציה למסך הבית כדי לקבל התראות');
+        } else if (permission.reason === 'insecure_context') {
+          setError('כדי להפעיל התראות צריך לפתוח את המערכת ב-HTTPS (או localhost).');
         } else if (permission.reason === 'denied') {
           setError('ההרשאה נדחתה. יש לאפשר התראות בהגדרות הדפדפן');
         } else {

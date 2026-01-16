@@ -128,6 +128,8 @@ export default function UserHeader() {
         if (!permission.granted) {
           if (permission.reason === 'ios_install_required') {
             alert('ב-iPhone יש להוסיף את האתר למסך הבית תחילה');
+          } else if (permission.reason === 'insecure_context') {
+            alert('כדי להפעיל התראות צריך לפתוח את המערכת ב-HTTPS (או localhost).');
           } else if (permission.reason === 'denied') {
             alert('ההרשאה נדחתה. ניתן לשנות בהגדרות הדפדפן');
           } else {

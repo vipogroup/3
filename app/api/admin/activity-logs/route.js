@@ -43,12 +43,14 @@ async function GETHandler(req) {
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get('limit') || '50');
     const action = searchParams.get('action'); // create, update, delete, login, etc.
+    const category = searchParams.get('category');
     const userId = searchParams.get('userId');
 
     const db = await getDb();
     
     let query = {};
     if (action) query.action = action;
+    if (category) query.category = category;
     if (userId) query.userId = userId;
 
     const logs = await db.collection(ACTIVITY_LOGS_COLLECTION)

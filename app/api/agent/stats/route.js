@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { requireAuthApi } from '@/lib/auth/server';
+import { getTenantIdOrThrow, withTenant } from '@/lib/tenantGuard';
 import { rateLimiters, buildRateLimitKey } from '@/lib/rateLimit';
-import { getCurrentTenant } from '@/lib/tenant';
 
 export const dynamic = 'force-dynamic';
 
@@ -63,6 +63,13 @@ async function GETHandler(req) {
       return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
     }
 
+    let tenantObjectId;
+    try {
+      tenantObjectId = getTenantIdOrThrow(user);
+    } catch {
+      return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
+    }
+
     const identifier = buildRateLimitKey(req, user.id);
     const rateLimit = rateLimiters.agentStats(req, identifier);
     if (!rateLimit.allowed) {
@@ -93,12 +100,8 @@ async function GETHandler(req) {
     const orders = db.collection('orders');
     const referralLogs = db.collection('referral_logs');
 
-    // Multi-Tenant: Get tenant filter
-    const tenant = await getCurrentTenant(req);
-    const tenantFilter = tenant ? { tenantId: tenant._id } : {};
-
     // Get agent (with tenant filter if applicable)
-    const agentFilter = { _id: agentObjectId, role: 'agent', ...tenantFilter };
+    const agentFilter = withTenant({ _id: agentObjectId, role: 'agent' }, tenantObjectId);
     const agent = await users.findOne(
       agentFilter,
       {
@@ -119,10 +122,10 @@ async function GETHandler(req) {
 
     // Query for orders linked to this agent via refAgentId OR agentId (coupon)
     // Also filter by tenant if applicable
-    const agentOrdersFilter = { 
-      $or: [{ refAgentId: agentObjectId }, { agentId: agentObjectId }],
-      ...(tenant ? { tenantId: tenant._id } : (agent.tenantId ? { tenantId: agent.tenantId } : {}))
-    };
+    const agentOrdersFilter = withTenant(
+      { $or: [{ refAgentId: agentObjectId }, { agentId: agentObjectId }] },
+      tenantObjectId,
+    );
 
     // Get total sales
     const totalSales = await orders.countDocuments(agentOrdersFilter);
@@ -147,7 +150,7 @@ async function GETHandler(req) {
     // Get clicks/views from referral logs
     const clicksResult = await referralLogs
       .aggregate([
-        { $match: { agentId: agentObjectId } },
+        { $match: withTenant({ agentId: agentObjectId }, tenantObjectId) },
         {
           $group: {
             _id: '$action',

@@ -5,6 +5,16 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { subscribeToPush, ensureNotificationPermission } from '@/app/lib/pushClient';
 
+function isIOSDevice() {
+  if (typeof navigator === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
+
+function isStandaloneMode() {
+  if (typeof window === 'undefined') return false;
+  return window.navigator.standalone === true || window.matchMedia?.('(display-mode: standalone)')?.matches;
+}
+
 function RegisterPageContent() {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
@@ -24,6 +34,7 @@ function RegisterPageContent() {
   const [verifyError, setVerifyError] = useState('');
   const [countdown, setCountdown] = useState(0);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [notificationError, setNotificationError] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -214,7 +225,23 @@ function RegisterPageContent() {
       setMsg('נרשמת בהצלחה!');
 
       if (loginRes.ok) {
-        // Show notification modal before redirecting
+        const tenantSlug = searchParams.get('tenant');
+
+        const ios = isIOSDevice();
+        const standalone = isStandaloneMode();
+        if (ios && !standalone) {
+          setTimeout(() => router.push(tenantSlug ? `/t/${tenantSlug}` : '/'), 500);
+          return;
+        }
+
+        const hostname = window.location?.hostname || '';
+        const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+        if (!window.isSecureContext && !isLocalhost) {
+          setTimeout(() => router.push(tenantSlug ? `/t/${tenantSlug}` : '/'), 500);
+          return;
+        }
+
+        setNotificationError('');
         setShowNotificationModal(true);
       } else {
         setTimeout(() => router.push('/login'), 1500);
@@ -228,11 +255,10 @@ function RegisterPageContent() {
 
   const handleEnableNotifications = async () => {
     try {
-      // בקשת הרשאה והרשמה להתראות
+      setNotificationError('');
       const permission = await ensureNotificationPermission();
       
       if (permission.granted) {
-        // הרשמה להתראות Push
         await subscribeToPush({
           tags: [role || 'customer'],
           consentAt: new Date().toISOString(),
@@ -240,25 +266,28 @@ function RegisterPageContent() {
           consentMeta: { source: 'registration', role: role || 'customer' },
         });
         
-        // שליחת אירוע לעדכון הכפתור ב-Header
         window.dispatchEvent(new CustomEvent('push-subscription-changed', { detail: { subscribed: true } }));
         
         console.log('Push notifications enabled successfully');
+        setShowNotificationModal(false);
+        const tenantSlug = searchParams.get('tenant');
+        router.push(tenantSlug ? `/t/${tenantSlug}` : '/');
+        return;
+      }
+
+      if (permission.reason === 'ios_install_required') {
+        setNotificationError('ב-iPhone יש להוסיף את האתר למסך הבית תחילה');
+      } else if (permission.reason === 'insecure_context') {
+        setNotificationError('כדי להפעיל התראות צריך לפתוח את המערכת ב-HTTPS (או localhost).');
+      } else if (permission.reason === 'denied') {
+        setNotificationError('ההרשאה נדחתה. יש לאפשר התראות בהגדרות הדפדפן כדי להמשיך.');
       } else {
-        console.log('Push permission not granted:', permission.reason);
+        setNotificationError('לא ניתן להפעיל התראות במכשיר זה');
       }
     } catch (err) {
       console.error('Notification error:', err);
+      setNotificationError('שגיאה בהפעלת התראות');
     }
-    setShowNotificationModal(false);
-    const tenantSlug = searchParams.get('tenant');
-    router.push(tenantSlug ? `/t/${tenantSlug}` : '/');
-  };
-
-  const handleSkipNotifications = () => {
-    setShowNotificationModal(false);
-    const tenantSlug = searchParams.get('tenant');
-    router.push(tenantSlug ? `/t/${tenantSlug}` : '/');
   };
 
   return (
@@ -585,6 +614,10 @@ function RegisterPageContent() {
               </p>
             </div>
 
+            {notificationError && (
+              <p className="text-sm text-red-600 text-center mb-3">{notificationError}</p>
+            )}
+
             <div className="space-y-3">
               <button
                 onClick={handleEnableNotifications}
@@ -592,12 +625,6 @@ function RegisterPageContent() {
                 style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
               >
                 אפשר התראות
-              </button>
-              <button
-                onClick={handleSkipNotifications}
-                className="w-full text-gray-500 font-medium py-2 hover:text-gray-700 transition-colors"
-              >
-                אולי אחר כך
               </button>
             </div>
           </div>

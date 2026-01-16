@@ -10,6 +10,7 @@ import { rateLimiters } from '@/lib/rateLimit';
 import { sign as signJwt } from '@/lib/auth/createToken';
 import { setAuthCookie } from '@/lib/auth/requireAuth';
 import { logAdminActivity } from '@/lib/auditMiddleware';
+import { logSecurityEvent } from '@/lib/securityEvents';
 
 function failureResponse(message, status = 400, extraBody = {}) {
   return NextResponse.json({ success: false, message, ...extraBody }, { status });
@@ -74,11 +75,27 @@ async function POSTHandler(req) {
     });
 
     if (!user?.passwordHash) {
+      await logSecurityEvent({
+        action: 'auth_login_fail',
+        message: 'Login failed: invalid credentials',
+        severity: 'medium',
+        req,
+        identifier: normalizedEmail || normalizedPhone || identifier,
+        details: { reason: 'invalid_credentials', statusCode: 401 },
+      });
       return failureResponse('Invalid email or password', 401);
     }
 
     const passwordMatches = await bcrypt.compare(normalizedPassword, user.passwordHash);
     if (!passwordMatches) {
+      await logSecurityEvent({
+        action: 'auth_login_fail',
+        message: 'Login failed: invalid credentials',
+        severity: 'medium',
+        req,
+        identifier: normalizedEmail || normalizedPhone || identifier,
+        details: { reason: 'invalid_credentials', statusCode: 401 },
+      });
       return failureResponse('Invalid email or password', 401);
     }
 
@@ -116,6 +133,13 @@ async function POSTHandler(req) {
     return response;
   } catch (err) {
     console.error('LOGIN_ERROR:', err?.message ?? err);
+    await logSecurityEvent({
+      action: 'auth_login_error',
+      message: 'Login error: server exception',
+      severity: 'high',
+      req,
+      details: { statusCode: 500, error: err?.message || String(err) },
+    });
     return failureResponse('Server error', 500);
   }
 }

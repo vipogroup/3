@@ -5,17 +5,16 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
 import { requireAuthApi } from '@/lib/auth/server';
-import { connectMongo } from '@/lib/mongoose';
-import Message from '@/models/Message';
 import { getDb } from '@/lib/db';
 
 /**
  * Cleanup messages that have been read by all intended recipients
  */
-async function cleanupReadMessages() {
+async function cleanupReadMessages(tenantFilter) {
   const db = await getDb();
   const usersCol = db.collection('users');
-  const messages = await Message.find({}).lean();
+  const messagesCol = db.collection('messages');
+  const messages = await messagesCol.find(tenantFilter).toArray();
   
   let deletedCount = 0;
 
@@ -34,13 +33,13 @@ async function cleanupReadMessages() {
       shouldDelete = isOld && readByUserIds.length >= 10;
     } else {
       // Role-based: delete if 80% of target role has read it
-      const roleCount = await usersCol.countDocuments({ role: msg.targetRole });
+      const roleCount = await usersCol.countDocuments({ role: msg.targetRole, ...tenantFilter });
       const readPercentage = roleCount > 0 ? (readByUserIds.length / roleCount) * 100 : 0;
       shouldDelete = readPercentage >= 80;
     }
 
     if (shouldDelete) {
-      await Message.deleteOne({ _id: msg._id });
+      await messagesCol.deleteOne({ _id: msg._id, ...tenantFilter });
       deletedCount++;
     }
   }
@@ -60,7 +59,13 @@ function normalizeObjectId(value) {
 async function POSTHandler(req) {
   try {
     const user = await requireAuthApi(req);
-    await connectMongo();
+    const db = await getDb();
+    const messagesCol = db.collection('messages');
+    const tenantObjectId = normalizeObjectId(user.tenantId);
+    const tenantString = user.tenantId ? String(user.tenantId) : null;
+    const tenantFilter = tenantString
+      ? { tenantId: { $in: [tenantObjectId, tenantString].filter(Boolean) } }
+      : { tenantId: { $in: [null, undefined] } };
 
     const userObjectId = normalizeObjectId(user.id);
     if (!userObjectId) {
@@ -109,7 +114,11 @@ async function POSTHandler(req) {
       };
     }
 
-    const docs = await Message.find(query, { _id: 1, readBy: 1 }).lean();
+    query = { ...tenantFilter, ...query };
+
+    const docs = await messagesCol
+      .find(query, { projection: { _id: 1, readBy: 1 } })
+      .toArray();
 
     const updates = [];
     const now = new Date();
@@ -119,7 +128,7 @@ async function POSTHandler(req) {
       if (!alreadyRead) {
         updates.push({
           updateOne: {
-          filter: { _id: doc._id },
+            filter: { _id: doc._id, ...tenantFilter },
             update: {
               $push: {
                 readBy: {
@@ -134,11 +143,11 @@ async function POSTHandler(req) {
     });
 
     if (updates.length > 0) {
-      await Message.bulkWrite(updates, { ordered: false });
+      await messagesCol.bulkWrite(updates, { ordered: false });
     }
 
     // Trigger async cleanup of fully-read messages
-    cleanupReadMessages().catch((err) => {
+    cleanupReadMessages(tenantFilter).catch((err) => {
       console.warn('CLEANUP_TRIGGER_FAILED', err?.message || err);
     });
 

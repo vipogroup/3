@@ -3,8 +3,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { hasActiveSubscription, subscribeToPush, ensureNotificationPermission } from '@/app/lib/pushClient';
 
-const MODAL_SHOWN_KEY = 'vipo_push_modal_shown';
-const MODAL_DECLINED_KEY = 'vipo_push_modal_declined';
+function isIOSDevice() {
+  if (typeof navigator === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
+
+function isStandaloneMode() {
+  if (typeof window === 'undefined') return false;
+  return window.navigator.standalone === true || window.matchMedia?.('(display-mode: standalone)')?.matches;
+}
 
 export default function PushNotificationModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +23,12 @@ export default function PushNotificationModal() {
   useEffect(() => {
     async function checkAndShow() {
       console.log('PUSH_MODAL: Starting check...');
+
+      const hostname = window.location?.hostname || '';
+      const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+      if (!window.isSecureContext && !isLocalhost) {
+        return;
+      }
       
       // Wait for service worker to be ready
       if ('serviceWorker' in navigator) {
@@ -43,19 +56,22 @@ export default function PushNotificationModal() {
           console.log('PUSH_MODAL: User is admin, skipping');
           return;
         }
-        
-        setUserRole(data.user.role || 'customer');
 
-        // Check if user already made a choice (accepted or declined)
-        const declined = localStorage.getItem(MODAL_DECLINED_KEY);
-        if (declined) {
-          console.log('PUSH_MODAL: User already declined');
+        const ios = isIOSDevice();
+        const standalone = isStandaloneMode();
+        if (ios && !standalone) {
+          console.log('PUSH_MODAL: iOS not standalone, skipping enforcement');
           return;
         }
+        
+        setUserRole(data.user.role || 'customer');
 
         // Check if notifications are supported
         if (!('Notification' in window) || !('serviceWorker' in navigator)) {
           console.log('PUSH_MODAL: Notifications not supported');
+          setError('הדפדפן או המכשיר אינם תומכים בהתראות דחיפה.');
+          setStep('error');
+          setIsOpen(true);
           return;
         }
 
@@ -67,25 +83,20 @@ export default function PushNotificationModal() {
         // Check if permission was denied before
         if (Notification.permission === 'denied') {
           console.log('PUSH_MODAL: Permission denied');
+          setError('ההרשאה להתראות נחסמה. יש לאפשר התראות בהגדרות הדפדפן כדי להמשיך.');
+          setStep('error');
+          setIsOpen(true);
           return;
         }
 
-        // Don't mark as shown - modal stays until user makes a choice
-
-        // Show modal after delay - 15 seconds to not interrupt user
-        console.log('PUSH_MODAL: Will show modal in 15s');
-        setTimeout(() => {
-          console.log('PUSH_MODAL: Showing modal now');
-          setIsOpen(true);
-        }, 15000);
+        console.log('PUSH_MODAL: Showing modal now (mandatory)');
+        setIsOpen(true);
       } catch (err) {
         console.error('PUSH_MODAL: Error in checkAndShow', err);
       }
     }
 
-    // Delay check to allow service worker to register
-    const timer = setTimeout(checkAndShow, 2000);
-    return () => clearTimeout(timer);
+    checkAndShow();
   }, []);
 
   const handleEnable = useCallback(async () => {
@@ -98,6 +109,8 @@ export default function PushNotificationModal() {
       if (!permission.granted) {
         if (permission.reason === 'ios_install_required') {
           setError('ב-iPhone יש להוסיף את האתר למסך הבית תחילה');
+        } else if (permission.reason === 'insecure_context') {
+          setError('כדי להפעיל התראות צריך לפתוח את המערכת ב-HTTPS (או localhost).');
         } else if (permission.reason === 'denied') {
           setError('ההרשאה נדחתה. ניתן לשנות בהגדרות הדפדפן');
         } else {
@@ -131,94 +144,94 @@ export default function PushNotificationModal() {
     }
   }, [userRole]);
 
-  const handleClose = useCallback(() => {
-    // Mark as declined so it won't show again
-    try {
-      localStorage.setItem(MODAL_DECLINED_KEY, new Date().toISOString());
-    } catch (_) {}
-    setIsOpen(false);
-  }, []);
-
   if (!isOpen) return null;
 
-  // עיצוב מקורי עם מיקום חדש
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[999] px-3 pb-3">
-      <div 
-        className="bg-white shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-3"
-        style={{ 
-          border: '2px solid transparent', 
-          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', 
-          backgroundOrigin: 'border-box', 
-          backgroundClip: 'padding-box, border-box', 
-          boxShadow: '0 8px 25px rgba(8, 145, 178, 0.25)' 
+    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
+      <div
+        className="bg-white shadow-2xl rounded-2xl px-6 py-6 w-full max-w-sm"
+        style={{
+          border: '2px solid transparent',
+          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box',
+          boxShadow: '0 12px 30px rgba(8, 145, 178, 0.25)',
         }}
       >
         {step === 'ask' && (
           <>
-            <div 
-              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
-            >
-              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-            </div>
-            
-            <p className="text-xs text-gray-600 flex-1">
-              הפעל התראות לקבלת מבצעים ועדכונים
-            </p>
-            
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={handleEnable}
-                disabled={loading}
-                className="text-white text-xs font-semibold px-4 py-2 rounded-xl disabled:opacity-70"
-                style={{ 
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', 
-                  boxShadow: '0 2px 8px rgba(8, 145, 178, 0.3)' 
+            <div className="text-center mb-5">
+              <div
+                className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+              >
+                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+              </div>
+              <h2
+                className="text-lg font-bold mb-2"
+                style={{
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
                 }}
               >
-                {loading ? '...' : 'הפעל'}
-              </button>
-              <button
-                onClick={handleClose}
-                className="text-gray-500 hover:text-gray-700 text-xs px-2 py-2"
-              >
-                לא עכשיו
-              </button>
+                הפעלת התראות
+              </h2>
+              <p className="text-sm text-gray-600">כדי להמשיך להשתמש במערכת יש לאשר התראות.</p>
             </div>
+
+            <button
+              onClick={handleEnable}
+              disabled={loading}
+              className="w-full text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+            >
+              {loading ? 'מפעיל...' : 'אפשר התראות'}
+            </button>
           </>
         )}
 
         {step === 'success' && (
           <>
-            <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-green-100">
-              <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-emerald-100">
+                <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <p className="text-sm text-gray-700">ההתראות הופעלו בהצלחה.</p>
             </div>
-            <p className="text-xs text-gray-600 flex-1">
-              מעולה! תקבלו התראות לנייד
-            </p>
           </>
         )}
 
         {step === 'error' && (
           <>
-            <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-red-100">
-              <svg className="w-4 h-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-              </svg>
+            <div className="text-center mb-4">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-red-100">
+                <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
+                </svg>
+              </div>
+              <p className="text-sm text-red-600">{error}</p>
             </div>
-            <p className="text-xs text-red-500 flex-1">
-              {error}
-            </p>
+
             <button
-              onClick={handleClose}
-              className="text-gray-500 hover:text-gray-700 text-xs px-2 py-2 flex-shrink-0"
+              onClick={() => {
+                setStep('ask');
+                setError('');
+              }}
+              className="w-full text-white font-semibold py-3 rounded-xl transition-all"
+              style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >
-              סגור
+              נסה שוב
             </button>
           </>
         )}

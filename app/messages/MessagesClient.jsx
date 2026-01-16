@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useAdminMessageTargets } from './hooks/useAdminMessageTargets';
 
@@ -21,6 +21,15 @@ const ADMIN_TARGET_OPTIONS = [
   { value: 'direct', label: 'הודעה ישירה למשתמש ספציפי' },
 ];
 
+function formatTime(ts) {
+  if (!ts) return '';
+  const date = new Date(ts);
+  return date.toLocaleTimeString('he-IL', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 function formatDate(ts) {
   if (!ts) return '';
   const date = new Date(ts);
@@ -28,6 +37,34 @@ function formatDate(ts) {
     hour: '2-digit',
     minute: '2-digit',
   })}`;
+}
+
+function MessageBubble({ message, isOutgoing, currentUser }) {
+  const isRead = (message.readBy || []).some(
+    (r) => r.userId !== currentUser?.id
+  );
+
+  return (
+    <div className={`flex ${isOutgoing ? 'justify-start' : 'justify-end'} mb-2 px-3`}>
+      <div
+        className={`
+          max-w-[75%] rounded-2xl px-3 py-1.5 shadow-sm
+          ${isOutgoing
+            ? 'bg-white text-gray-900 rounded-br-sm'
+            : 'rounded-bl-sm text-white'
+          }
+        `}
+        style={!isOutgoing ? { background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' } : {}}
+      >
+        <div className="flex items-end gap-2">
+          <p className="text-sm break-words whitespace-pre-wrap flex-1">{message.message}</p>
+          <span className={`text-[10px] flex-shrink-0 ${isOutgoing ? 'text-gray-400' : 'text-cyan-100'}`}>
+            {formatTime(message.createdAt)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function MessagesClient({ currentUser }) {
@@ -86,6 +123,14 @@ export default function MessagesClient({ currentUser }) {
 
   useEffect(() => {
     fetchMessages();
+  }, [fetchMessages]);
+
+  // Auto-refresh messages every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchMessages({ showLoader: false });
+    }, 5000);
+    return () => clearInterval(interval);
   }, [fetchMessages]);
 
   // Mark all messages as read when entering the messages page
@@ -215,260 +260,292 @@ export default function MessagesClient({ currentUser }) {
     [],
   );
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 space-y-6">
-        <header className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#1e3a8a' }}>
-              מרכז הודעות
-            </h1>
-            <p className="text-sm text-gray-500">ניהול תקשורת בין מנהלים לסוכנים ולקוחות</p>
-          </div>
-          <Link
-            href="/shop"
-            className="text-sm font-semibold px-3 py-2 rounded-lg"
-            style={{
-              background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.12) 0%, rgba(8, 145, 178, 0.12) 100%)',
-              color: '#1e3a8a',
-            }}
-          >
-            חזרה למוצרים
+  const messagesEndRef = useRef(null);
+  const sortedMessages = useMemo(() => {
+    return [...messages].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  }, [messages]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [sortedMessages]);
+
+  // For non-admin users: simple chat view
+  if (!canManageMessages) {
+    return (
+      <div className="flex flex-col bg-gray-100 overflow-hidden" style={{ height: '100dvh', maxHeight: '-webkit-fill-available', position: 'fixed', inset: 0, zIndex: 50 }}>
+        {/* Chat Header */}
+        <header
+          className="flex items-center gap-3 px-4 py-3 shadow-sm"
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+        >
+          <Link href="/shop" className="text-white/80 hover:text-white">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </Link>
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <h1 className="text-white font-semibold">שירות לקוחות</h1>
+            <p className="text-white/70 text-xs">שלח הודעה ונחזור אליך בהקדם</p>
+          </div>
         </header>
 
-        <section
-          className="bg-white rounded-xl shadow p-6 space-y-4"
-          style={{
-            border: '2px solid transparent',
-            backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)',
-            backgroundOrigin: 'border-box',
-            backgroundClip: 'padding-box, border-box',
-          }}
+        {/* Messages Area */}
+        <div
+          className="flex-1 overflow-y-auto flex flex-col"
+          style={{ background: 'linear-gradient(180deg, rgba(30, 58, 138, 0.08) 0%, rgba(8, 145, 178, 0.12) 100%)' }}
         >
-          <div className="space-y-1">
-            <h2 className="text-lg font-semibold" style={{ color: '#0f172a' }}>
-              שליחת הודעה חדשה
-            </h2>
-            <p className="text-xs text-gray-500">
-              {canManageMessages
-                ? `הודעה תישלח אל: ${resolvedTargetRole}`
-                : 'ההודעה תישלח ישירות למנהלים (לא ניתן לפנות ללקוחות או לסוכנים אחרים).'}
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-3">
-            {canManageMessages && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">
-                    בחר יעד
-                  </label>
-                  <select
-                    value={targetRole}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setTargetRole(value);
-                      if (value !== 'direct') {
-                        setReplyContext(null);
-                        setTargetUserId('');
-                      }
-                    }}
-                    className="w-full text-sm border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
-                  >
-                    {ADMIN_TARGET_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {targetRole === 'direct' && (
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">
-                      מזהה משתמש יעד
-                    </label>
-                    <input
-                      value={targetUserId}
-                      onChange={(e) => setTargetUserId(e.target.value)}
-                      placeholder="לדוגמה: 6565..."
-                      className="w-full text-sm border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-gray-500 text-sm">טוען הודעות...</div>
+            </div>
+          ) : sortedMessages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-gray-500">
+              <svg className="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <p className="text-sm">אין הודעות עדיין</p>
+              <p className="text-xs mt-1">שלח הודעה כדי להתחיל שיחה</p>
+            </div>
+          ) : (
+            <>
+              <div className="flex-1" />
+              <div className="py-4">
+                {sortedMessages.map((item) => {
+                  const isOutgoing = currentUser?.id && item.senderId
+                    ? String(item.senderId) === String(currentUser.id)
+                    : false;
+                  return (
+                    <MessageBubble
+                      key={item.id}
+                      message={item}
+                      isOutgoing={isOutgoing}
+                      currentUser={currentUser}
                     />
-                    {knownTargets.length > 0 && (
-                      <div className="mt-2 rounded-lg border border-sky-100 bg-sky-50 p-2 text-xs text-sky-800 space-y-1">
-                        <p className="font-semibold">נמענים אחרונים:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {knownTargets.map((option) => (
-                            <button
-                              key={option.userId}
-                              type="button"
-                              onClick={() => {
-                                setTargetUserId(option.userId);
-                                setReplyContext({ userId: option.userId, role: option.role });
-                              }}
-                              className={`px-2 py-1 rounded-full border text-[11px] transition ${{
-                                true: 'bg-white border-sky-400 text-sky-700 shadow-sm',
-                                false: 'bg-sky-100 border-transparent text-sky-800 hover:bg-sky-200',
-                              }[option.userId === activeTarget?.userId ? 'true' : 'false']}`}
-                            >
-                              {option.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
+                  );
+                })}
+                <div ref={messagesEndRef} />
               </div>
-            )}
+            </>
+          )}
+        </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1">
-                תוכן ההודעה
-              </label>
-              <textarea
-                value={messageText}
-                onChange={(e) => setMessageText(e.target.value)}
-                rows={4}
-                maxLength={2000}
-                className="w-full text-sm border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
-                placeholder="כתוב כאן את ההודעה..."
-              />
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
-                <span>{messageText.length}/2000</span>
-                {!canSend && <span>יש למלא את כל השדות הדרושים</span>}
-              </div>
-            </div>
-
-            {error && <p className="text-xs text-red-500">{error}</p>}
-
-            {canManageMessages && replyContext && (
-              <div className="flex items-center justify-between text-xs text-sky-800 bg-sky-50 border border-sky-200 rounded-lg px-3 py-2">
-                <span>
-                  מענה ל{ROLE_LABELS[replyContext.role] || replyContext.role} ({replyContext.userId})
-                </span>
-                <button
-                  type="button"
-                  onClick={clearReplyContext}
-                  className="font-semibold text-sky-700 hover:text-sky-900"
-                >
-                  בטל מענה ישיר
-                </button>
-              </div>
-            )}
-
-            <div className="flex items-center gap-2">
-              <button
-                type="submit"
-                disabled={!canSend}
-                className="text-sm font-semibold px-4 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
-                }}
-              >
-                שלח הודעה
-              </button>
-              <button
-                type="button"
-                onClick={() => fetchMessages({ showLoader: false })}
-                className="text-xs font-semibold px-3 py-2 rounded-lg"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.08) 0%, rgba(8, 145, 178, 0.12) 100%)',
-                  color: '#0f172a',
-                }}
-              >
-                רענן הודעות
-                {refreshing && <span className="ml-2 animate-pulse">...</span>}
-              </button>
-            </div>
-          </form>
-        </section>
-
-        <section className="bg-white rounded-xl shadow">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-            <h2 className="text-lg font-semibold" style={{ color: '#0f172a' }}>
-              היסטוריית הודעות
-            </h2>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <label htmlFor="limit-select">כמות להצגה:</label>
-              <select
-                id="limit-select"
-                value={limit}
-                onChange={(e) => setLimit(Number(e.target.value) || 50)}
-                className="border rounded px-2 py-1"
-              >
-                {[20, 50, 100].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </div>
+        {/* Input Area - WhatsApp Style */}
+        <form onSubmit={handleSubmit} className="bg-gray-100 px-2 py-1.5 flex items-center gap-2">
+          <div className="flex-1">
+            <input
+              type="text"
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  if (canSend) handleSubmit(e);
+                }
+              }}
+              maxLength={2000}
+              className="w-full text-sm bg-white rounded-full px-4 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+              placeholder="הודעה"
+              style={{ height: '36px' }}
+            />
           </div>
+          <button
+            type="submit"
+            disabled={!canSend}
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+          >
+            <svg className="w-4 h-4 scale-x-[-1]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
+          </button>
+        </form>
+        {error && (
+          <div className="bg-red-50 text-red-600 text-xs px-4 py-2 text-center">{error}</div>
+        )}
+      </div>
+    );
+  }
 
-          <div className="max-h-[520px] overflow-y-auto divide-y divide-gray-100">
-            {loading ? (
-              <div className="py-16 text-center text-sm text-gray-500">טוען הודעות...</div>
-            ) : messages.length === 0 ? (
-              <div className="py-16 text-center text-sm text-gray-400">אין הודעות להצגה.</div>
-            ) : (
-              messages.map((item) => {
-                const isSender = currentUser?.id && item.senderId
+  // For admin/business_admin: full management view with chat style
+  return (
+    <div className="flex flex-col bg-gray-100 overflow-hidden" style={{ height: '100dvh', maxHeight: '-webkit-fill-available', position: 'fixed', inset: 0, zIndex: 50 }}>
+      {/* Admin Header */}
+      <header
+        className="flex items-center gap-3 px-4 py-3 shadow-sm"
+        style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+      >
+        <Link href={isBusinessAdmin ? '/business' : '/admin'} className="text-white/80 hover:text-white">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </Link>
+        <div className="flex-1">
+          <h1 className="text-white font-semibold">מרכז הודעות</h1>
+          <p className="text-white/70 text-xs">
+            {replyContext
+              ? `מענה ל${ROLE_LABELS[replyContext.role] || replyContext.role}`
+              : `שליחה אל: ${resolvedTargetRole}`}
+          </p>
+        </div>
+        <button
+          onClick={() => fetchMessages({ showLoader: false })}
+          className="text-white/80 hover:text-white p-2"
+        >
+          <svg className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+      </header>
+
+      {/* Target Selection Bar */}
+      <div className="bg-white border-b px-4 py-2 flex items-center gap-2 flex-wrap">
+        <select
+          value={targetRole}
+          onChange={(e) => {
+            setTargetRole(e.target.value);
+            if (e.target.value !== 'direct') {
+              setReplyContext(null);
+              setTargetUserId('');
+            }
+          }}
+          className="text-xs border rounded-full px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        >
+          {ADMIN_TARGET_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
+        </select>
+        {targetRole === 'direct' && (
+          <input
+            value={targetUserId}
+            onChange={(e) => setTargetUserId(e.target.value)}
+            placeholder="מזהה משתמש..."
+            className="text-xs border rounded-full px-3 py-1.5 w-32 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+        )}
+        {replyContext && (
+          <button
+            onClick={clearReplyContext}
+            className="text-xs px-2 py-1 rounded-full bg-red-50 text-red-600 hover:bg-red-100"
+          >
+            בטל מענה
+          </button>
+        )}
+        {knownTargets.length > 0 && targetRole === 'direct' && (
+          <div className="flex gap-1 flex-wrap">
+            {knownTargets.slice(0, 5).map((t) => (
+              <button
+                key={t.userId}
+                onClick={() => {
+                  setTargetUserId(t.userId);
+                  setReplyContext({ userId: t.userId, role: t.role });
+                }}
+                className={`text-[10px] px-2 py-1 rounded-full ${
+                  t.userId === targetUserId ? 'bg-cyan-100 text-cyan-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Messages Area */}
+      <div
+        className="flex-1 overflow-y-auto flex flex-col"
+        style={{ background: 'linear-gradient(180deg, rgba(30, 58, 138, 0.08) 0%, rgba(8, 145, 178, 0.12) 100%)' }}
+      >
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-gray-500 text-sm">טוען הודעות...</div>
+          </div>
+        ) : sortedMessages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-gray-500">
+            <svg className="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <p className="text-sm">אין הודעות להצגה</p>
+          </div>
+        ) : (
+          <>
+            <div className="flex-1" />
+            <div className="py-4">
+              {sortedMessages.map((item) => {
+                const isOutgoing = currentUser?.id && item.senderId
                   ? String(item.senderId) === String(currentUser.id)
                   : false;
-                const canDelete = canManageMessages || isSender;
-                const isDeleting = deletingId === item.id;
-
                 return (
-                  <article key={item.id} className="px-6 py-4 space-y-2">
-                    <header className="flex items-center justify-between text-xs text-gray-500">
-                      <span className="flex items-center gap-2">
-                        <span
-                          className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px]"
-                          style={{
-                            background: 'rgba(8, 145, 178, 0.08)',
-                            color: '#1e3a8a',
-                          }}
+                  <div key={item.id} className="group relative">
+                    <MessageBubble
+                      message={item}
+                      isOutgoing={isOutgoing}
+                      currentUser={currentUser}
+                    />
+                    {/* Admin actions on hover */}
+                    <div className="absolute top-1 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                      {(item.senderRole !== currentUser?.role || item.targetUserId) && (
+                        <button
+                          onClick={() => handleReply(item)}
+                          className="text-[10px] px-2 py-0.5 rounded bg-white/90 text-cyan-700 shadow-sm hover:bg-white"
                         >
-                          <strong>{ROLE_LABELS[item.senderRole] || item.senderRole}</strong>
-                          <span>→ {ROLE_LABELS[item.targetRole] || item.targetRole}</span>
-                        </span>
-                        {item.targetUserId && (
-                          <span className="text-gray-400">(משתמש: {item.targetUserId})</span>
-                        )}
-                      </span>
-                      <span className="flex items-center gap-3">
-                        <time>{formatDate(item.createdAt)}</time>
-                        {canManageMessages && (item.senderRole !== currentUser?.role || item.targetUserId) && (
-                          <button
-                            type="button"
-                            onClick={() => handleReply(item)}
-                            className="text-[11px] font-semibold px-2 py-1 rounded-full bg-sky-100 text-sky-800 hover:bg-sky-200"
-                          >
-                            השב
-                          </button>
-                        )}
-                        {canDelete && (
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(item.id)}
-                            disabled={isDeleting}
-                            className="text-[11px] font-semibold px-2 py-1 rounded-full text-red-600 hover:bg-red-50 disabled:opacity-60"
-                          >
-                            {isDeleting ? 'מוחק…' : 'מחק'}
-                          </button>
-                        )}
-                      </span>
-                    </header>
-                    <p className="text-sm leading-relaxed text-gray-800 whitespace-pre-wrap">{item.message}</p>
-                  </article>
+                          השב
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        disabled={deletingId === item.id}
+                        className="text-[10px] px-2 py-0.5 rounded bg-white/90 text-red-600 shadow-sm hover:bg-white disabled:opacity-50"
+                      >
+                        {deletingId === item.id ? '...' : 'מחק'}
+                      </button>
+                    </div>
+                  </div>
                 );
-              })
-            )}
-          </div>
-        </section>
+              })}
+              <div ref={messagesEndRef} />
+            </div>
+          </>
+        )}
       </div>
+
+      {/* Input Area - WhatsApp Style */}
+      <form onSubmit={handleSubmit} className="bg-gray-100 px-2 py-1.5 flex items-center gap-2">
+        <div className="flex-1">
+          <input
+            type="text"
+            value={messageText}
+            onChange={(e) => setMessageText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (canSend) handleSubmit(e);
+              }
+            }}
+            maxLength={2000}
+            className="w-full text-sm bg-white rounded-full px-4 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            placeholder="הודעה"
+            style={{ height: '36px' }}
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={!canSend}
+          className="w-9 h-9 rounded-full flex items-center justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+          style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
+        >
+          <svg className="w-4 h-4 scale-x-[-1]" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+          </svg>
+        </button>
+      </form>
+      {error && (
+        <div className="bg-red-50 text-red-600 text-xs px-4 py-2 text-center">{error}</div>
+      )}
     </div>
   );
 }

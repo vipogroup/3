@@ -15,6 +15,7 @@ const MESSAGES = {
   unsupported: 'המכשיר או הדפדפן לא תומכים בהתראות דחיפה.',
   notConfigured: 'התראות טרם הוגדרו בשרת. פנה למנהל המערכת.',
   denied: 'ההתראה נדחתה. יש לאפשר התראות בהגדרות הדפדפן.',
+  insecure_context: 'כדי להפעיל התראות צריך לפתוח את המערכת ב-HTTPS (או localhost).',
   granted: 'התראות הופעלו בהצלחה.',
   disabled: 'התראות בוטלו.',
   generalError: 'שמירת ההתראה נכשלה. נסה שוב.',
@@ -55,6 +56,19 @@ export default function PushNotificationsToggle({ role = 'customer', tags = [], 
 
   const evaluateStatus = useCallback(async () => {
     if (typeof window === 'undefined') return;
+
+    const hostname = window.location?.hostname || '';
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+    if (!window.isSecureContext && !isLocalhost) {
+      setState((prev) => ({
+        ...prev,
+        supported: false,
+        configured: true,
+        loading: false,
+        message: MESSAGES.insecure_context,
+      }));
+      return;
+    }
 
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       setState((prev) => ({ ...prev, supported: false, loading: false, message: MESSAGES.unsupported }));

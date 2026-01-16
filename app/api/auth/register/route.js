@@ -9,8 +9,6 @@ import bcrypt from 'bcryptjs';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { commissionPerReferral } from '@/app/config/commissions';
-import { connectMongo } from '@/lib/mongoose';
-import Notification from '@/models/Notification';
 import { rateLimiters } from '@/lib/rateLimit';
 import { generateAgentCoupon } from '@/lib/agents';
 import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
@@ -215,17 +213,20 @@ async function POSTHandler(req) {
 
     // Create admin notification (Stage 2.5)
     try {
-      await connectMongo();
-      await Notification.create({
+      const notifications = db.collection('notifications');
+      await notifications.insertOne({
         type: 'new_user',
-        message: `נרשם משתמש חדש: ${
-          doc.email || doc.phone || doc.fullName || 'Unknown'
-        }`,
+        message: `נרשם משתמש חדש: ${doc.email || doc.phone || doc.fullName || 'Unknown'}`,
         payload: {
           userId: newUserId,
           email: doc.email,
           fullName: doc.fullName,
         },
+        read: false,
+        tenantId: tenantId || null,
+        __v: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     } catch (notifyErr) {
       console.error('REGISTER_NOTIFICATION_ERROR', notifyErr);

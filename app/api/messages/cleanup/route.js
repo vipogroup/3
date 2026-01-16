@@ -2,9 +2,8 @@ import { withErrorLogging } from '@/lib/errorTracking/errorLogger';
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
-import { connectMongo } from '@/lib/mongoose';
-import Message from '@/models/Message';
 import { getDb } from '@/lib/db';
+import { getCurrentTenant } from '@/lib/tenant';
 
 /**
  * Cleanup messages that have been read by all intended recipients
@@ -20,12 +19,18 @@ async function POSTHandler(req) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await connectMongo();
+    const tenant = await getCurrentTenant(req);
+    const tenantId = tenant?._id || null;
+    const tenantFilter = tenantId
+      ? { tenantId: { $in: [tenantId, String(tenantId)] } }
+      : { tenantId: { $in: [null, undefined] } };
+
     const db = await getDb();
     const usersCol = db.collection('users');
+    const messagesCol = db.collection('messages');
 
     // Get all messages
-    const messages = await Message.find({}).lean();
+    const messages = await messagesCol.find(tenantFilter).toArray();
     
     let deletedCount = 0;
     const deletedIds = [];
@@ -49,7 +54,7 @@ async function POSTHandler(req) {
       } else {
         // Role-based message (admin/agent/customer)
         // Get count of users with that role
-        const roleCount = await usersCol.countDocuments({ role: msg.targetRole });
+        const roleCount = await usersCol.countDocuments({ role: msg.targetRole, ...tenantFilter });
         
         // Delete if at least 80% of target role has read it
         const readPercentage = roleCount > 0 ? (readByUserIds.length / roleCount) * 100 : 0;
@@ -57,7 +62,7 @@ async function POSTHandler(req) {
       }
 
       if (shouldDelete) {
-        await Message.deleteOne({ _id: msg._id });
+        await messagesCol.deleteOne({ _id: msg._id, ...tenantFilter });
         deletedCount++;
         deletedIds.push(String(msg._id));
       }
@@ -89,11 +94,15 @@ async function GETHandler(req) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await connectMongo();
+    const tenant = await getCurrentTenant(req);
+    const tenantId = tenant?._id || null;
+    const tenantFilter = tenantId ? { tenantId: { $in: [tenantId, String(tenantId)] } } : { tenantId: { $in: [null, undefined] } };
+
     const db = await getDb();
     const usersCol = db.collection('users');
+    const messagesCol = db.collection('messages');
 
-    const messages = await Message.find({}).lean();
+    const messages = await messagesCol.find(tenantFilter).toArray();
     
     let eligibleForDeletion = 0;
     const stats = {
@@ -121,7 +130,7 @@ async function GETHandler(req) {
         }
       } else {
         stats.roleBased.total++;
-        const roleCount = await usersCol.countDocuments({ role: msg.targetRole });
+        const roleCount = await usersCol.countDocuments({ role: msg.targetRole, ...tenantFilter });
         const readPercentage = roleCount > 0 ? (readByUserIds.length / roleCount) * 100 : 0;
         if (readPercentage >= 80) {
           stats.roleBased.mostlyRead++;

@@ -4,6 +4,8 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
+import { requireAuthApi } from '@/lib/auth/server';
+import { getTenantIdOrThrow, withTenant } from '@/lib/tenantGuard';
 
 /**
  * GET /api/agent/customers?agentId=xxx&limit=50
@@ -11,6 +13,14 @@ import { ObjectId } from 'mongodb';
  */
 async function GETHandler(req) {
   try {
+    const user = await requireAuthApi(req);
+    let tenantObjectId;
+    try {
+      tenantObjectId = getTenantIdOrThrow(user);
+    } catch {
+      return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
+    }
+
     const { searchParams } = new URL(req.url);
     const agentId = searchParams.get('agentId');
     const limit = parseInt(searchParams.get('limit') || '50');
@@ -25,7 +35,7 @@ async function GETHandler(req) {
     // Get customers referred by this agent
     const customers = await users
       .find(
-        { referredBy: new ObjectId(agentId) },
+        withTenant({ referredBy: new ObjectId(agentId) }, tenantObjectId),
         {
           projection: {
             fullName: 1,

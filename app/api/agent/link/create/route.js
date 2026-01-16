@@ -4,6 +4,8 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
+import { requireAuthApi } from '@/lib/auth/server';
+import { getTenantIdOrThrow, withTenant } from '@/lib/tenantGuard';
 
 /**
  * POST /api/agent/link/create
@@ -19,12 +21,28 @@ async function POSTHandler(req) {
       return NextResponse.json({ ok: false, error: 'agentId required' }, { status: 400 });
     }
 
+    let user;
+    try {
+      user = await requireAuthApi(req);
+    } catch (err) {
+      const status = err?.status || 401;
+      const error = status === 401 ? 'unauthorized' : 'forbidden';
+      return NextResponse.json({ ok: false, error }, { status });
+    }
+
+    let tenantObjectId;
+    try {
+      tenantObjectId = getTenantIdOrThrow(user);
+    } catch {
+      return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
+    }
+
     const db = await getDb();
     const users = db.collection('users');
 
     // Verify agent exists
     const agent = await users.findOne(
-      { _id: new ObjectId(agentId), role: 'agent' },
+      withTenant({ _id: new ObjectId(agentId), role: 'agent' }, tenantObjectId),
       { projection: { _id: 1, fullName: 1, email: 1 } },
     );
 

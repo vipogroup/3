@@ -168,6 +168,12 @@ export async function ensureNotificationPermission() {
     return { granted: false, reason: 'unsupported' };
   }
 
+  const hostname = window.location?.hostname || '';
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+  if (!window.isSecureContext && !isLocalhost) {
+    return { granted: false, reason: 'insecure_context' };
+  }
+
   // בדיקת תמיכה בהתראות במובייל
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const isAndroid = /Android/.test(navigator.userAgent);
@@ -228,6 +234,12 @@ export async function subscribeToPush({
   console.log('PUSH_CLIENT: subscribeToPush started');
   if (typeof window === 'undefined') {
     throw new Error('client_only');
+  }
+
+  const hostname = window.location?.hostname || '';
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+  if (!window.isSecureContext && !isLocalhost) {
+    throw new Error('insecure_context');
   }
   if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
     console.error('PUSH_CLIENT: unsupported browser');

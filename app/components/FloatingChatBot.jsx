@@ -1,6 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect, useMemo } from 'react';
+import { usePathname } from 'next/navigation';
+
+// Pages where chatbot should be hidden
+const HIDDEN_PATHS = ['/messages'];
 
 // Default config for fallback
 const DEFAULT_CONFIG = {
@@ -41,6 +45,7 @@ const DEFAULT_CONFIG = {
 };
 
 export default function FloatingChatBot() {
+  const pathname = usePathname();
   const [botConfig, setBotConfig] = useState(DEFAULT_CONFIG);
   const [configLoaded, setConfigLoaded] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -260,6 +265,11 @@ export default function FloatingChatBot() {
     setContactMessage('');
     setTimeout(showWelcome, 100);
   };
+
+  // Hide on specific pages (after all hooks)
+  if (HIDDEN_PATHS.some(path => pathname?.startsWith(path))) {
+    return null;
+  }
 
   return (
     <>

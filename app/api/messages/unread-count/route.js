@@ -47,14 +47,34 @@ async function GETHandler(req) {
         'readBy.userId': { $ne: userObjectId },
       };
     } else {
-      // Regular user - messages targeted to them or their role
-      query = {
-        $or: [
-          { targetUserId: userObjectId },
-          { targetRole: { $in: ['all', user.role] } },
-        ],
-        'readBy.userId': { $ne: userObjectId },
-      };
+      // Regular user (agent/customer) - filter by tenant to prevent leaks
+      if (user.tenantId) {
+        // User belongs to a tenant - only count messages within their tenant
+        const tenantObjectId = ObjectId.isValid(user.tenantId) ? new ObjectId(user.tenantId) : null;
+        const tenantString = String(user.tenantId);
+        query = {
+          $or: [
+            { targetUserId: userObjectId },
+            { 
+              tenantId: { $in: [tenantObjectId, tenantString].filter(Boolean) },
+              targetRole: { $in: ['all', user.role] },
+            },
+          ],
+          'readBy.userId': { $ne: userObjectId },
+        };
+      } else {
+        // User without tenant - only count global messages
+        query = {
+          $or: [
+            { targetUserId: userObjectId },
+            { 
+              tenantId: { $in: [null, undefined] },
+              targetRole: { $in: ['all', user.role] },
+            },
+          ],
+          'readBy.userId': { $ne: userObjectId },
+        };
+      }
     }
 
     const count = await Message.countDocuments(query);

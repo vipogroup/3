@@ -5,8 +5,6 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
 import { requireAuthApi } from '@/lib/auth/server';
-import { connectMongo } from '@/lib/mongoose';
-import Message from '@/models/Message';
 import { pushToUsers, pushToTags, pushBroadcast } from '@/lib/pushSender';
 import { getDb } from '@/lib/db';
 
@@ -55,7 +53,13 @@ async function notifyRecipients(doc) {
 async function GETHandler(req) {
   try {
     const user = await requireAuthApi(req);
-    await connectMongo();
+    const db = await getDb();
+    const messagesCol = db.collection('messages');
+    const tenantObjectId = normalizeObjectId(user.tenantId);
+    const tenantString = user.tenantId ? String(user.tenantId) : null;
+    const tenantFilter = tenantString
+      ? { tenantId: { $in: [tenantObjectId, tenantString].filter(Boolean) } }
+      : { tenantId: { $in: [null, undefined] } };
 
     const { searchParams } = new URL(req.url);
     const limit = Math.min(100, Math.max(1, Number(searchParams.get('limit')) || 50));
@@ -109,38 +113,73 @@ async function GETHandler(req) {
         ],
       };
     } else {
+      // Regular user (agent/customer)
       if (!userObjectId) {
         return NextResponse.json({ error: 'user_id_invalid' }, { status: 400 });
       }
       
       // Get user creation date to filter messages
-      const db = await getDb();
       const usersCol = db.collection('users');
       const userData = await usersCol.findOne(
-        { _id: userObjectId },
-        { projection: { createdAt: 1 } }
+        { _id: userObjectId, ...tenantFilter },
+        { projection: { createdAt: 1, tenantId: 1 } }
       );
       const userCreatedAt = userData?.createdAt || new Date(0);
       
-      query = {
-        $and: [
-          {
-            $or: [
-              { senderId: userObjectId },
-              { targetUserId: userObjectId },
-              { targetRole: { $in: ['all', user.role] } },
-            ],
-          },
-          // Only show messages created after user registration
-          { createdAt: { $gte: userCreatedAt } },
-        ],
-      };
+      // Build query based on tenant membership
+      const userTenantId = user.tenantId || userData?.tenantId;
+      
+      if (userTenantId) {
+        // User belongs to a tenant - only see messages within their tenant
+        const tenantObjectId = normalizeObjectId(userTenantId);
+        const tenantString = String(userTenantId);
+        query = {
+          $and: [
+            {
+              $or: [
+                // Messages I sent
+                { senderId: userObjectId },
+                // Messages sent directly to me
+                { targetUserId: userObjectId },
+                // Messages from business_admin to my role within my tenant
+                { 
+                  tenantId: { $in: [tenantObjectId, tenantString].filter(Boolean) },
+                  targetRole: { $in: ['all', user.role] },
+                },
+              ],
+            },
+            // Only show messages created after user registration
+            { createdAt: { $gte: userCreatedAt } },
+          ],
+        };
+      } else {
+        // User without tenant - only see global admin messages
+        query = {
+          $and: [
+            {
+              $or: [
+                { senderId: userObjectId },
+                { targetUserId: userObjectId },
+                // Only global messages (no tenantId) targeted to their role or all
+                { 
+                  tenantId: { $in: [null, undefined] },
+                  targetRole: { $in: ['all', user.role] },
+                },
+              ],
+            },
+            { createdAt: { $gte: userCreatedAt } },
+          ],
+        };
+      }
     }
 
-    const docs = await Message.find(query)
+    query = { ...tenantFilter, ...query };
+
+    const docs = await messagesCol
+      .find(query)
       .sort({ createdAt: -1 })
       .limit(limit)
-      .lean();
+      .toArray();
 
     const items = docs.map((doc) => ({
       id: String(doc._id),
@@ -169,7 +208,8 @@ async function GETHandler(req) {
 async function POSTHandler(req) {
   try {
     const user = await requireAuthApi(req);
-    await connectMongo();
+    const db = await getDb();
+    const messagesCol = db.collection('messages');
 
     console.log('[MESSAGES_POST] User:', { id: user.id, role: user.role, tenantId: user.tenantId });
 
@@ -231,7 +271,8 @@ async function POSTHandler(req) {
 
     console.log('[MESSAGES_POST] Creating message:', { senderRole, targetRole, tenantId: tenantId ? String(tenantId) : null });
 
-    const messageDoc = await Message.create({
+    const now = new Date();
+    const messageDoc = {
       senderId: senderObjectId,
       senderRole,
       targetRole,
@@ -241,10 +282,15 @@ async function POSTHandler(req) {
       readBy: [
         {
           userId: senderObjectId,
-          readAt: new Date(),
+          readAt: now,
         },
       ],
-    });
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    const insertResult = await messagesCol.insertOne(messageDoc);
+    messageDoc._id = insertResult.insertedId;
 
     console.log('[MESSAGES_POST] Message created:', messageDoc._id);
     notifyRecipients(messageDoc).catch(() => {});

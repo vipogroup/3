@@ -6,6 +6,8 @@ import path from 'path';
 import { randomUUID } from 'crypto';
 import { getDb } from '@/lib/db';
 import { verifyJwt } from '@/src/lib/auth/createToken.js';
+import { requireAuthApi } from '@/lib/auth/server';
+import { getTenantIdOrThrow, withTenant } from '@/lib/tenantGuard';
 
 async function ordersCollection() {
   const db = await getDb();
@@ -112,11 +114,25 @@ async function POSTHandler(req, { params }) {
     const decoded = verifyJwt(token);
     if (!decoded?.userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+    let authUser;
+    try {
+      authUser = await requireAuthApi(req);
+    } catch {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    let tenantObjectId;
+    try {
+      tenantObjectId = getTenantIdOrThrow(authUser);
+    } catch {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const { id } = params || {};
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
     const col = await ordersCollection();
-    const order = await col.findOne({ _id: new ObjectId(id) });
+    const order = await col.findOne(withTenant({ _id: new ObjectId(id) }, tenantObjectId));
     if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
     const isOwner = String(order.agentId) === String(decoded.userId);

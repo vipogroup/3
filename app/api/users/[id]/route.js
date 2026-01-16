@@ -6,6 +6,7 @@ import { verifyJwt } from '@/src/lib/auth/createToken.js';
 import { getDb } from '@/lib/db';
 import { isSuperAdminUser, DEFAULT_ADMIN_PERMISSIONS } from '@/lib/superAdmins';
 import { isSuperAdmin } from '@/lib/tenant/tenantMiddleware';
+import { getTenantIdOrThrow, withTenant } from '@/lib/tenantGuard';
 
 async function usersCollection() {
   const dbo = await getDb();
@@ -21,21 +22,31 @@ async function ensureAdmin(req) {
   if (decoded?.role !== 'admin' && decoded?.role !== 'super_admin' && decoded?.role !== 'business_admin') {
     return null;
   }
-  
+
+  let tenantObjectId;
+  try {
+    tenantObjectId = getTenantIdOrThrow(decoded);
+  } catch {
+    return decoded;
+  }
+
   // Hydrate user from DB to get current role, email, and tenantId
   const db = await getDb();
   const usersCol = db.collection('users');
   const userId = decoded.userId || decoded.sub || decoded.id;
   const objectId = ObjectId.isValid(userId) ? new ObjectId(userId) : null;
-  
+
   if (objectId) {
-    const user = await usersCol.findOne({ _id: objectId }, { projection: { email: 1, role: 1, tenantId: 1 } });
+    const user = await usersCol.findOne(
+      withTenant({ _id: objectId }, tenantObjectId),
+      { projection: { email: 1, role: 1, tenantId: 1 } },
+    );
     if (user) {
       return { ...decoded, email: user.email, role: user.role, _id: user._id, tenantId: user.tenantId };
     }
   }
-  
-  return decoded;
+
+  return { ...decoded, tenantId: null };
 }
 
 function parseObjectId(id) {
@@ -48,8 +59,16 @@ function parseObjectId(id) {
 
 async function GETHandler(req, { params }) {
   try {
-    if (!(await ensureAdmin(req))) {
+    const currentUser = await ensureAdmin(req);
+    if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    let tenantObjectId;
+    try {
+      tenantObjectId = getTenantIdOrThrow(currentUser);
+    } catch {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     const { id } = params || {};
@@ -60,7 +79,7 @@ async function GETHandler(req, { params }) {
 
     const col = await usersCollection();
     const user = await col.findOne(
-      { _id: objectId },
+      withTenant({ _id: objectId }, tenantObjectId),
       { projection: { passwordHash: 0, password: 0 } },
     );
 
@@ -82,6 +101,13 @@ async function PATCHHandler(req, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    let tenantObjectId;
+    try {
+      tenantObjectId = getTenantIdOrThrow(currentUser);
+    } catch {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const { id } = params || {};
     const objectId = parseObjectId(id);
     if (!objectId) {
@@ -99,11 +125,11 @@ async function PATCHHandler(req, { params }) {
       updates.showPushButtons = Boolean(body.showPushButtons);
     }
     const col = await usersCollection();
-    const existing = await col.findOne({ _id: objectId });
+    const existing = await col.findOne(withTenant({ _id: objectId }, tenantObjectId));
     if (!existing) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
-    
+
     // Multi-Tenant: Verify user belongs to admin's tenant
     if (!isSuperAdmin(currentUser) && currentUser.tenantId) {
       const userTenantId = existing.tenantId?.toString();
@@ -117,20 +143,20 @@ async function PATCHHandler(req, { params }) {
       if (!['admin', 'agent', 'customer'].includes(body.role)) {
         return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
       }
-      
+
       // Only super admins can change any role
       if (!isSuperAdminUser(currentUser)) {
         return NextResponse.json({ error: 'רק מנהלים ראשיים יכולים לשנות תפקידים' }, { status: 403 });
       }
-      
+
       updates.role = body.role;
-      
+
       // If promoting to admin, set default permissions
       if (body.role === 'admin' && existing.role !== 'admin') {
         updates.permissions = DEFAULT_ADMIN_PERMISSIONS;
       }
     }
-    
+
     // Handle permissions update (only for admins and only by super admins)
     if (body.permissions && Array.isArray(body.permissions)) {
       if (!isSuperAdminUser(currentUser)) {
@@ -144,10 +170,9 @@ async function PATCHHandler(req, { params }) {
     }
 
     if (updates.phone) {
-      const dup = await col.findOne({
-        phone: updates.phone,
-        _id: { $ne: objectId },
-      });
+      const dup = await col.findOne(
+        withTenant({ phone: updates.phone, _id: { $ne: objectId } }, tenantObjectId),
+      );
       if (dup) {
         return NextResponse.json({ error: 'Phone already in use' }, { status: 409 });
       }
@@ -156,7 +181,7 @@ async function PATCHHandler(req, { params }) {
     const isAdmin = existing.role === 'admin';
 
     if (updates.role && isAdmin && updates.role !== 'admin') {
-      const adminCount = await col.countDocuments({ role: 'admin' });
+      const adminCount = await col.countDocuments(withTenant({ role: 'admin' }, tenantObjectId));
       if (adminCount <= 1) {
         return NextResponse.json(
           { error: 'לא ניתן להוריד את המנהל האחרון במערכת' },
@@ -166,7 +191,9 @@ async function PATCHHandler(req, { params }) {
     }
 
     if (Object.prototype.hasOwnProperty.call(updates, 'isActive') && isAdmin && !updates.isActive) {
-      const activeAdminCount = await col.countDocuments({ role: 'admin', isActive: true });
+      const activeAdminCount = await col.countDocuments(
+        withTenant({ role: 'admin', isActive: true }, tenantObjectId),
+      );
       if (activeAdminCount <= 1) {
         return NextResponse.json(
           { error: 'לא ניתן לכבות את המנהל האחרון במערכת' },
@@ -175,9 +202,9 @@ async function PATCHHandler(req, { params }) {
       }
     }
 
-    await col.updateOne({ _id: objectId }, { $set: updates });
+    await col.updateOne(withTenant({ _id: objectId }, tenantObjectId), { $set: updates });
     const user = await col.findOne(
-      { _id: objectId },
+      withTenant({ _id: objectId }, tenantObjectId),
       { projection: { passwordHash: 0, password: 0 } },
     );
 
@@ -195,6 +222,13 @@ async function DELETEHandler(req, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    let tenantObjectId;
+    try {
+      tenantObjectId = getTenantIdOrThrow(decoded);
+    } catch {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const { id } = params || {};
     const objectId = parseObjectId(id);
     if (!objectId) {
@@ -202,7 +236,7 @@ async function DELETEHandler(req, { params }) {
     }
 
     const col = await usersCollection();
-    const user = await col.findOne({ _id: objectId });
+    const user = await col.findOne(withTenant({ _id: objectId }, tenantObjectId));
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -235,7 +269,7 @@ async function DELETEHandler(req, { params }) {
     }
 
     if (user.role === 'admin') {
-      const adminCount = await col.countDocuments({ role: 'admin' });
+      const adminCount = await col.countDocuments(withTenant({ role: 'admin' }, tenantObjectId));
       if (adminCount <= 1) {
         return NextResponse.json(
           { error: 'לא ניתן למחוק את המנהל האחרון במערכת' },
@@ -244,7 +278,7 @@ async function DELETEHandler(req, { params }) {
       }
     }
 
-    await col.deleteOne({ _id: objectId });
+    await col.deleteOne(withTenant({ _id: objectId }, tenantObjectId));
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error(e);
