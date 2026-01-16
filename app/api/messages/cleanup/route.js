@@ -13,7 +13,8 @@ async function POSTHandler(req) {
   try {
     // Verify cron secret or admin auth
     const cronSecret = req.headers.get('x-cron-secret');
-    const expectedSecret = process.env.CRON_SECRET || 'vipo-cron-secret';
+    const rawExpected = process.env.CRON_SECRET || 'vipo-cron-secret';
+    const expectedSecret = rawExpected.trim();
     
     if (cronSecret !== expectedSecret) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

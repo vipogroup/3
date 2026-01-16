@@ -7,7 +7,8 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 function getCronSecret() {
-  return process.env.PUSH_CRON_SECRET || null;
+  const secret = process.env.PUSH_CRON_SECRET;
+  return secret ? secret.trim() : null;
 }
 
 function isAuthorized(req) {

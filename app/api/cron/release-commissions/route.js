@@ -13,7 +13,8 @@ function unauthorized() {
 }
 
 function validateAuth(req) {
-  const cronSecret = process.env.CRON_SECRET || process.env.CRON_API_TOKEN;
+  const rawSecret = process.env.CRON_SECRET || process.env.CRON_API_TOKEN;
+  const cronSecret = rawSecret ? rawSecret.trim() : null;
   if (!cronSecret) {
     // אם אין סוד, נבצע חסימה כדי למנוע חשיפה
     console.error('CRON_SECRET missing. Blocked release-commissions execution.');

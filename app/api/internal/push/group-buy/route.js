@@ -9,7 +9,8 @@ import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
 import { pushToUsers } from '@/lib/pushSender';
 
 function getCronSecret() {
-  return process.env.PUSH_CRON_SECRET || null;
+  const secret = process.env.PUSH_CRON_SECRET;
+  return secret ? secret.trim() : null;
 }
 
 function isAuthorized(req) {
