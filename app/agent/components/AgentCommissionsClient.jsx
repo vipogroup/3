@@ -3,8 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import CommissionsSection from './CommissionsSection';
 import WithdrawalModal from './WithdrawalModal';
+import { useTenant } from './AgentDashboardClient';
 
 export default function AgentCommissionsClient() {
+  const { currentBusiness, loading: tenantLoading, hasBusinesses } = useTenant() || {};
   const [commissionSummary, setCommissionSummary] = useState(null);
   const [commissions, setCommissions] = useState([]);
   const [withdrawals, setWithdrawals] = useState([]);
@@ -13,11 +15,18 @@ export default function AgentCommissionsClient() {
   const [isWithdrawalModalOpen, setWithdrawalModalOpen] = useState(false);
 
   const loadCommissionsData = useCallback(async () => {
+    // Don't load if no business is selected
+    if (!hasBusinesses || !currentBusiness) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
+      const tenantParam = currentBusiness?.tenantId ? `?tenantId=${currentBusiness.tenantId}` : '';
       const [commissionsRes, withdrawalsRes] = await Promise.all([
-        fetch('/api/agent/commissions', { cache: 'no-store' }),
+        fetch(`/api/agent/commissions${tenantParam}`, { cache: 'no-store' }),
         fetch('/api/withdrawals', { cache: 'no-store' }),
       ]);
 
@@ -39,11 +48,13 @@ export default function AgentCommissionsClient() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [hasBusinesses, currentBusiness]);
 
   useEffect(() => {
-    loadCommissionsData();
-  }, [loadCommissionsData]);
+    if (!tenantLoading) {
+      loadCommissionsData();
+    }
+  }, [loadCommissionsData, tenantLoading, currentBusiness]);
 
   const openWithdrawalModal = () => {
     setWithdrawalModalOpen(true);
@@ -57,7 +68,12 @@ export default function AgentCommissionsClient() {
     loadCommissionsData();
   };
 
-  if (loading) {
+  // Don't show anything if no business is selected
+  if (!hasBusinesses || !currentBusiness) {
+    return null;
+  }
+
+  if (loading || tenantLoading) {
     return (
       <div className="flex justify-center py-10">
         <div
