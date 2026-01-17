@@ -1235,7 +1235,7 @@ export default function NotificationsManagerClient() {
                     onClick={openScheduleForm}
                     className="rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-500 px-5 py-2 text-sm font-semibold text-emerald-950 shadow-lg shadow-emerald-500/30 hover:scale-[1.03]"
                   >
-                    ✨ תזמן התראה חדשה
+                    [*] תזמן התראה חדשה
                   </button>
                 </div>
 

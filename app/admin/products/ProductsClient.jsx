@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { refreshProductsFromApi, getProducts } from '@/app/lib/products';
 
-export default function ProductsClient() {
+export default function ProductsClient({ tenantId = null }) {
   const pathname = usePathname();
   const basePath = pathname?.startsWith('/business') ? '/business' : '/admin';
   const [products, setProducts] = useState([]);
@@ -325,8 +325,8 @@ export default function ProductsClient() {
   const loadProducts = async () => {
     setLoading(true);
     try {
-      // Admin panel - include inactive products
-      const list = await refreshProductsFromApi({ includeInactive: true });
+      // Admin/Business panel - include inactive products, filter by tenant if provided
+      const list = await refreshProductsFromApi({ includeInactive: true, tenantId });
       if (Array.isArray(list)) {
         setProducts(list);
       } else {
@@ -545,7 +545,7 @@ export default function ProductsClient() {
               ניהול מוצרים
             </h1>
             <Link
-              href="/admin"
+              href={basePath}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:opacity-90"
               style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
             >

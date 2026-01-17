@@ -96,7 +96,7 @@ export default function PushConsentModal({ open, role = 'customer', onAccept, on
             {copy.bullets.map((bullet, idx) => (
               <li key={idx} className="flex items-start gap-3">
                 <span className="mt-1 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border border-white/40 text-xs font-semibold">
-                  ✓
+                  [v]
                 </span>
                 <span className="leading-relaxed text-white/90">{bullet}</span>
               </li>

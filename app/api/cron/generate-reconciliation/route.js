@@ -175,15 +175,15 @@ async function sendReconciliationAlert(report) {
   const slackWebhook = process.env.INTEGRATION_ALERT_SLACK_WEBHOOK;
 
   const message = `
-📊 דוח התאמות יומי - ${report.date}
+[STATS] דוח התאמות יומי - ${report.date}
 
 תשלומים: ${report.payments.total} (₪${report.payments.totalAmount.toLocaleString()})
 הזמנות: ${report.orders.total} (₪${report.orders.totalAmount.toLocaleString()})
 
 התאמות:
-✅ תואמים: ${report.reconciliation.matched}
-⚠️ אי-התאמות: ${report.reconciliation.mismatches}
-❌ הזמנות חסרות: ${report.reconciliation.missingOrders}
+[OK] תואמים: ${report.reconciliation.matched}
+[WARN] אי-התאמות: ${report.reconciliation.mismatches}
+[X] הזמנות חסרות: ${report.reconciliation.missingOrders}
 
 הפרש כולל: ₪${report.reconciliation.difference.toLocaleString()}
   `.trim();

@@ -71,16 +71,21 @@ function setProducts(list, { persist = true } = {}) {
   }
 }
 
-async function fetchProductsFromApi({ includeInactive = false } = {}) {
+async function fetchProductsFromApi({ includeInactive = false, tenantId = null } = {}) {
   if (typeof fetch === 'undefined') {
     return null;
   }
 
   try {
-    const url = includeInactive 
-      ? `${API_PRODUCTS_URL}?includeInactive=true` 
+    // Build URL with query params
+    const params = new URLSearchParams();
+    if (includeInactive) params.set('includeInactive', 'true');
+    if (tenantId) params.set('tenantId', tenantId);
+    
+    const url = params.toString() 
+      ? `${API_PRODUCTS_URL}?${params.toString()}` 
       : API_PRODUCTS_URL;
-    const response = await fetch(url, { cache: 'no-store' });
+    const response = await fetch(url, { cache: 'no-store', credentials: 'include' });
     if (!response.ok) {
       throw new Error(`Failed to fetch products: status ${response.status}`);
     }
@@ -117,10 +122,10 @@ function scheduleApiSync({ force = false } = {}) {
   })();
 }
 
-export async function refreshProductsFromApi({ includeInactive = false } = {}) {
-  if (includeInactive) {
-    // For admin - fetch directly with includeInactive
-    const remoteProducts = await fetchProductsFromApi({ includeInactive: true });
+export async function refreshProductsFromApi({ includeInactive = false, tenantId = null } = {}) {
+  if (includeInactive || tenantId) {
+    // For admin/business - fetch directly with filters
+    const remoteProducts = await fetchProductsFromApi({ includeInactive, tenantId });
     if (Array.isArray(remoteProducts)) {
       return remoteProducts.map((item) => normalizeProductShape(item)).filter(Boolean);
     }

@@ -610,7 +610,7 @@ export default function CommissionsClient({ basePath = '/admin' }) {
                                 style={{ borderColor: '#0891b2', color: '#1e3a8a' }}
                                 title="פירוט מכירות"
                               >
-                                📋
+                                [LIST]
                               </button>
                             )}
                           </div>
@@ -678,7 +678,7 @@ export default function CommissionsClient({ basePath = '/admin' }) {
                             className="px-3 py-1 text-sm rounded-lg border-2"
                             style={{ borderColor: '#0891b2', color: '#1e3a8a' }}
                           >
-                            📋
+                            [LIST]
                           </button>
                         )}
                       </div>
@@ -923,7 +923,7 @@ export default function CommissionsClient({ basePath = '/admin' }) {
                                 disabled={savingDate}
                                 className="px-2 py-1 text-xs bg-green-500 text-white rounded"
                               >
-                                ✓
+                                [v]
                               </button>
                               <button
                                 onClick={() => setEditingDateId(null)}

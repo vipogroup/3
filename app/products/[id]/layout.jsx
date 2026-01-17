@@ -64,7 +64,7 @@ export async function generateMetadata({ params }) {
         },
       ],
       locale: 'he_IL',
-      type: 'product',
+      type: 'website',
     },
     
     twitter: {

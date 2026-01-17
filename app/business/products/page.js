@@ -1,48 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useBusinessContext, BusinessError, BusinessLoading } from '../BusinessContext';
 import ProductsClient from '@/app/admin/products/ProductsClient';
 
+/**
+ * Business Products Page
+ * 
+ * Uses BusinessContext to get tenantId and passes it to ProductsClient.
+ * This ensures products are filtered by the business's tenant.
+ */
 export default function BusinessProductsPage() {
-  const router = useRouter();
-  const [authorized, setAuthorized] = useState(false);
+  const { loading, error, tenantId, refresh } = useBusinessContext();
 
-  useEffect(() => {
-    async function checkAuth() {
-      try {
-        const res = await fetch('/api/auth/me', { credentials: 'include' });
-        if (!res.ok) {
-          router.push('/login');
-          return;
-        }
-        const data = await res.json();
-        if (data.user?.role !== 'business_admin' && data.user?.role !== 'admin' && data.user?.role !== 'super_admin') {
-          router.push('/');
-          return;
-        }
-        if (!data.user?.tenantId) {
-          router.push('/login');
-          return;
-        }
-        setAuthorized(true);
-      } catch (err) {
-        router.push('/login');
-      }
-    }
-    checkAuth();
-  }, [router]);
-
-  if (!authorized) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin rounded-full h-12 w-12" style={{
-          border: '4px solid rgba(8, 145, 178, 0.2)',
-          borderTopColor: '#0891b2',
-        }}></div>
-      </div>
-    );
+  if (loading) {
+    return <BusinessLoading />;
   }
 
-  return <ProductsClient />;
+  if (error) {
+    return <BusinessError error={error} onRetry={refresh} />;
+  }
+
+  // Pass tenantId to ProductsClient for filtering
+  return <ProductsClient tenantId={tenantId} />;
 }

@@ -13,7 +13,7 @@ const REPORT_TYPES = {
   social_metadata_audit: {
     label: 'Social Metadata Audit',
     description: 'בדיקת Open Graph tags, Twitter Cards ותאימות מטא-דאטה',
-    icon: '🏷️',
+    icon: '[TAG]',
   },
   social_preview_shareability: {
     label: 'Social Preview & Shareability Report',
@@ -23,7 +23,7 @@ const REPORT_TYPES = {
   social_crawlability_discovery: {
     label: 'Social Crawlability & Fast Discovery Report',
     description: 'בדיקת יכולת סריקה וגילוי מהיר',
-    icon: '🔍',
+    icon: '[SEARCH]',
   },
 };
 

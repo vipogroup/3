@@ -68,7 +68,7 @@ async function POSTHandler(request) {
     }
 
     const payload = {
-      title: '🔔 התראת בדיקה',
+      title: '[BELL] התראת בדיקה',
       body: 'זוהי התראת בדיקה מ-VIPO',
       icon: '/icons/192.png',
       badge: '/icons/badge.png',

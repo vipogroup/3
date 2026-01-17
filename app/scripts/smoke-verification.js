@@ -1,1 +1,1 @@
-﻿console.log('SMOKE TEST FILE CREATED ✅');
+﻿console.log('SMOKE TEST FILE CREATED [OK]');

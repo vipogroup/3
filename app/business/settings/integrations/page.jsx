@@ -138,10 +138,10 @@ export default function BusinessIntegrationsPage() {
   }
 
   const tabs = [
-    { id: 'payment', label: 'מודל תשלום', icon: '💰' },
-    { id: 'domain', label: 'דומיין', icon: '🌐' },
-    { id: 'payplus', label: 'PayPlus סליקה', icon: '💳' },
-    { id: 'priority', label: 'Priority ERP', icon: '📦' },
+    { id: 'payment', label: 'מודל תשלום', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
+    { id: 'domain', label: 'דומיין', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg> },
+    { id: 'payplus', label: 'PayPlus סליקה', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg> },
+    { id: 'priority', label: 'Priority ERP', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg> },
   ];
 
   return (
@@ -202,7 +202,7 @@ export default function BusinessIntegrationsPage() {
                 background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)'
               } : {}}
             >
-              <span>{tab.icon}</span>
+              {tab.icon}
               <span>{tab.label}</span>
             </button>
           ))}
@@ -257,13 +257,13 @@ export default function BusinessIntegrationsPage() {
                     </p>
                     <div className="flex flex-wrap gap-2">
                       <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-                        ✓ אין צורך בחשבון PayPlus
+                        [v] אין צורך בחשבון PayPlus
                       </span>
                       <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-                        ✓ אין צורך בהנהלת חשבונות
+                        [v] אין צורך בהנהלת חשבונות
                       </span>
                       <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-                        ✓ התחלה מיידית
+                        [v] התחלה מיידית
                       </span>
                     </div>
                   </div>
@@ -296,13 +296,16 @@ export default function BusinessIntegrationsPage() {
                     </p>
                     <div className="flex flex-wrap gap-2">
                       <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-                        💳 דורש חשבון PayPlus
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                        דורש חשבון PayPlus
                       </span>
                       <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-                        📋 דורש הנהלת חשבונות
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        דורש הנהלת חשבונות
                       </span>
                       <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-                        🔓 עצמאות מלאה
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" /></svg>
+                        עצמאות מלאה
                       </span>
                     </div>
                   </div>
@@ -312,7 +315,7 @@ export default function BusinessIntegrationsPage() {
               {settings.paymentMode === 'independent' && (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                   <div className="flex items-start gap-3">
-                    <span className="text-amber-500 text-xl">⚠️</span>
+                    <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     <div>
                       <h4 className="font-bold text-amber-800 mb-1">נדרש חיבור PayPlus</h4>
                       <p className="text-sm text-amber-700">

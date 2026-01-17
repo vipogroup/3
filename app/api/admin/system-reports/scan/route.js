@@ -293,13 +293,13 @@ async function logAudit(col, action, admin, details) {
 function buildIssuesLog(findings) {
   const issues = {
     database: { title: '🗄️ מסד נתונים', icon: '🗄️', items: [], severity: 'ok' },
-    users: { title: '👥 משתמשים והרשאות', icon: '👥', items: [], severity: 'ok' },
-    orders: { title: '🛒 הזמנות', icon: '🛒', items: [], severity: 'ok' },
-    products: { title: '📦 מוצרים', icon: '📦', items: [], severity: 'ok' },
-    payments: { title: '💳 תשלומים', icon: '💳', items: [], severity: 'ok' },
-    integrations: { title: '🔗 אינטגרציות', icon: '🔗', items: [], severity: 'ok' },
-    security: { title: '🔒 אבטחה', icon: '🔒', items: [], severity: 'ok' },
-    envVars: { title: '⚙️ משתני סביבה', icon: '⚙️', items: [], severity: 'ok' },
+    users: { title: '[USERS] משתמשים והרשאות', icon: '[USERS]', items: [], severity: 'ok' },
+    orders: { title: '[CART] הזמנות', icon: '[CART]', items: [], severity: 'ok' },
+    products: { title: '[PKG] מוצרים', icon: '[PKG]', items: [], severity: 'ok' },
+    payments: { title: '[CARD] תשלומים', icon: '[CARD]', items: [], severity: 'ok' },
+    integrations: { title: '[LINK] אינטגרציות', icon: '[LINK]', items: [], severity: 'ok' },
+    security: { title: '[LOCK] אבטחה', icon: '[LOCK]', items: [], severity: 'ok' },
+    envVars: { title: '[GEAR] משתני סביבה', icon: '[GEAR]', items: [], severity: 'ok' },
   };
 
   // Database issues
@@ -851,7 +851,7 @@ async function generateFinancialReport(findings, db) {
     { $group: { _id: null, total: { $sum: '$amount' } } }
   ]).toArray();
 
-  const content = `# 💰 Financial & Payments Report
+  const content = `# [$] Financial & Payments Report
 
 **Generated:** ${new Date().toISOString()}
 
@@ -878,7 +878,7 @@ async function generateFinancialReport(findings, db) {
 
 async function generateOrdersReport(findings, db) {
   const o = findings.orders?.details || {};
-  const content = `# 🛒 Orders & Transactions Report
+  const content = `# [CART] Orders & Transactions Report
 
 **Generated:** ${new Date().toISOString()}
 
@@ -913,7 +913,7 @@ async function generateUsersReport(findings, db) {
   const u = findings.users?.details || {};
   const p = findings.permissions?.details || {};
   
-  const content = `# 👥 Users & Permissions Report
+  const content = `# [USERS] Users & Permissions Report
 
 **Generated:** ${new Date().toISOString()}
 
@@ -929,7 +929,7 @@ async function generateUsersReport(findings, db) {
 - Users without role: ${u.noRole || 0}
 
 ## Admin Permissions
-${(p.admins || []).map(a => `- ${a.name}: ${a.hasPermissions ? '✅' : '⚠️'}`).join('\n') || 'No admins found'}
+${(p.admins || []).map(a => `- ${a.name}: ${a.hasPermissions ? '[OK]' : '[WARN]'}`).join('\n') || 'No admins found'}
 `;
 
   return {
@@ -948,7 +948,7 @@ async function generateAuditTrailReport(db) {
     .limit(20)
     .toArray();
 
-  const content = `# 📋 Admin Actions & Audit Trail
+  const content = `# [LIST] Admin Actions & Audit Trail
 
 **Generated:** ${new Date().toISOString()}
 
@@ -970,26 +970,26 @@ ${recentLogs.map(l => `| ${new Date(l.createdAt).toLocaleString('he-IL')} | ${l.
 async function generateIntegrationsReport(findings) {
   const i = findings.integrations?.details || {};
   
-  const content = `# 🔗 Integrations & Webhooks Report
+  const content = `# [LINK] Integrations & Webhooks Report
 
 **Generated:** ${new Date().toISOString()}
 
 ## Integration Status
 | Integration | Status | Configured |
 |-------------|--------|------------|
-| Priority ERP | ${i.priority?.status || 'unknown'} | ${i.priority?.configured ? '✅' : '❌'} |
-| PayPlus | ${i.payplus?.status || 'unknown'} | ${i.payplus?.configured ? '✅' : '❌'} |
+| Priority ERP | ${i.priority?.status || 'unknown'} | ${i.priority?.configured ? '[OK]' : '[X]'} |
+| PayPlus | ${i.payplus?.status || 'unknown'} | ${i.payplus?.configured ? '[OK]' : '[X]'} |
 
 ## Recommendations
 ${!i.priority?.configured ? '- Configure Priority ERP for full ERP sync\n' : ''}
 ${!i.payplus?.configured ? '- Configure PayPlus for payment processing\n' : ''}
-${i.priority?.configured && i.payplus?.configured ? '✅ All integrations configured' : ''}
+${i.priority?.configured && i.payplus?.configured ? '[OK] All integrations configured' : ''}
 `;
 
   return {
     title: 'Integrations & Webhooks Report',
     content,
-    summary: `Priority: ${i.priority?.configured ? '✅' : '❌'} | PayPlus: ${i.payplus?.configured ? '✅' : '❌'}`,
+    summary: `Priority: ${i.priority?.configured ? '[OK]' : '[X]'} | PayPlus: ${i.payplus?.configured ? '[OK]' : '[X]'}`,
     tags: ['integrations', 'webhooks', 'priority', 'payplus'],
     stats: findings.integrations,
   };
@@ -1005,19 +1005,19 @@ async function generateDataIntegrityReport(findings) {
   if (noRoleUsers > 0) issues.push(`${noRoleUsers} users without role`);
   if (noPriceProducts > 0) issues.push(`${noPriceProducts} products without price`);
 
-  const content = `# 🔍 Data Integrity & Consistency Report
+  const content = `# [SEARCH] Data Integrity & Consistency Report
 
 **Generated:** ${new Date().toISOString()}
 
 ## Integrity Checks
 | Check | Status | Issues |
 |-------|--------|--------|
-| Orphaned Orders | ${orphanedOrders === 0 ? '✅' : '⚠️'} | ${orphanedOrders} |
-| Users without Role | ${noRoleUsers === 0 ? '✅' : '⚠️'} | ${noRoleUsers} |
-| Products without Price | ${noPriceProducts === 0 ? '✅' : '⚠️'} | ${noPriceProducts} |
+| Orphaned Orders | ${orphanedOrders === 0 ? '[OK]' : '[WARN]'} | ${orphanedOrders} |
+| Users without Role | ${noRoleUsers === 0 ? '[OK]' : '[WARN]'} | ${noRoleUsers} |
+| Products without Price | ${noPriceProducts === 0 ? '[OK]' : '[WARN]'} | ${noPriceProducts} |
 
 ## Summary
-${issues.length === 0 ? '✅ No data integrity issues found' : `⚠️ Found ${issues.length} issues:\n${issues.map(i => `- ${i}`).join('\n')}`}
+${issues.length === 0 ? '[OK] No data integrity issues found' : `[WARN] Found ${issues.length} issues:\n${issues.map(i => `- ${i}`).join('\n')}`}
 `;
 
   return {
@@ -1032,17 +1032,17 @@ async function generateSecurityReport(findings) {
   const s = findings.security?.details || [];
   const k = findings.system_keys?.details || [];
 
-  const content = `# 🔒 Security & Access Report
+  const content = `# [LOCK] Security & Access Report
 
 **Generated:** ${new Date().toISOString()}
 
 ## Environment Security
-${s.map(c => `| ${c.var} | ${c.status === 'set' || c.status === 'production' ? '✅' : '❌'} | ${c.strength || c.status} |`).join('\n')}
+${s.map(c => `| ${c.var} | ${c.status === 'set' || c.status === 'production' ? '[OK]' : '[X]'} | ${c.strength || c.status} |`).join('\n')}
 
 ## System Keys Status
 | Key | Status |
 |-----|--------|
-${k.map(key => `| ${key.key} | ${key.status === 'configured' ? '✅' : '⚠️'} |`).join('\n')}
+${k.map(key => `| ${key.key} | ${key.status === 'configured' ? '[OK]' : '[WARN]'} |`).join('\n')}
 
 ## Score
 - Security checks passed: ${findings.security?.passed || 0}/${findings.security?.checks || 0}
@@ -1085,7 +1085,7 @@ async function generateHealthReport(findings) {
 **${score}%** (${totalPassed}/${totalChecks} checks passed)
 
 ## Status
-${score >= 80 ? '✅ System is healthy' : score >= 50 ? '⚠️ System needs attention' : '❌ Critical issues detected'}
+${score >= 80 ? '[OK] System is healthy' : score >= 50 ? '[WARN] System needs attention' : '[X] Critical issues detected'}
 `;
 
   return {
@@ -1207,42 +1207,42 @@ async function generateGoLiveReadinessReport(findings, db) {
 
   const overallScore = Math.round((financialScore + securityScore + dataIntegrityScore + integrationsScore + healthScore) / 5);
 
-  const content = `# 🚀 Go-Live Readiness Report
+  const content = `# [GO] Go-Live Readiness Report
 
 **Generated:** ${new Date().toISOString()}
 **Scan ID:** ${findings.scanId || 'N/A'}
 
 ---
 
-## 📊 EXECUTIVE DECISION
+## [STATS] EXECUTIVE DECISION
 
 | Status | Value |
 |--------|-------|
-| **READY_FOR_PRODUCTION** | ${readyForProduction ? '✅ YES' : '❌ NO'} |
+| **READY_FOR_PRODUCTION** | ${readyForProduction ? '[OK] YES' : '[X] NO'} |
 | **Overall Score** | ${overallScore}% |
 | **Blockers Count** | ${blockers.filter(b => b.severity === 'critical').length} critical, ${blockers.filter(b => b.severity === 'warning').length} warnings |
 
 ---
 
-## 🔍 Score Breakdown
+## [SEARCH] Score Breakdown
 
 | Area | Score | Threshold | Status |
 |------|-------|-----------|--------|
-| Financial | ${financialScore}% | ≥80% | ${financialScore >= 80 ? '✅ PASS' : '❌ BLOCK'} |
-| Security | ${securityScore}% | ≥90% | ${securityScore >= 90 ? '✅ PASS' : '❌ BLOCK'} |
-| Data Integrity | ${dataIntegrityScore}% | - | ${dataIntegrityScore >= 70 ? '✅ OK' : '⚠️ WARN'} |
-| Integrations | ${integrationsScore}% | - | ${integrationsScore >= 50 ? '✅ OK' : '⚠️ WARN'} |
-| System Health | ${healthScore}% | - | ${healthScore >= 70 ? '✅ OK' : '⚠️ WARN'} |
+| Financial | ${financialScore}% | ≥80% | ${financialScore >= 80 ? '[OK] PASS' : '[X] BLOCK'} |
+| Security | ${securityScore}% | ≥90% | ${securityScore >= 90 ? '[OK] PASS' : '[X] BLOCK'} |
+| Data Integrity | ${dataIntegrityScore}% | - | ${dataIntegrityScore >= 70 ? '[OK] OK' : '[WARN] WARN'} |
+| Integrations | ${integrationsScore}% | - | ${integrationsScore >= 50 ? '[OK] OK' : '[WARN] WARN'} |
+| System Health | ${healthScore}% | - | ${healthScore >= 70 ? '[OK] OK' : '[WARN] WARN'} |
 
 ---
 
 ## 🚫 Blockers
 
-${blockers.length === 0 ? '✅ No blockers found - system is ready for production!' : blockers.map(b => `| ${b.severity === 'critical' ? '🔴' : '🟡'} ${b.type} | ${b.message} |`).join('\n')}
+${blockers.length === 0 ? '[OK] No blockers found - system is ready for production!' : blockers.map(b => `| ${b.severity === 'critical' ? '🔴' : '🟡'} ${b.type} | ${b.message} |`).join('\n')}
 
 ---
 
-## ✅ Checklist
+## [OK] Checklist
 
 - [${financialScore >= 80 ? 'x' : ' '}] Financial systems operational (≥80%)
 - [${securityScore >= 90 ? 'x' : ' '}] Security requirements met (≥90%)
@@ -1253,17 +1253,17 @@ ${blockers.length === 0 ? '✅ No blockers found - system is ready for productio
 
 ---
 
-## 📋 Recommendation
+## [LIST] Recommendation
 
 ${readyForProduction 
-  ? '**✅ APPROVED FOR GO-LIVE** - All critical requirements are met. The system is ready for production deployment.'
-  : `**❌ NOT READY FOR GO-LIVE** - Please resolve the following ${blockers.filter(b => b.severity === 'critical').length} critical blocker(s) before proceeding.`}
+  ? '**[OK] APPROVED FOR GO-LIVE** - All critical requirements are met. The system is ready for production deployment.'
+  : `**[X] NOT READY FOR GO-LIVE** - Please resolve the following ${blockers.filter(b => b.severity === 'critical').length} critical blocker(s) before proceeding.`}
 `;
 
   return {
     title: 'Go-Live Readiness Report',
     content,
-    summary: readyForProduction ? '✅ READY FOR PRODUCTION' : `❌ ${blockers.filter(b => b.severity === 'critical').length} BLOCKERS`,
+    summary: readyForProduction ? '[OK] READY FOR PRODUCTION' : `[X] ${blockers.filter(b => b.severity === 'critical').length} BLOCKERS`,
     tags: ['go-live', 'executive', 'critical', 'production', 'decision'],
     stats: { 
       totalChecks: 5, 
@@ -1341,24 +1341,24 @@ async function generateFinancialReconciliationReport(findings, db) {
   const reconciled = issues.length === 0;
   const discrepancy = Math.abs(totalOrdersAmount - totalTransactionsAmount);
 
-  const content = `# 💰 Financial Reconciliation Report
+  const content = `# [$] Financial Reconciliation Report
 
 **Generated:** ${new Date().toISOString()}
 
 ---
 
-## 📊 Reconciliation Summary
+## [STATS] Reconciliation Summary
 
 | Metric | Value |
 |--------|-------|
-| **Status** | ${reconciled ? '✅ RECONCILED' : '⚠️ DISCREPANCIES FOUND'} |
+| **Status** | ${reconciled ? '[OK] RECONCILED' : '[WARN] DISCREPANCIES FOUND'} |
 | **Total Orders** | ${paidOrders.length} |
 | **Total Transactions** | ${transactions.length} |
 | **Payment Events** | ${paymentEvents.length} |
 
 ---
 
-## 💵 Financial Totals
+## [$] Financial Totals
 
 | Source | Amount |
 |--------|--------|
@@ -1368,34 +1368,34 @@ async function generateFinancialReconciliationReport(findings, db) {
 
 ---
 
-## 🔍 Issues Found
+## [SEARCH] Issues Found
 
 | Category | Count | Severity |
 |----------|-------|----------|
-| Orphan Payments | ${orphanPayments} | ${orphanPayments > 0 ? '🔴 High' : '✅ None'} |
-| Missing Transactions | ${missingTransactions} | ${missingTransactions > 0 ? '🔴 High' : '✅ None'} |
-| Mismatched Amounts | ${mismatchedAmounts} | ${mismatchedAmounts > 0 ? '🟡 Medium' : '✅ None'} |
+| Orphan Payments | ${orphanPayments} | ${orphanPayments > 0 ? '🔴 High' : '[OK] None'} |
+| Missing Transactions | ${missingTransactions} | ${missingTransactions > 0 ? '🔴 High' : '[OK] None'} |
+| Mismatched Amounts | ${mismatchedAmounts} | ${mismatchedAmounts > 0 ? '🟡 Medium' : '[OK] None'} |
 
 ---
 
-## 📋 Issue Details
+## [LIST] Issue Details
 
-${issues.length === 0 ? '✅ No reconciliation issues found!' : issues.slice(0, 20).map(i => `- **${i.type}**: ${i.message}${i.diff ? ` (Diff: ₪${i.diff.toFixed(2)})` : ''}`).join('\n')}
+${issues.length === 0 ? '[OK] No reconciliation issues found!' : issues.slice(0, 20).map(i => `- **${i.type}**: ${i.message}${i.diff ? ` (Diff: ₪${i.diff.toFixed(2)})` : ''}`).join('\n')}
 ${issues.length > 20 ? `\n... and ${issues.length - 20} more issues` : ''}
 
 ---
 
-## 📈 Recommendation
+## [UP] Recommendation
 
 ${reconciled 
-  ? '✅ All financial records are reconciled. No action required.'
-  : `⚠️ Found ${issues.length} reconciliation issue(s). Review and resolve before financial reporting.`}
+  ? '[OK] All financial records are reconciled. No action required.'
+  : `[WARN] Found ${issues.length} reconciliation issue(s). Review and resolve before financial reporting.`}
 `;
 
   return {
     title: 'Financial Reconciliation Report',
     content,
-    summary: reconciled ? '✅ RECONCILED' : `⚠️ ${issues.length} issues found`,
+    summary: reconciled ? '[OK] RECONCILED' : `[WARN] ${issues.length} issues found`,
     tags: ['financial', 'reconciliation', 'critical', 'payments', 'audit'],
     stats: { 
       totalChecks: paidOrders.length + transactions.length, 
@@ -1594,7 +1594,7 @@ async function generateMissingKeysImpactReport(findings) {
 
 ---
 
-## 📊 Summary
+## [STATS] Summary
 
 | Metric | Value |
 |--------|-------|
@@ -1609,37 +1609,37 @@ async function generateMissingKeysImpactReport(findings) {
 ## 🚨 Impact by Severity
 
 ### Critical (System Breaking)
-${impacts.filter(i => i.severity === 'critical').map(i => `- **${i.key}**: Affects ${i.affectedFlows.join(', ')}`).join('\n') || '✅ None'}
+${impacts.filter(i => i.severity === 'critical').map(i => `- **${i.key}**: Affects ${i.affectedFlows.join(', ')}`).join('\n') || '[OK] None'}
 
 ### High (Feature Breaking)
-${impacts.filter(i => i.severity === 'high').map(i => `- **${i.key}**: Affects ${i.affectedFlows.join(', ')}`).join('\n') || '✅ None'}
+${impacts.filter(i => i.severity === 'high').map(i => `- **${i.key}**: Affects ${i.affectedFlows.join(', ')}`).join('\n') || '[OK] None'}
 
 ### Medium (Degraded Functionality)
-${impacts.filter(i => i.severity === 'medium').map(i => `- **${i.key}**: Affects ${i.affectedFlows.join(', ')}`).join('\n') || '✅ None'}
+${impacts.filter(i => i.severity === 'medium').map(i => `- **${i.key}**: Affects ${i.affectedFlows.join(', ')}`).join('\n') || '[OK] None'}
 
 ### Low (Minor Impact)
-${impacts.filter(i => i.severity === 'low').map(i => `- **${i.key}**: Affects ${i.affectedFlows.join(', ')}`).join('\n') || '✅ None'}
+${impacts.filter(i => i.severity === 'low').map(i => `- **${i.key}**: Affects ${i.affectedFlows.join(', ')}`).join('\n') || '[OK] None'}
 
 ---
 
-## 📍 Affected Business Flows
+## [PIN] Affected Business Flows
 
-${allAffectedFlows.length > 0 ? allAffectedFlows.map(f => `- ${f}`).join('\n') : '✅ No flows affected'}
-
----
-
-## 📋 Affected Reports
-
-${allAffectedReports.length > 0 ? allAffectedReports.map(r => `- ${r}`).join('\n') : '✅ No reports affected'}
+${allAffectedFlows.length > 0 ? allAffectedFlows.map(f => `- ${f}`).join('\n') : '[OK] No flows affected'}
 
 ---
 
-## 🎯 Prioritized Action Plan
+## [LIST] Affected Reports
+
+${allAffectedReports.length > 0 ? allAffectedReports.map(r => `- ${r}`).join('\n') : '[OK] No reports affected'}
+
+---
+
+## [TARGET] Prioritized Action Plan
 
 ${impacts.sort((a, b) => {
   const severityOrder = { critical: 0, high: 1, medium: 2, low: 3, unknown: 4 };
   return severityOrder[a.severity] - severityOrder[b.severity];
-}).map((i, idx) => `${idx + 1}. Configure **${i.key}** (${i.severity}) - +${i.percentageGain || 0}% system score`).join('\n') || '✅ All keys configured'}
+}).map((i, idx) => `${idx + 1}. Configure **${i.key}** (${i.severity}) - +${i.percentageGain || 0}% system score`).join('\n') || '[OK] All keys configured'}
 `;
 
   return {
@@ -1751,13 +1751,13 @@ async function generateRiskMatrixReport(findings) {
   const highRisks = risks.filter(r => r.level === 'high').length;
   const mediumRisks = risks.filter(r => r.level === 'medium').length;
 
-  const content = `# ⚠️ Risk Matrix Report
+  const content = `# [WARN] Risk Matrix Report
 
 **Generated:** ${new Date().toISOString()}
 
 ---
 
-## 📊 Risk Overview
+## [STATS] Risk Overview
 
 | Overall Score | High Risks | Medium Risks | Low Risks |
 |---------------|------------|--------------|-----------|
@@ -1765,7 +1765,7 @@ async function generateRiskMatrixReport(findings) {
 
 ---
 
-## 📈 Category Breakdown
+## [UP] Category Breakdown
 
 | Category | Score | Level |
 |----------|-------|-------|
@@ -1778,13 +1778,13 @@ async function generateRiskMatrixReport(findings) {
 
 ## 🔴 High Risks
 
-${risks.filter(r => r.level === 'high').map(r => `| ${r.category.toUpperCase()} | ${r.name} | ${r.description} |`).join('\n') || '✅ No high risks identified'}
+${risks.filter(r => r.level === 'high').map(r => `| ${r.category.toUpperCase()} | ${r.name} | ${r.description} |`).join('\n') || '[OK] No high risks identified'}
 
 ---
 
 ## 🟡 Medium Risks
 
-${risks.filter(r => r.level === 'medium').map(r => `| ${r.category.toUpperCase()} | ${r.name} | ${r.description} |`).join('\n') || '✅ No medium risks identified'}
+${risks.filter(r => r.level === 'medium').map(r => `| ${r.category.toUpperCase()} | ${r.name} | ${r.description} |`).join('\n') || '[OK] No medium risks identified'}
 
 ---
 
@@ -1794,7 +1794,7 @@ ${risks.filter(r => r.level === 'low').map(r => `| ${r.category.toUpperCase()} |
 
 ---
 
-## 📋 Risk Matrix
+## [LIST] Risk Matrix
 
 \`\`\`
          │ Low Impact │ Med Impact │ High Impact
@@ -1982,65 +1982,65 @@ async function generateReportsReliabilityReport(findings) {
   const partiallyReliable = reportStatuses.filter(r => r.status === 'partially_reliable').length;
   const unreliable = reportStatuses.filter(r => r.status === 'unreliable').length;
 
-  const content = `# 📊 Reports Reliability Status Report
+  const content = `# [STATS] Reports Reliability Status Report
 
 **Generated:** ${new Date().toISOString()}
 
 ---
 
-## 📈 Summary
+## [UP] Summary
 
 | Status | Count |
 |--------|-------|
-| ✅ Reliable | ${reliable} |
-| ⚠️ Partially Reliable | ${partiallyReliable} |
-| ❌ Unreliable | ${unreliable} |
+| [OK] Reliable | ${reliable} |
+| [WARN] Partially Reliable | ${partiallyReliable} |
+| [X] Unreliable | ${unreliable} |
 
 ---
 
-## 📋 Report Status Matrix
+## [LIST] Report Status Matrix
 
 | Report | Status | Issues |
 |--------|--------|--------|
-${reportStatuses.map(r => `| ${r.name} | ${r.status === 'reliable' ? '✅' : r.status === 'partially_reliable' ? '⚠️' : '❌'} ${r.status} | ${r.issues.length > 0 ? r.issues.join('; ') : '-'} |`).join('\n')}
+${reportStatuses.map(r => `| ${r.name} | ${r.status === 'reliable' ? '[OK]' : r.status === 'partially_reliable' ? '[WARN]' : '[X]'} ${r.status} | ${r.issues.length > 0 ? r.issues.join('; ') : '-'} |`).join('\n')}
 
 ---
 
-## ✅ Reliable Reports
+## [OK] Reliable Reports
 
 ${reportStatuses.filter(r => r.status === 'reliable').map(r => `- ${r.name}`).join('\n') || 'None'}
 
 ---
 
-## ⚠️ Partially Reliable Reports
+## [WARN] Partially Reliable Reports
 
 ${reportStatuses.filter(r => r.status === 'partially_reliable').map(r => `- **${r.name}**\n  - ${r.issues.join('\n  - ')}`).join('\n\n') || 'None'}
 
 ---
 
-## ❌ Unreliable Reports
+## [X] Unreliable Reports
 
 ${reportStatuses.filter(r => r.status === 'unreliable').map(r => `- **${r.name}**\n  - ${r.issues.join('\n  - ')}`).join('\n\n') || 'None'}
 
 ---
 
-## 🔧 Dependencies Status
+## [FIX] Dependencies Status
 
 ### Configured Keys (${configuredKeys.length})
-${configuredKeys.map(k => `- ✅ ${k}`).join('\n') || '- None'}
+${configuredKeys.map(k => `- [OK] ${k}`).join('\n') || '- None'}
 
 ### Active Integrations (${activeIntegrations.length})
-${activeIntegrations.map(i => `- ✅ ${i}`).join('\n') || '- None'}
+${activeIntegrations.map(i => `- [OK] ${i}`).join('\n') || '- None'}
 
 ---
 
-## 📋 Recommendation
+## [LIST] Recommendation
 
 ${unreliable === 0 && partiallyReliable === 0 
-  ? '✅ All reports are fully reliable. Data can be trusted for executive decisions.'
+  ? '[OK] All reports are fully reliable. Data can be trusted for executive decisions.'
   : unreliable > 0 
-    ? `❌ ${unreliable} report(s) are unreliable. Configure missing dependencies before using these reports.`
-    : `⚠️ ${partiallyReliable} report(s) have partial reliability. Review issues before relying on data.`}
+    ? `[X] ${unreliable} report(s) are unreliable. Configure missing dependencies before using these reports.`
+    : `[WARN] ${partiallyReliable} report(s) have partial reliability. Review issues before relying on data.`}
 `;
 
   return {

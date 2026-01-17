@@ -346,7 +346,7 @@ async function notifyProductCreation(adminUser, productDoc) {
 
       // שליחת Push notification
       const pushPayload = {
-        title: '🆕 מוצר חדש ב-VIPO!',
+        title: '[NEW] מוצר חדש ב-VIPO!',
         body: baseMessage,
         icon: '/icons/192.png',
         badge: '/icons/badge.png',
@@ -428,14 +428,23 @@ async function GETHandler(request) {
     let tenantId = null;
     let hasTenantContext = false;
     
-    // 1. Check for tenant slug in URL query param first
-    const tenantSlugParam = searchParams.get('tenant');
-    if (tenantSlugParam) {
-      const { getTenantBySlug } = await import('@/lib/tenant');
-      const tenantFromSlug = await getTenantBySlug(tenantSlugParam);
-      if (tenantFromSlug) {
-        tenantId = tenantFromSlug._id;
-        hasTenantContext = true;
+    // 0. Check for tenantId directly in URL query param (for admin/business panels)
+    const tenantIdParam = searchParams.get('tenantId');
+    if (tenantIdParam && ObjectId.isValid(tenantIdParam)) {
+      tenantId = new ObjectId(tenantIdParam);
+      hasTenantContext = true;
+    }
+    
+    // 1. Check for tenant slug in URL query param
+    if (!tenantId) {
+      const tenantSlugParam = searchParams.get('tenant');
+      if (tenantSlugParam) {
+        const { getTenantBySlug } = await import('@/lib/tenant');
+        const tenantFromSlug = await getTenantBySlug(tenantSlugParam);
+        if (tenantFromSlug) {
+          tenantId = tenantFromSlug._id;
+          hasTenantContext = true;
+        }
       }
     }
     
@@ -528,9 +537,14 @@ async function POSTHandler(request) {
     await connectMongo();
     const payload = await request.json();
 
-    // Multi-Tenant: Get tenant from user or request
+    // Multi-Tenant: Get tenant from user or request or payload
     const tenant = await getCurrentTenant(request);
-    const tenantId = tenant?._id || adminUser?.tenantId || null;
+    // Super Admin can specify tenantId in payload to create products for specific business
+    let tenantId = payload.tenantId || tenant?._id || adminUser?.tenantId || null;
+    // Ensure tenantId is ObjectId for consistent querying
+    if (tenantId && typeof tenantId === 'string' && ObjectId.isValid(tenantId)) {
+      tenantId = new ObjectId(tenantId);
+    }
 
     if (!payload?.name || !payload?.description) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });

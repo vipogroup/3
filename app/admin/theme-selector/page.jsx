@@ -211,7 +211,7 @@ export default function ThemeSelectorPage() {
                       : 'bg-gray-900 hover:bg-gray-800 text-white'
                   }`}
                 >
-                  {saving ? 'שומר...' : currentThemeId === theme.id ? '✓ נבחר' : 'בחר סגנון זה'}
+                  {saving ? 'שומר...' : currentThemeId === theme.id ? '[v] נבחר' : 'בחר סגנון זה'}
                 </button>
               </div>
             </div>
@@ -222,10 +222,10 @@ export default function ThemeSelectorPage() {
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-6">
           <h3 className="text-lg font-bold text-blue-900 mb-3">הוראות שימוש</h3>
           <ul className="space-y-2 text-sm text-blue-800">
-            <li>✓ לחץ על כרטיס סגנון כדי לבחור אותו</li>
-            <li>✓ השינויים נשמרים מיד במסד הנתונים</li>
-            <li>✓ רענן את הדף כדי לראות את העיצוב החדש</li>
-            <li>✓ הסגנון יחול על כל המערכת - דפי מוצרים, דשבורדים ועוד</li>
+            <li>[v] לחץ על כרטיס סגנון כדי לבחור אותו</li>
+            <li>[v] השינויים נשמרים מיד במסד הנתונים</li>
+            <li>[v] רענן את הדף כדי לראות את העיצוב החדש</li>
+            <li>[v] הסגנון יחול על כל המערכת - דפי מוצרים, דשבורדים ועוד</li>
           </ul>
         </div>
       </div>

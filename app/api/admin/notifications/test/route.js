@@ -52,7 +52,7 @@ async function POSTHandler(req) {
     }
 
     const payload = {
-      title: title || template.title || '🔔 התראת בדיקה',
+      title: title || template.title || '[BELL] התראת בדיקה',
       body: messageBody || template.body || 'זוהי התראת בדיקה מדף ניהול ההתראות',
       icon: '/icons/192.png',
       badge: '/icons/badge.png',

@@ -371,7 +371,7 @@ export default function SocialAuditClient() {
                     <div className="text-3xl mb-2">{platform.icon}</div>
                     <div className="font-medium">{platform.label}</div>
                     <div className={`text-sm ${hasIssues ? 'text-yellow-600' : 'text-green-600'}`}>
-                      {hasIssues ? `${platformIssues} בעיות` : '✓ תקין'}
+                      {hasIssues ? `${platformIssues} בעיות` : '[v] תקין'}
                     </div>
                   </div>
                 );

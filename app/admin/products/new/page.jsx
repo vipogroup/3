@@ -761,7 +761,7 @@ export default function NewProductPage() {
                       {/* Total Days Summary */}
                       <div className="mt-4 p-3 bg-blue-100 rounded-lg">
                         <p className="text-sm font-bold text-blue-900">
-                          {'⏱️ סה&quot;כ זמן המתנה משוער:'}
+                          {'סה"כ זמן המתנה משוער:'}
                           <span className="text-blue-600 text-lg mr-2">
                             {parseInt(formData.groupPurchaseDetails.closingDays) +
                               parseInt(formData.groupPurchaseDetails.shippingDays)}{' '}

@@ -68,23 +68,23 @@ function generateIntegrationReport(admin, now) {
   const payplusConfigured = payplusConfig.isConfigured;
 
   const content = `
-# 📋 דוח טכני מלא - אינטגרציות VIPO
+# [LIST] דוח טכני מלא - אינטגרציות VIPO
 ## Priority ERP + PayPlus
 
 **תאריך יצירה:** ${now.toLocaleDateString('he-IL')} ${now.toLocaleTimeString('he-IL')}
 
 ---
 
-## 📊 סטטוס אינטגרציות
+## [STATS] סטטוס אינטגרציות
 
 | מערכת | סטטוס |
 |-------|-------|
-| Priority ERP | ${priorityConfigured ? '✅ מוגדר' : '❌ לא מוגדר'} |
-| PayPlus | ${payplusConfigured ? '✅ מוגדר' : '❌ לא מוגדר'} |
+| Priority ERP | ${priorityConfigured ? '[OK] מוגדר' : '[X] לא מוגדר'} |
+| PayPlus | ${payplusConfigured ? '[OK] מוגדר' : '[X] לא מוגדר'} |
 
 ---
 
-## 🏗️ מבנה הקבצים
+## [BUILD] מבנה הקבצים
 
 \`\`\`
 lib/
@@ -152,7 +152,7 @@ PRIORITY_TIMEOUT_MS=45000
 
 ---
 
-## 🏢 Priority ERP - פונקציות
+## [BIZ] Priority ERP - פונקציות
 
 ### לקוחות (CUSTOMERS)
 | פונקציה | Endpoint | תיאור |
@@ -186,7 +186,7 @@ PRIORITY_TIMEOUT_MS=45000
 
 ---
 
-## 🔄 תהליכי עבודה
+## [SYNC] תהליכי עבודה
 
 ### תשלום לקוח (PayPlus → Priority)
 1. לקוח משלם ב-PayPlus
@@ -198,14 +198,14 @@ PRIORITY_TIMEOUT_MS=45000
 ### תשלום עמלות לסוכנים
 1. סוכן מבקש משיכה
 2. מנהל מאשר
-3. לחיצה "💳 Priority"
+3. לחיצה "[CARD] Priority"
 4. יצירת ספק + מסמך FNCTRANS
 5. מחלקת כספים מאשרת
 6. סימון כהושלם
 
 ---
 
-## 📍 קודי תשלום
+## [PIN] קודי תשלום
 
 | קוד | תיאור |
 |-----|-------|
@@ -216,7 +216,7 @@ PRIORITY_TIMEOUT_MS=45000
 
 ---
 
-## 📝 הערות למטמיע
+## [NOTE] הערות למטמיע
 
 1. **Priority OData** - כל הקריאות OData v4
 2. **OAuth** - טוקן נשמר ב-cache עם רענון אוטומטי
@@ -229,7 +229,7 @@ PRIORITY_TIMEOUT_MS=45000
     title: 'דוח אינטגרציות Priority ERP + PayPlus',
     type: 'integration',
     category: 'priority_payplus',
-    summary: `סטטוס: Priority ${priorityConfigured ? '✅' : '❌'} | PayPlus ${payplusConfigured ? '✅' : '❌'}`,
+    summary: `סטטוס: Priority ${priorityConfigured ? '[OK]' : '[X]'} | PayPlus ${payplusConfigured ? '[OK]' : '[X]'}`,
     content,
     contentHtml: '',
     tags: ['priority', 'payplus', 'integration', 'technical'],
@@ -259,61 +259,61 @@ async function generateSecurityReport(admin, now) {
 
   // Check JWT_SECRET
   if (process.env.JWT_SECRET && process.env.JWT_SECRET.length >= 32) {
-    checks.push('✅ JWT_SECRET מוגדר ומאובטח');
+    checks.push('[OK] JWT_SECRET מוגדר ומאובטח');
     passed++;
     score += 20;
   } else {
-    checks.push('❌ JWT_SECRET חסר או קצר מדי');
+    checks.push('[X] JWT_SECRET חסר או קצר מדי');
     failed++;
   }
 
   // Check MONGODB_URI
   if (process.env.MONGODB_URI) {
-    checks.push('✅ MONGODB_URI מוגדר');
+    checks.push('[OK] MONGODB_URI מוגדר');
     passed++;
     score += 20;
   } else {
-    checks.push('❌ MONGODB_URI חסר');
+    checks.push('[X] MONGODB_URI חסר');
     failed++;
   }
 
   // Check NEXTAUTH_SECRET
   if (process.env.NEXTAUTH_SECRET) {
-    checks.push('✅ NEXTAUTH_SECRET מוגדר');
+    checks.push('[OK] NEXTAUTH_SECRET מוגדר');
     passed++;
     score += 20;
   } else {
-    checks.push('❌ NEXTAUTH_SECRET חסר');
+    checks.push('[X] NEXTAUTH_SECRET חסר');
     failed++;
   }
 
   // Check PayPlus webhook secret
   if (process.env.PAYPLUS_WEBHOOK_SECRET) {
-    checks.push('✅ PAYPLUS_WEBHOOK_SECRET מוגדר');
+    checks.push('[OK] PAYPLUS_WEBHOOK_SECRET מוגדר');
     passed++;
     score += 20;
   } else {
-    checks.push('⚠️ PAYPLUS_WEBHOOK_SECRET חסר');
+    checks.push('[WARN] PAYPLUS_WEBHOOK_SECRET חסר');
     failed++;
   }
 
   // Check NODE_ENV
   if (process.env.NODE_ENV === 'production') {
-    checks.push('✅ NODE_ENV מוגדר ל-production');
+    checks.push('[OK] NODE_ENV מוגדר ל-production');
     passed++;
     score += 20;
   } else {
-    checks.push('⚠️ NODE_ENV לא מוגדר ל-production');
+    checks.push('[WARN] NODE_ENV לא מוגדר ל-production');
   }
 
   const content = `
-# 🔒 דוח אבטחה - מערכת VIPO
+# [LOCK] דוח אבטחה - מערכת VIPO
 
 **תאריך בדיקה:** ${now.toLocaleDateString('he-IL')} ${now.toLocaleTimeString('he-IL')}
 
 ---
 
-## 📊 סיכום
+## [STATS] סיכום
 
 | מדד | ערך |
 |-----|-----|
@@ -323,13 +323,13 @@ async function generateSecurityReport(admin, now) {
 
 ---
 
-## 🔍 תוצאות בדיקות
+## [SEARCH] תוצאות בדיקות
 
 ${checks.join('\n')}
 
 ---
 
-## 📋 המלצות
+## [LIST] המלצות
 
 ${score < 100 ? `
 ### פעולות נדרשות:
@@ -337,11 +337,11 @@ ${!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32 ? '- הגדר JW
 ${!process.env.MONGODB_URI ? '- הגדר MONGODB_URI\n' : ''}
 ${!process.env.NEXTAUTH_SECRET ? '- הגדר NEXTAUTH_SECRET\n' : ''}
 ${!process.env.PAYPLUS_WEBHOOK_SECRET ? '- הגדר PAYPLUS_WEBHOOK_SECRET\n' : ''}
-` : '✅ כל בדיקות האבטחה עברו בהצלחה!'}
+` : '[OK] כל בדיקות האבטחה עברו בהצלחה!'}
 
 ---
 
-## 🛡️ טיפים לאבטחה
+## [SHIELD] טיפים לאבטחה
 
 1. **סיסמאות** - השתמש בסיסמאות חזקות (32+ תווים)
 2. **HTTPS** - ודא שהאתר פועל ב-HTTPS
@@ -383,20 +383,20 @@ async function generatePerformanceReport(admin, now, db) {
   try {
     await db.collection('users').findOne({});
     const dbTime = Date.now() - dbStart;
-    if (dbTime < 100) { checks.push(`✅ זמן תגובת DB: ${dbTime}ms`); passed++; score += 25; }
-    else if (dbTime < 500) { checks.push(`⚠️ זמן תגובת DB: ${dbTime}ms`); passed++; score += 15; }
-    else { checks.push(`❌ זמן תגובת DB: ${dbTime}ms`); failed++; }
-  } catch (e) { checks.push('❌ שגיאת DB'); failed++; }
+    if (dbTime < 100) { checks.push(`[OK] זמן תגובת DB: ${dbTime}ms`); passed++; score += 25; }
+    else if (dbTime < 500) { checks.push(`[WARN] זמן תגובת DB: ${dbTime}ms`); passed++; score += 15; }
+    else { checks.push(`[X] זמן תגובת DB: ${dbTime}ms`); failed++; }
+  } catch (e) { checks.push('[X] שגיאת DB'); failed++; }
 
   const usersCount = await db.collection('users').countDocuments();
   const ordersCount = await db.collection('orders').countDocuments();
   const productsCount = await db.collection('products').countDocuments();
-  checks.push(`📊 משתמשים: ${usersCount} | הזמנות: ${ordersCount} | מוצרים: ${productsCount}`);
+  checks.push(`[STATS] משתמשים: ${usersCount} | הזמנות: ${ordersCount} | מוצרים: ${productsCount}`);
 
   const mem = process.memoryUsage();
   const heapMB = Math.round(mem.heapUsed / 1024 / 1024);
   const heapPct = Math.round((mem.heapUsed / mem.heapTotal) * 100);
-  checks.push(`💾 זיכרון: ${heapMB}MB (${heapPct}%)`);
+  checks.push(`[SAVE] זיכרון: ${heapMB}MB (${heapPct}%)`);
   if (heapPct < 80) { passed++; score += 25; } else { failed++; }
 
   const uptimeH = Math.floor(process.uptime() / 3600);
@@ -417,7 +417,7 @@ async function generateAuditReport(admin, now, db) {
   const adminList = admins.map(a => `- ${a.fullName || a.email}`).join('\n');
   const orderList = orders.map(o => `| ${o.status} | ₪${o.totalAmount || 0} | ${new Date(o.createdAt).toLocaleDateString('he-IL')} |`).join('\n');
 
-  const content = `# 📋 דוח ביקורת\n\n**תאריך:** ${now.toLocaleDateString('he-IL')}\n\n## מנהלים (${admins.length})\n${adminList || 'אין'}\n\n## משיכות\n| סטטוס | כמות |\n|-------|------|\n| ממתינות | ${pending} |\n| הושלמו | ${completed} |\n\n## הזמנות אחרונות\n| סטטוס | סכום | תאריך |\n|-------|------|-------|\n${orderList || '| - | - | - |'}`;
+  const content = `# [LIST] דוח ביקורת\n\n**תאריך:** ${now.toLocaleDateString('he-IL')}\n\n## מנהלים (${admins.length})\n${adminList || 'אין'}\n\n## משיכות\n| סטטוס | כמות |\n|-------|------|\n| ממתינות | ${pending} |\n| הושלמו | ${completed} |\n\n## הזמנות אחרונות\n| סטטוס | סכום | תאריך |\n|-------|------|-------|\n${orderList || '| - | - | - |'}`;
 
   return { title: 'דוח ביקורת', type: 'audit', category: 'activity', summary: `${pending} ממתינות | ${admins.length} מנהלים`, content, contentHtml: '', tags: ['audit'], version: '1.0', status: 'published', stats: { totalChecks: 0, passed: 0, failed: 0, warnings: pending, score: 0 }, createdBy: new ObjectId(admin.id), createdByName: admin.fullName || 'Admin', attachments: [], createdAt: now, updatedAt: now };
 }
@@ -432,8 +432,8 @@ async function generateBackupReport(admin, now, db) {
     catch (e) { stats.push({ n: c, c: 0, e: true }); }
   }
 
-  const tbl = stats.map(s => `| ${s.n} | ${s.c} | ${s.e ? '❌' : '✅'} |`).join('\n');
-  const content = `# 💾 דוח גיבוי\n\n**תאריך:** ${now.toLocaleDateString('he-IL')}\n\n## סטטיסטיקות\n| קולקציה | מסמכים | סטטוס |\n|---------|--------|-------|\n${tbl}\n\n**סה"כ:** ${total} מסמכים\n\n## פקודות גיבוי\n\`\`\`bash\nmongodump --uri="$MONGODB_URI" --out=./backup\n\`\`\``;
+  const tbl = stats.map(s => `| ${s.n} | ${s.c} | ${s.e ? '[X]' : '[OK]'} |`).join('\n');
+  const content = `# [SAVE] דוח גיבוי\n\n**תאריך:** ${now.toLocaleDateString('he-IL')}\n\n## סטטיסטיקות\n| קולקציה | מסמכים | סטטוס |\n|---------|--------|-------|\n${tbl}\n\n**סה"כ:** ${total} מסמכים\n\n## פקודות גיבוי\n\`\`\`bash\nmongodump --uri="$MONGODB_URI" --out=./backup\n\`\`\``;
 
   const ok = stats.filter(s => !s.e).length;
   return { title: 'דוח גיבוי', type: 'backup', category: 'database', summary: `${total} מסמכים`, content, contentHtml: '', tags: ['backup'], version: '1.0', status: 'published', stats: { totalChecks: cols.length, passed: ok, failed: cols.length - ok, warnings: 0, score: Math.round((ok / cols.length) * 100) }, createdBy: new ObjectId(admin.id), createdByName: admin.fullName || 'Admin', attachments: [], createdAt: now, updatedAt: now };

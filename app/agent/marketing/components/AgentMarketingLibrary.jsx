@@ -194,7 +194,7 @@ export default function AgentMarketingLibrary({
                 className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
                 style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
               >
-                {copyStatus === 'link' ? '✓ הלינק הועתק' : 'העתק לינק לשיתוף'}
+                {copyStatus === 'link' ? '[v] הלינק הועתק' : 'העתק לינק לשיתוף'}
               </button>
               <a
                 href={shareLink || referralLink || '#'}
@@ -345,7 +345,7 @@ export default function AgentMarketingLibrary({
                       className="w-full py-2.5 rounded-lg text-sm font-semibold text-white mb-3"
                       style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)' }}
                     >
-                      {copyStatus === 'text' ? '✓ הטקסט הועתק' : 'העתק טקסט לשיתוף'}
+                      {copyStatus === 'text' ? '[v] הטקסט הועתק' : 'העתק טקסט לשיתוף'}
                     </button>
 
                     {/* Social Share Buttons */}
@@ -455,7 +455,7 @@ export default function AgentMarketingLibrary({
                           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                           </svg>
-                          <span className="text-white text-xs mt-1">{copyStatus === 'link' ? '✓ הועתק' : 'העתק לינק'}</span>
+                          <span className="text-white text-xs mt-1">{copyStatus === 'link' ? '[v] הועתק' : 'העתק לינק'}</span>
                         </button>
                       </div>
                     </div>

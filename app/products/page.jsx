@@ -401,7 +401,7 @@ function ProductsPageContent() {
               <ul className="space-y-2" style={{ color: primaryColor }}>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: secondaryColor }}>
-                    ✓
+                    [v]
                   </span>
                   <span>
                     <strong>עמלות של 10%</strong> על כל מכירה שתבצע
@@ -409,7 +409,7 @@ function ProductsPageContent() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: secondaryColor }}>
-                    ✓
+                    [v]
                   </span>
                   <span>
                     <strong>קוד קופון ייחודי</strong> לשיתוף עם חברים
@@ -417,7 +417,7 @@ function ProductsPageContent() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: secondaryColor }}>
-                    ✓
+                    [v]
                   </span>
                   <span>
                     <strong>דשבורד סוכן מתקדם</strong> עם סטטיסטיקות
@@ -425,7 +425,7 @@ function ProductsPageContent() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: secondaryColor }}>
-                    ✓
+                    [v]
                   </span>
                   <span>
                     <strong>מעקב אחר הרווחים</strong> בזמן אמת
@@ -433,7 +433,7 @@ function ProductsPageContent() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: secondaryColor }}>
-                    ✓
+                    [v]
                   </span>
                   <span>
                     <strong>בונוסים ותגמולים</strong> למוכרים מצטיינים

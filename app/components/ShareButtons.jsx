@@ -23,20 +23,20 @@ export default function ShareButtons({ product, couponCode, referralLink, onShar
   const buildShareText = () => {
     const price = product?.price?.toLocaleString('he-IL') || product?.price;
     const lines = [
-      `🛒 *${product?.name}*`,
+      `*${product?.name}*`,
       '',
       product?.description ? product.description.substring(0, 100) : '',
       '',
-      `💰 מחיר: ₪${price}`,
+      `מחיר: ₪${price}`,
     ];
 
     if (couponCode) {
-      lines.push(`🎁 קוד קופון: ${couponCode}`);
+      lines.push(`קוד קופון: ${couponCode}`);
     }
 
     const productUrl = getProductShareUrl();
     if (productUrl) {
-      lines.push('', `👉 לרכישה: ${productUrl}`);
+      lines.push('', `לרכישה: ${productUrl}`);
     }
 
     return lines.filter(Boolean).join('\n');
@@ -47,8 +47,8 @@ export default function ShareButtons({ product, couponCode, referralLink, onShar
     const productUrl = getProductShareUrl();
     const price = product?.price?.toLocaleString('he-IL') || product?.price;
     const text = couponCode 
-      ? `🛒 *${product?.name}*\n💰 מחיר: ₪${price}\n🎁 קוד קופון: ${couponCode}\n\n${productUrl}`
-      : `🛒 *${product?.name}*\n💰 מחיר: ₪${price}\n\n${productUrl}`;
+      ? `*${product?.name}*\nמחיר: ₪${price}\nקוד קופון: ${couponCode}\n\n${productUrl}`
+      : `*${product?.name}*\nמחיר: ₪${price}\n\n${productUrl}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
     onShare?.();

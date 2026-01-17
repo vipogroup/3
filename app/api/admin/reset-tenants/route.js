@@ -9,7 +9,7 @@ import { isSuperAdminUser } from '@/lib/superAdmins';
 
 /**
  * DELETE /api/admin/reset-tenants - מחיקת כל העסקים והנתונים הקשורים (רק Super Admin)
- * ⚠️ זהירות! פעולה זו בלתי הפיכה ומוחקת את כל העסקים!
+ * [WARN] זהירות! פעולה זו בלתי הפיכה ומוחקת את כל העסקים!
  */
 async function DELETEHandler(request) {
   try {
@@ -100,7 +100,7 @@ async function DELETEHandler(request) {
       }
     });
     
-    console.log(`🗑️ RESET: All tenants deleted by ${user.email}:`, deletedCounts);
+    console.log(`[DEL] RESET: All tenants deleted by ${user.email}:`, deletedCounts);
     
     return NextResponse.json({
       ok: true,

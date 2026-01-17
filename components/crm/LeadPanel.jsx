@@ -153,9 +153,9 @@ export default function LeadPanel({
                 lead.slaDeadline && new Date(lead.slaDeadline) < new Date() ? 'bg-red-100 text-red-700' :
                 'bg-yellow-100 text-yellow-700'
               }`}>
-                {lead.slaStatus === 'met' ? 'SLA ✓' :
-                 lead.slaStatus === 'breached' ? 'SLA ✗' :
-                 lead.slaDeadline && new Date(lead.slaDeadline) < new Date() ? 'SLA ✗' :
+                {lead.slaStatus === 'met' ? 'SLA [v]' :
+                 lead.slaStatus === 'breached' ? 'SLA [x]' :
+                 lead.slaDeadline && new Date(lead.slaDeadline) < new Date() ? 'SLA [x]' :
                  'ממתין'}
               </span>
             )}

@@ -9,7 +9,7 @@ import { isSuperAdminUser } from '@/lib/superAdmins';
 
 /**
  * DELETE /api/admin/reset-users - מחיקת כל המשתמשים והנתונים הקשורים (רק Super Admin)
- * ⚠️ זהירות! פעולה זו בלתי הפיכה ומוחקת את כל המשתמשים!
+ * [WARN] זהירות! פעולה זו בלתי הפיכה ומוחקת את כל המשתמשים!
  */
 async function DELETEHandler(request) {
   try {
@@ -76,7 +76,7 @@ async function DELETEHandler(request) {
       }
     });
     
-    console.log(`🗑️ RESET USERS: All users deleted by ${user.email || user._id}:`, deletedCounts);
+    console.log(`[DEL] RESET USERS: All users deleted by ${user.email || user._id}:`, deletedCounts);
     
     return NextResponse.json({
       ok: true,

@@ -239,23 +239,23 @@ function ShopPageContent() {
               <EditableTextField textKey="SHOP_MODAL_BENEFITS_TITLE" fallback="מה תקבל כסוכן?" as="h4" className="font-bold mb-3 text-lg" style={{ color: primaryColor }} />
               <ul className="space-y-2" style={{ color: primaryColor }}>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: secondaryColor }}>✓</span>
+                  <span className="font-bold" style={{ color: secondaryColor }}>[v]</span>
                   <EditableTextField textKey="SHOP_MODAL_BENEFIT_1" fallback="עמלות של 10% על כל מכירה שתבצע" as="span" />
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: secondaryColor }}>✓</span>
+                  <span className="font-bold" style={{ color: secondaryColor }}>[v]</span>
                   <EditableTextField textKey="SHOP_MODAL_BENEFIT_2" fallback="קוד קופון ייחודי לשיתוף עם חברים" as="span" />
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: secondaryColor }}>✓</span>
+                  <span className="font-bold" style={{ color: secondaryColor }}>[v]</span>
                   <EditableTextField textKey="SHOP_MODAL_BENEFIT_3" fallback="דשבורד סוכן מתקדם עם סטטיסטיקות" as="span" />
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: secondaryColor }}>✓</span>
+                  <span className="font-bold" style={{ color: secondaryColor }}>[v]</span>
                   <EditableTextField textKey="SHOP_MODAL_BENEFIT_4" fallback="מעקב אחר הרווחים בזמן אמת" as="span" />
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: secondaryColor }}>✓</span>
+                  <span className="font-bold" style={{ color: secondaryColor }}>[v]</span>
                   <EditableTextField textKey="SHOP_MODAL_BENEFIT_5" fallback="בונוסים ותגמולים למוכרים מצטיינים" as="span" />
                 </li>
               </ul>

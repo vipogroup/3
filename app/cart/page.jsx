@@ -812,7 +812,7 @@ export default function CartPage() {
               <ul className="space-y-2" style={{ color: '#1e3a8a' }}>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: '#0891b2' }}>
-                    ✓
+                    [v]
                   </span>
                   <span>
                     <strong>עמלות של 10%</strong> על כל מכירה שתבצע
@@ -820,7 +820,7 @@ export default function CartPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: '#0891b2' }}>
-                    ✓
+                    [v]
                   </span>
                   <span>
                     <strong>קוד קופון ייחודי</strong> לשיתוף עם חברים
@@ -828,7 +828,7 @@ export default function CartPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: '#0891b2' }}>
-                    ✓
+                    [v]
                   </span>
                   <span>
                     <strong>דשבורד סוכן מתקדם</strong> עם סטטיסטיקות
@@ -836,7 +836,7 @@ export default function CartPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: '#0891b2' }}>
-                    ✓
+                    [v]
                   </span>
                   <span>
                     <strong>מעקב אחר הרווחים</strong> בזמן אמת
@@ -844,7 +844,7 @@ export default function CartPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold" style={{ color: '#0891b2' }}>
-                    ✓
+                    [v]
                   </span>
                   <span>
                     <strong>בונוסים ותגמולים</strong> למוכרים מצטיינים

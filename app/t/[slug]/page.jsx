@@ -753,23 +753,23 @@ export default function TenantStorePage() {
               <h4 className="font-bold mb-3 text-lg" style={{ color: primaryColor }}>מה תקבל כסוכן?</h4>
               <ul className="space-y-2" style={{ color: primaryColor }}>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: secondaryColor }}>✓</span>
+                  <span className="font-bold" style={{ color: secondaryColor }}>[v]</span>
                   <span><strong>עמלות של 10%</strong> על כל מכירה שתבצע</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: secondaryColor }}>✓</span>
+                  <span className="font-bold" style={{ color: secondaryColor }}>[v]</span>
                   <span><strong>קוד קופון ייחודי</strong> לשיתוף עם חברים</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: secondaryColor }}>✓</span>
+                  <span className="font-bold" style={{ color: secondaryColor }}>[v]</span>
                   <span><strong>דשבורד סוכן מתקדם</strong> עם סטטיסטיקות</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: secondaryColor }}>✓</span>
+                  <span className="font-bold" style={{ color: secondaryColor }}>[v]</span>
                   <span><strong>מעקב אחר הרווחים</strong> בזמן אמת</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold" style={{ color: secondaryColor }}>✓</span>
+                  <span className="font-bold" style={{ color: secondaryColor }}>[v]</span>
                   <span><strong>בונוסים ותגמולים</strong> למוכרים מצטיינים</span>
                 </li>
               </ul>

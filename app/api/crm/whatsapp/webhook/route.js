@@ -31,7 +31,7 @@ async function POSTHandler(request) {
     
     // Idempotency check - skip if already processed
     if (messageData.id && processedMessageIds.has(messageData.id)) {
-      console.log('⏭️ Skipping duplicate message:', messageData.id);
+      console.log('[SKIP] Skipping duplicate message:', messageData.id);
       return NextResponse.json({ success: true, duplicate: true });
     }
     
@@ -88,12 +88,12 @@ async function POSTHandler(request) {
         priority: 'normal',
       });
       
-      console.log(`✅ נוצר ליד חדש: ${lead._id} (SLA: ${slaDeadline.toISOString()})`);
+      console.log(`[OK] נוצר ליד חדש: ${lead._id} (SLA: ${slaDeadline.toISOString()})`);
     } else {
       // עדכן ליד קיים
       lead.lastContactAt = new Date();
       await lead.save();
-      console.log(`📝 עודכן ליד קיים: ${lead._id}`);
+      console.log(`[NOTE] עודכן ליד קיים: ${lead._id}`);
     }
 
     // צור/עדכן שיחה

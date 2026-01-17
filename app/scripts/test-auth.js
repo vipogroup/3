@@ -4,7 +4,7 @@ import { MongoClient } from 'mongodb';
 
 const uri = process.env.MONGODB_URI;
 if (!uri) {
-  console.error('❌ MONGODB_URI missing in .env.local');
+  console.error('[X] MONGODB_URI missing in .env.local');
   process.exit(1);
 }
 
@@ -20,9 +20,9 @@ if (!uri) {
     out.usersCount = await users.countDocuments({});
     out.dbOk = true;
 
-    console.log('AUTH TEST ✅', out);
+    console.log('AUTH TEST [OK]', out);
   } catch (err) {
-    console.error('AUTH TEST ❌', err.message);
+    console.error('AUTH TEST [X]', err.message);
     process.exitCode = 1;
   } finally {
     try {

@@ -10,7 +10,7 @@ export const THEMES = {
     nameHe: 'סגנון אמזון',
     description: 'Clean, professional design with orange accents',
     descriptionHe: 'עיצוב נקי ומקצועי עם נגיעות כתום',
-    icon: '📦',
+    icon: '[PKG]',
 
     // Colors
     primary: '#FF9900', // Amazon Orange
@@ -47,7 +47,7 @@ export const THEMES = {
     nameHe: 'סגנון אליאקספרס',
     description: 'Vibrant red with modern accents',
     descriptionHe: 'אדום תוסס עם נגיעות מודרניות',
-    icon: '🛒',
+    icon: '[CART]',
 
     primary: '#FF4747', // AliExpress Red
     secondary: '#FF6F61',
@@ -79,7 +79,7 @@ export const THEMES = {
     nameHe: 'סגנון אליבאבא',
     description: 'Professional orange and blue theme',
     descriptionHe: 'ערכה מקצועית כתום וכחול',
-    icon: '🏢',
+    icon: '[BIZ]',
 
     primary: '#FF6A00', // Alibaba Orange
     secondary: '#0C7EAF', // Alibaba Blue
@@ -111,7 +111,7 @@ export const THEMES = {
     nameHe: 'סגנון טמו',
     description: 'Fun, colorful shopping experience',
     descriptionHe: 'חוויית קניות צבעונית ומהנה',
-    icon: '🎨',
+    icon: '[ART]',
 
     primary: '#FF5E00', // Temu Orange
     secondary: '#00B4D8', // Temu Blue
@@ -177,7 +177,7 @@ export const THEMES = {
     nameHe: 'VIPO סגנון כחול',
     description: 'Clean blue gradient inspired by VIPO branding',
     descriptionHe: 'מראה כחול מודרני עם טיפוגרפיה נקייה',
-    icon: '💎',
+    icon: '[GEM]',
 
     primary: '#3498db',
     secondary: '#2980b9',

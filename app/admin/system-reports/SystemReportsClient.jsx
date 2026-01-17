@@ -1291,7 +1291,7 @@ export default function SystemReportsClient() {
                             onClick={() => markErrorResolved(log._id, true)}
                             className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200"
                           >
-                            ✓ סמן כנפתר
+                            [v] סמן כנפתר
                           </button>
                         ) : (
                           <button

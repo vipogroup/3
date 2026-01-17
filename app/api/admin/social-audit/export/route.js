@@ -91,7 +91,7 @@ async function GETHandler(req) {
 // Generate HTML report
 function generateHtmlReport(report) {
   const statusColor = report.status === 'PASS' ? '#22c55e' : report.status === 'WARN' ? '#eab308' : '#ef4444';
-  const statusIcon = report.status === 'PASS' ? '✅' : report.status === 'WARN' ? '⚠️' : '❌';
+  const statusIcon = report.status === 'PASS' ? '[OK]' : report.status === 'WARN' ? '[WARN]' : '[X]';
 
   return `<!DOCTYPE html>
 <html dir="rtl" lang="he">
@@ -150,7 +150,7 @@ function generateHtmlReport(report) {
         <span>|</span>
         <span>Score: ${report.score}%</span>
         <span>|</span>
-        <span>${report.isSocialReady ? '✅ Social Ready' : '❌ Not Social Ready'}</span>
+        <span>${report.isSocialReady ? '[OK] Social Ready' : '[X] Not Social Ready'}</span>
       </div>
     </div>
 
@@ -209,13 +209,13 @@ function generateHtmlReport(report) {
                 ${issue.platform ? `<span class="badge" style="background:#e2e8f0;color:#475569">${issue.platform}</span>` : ''}
                 ${issue.issue_description || issue.issue_type || 'Unknown issue'}
               </div>
-              ${issue.recommended_fix ? `<div class="issue-fix">💡 ${issue.recommended_fix}</div>` : ''}
-              ${issue.technical_fix_hint ? `<div class="issue-fix">🔧 ${issue.technical_fix_hint}</div>` : ''}
+              ${issue.recommended_fix ? `<div class="issue-fix">[TIP] ${issue.recommended_fix}</div>` : ''}
+              ${issue.technical_fix_hint ? `<div class="issue-fix">[FIX] ${issue.technical_fix_hint}</div>` : ''}
             </li>
           `).join('')}
         </ul>
       </div>
-      ` : '<div class="section"><h2>✅ לא נמצאו בעיות</h2><p>כל הבדיקות עברו בהצלחה!</p></div>'}
+      ` : '<div class="section"><h2>[OK] לא נמצאו בעיות</h2><p>כל הבדיקות עברו בהצלחה!</p></div>'}
     </div>
 
     <div class="footer">
@@ -230,26 +230,26 @@ function generateHtmlReport(report) {
 function getPlatformIcon(platform) {
   const icons = {
     facebook: '📘',
-    whatsapp: '💬',
-    linkedin: '💼',
+    whatsapp: '[CHAT]',
+    linkedin: '[WORK]',
     twitter: '🐦',
   };
-  return icons[platform] || '🌐';
+  return icons[platform] || '[WEB]';
 }
 
 // Generate Markdown report
 function generateMarkdownReport(report) {
-  const statusEmoji = report.status === 'PASS' ? '✅' : report.status === 'WARN' ? '⚠️' : '❌';
+  const statusEmoji = report.status === 'PASS' ? '[OK]' : report.status === 'WARN' ? '[WARN]' : '[X]';
   
   let md = `# ${report.title}
 
-${statusEmoji} **Status:** ${report.status} | **Score:** ${report.score}% | ${report.isSocialReady ? '✅ Social Ready' : '❌ Not Social Ready'}
+${statusEmoji} **Status:** ${report.status} | **Score:** ${report.score}% | ${report.isSocialReady ? '[OK] Social Ready' : '[X] Not Social Ready'}
 
 ${report.description}
 
 ---
 
-## 📊 Summary
+## [STATS] Summary
 
 | Metric | Value |
 |--------|-------|
@@ -265,7 +265,7 @@ ${report.description}
 
   // Platform Summary
   if (report.platformSummary) {
-    md += `## 🌐 Platform Summary
+    md += `## [WEB] Platform Summary
 
 | Platform | Status | Issues |
 |----------|--------|--------|
@@ -292,12 +292,12 @@ ${report.description}
       if (issue.platform) md += `- **Platform:** ${issue.platform}\n`;
       if (issue.detected_value) md += `- **Detected:** ${issue.detected_value}\n`;
       if (issue.expected_value) md += `- **Expected:** ${issue.expected_value}\n`;
-      if (issue.recommended_fix) md += `- **💡 Fix:** ${issue.recommended_fix}\n`;
-      if (issue.technical_fix_hint) md += `- **🔧 Technical:** ${issue.technical_fix_hint}\n`;
+      if (issue.recommended_fix) md += `- **[TIP] Fix:** ${issue.recommended_fix}\n`;
+      if (issue.technical_fix_hint) md += `- **[FIX] Technical:** ${issue.technical_fix_hint}\n`;
       md += '\n';
     }
   } else {
-    md += `## ✅ No Issues Found
+    md += `## [OK] No Issues Found
 
 All checks passed successfully!
 

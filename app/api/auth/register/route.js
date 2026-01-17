@@ -162,7 +162,8 @@ async function POSTHandler(req) {
     // Generate agent coupon if registered directly as agent
     if (normalizedRole === 'agent') {
       try {
-        await generateAgentCoupon(newUserId, tenantId);
+        const nameForCoupon = (doc.fullName || doc.email || doc.phone || 'agent').trim();
+        await generateAgentCoupon({ fullName: nameForCoupon, agentId: newUserId });
         console.log('AGENT_COUPON_GENERATED', { userId: String(newUserId), tenantId: tenantId ? String(tenantId) : null });
       } catch (couponErr) {
         console.error('AGENT_COUPON_ERROR', couponErr);

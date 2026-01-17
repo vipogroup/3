@@ -96,7 +96,7 @@ async function POSTHandler(request) {
     }
 
     const payload = {
-      title: customTitle || '🔔 התראת בדיקה',
+      title: customTitle || '[BELL] התראת בדיקה',
       body: customBody || 'זוהי התראת בדיקה מ-VIPO - התראות עובדות!',
       icon: '/icons/192.png',
       badge: '/icons/badge.png',
