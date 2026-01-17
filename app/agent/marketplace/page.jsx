@@ -87,6 +87,35 @@ export default function AgentMarketplacePage() {
     }
   };
 
+  const handleLeaveBusiness = async (tenantId, tenantName) => {
+    if (!confirm(`האם אתה בטוח שברצונך להתנתק מ${tenantName}?`)) {
+      return;
+    }
+    
+    setError('');
+    setSuccess('');
+    
+    try {
+      const res = await fetch('/api/agent/businesses', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ tenantId }),
+      });
+
+      const data = await res.json();
+
+      if (data.ok) {
+        setSuccess(`התנתקת בהצלחה מ${tenantName}`);
+        loadBusinesses();
+      } else {
+        setError(data.error || 'שגיאה בהתנתקות מהעסק');
+      }
+    } catch (err) {
+      setError('שגיאה בהתנתקות מהעסק');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -177,9 +206,9 @@ export default function AgentMarketplacePage() {
                     </div>
                   </div>
 
-                  {/* View Products Button - links to existing products page */}
+                  {/* View Products Button - links to agent marketplace products page */}
                   <Link
-                    href={`/products?tenantId=${business.id}`}
+                    href={`/agent/marketplace/${business.id}/products`}
                     className="w-full flex items-center justify-center gap-2 py-2 px-4 mb-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,15 +220,26 @@ export default function AgentMarketplacePage() {
 
                   {/* Action Button */}
                   {business.isJoined ? (
-                    <button
-                      onClick={() => handleSwitchBusiness(business.id, business.name)}
-                      className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="font-medium">מחובר - לחץ לעבור לעסק</span>
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleSwitchBusiness(business.id, business.name)}
+                        className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="font-medium">מחובר - עבור לעסק</span>
+                      </button>
+                      <button
+                        onClick={() => handleLeaveBusiness(business.id, business.name)}
+                        className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                        title="התנתק מהעסק"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                      </button>
+                    </div>
                   ) : business.isPending ? (
                     <div className="flex items-center justify-center gap-2 py-2 px-4 bg-yellow-50 text-yellow-700 rounded-lg">
                       <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">

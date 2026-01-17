@@ -1,10 +1,10 @@
-import HomePage from './components/HomePage';
+import MarketplaceHome from './components/MarketplaceHome';
 
 export const metadata = {
-  title: 'קונים חכם | רכישה קבוצתית חכמה',
-  description: 'קונים חכם - פלטפורמת רכישה קבוצתית חכמה וחסכונית',
+  title: 'VIPO | מרקטפלייס המוצרים - שתף והרווח',
+  description: 'מוצרים מכל העסקים במקום אחד. שתף והרווח 10% מכל רכישה. רכישה קבוצתית חכמה וחסכונית.',
 };
 
 export default function Page() {
-  return <HomePage />;
+  return <MarketplaceHome />;
 }
