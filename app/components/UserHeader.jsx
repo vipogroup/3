@@ -592,9 +592,9 @@ export default function UserHeader() {
 
                   {/* Menu Items */}
                   <div className="py-1">
-                    {/* About Us - First in menu */}
+                    {/* About Us - Dynamic link based on role */}
                     <Link
-                      href="/about"
+                      href={role === 'agent' ? '/agent/about' : ['admin', 'business_admin', 'super_admin'].includes(role) ? '/admin/about' : '/about'}
                       className="flex items-center gap-2 px-4 py-2 text-sm font-medium"
                       style={{ color: 'var(--primary)' }}
                       onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(30, 58, 138, 0.1)')}
