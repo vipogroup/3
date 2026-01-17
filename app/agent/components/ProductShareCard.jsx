@@ -23,7 +23,7 @@ export default function ProductShareCard({ product, couponCode, referralLink }) 
         {/* Image */}
         <div className="relative aspect-square overflow-hidden bg-gray-50">
           <Image
-            src={product.image || product.imageUrl || 'https://placehold.co/300x300?text=VIPO'}
+            src={product.image || product.imageUrl || 'https://placehold.co/300x300/f3f4f6/9ca3af?text=%F0%9F%93%A6'}
             alt={product.name || 'מוצר'}
             fill
             className="object-cover"

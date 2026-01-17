@@ -397,8 +397,8 @@ export default function BusinessDashboardClient() {
   };
 
   return (
-    <main className="min-h-screen bg-cyan-50 p-3 sm:p-6 md:p-8">
-      <div className="max-w-7xl mx-auto">
+    <main className="min-h-screen bg-cyan-50 p-3 sm:p-6 md:p-8 lg:p-10 xl:p-12">
+      <div className="max-w-7xl mx-auto lg:max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px]">
         {/* Header */}
         <div className="mb-4 sm:mb-6 flex items-center justify-between">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
@@ -472,7 +472,7 @@ export default function BusinessDashboardClient() {
         )}
 
         {/* Accordion Categories */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4 xl:gap-5 mb-6 lg:mb-8">
           {/* 1. ניהול משתמשים */}
           {hasVisibleItemsInCategory(['users', 'agents']) && (
           <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, var(--primary), var(--secondary))', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>

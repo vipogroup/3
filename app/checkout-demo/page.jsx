@@ -26,14 +26,14 @@ export default function CheckoutDemoPage() {
       name: 'כורסת עיסוי',
       price: 10000,
       quantity: 1,
-      image: 'https://placehold.co/80x80?text=VIPO'
+      image: 'https://placehold.co/80x80/f3f4f6/9ca3af?text=%F0%9F%93%A6'
     },
     {
       productId: '2', 
       name: 'ניסוי חדש',
       price: 500,
       quantity: 1,
-      image: 'https://placehold.co/80x80?text=VIPO'
+      image: 'https://placehold.co/80x80/f3f4f6/9ca3af?text=%F0%9F%93%A6'
     }
   ];
 

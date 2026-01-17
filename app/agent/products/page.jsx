@@ -251,7 +251,7 @@ export default function AgentProductsPage() {
                 {/* Product Image */}
                 <div className="relative h-48 overflow-hidden" style={themeStyles.mutedCard}>
                   <Image
-                    src={product.image || 'https://placehold.co/600x400?text=VIPO'}
+                    src={product.image || 'https://placehold.co/600x400/f3f4f6/9ca3af?text=%F0%9F%93%A6'}
                     alt={product.name || 'מוצר'}
                     fill
                     sizes="(min-width: 1024px) 33vw, 100vw"

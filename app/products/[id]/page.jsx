@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -38,6 +38,7 @@ export default function ProductPage() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(true);
+  const relatedScrollRef = useRef(null);
   const { addItem } = useCartContext();
   const { settings: themeSettings } = useTheme();
 
@@ -188,6 +189,56 @@ export default function ProductPage() {
     
     loadRelatedProducts();
   }, [product]);
+
+  // Auto-scroll related products carousel
+  useEffect(() => {
+    if (!relatedProducts.length || !relatedScrollRef.current) return;
+    
+    const container = relatedScrollRef.current;
+    const scrollSpeed = 1; // pixels per frame
+    let scrollDirection = 1; // 1 = right, -1 = left
+    let animationId;
+    let isPaused = false;
+    
+    const autoScroll = () => {
+      if (!isPaused && container) {
+        container.scrollLeft += scrollSpeed * scrollDirection;
+        
+        // Reverse direction at edges
+        if (container.scrollLeft >= container.scrollWidth - container.clientWidth - 5) {
+          scrollDirection = -1;
+        } else if (container.scrollLeft <= 5) {
+          scrollDirection = 1;
+        }
+      }
+      animationId = requestAnimationFrame(autoScroll);
+    };
+    
+    // Start auto-scroll after 2 seconds
+    const startTimeout = setTimeout(() => {
+      animationId = requestAnimationFrame(autoScroll);
+    }, 2000);
+    
+    // Pause on hover/touch
+    const handleMouseEnter = () => { isPaused = true; };
+    const handleMouseLeave = () => { isPaused = false; };
+    const handleTouchStart = () => { isPaused = true; };
+    const handleTouchEnd = () => { setTimeout(() => { isPaused = false; }, 3000); };
+    
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchend', handleTouchEnd);
+    
+    return () => {
+      clearTimeout(startTimeout);
+      if (animationId) cancelAnimationFrame(animationId);
+      container.removeEventListener('mouseenter', handleMouseEnter);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [relatedProducts]);
 
   // Check if product is in favorites
   useEffect(() => {
@@ -449,7 +500,7 @@ export default function ProductPage() {
               )
             ) : (
               <Image
-                src={selectedMedia.src || 'https://placehold.co/400x300?text=VIPO'}
+                src={selectedMedia.src || 'https://placehold.co/400x300/f3f4f6/9ca3af?text=%F0%9F%93%A6'}
                 alt={product?.name || 'תמונה של מוצר'}
                 fill
                 sizes="100vw"
@@ -1153,15 +1204,6 @@ export default function ProductPage() {
             </div>
           )}
 
-          {/* Back Link */}
-          <div className="bg-white px-4 py-4 pb-32">
-            <Link href="/shop" className="inline-flex items-center gap-2 font-medium text-sm" style={{ color: 'var(--secondary)' }}>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-              חזרה לבחירת קטגוריה
-            </Link>
-          </div>
         </div>
       </div>
 
@@ -1278,13 +1320,13 @@ export default function ProductPage() {
 
       {/* Related Products Section */}
       {relatedProducts.length > 0 && (
-        <div className="max-w-lg mx-auto px-4 py-8 border-t border-gray-100">
+        <div className="max-w-lg mx-auto px-4 py-3 border-t border-gray-100">
           <h2 className="text-lg font-bold mb-4" style={{ color: 'var(--primary)' }}>
             מוצרים נוספים שיעניינו אותך
           </h2>
           
           {/* Horizontal Scroll Container */}
-          <div className="overflow-x-auto pb-4 -mx-4 px-4">
+          <div ref={relatedScrollRef} className="overflow-x-auto pb-4 -mx-4 px-4 scroll-smooth">
             <div className="flex gap-3" style={{ minWidth: 'max-content' }}>
               {relatedProducts.map((relProduct) => (
                 <Link
@@ -1295,7 +1337,7 @@ export default function ProductPage() {
                   {/* Product Image */}
                   <div className="relative aspect-square bg-gray-50">
                     <Image
-                      src={relProduct.image || relProduct.imageUrl || 'https://placehold.co/200x200?text=VIPO'}
+                      src={relProduct.image || relProduct.imageUrl || 'https://placehold.co/200x200/f3f4f6/9ca3af?text=%F0%9F%93%A6'}
                       alt={relProduct.name}
                       fill
                       sizes="144px"

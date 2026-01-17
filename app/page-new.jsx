@@ -166,7 +166,7 @@ export default function HomePage() {
                   >
                     <div className="aspect-square relative bg-gray-100">
                       <Image
-                        src={product.image || 'https://placehold.co/300x300?text=VIPO'}
+                        src={product.image || 'https://placehold.co/300x300/f3f4f6/9ca3af?text=%F0%9F%93%A6'}
                         alt={product.name}
                         fill
                         className="object-cover"

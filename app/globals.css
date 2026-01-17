@@ -502,3 +502,342 @@ small, .text-sm {
 .hero-content {
   transform: translateY(20px);
 }
+
+/* ============================================
+   DESKTOP STYLES - Large Screens (1024px+)
+   ============================================ */
+
+/* Desktop Container - wider max-width for large screens */
+@media (min-width: 1024px) {
+  .container {
+    @apply max-w-7xl;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1400px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1600px;
+  }
+}
+
+/* Desktop Dashboard Grid - 3-4 columns on large screens */
+@media (min-width: 1024px) {
+  .desktop-grid-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .desktop-grid-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  
+  .desktop-grid-4 {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .desktop-grid-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  
+  .desktop-grid-4 {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  
+  .desktop-grid-5 {
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+}
+
+@media (min-width: 1536px) {
+  .desktop-grid-4 {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  
+  .desktop-grid-5 {
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+  
+  .desktop-grid-6 {
+    grid-template-columns: repeat(6, 1fr) !important;
+  }
+}
+
+/* Desktop Card - larger padding and better proportions */
+@media (min-width: 1024px) {
+  .card {
+    @apply p-6;
+  }
+  
+  .card-lg {
+    @apply p-8;
+  }
+}
+
+/* Desktop Typography - larger text on big screens */
+@media (min-width: 1024px) {
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.5rem; }
+}
+
+@media (min-width: 1280px) {
+  h1 { font-size: 3rem; }
+  h2 { font-size: 2.25rem; }
+  h3 { font-size: 1.75rem; }
+}
+
+/* Desktop Main Content - more padding */
+@media (min-width: 1024px) {
+  .desktop-padding {
+    padding: 2rem 3rem;
+  }
+  
+  .desktop-padding-lg {
+    padding: 3rem 4rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .desktop-padding {
+    padding: 2.5rem 4rem;
+  }
+  
+  .desktop-padding-lg {
+    padding: 4rem 6rem;
+  }
+}
+
+/* Desktop Product Grid */
+@media (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .product-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Desktop Sidebar Layout */
+@media (min-width: 1024px) {
+  .desktop-sidebar-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+  }
+  
+  .desktop-sidebar {
+    position: sticky;
+    top: 80px;
+    height: fit-content;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 1280px) {
+  .desktop-sidebar-layout {
+    grid-template-columns: 320px 1fr;
+    gap: 3rem;
+  }
+}
+
+/* Desktop Table - better spacing */
+@media (min-width: 1024px) {
+  .desktop-table th,
+  .desktop-table td {
+    padding: 1rem 1.5rem;
+  }
+  
+  .desktop-table th {
+    font-size: 0.875rem;
+  }
+  
+  .desktop-table td {
+    font-size: 1rem;
+  }
+}
+
+/* Desktop Buttons - larger on big screens */
+@media (min-width: 1024px) {
+  .btn-desktop {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .btn-desktop-lg {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+  }
+}
+
+/* Desktop Max Width Containers */
+@media (min-width: 1024px) {
+  .desktop-max-w-4xl {
+    max-width: 56rem;
+  }
+  
+  .desktop-max-w-5xl {
+    max-width: 64rem;
+  }
+  
+  .desktop-max-w-6xl {
+    max-width: 72rem;
+  }
+  
+  .desktop-max-w-7xl {
+    max-width: 80rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .desktop-max-w-full {
+    max-width: 100%;
+  }
+}
+
+/* Desktop KPI Cards */
+@media (min-width: 1024px) {
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .kpi-card {
+    padding: 1.5rem;
+  }
+  
+  .kpi-value {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .kpi-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2rem;
+  }
+  
+  .kpi-card {
+    padding: 2rem;
+  }
+  
+  .kpi-value {
+    font-size: 2.5rem;
+  }
+}
+
+/* Desktop Form Layout */
+@media (min-width: 1024px) {
+  .desktop-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .desktop-form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Desktop Header */
+@media (min-width: 1024px) {
+  .desktop-header {
+    padding: 1rem 2rem;
+  }
+  
+  .desktop-header-content {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+}
+
+/* Desktop Navigation */
+@media (min-width: 1024px) {
+  .desktop-nav {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .desktop-nav-item {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Desktop Stats Bar */
+@media (min-width: 1024px) {
+  .stats-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .stats-bar-item {
+    text-align: center;
+    padding: 0 2rem;
+    border-left: 1px solid #e5e7eb;
+  }
+  
+  .stats-bar-item:last-child {
+    border-left: none;
+  }
+}
+
+/* Desktop Two-Column Layout */
+@media (min-width: 1024px) {
+  .desktop-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  
+  .desktop-two-col-wide {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+}
+
+/* Desktop Spacing Utilities */
+@media (min-width: 1024px) {
+  .desktop-mt-8 { margin-top: 2rem; }
+  .desktop-mb-8 { margin-bottom: 2rem; }
+  .desktop-py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+  .desktop-px-8 { padding-left: 2rem; padding-right: 2rem; }
+  .desktop-gap-6 { gap: 1.5rem; }
+  .desktop-gap-8 { gap: 2rem; }
+}
+
+@media (min-width: 1280px) {
+  .desktop-mt-12 { margin-top: 3rem; }
+  .desktop-mb-12 { margin-bottom: 3rem; }
+  .desktop-py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+  .desktop-px-12 { padding-left: 3rem; padding-right: 3rem; }
+  .desktop-gap-10 { gap: 2.5rem; }
+}

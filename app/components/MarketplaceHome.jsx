@@ -423,7 +423,7 @@ export default function MarketplaceHome() {
       </div>
 
       {/* תוכן ראשי */}
-      <main className="max-w-7xl mx-auto px-4 py-6">
+      <main className="max-w-7xl mx-auto px-4 py-6 lg:px-8 lg:py-8 xl:px-12 xl:py-10 lg:max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px]">
         {/* סטטוס */}
         {!loading && (
           <div className="flex items-center justify-between mb-4">
@@ -437,8 +437,8 @@ export default function MarketplaceHome() {
 
         {/* טעינה */}
         {loading && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {[...Array(8)].map((_, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 lg:gap-5 xl:gap-6">
+            {[...Array(12)].map((_, i) => (
               <div key={i} className="bg-white rounded-2xl overflow-hidden animate-pulse">
                 <div className="aspect-square bg-gray-200" />
                 <div className="p-3 space-y-2">
@@ -467,7 +467,7 @@ export default function MarketplaceHome() {
 
         {/* מוצרים */}
         {!loading && !error && products.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 lg:gap-5 xl:gap-6">
             {products.map(product => (
               <ProductCard 
                 key={product._id} 

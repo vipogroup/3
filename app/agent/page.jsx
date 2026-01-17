@@ -13,7 +13,7 @@ export default async function AgentPage() {
   return (
     <AgentDashboardClient>
       <main className="min-h-[calc(100vh-64px)] bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-4 py-4 lg:px-8 lg:py-6 xl:px-12 xl:py-8 lg:max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px]">
           {/* Header with Business Selector */}
           <AgentHeader />
 

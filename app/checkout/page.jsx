@@ -1486,7 +1486,7 @@ function CheckoutClient() {
               {checkoutItems.map((item) => (
                 <div key={item.productId} className="flex gap-4 items-center">
                   <Image
-                    src={item.image || 'https://placehold.co/80x80?text=VIPO'}
+                    src={item.image || 'https://placehold.co/80x80/f3f4f6/9ca3af?text=%F0%9F%93%A6'}
                     alt={item.name || 'פריט בסל'}
                     width={80}
                     height={80}

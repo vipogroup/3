@@ -397,7 +397,7 @@ export default function CheckoutPage() {
               <div className="mb-6 pb-6 border-b border-gray-200">
                 <div className="flex gap-4">
                   <Image
-                    src={product.image || 'https://placehold.co/120x120?text=VIPO'}
+                    src={product.image || 'https://placehold.co/120x120/f3f4f6/9ca3af?text=%F0%9F%93%A6'}
                     alt={product.name || 'מוצר'}
                     width={120}
                     height={120}

@@ -152,7 +152,7 @@ export default function AgentStatsSection() {
       )}
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-4 xl:gap-5 mb-4 lg:mb-6">
         {statCards.map((stat, index) => (
           <div
             key={index}

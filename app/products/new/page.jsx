@@ -259,7 +259,7 @@ export default function NewProductPage() {
                   {previewUrls.map((url, index) => (
                     <div key={index} className="relative h-24 w-24">
                       <Image
-                        src={url || 'https://placehold.co/96x96?text=VIPO'}
+                        src={url || 'https://placehold.co/96x96/f3f4f6/9ca3af?text=%F0%9F%93%A6'}
                         alt={`Preview ${index + 1}`}
                         fill
                         sizes="96px"

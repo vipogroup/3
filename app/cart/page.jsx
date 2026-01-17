@@ -436,7 +436,7 @@ export default function CartPage() {
                       {/* Product Image */}
                       <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
                         <Image
-                          src={item.image || 'https://placehold.co/80x80?text=VIPO'}
+                          src={item.image || 'https://placehold.co/80x80/f3f4f6/9ca3af?text=%F0%9F%93%A6'}
                           alt={item.name || 'Product'}
                           width={80}
                           height={80}

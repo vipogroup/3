@@ -426,8 +426,8 @@ export default function AdminDashboardClient() {
   };
 
   return (
-    <main className="min-h-screen bg-white p-3 sm:p-6 md:p-8">
-      <div className="max-w-7xl mx-auto">
+    <main className="min-h-screen bg-white p-3 sm:p-6 md:p-8 lg:p-10 xl:p-12">
+      <div className="max-w-7xl mx-auto lg:max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px]">
         {/* Header */}
         <div className="mb-4 sm:mb-6 flex items-center justify-between">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
@@ -558,7 +558,7 @@ export default function AdminDashboardClient() {
         </div>
 
         {/* Accordion Categories */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4 xl:gap-5 mb-6 lg:mb-8">
           {/* 1. ניהול משתמשים */}
           {(canAccess(ADMIN_PERMISSIONS.VIEW_USERS) || canAccess(ADMIN_PERMISSIONS.VIEW_AGENTS)) && (
           <div className="rounded-xl overflow-hidden" style={{ border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #1e3a8a, #0891b2)', backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', boxShadow: '0 2px 10px rgba(8, 145, 178, 0.1)' }}>
@@ -643,7 +643,7 @@ export default function AdminDashboardClient() {
               </svg>
             </button>
             {openCategory === 'catalog' && (
-            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-4">
               {canAccess(ADMIN_PERMISSIONS.VIEW_PRODUCTS) && (
               <Link href="/admin/products" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
                 <CubeIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
@@ -686,7 +686,7 @@ export default function AdminDashboardClient() {
               </svg>
             </button>
             {openCategory === 'finance' && (
-            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-4">
               {canAccess(ADMIN_PERMISSIONS.VIEW_REPORTS) && (
               <Link href="/admin/reports" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
                 <ChartBarIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
@@ -765,7 +765,7 @@ export default function AdminDashboardClient() {
               </svg>
             </button>
             {openCategory === 'settings' && (
-            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-4">
               {canAccess(ADMIN_PERMISSIONS.MANAGE_NOTIFICATIONS) && (
               <Link href="/admin/notifications" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
                 <SettingsIcon className="w-5 h-5" style={{ color: '#0891b2' }} />
@@ -911,7 +911,7 @@ export default function AdminDashboardClient() {
                 </div>
               )}
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-4">
               <div className="flex items-center gap-2">
                 <a href="https://github.com/vipogroup" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all relative">
                   <span className={`absolute top-2 left-2 w-2 h-2 rounded-full ${systemStatus.github?.status === 'connected' ? 'bg-green-500' : systemStatus.github?.status === 'warning' ? 'bg-amber-500' : systemStatus.github?.status === 'error' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
@@ -1064,7 +1064,7 @@ export default function AdminDashboardClient() {
               </svg>
             </button>
             {openCategory === 'tasks' && (
-            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-4">
               <Link href="/admin/tasks" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
                 <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -1123,7 +1123,7 @@ export default function AdminDashboardClient() {
               </svg>
             </button>
             {openCategory === 'reports' && (
-            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-4">
               <Link href="/admin/system-reports" className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all">
                 <svg className="w-5 h-5" style={{ color: '#0891b2' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -1339,7 +1339,7 @@ export default function AdminDashboardClient() {
               </svg>
             </button>
             {openCategory === 'google' && (
-            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="p-4 pt-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-4">
               <div className="flex items-center gap-2">
                 <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center gap-3 p-3 rounded-lg bg-orange-50 hover:bg-orange-100 transition-all">
                   <svg className="w-5 h-5" style={{ color: '#F57C00' }} viewBox="0 0 24 24" fill="currentColor">

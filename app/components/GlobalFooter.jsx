@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSiteTexts } from '@/lib/useSiteTexts';
 import EditableTextField from './EditableTextField';
@@ -7,6 +8,20 @@ import EditableTextField from './EditableTextField';
 export default function GlobalFooter() {
   const { getText } = useSiteTexts();
   const pathname = usePathname();
+  const [footerExpanded, setFooterExpanded] = useState(false);
+  const footerMainRef = useRef(null);
+  const scrollArrowRef = useRef(null);
+
+  // Handle arrow click - expand footer and scroll to it
+  const handleExpandFooter = () => {
+    setFooterExpanded(true);
+    // Smooth scroll to footer main section
+    setTimeout(() => {
+      if (footerMainRef.current) {
+        footerMainRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
   
   // Check pages where footer should NOT appear
   const isAdminPage = pathname?.startsWith('/admin');
@@ -24,8 +39,14 @@ export default function GlobalFooter() {
 
   return (
     <>
-      {/* About VIPO Section */}
-      <section id="about-vipo" className="about-vipo">
+      {/* About VIPO Section - hidden on mobile when footer is collapsed */}
+      <section 
+        id="about-vipo" 
+        className="about-vipo"
+        style={{
+          display: !footerExpanded ? 'none' : undefined,
+        }}
+      >
         <div className="container">
           <EditableTextField textKey="HOME_ABOUT_TITLE" fallback="מי אנחנו" as="h2" className="section-title" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }} />
           <div className="about-content">
@@ -71,15 +92,154 @@ export default function GlobalFooter() {
         </div>
       </section>
 
+      {/* Dynamic styles for collapsed footer */}
+      <style jsx global>{`
+        .footer-collapsed {
+          padding-bottom: 0 !important;
+          padding-top: 15px !important;
+        }
+        .footer-collapsed .container {
+          padding-bottom: 0 !important;
+        }
+        .footer-collapsed .footer-brand-section {
+          margin-bottom: 0 !important;
+          padding-bottom: 0 !important;
+        }
+        .footer-collapsed .footer-brand {
+          margin-bottom: 5px !important;
+        }
+        .footer-collapsed .footer-tagline {
+          margin-bottom: 8px !important;
+        }
+        
+        /* Mobile specific - minimize space between chatbot icon and footer */
+        @media (max-width: 768px) {
+          /* Hide about-vipo section on mobile when footer is collapsed */
+          .about-vipo {
+            padding-top: 10px !important;
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
+          }
+          .about-vipo .container {
+            padding: 5px 10px !important;
+          }
+          .about-vipo .section-title {
+            margin-bottom: 5px !important;
+            font-size: 1.1rem !important;
+          }
+          .about-vipo .about-intro {
+            font-size: 0.75rem !important;
+            margin-bottom: 5px !important;
+            line-height: 1.3 !important;
+          }
+          .about-vipo .about-content {
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+          }
+          .about-vipo .about-stats {
+            margin-bottom: 5px !important;
+            gap: 5px !important;
+          }
+          .about-vipo .stat-item {
+            padding: 4px 3px !important;
+          }
+          .about-vipo .stat-number {
+            font-size: 0.7rem !important;
+          }
+          .about-vipo .stat-label {
+            font-size: 0.55rem !important;
+          }
+          .wave-divider {
+            height: 15px !important;
+            margin: 0 !important;
+          }
+          .wave-divider svg {
+            height: 15px !important;
+          }
+          
+          .footer-collapsed {
+            padding-top: 3px !important;
+            padding-bottom: 0 !important;
+          }
+          .footer-collapsed .container {
+            padding: 0 10px !important;
+          }
+          .footer-collapsed .footer-brand {
+            margin-bottom: 0 !important;
+            font-size: 1.3rem !important;
+          }
+          .footer-collapsed .footer-tagline {
+            margin-bottom: 3px !important;
+            font-size: 0.75rem !important;
+          }
+          .footer-collapsed .footer-scroll-arrow {
+            margin-top: 3px !important;
+            margin-bottom: 0 !important;
+            width: 36px !important;
+            height: 36px !important;
+          }
+        }
+      `}</style>
+
       {/* Footer & Contact Section */}
-      <footer id="contact" className="footer">
+      <footer 
+        id="contact" 
+        className={`footer ${!footerExpanded ? 'footer-collapsed' : ''}`}
+      >
         <div className="container">
-          <div className="footer-brand-section" style={{textAlign: 'center', marginBottom: '30px'}}>
+          <div className="footer-brand-section" style={{textAlign: 'center'}}>
             <EditableTextField textKey="FOOTER_COMPANY_NAME" fallback="VIPO GROUP" as="h2" className="footer-brand" />
             <EditableTextField textKey="FOOTER_TAGLINE" fallback="רכישה קבוצתית חכמה וחסכונית" as="p" className="footer-tagline" />
+            
+            {/* Scroll Down Arrow - appears only when footer is not expanded */}
+            {!footerExpanded && (
+              <button
+                ref={scrollArrowRef}
+                onClick={handleExpandFooter}
+                className="footer-scroll-arrow"
+                aria-label="גלול למטה לפרטי קשר"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '10px auto 0',
+                  width: '50px',
+                  height: '50px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  animation: 'bounce 2s infinite',
+                  boxShadow: '0 4px 15px rgba(8, 145, 178, 0.4)',
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                }}
+              >
+                <svg 
+                  viewBox="0 0 24 24" 
+                  fill="white" 
+                  width="28" 
+                  height="28"
+                  style={{ transform: 'rotate(0deg)' }}
+                >
+                  <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                </svg>
+              </button>
+            )}
           </div>
           
-          <div className="footer-main" style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '30px'}}>
+          {/* Footer Main - hidden until arrow is clicked */}
+          <div 
+            ref={footerMainRef}
+            className="footer-main" 
+            style={{
+              display: footerExpanded ? 'flex' : 'none',
+              justifyContent: 'space-between', 
+              flexWrap: 'wrap', 
+              gap: '30px',
+              opacity: footerExpanded ? 1 : 0,
+              transition: 'opacity 0.5s ease',
+            }}
+          >
             {/* יצירת קשר - ימין */}
             <div className="footer-contact" style={{flex: '1', minWidth: '200px'}}>
               <h3 style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}}>יצירת קשר</h3>
@@ -116,14 +276,28 @@ export default function GlobalFooter() {
             </div>
           </div>
           
-          <div className="footer-social" style={{textAlign: 'center', margin: '30px 0'}}>
+          {/* Footer Social - hidden until expanded */}
+          <div 
+            className="footer-social" 
+            style={{
+              textAlign: 'center', 
+              margin: '30px 0',
+              display: footerExpanded ? 'block' : 'none',
+            }}
+          >
             <a href="#" aria-label="פייסבוק"><i className="fa-brands fa-facebook-f"></i></a>
             <a href="https://www.instagram.com/vipoconnect?igsh=MWdpdTZlbTMxMnNxcw%3D%3D&utm_source=qr" target="_blank" aria-label="אינסטגרם"><i className="fa-brands fa-instagram"></i></a>
             <a href="#" aria-label="טוויטר"><i className="fa-brands fa-twitter"></i></a>
             <a href="#" aria-label="לינקדאין"><i className="fa-brands fa-linkedin-in"></i></a>
           </div>
           
-          <div className="footer-bottom">
+          {/* Footer Bottom - hidden until expanded */}
+          <div 
+            className="footer-bottom"
+            style={{
+              display: footerExpanded ? 'flex' : 'none',
+            }}
+          >
             <EditableTextField textKey="FOOTER_COPYRIGHT" fallback="© 2025 VIPO GROUP | ע.מ. 036517548" as="p" />
             <div className="footer-links">
               <a href="/terms">תנאי שימוש</a>

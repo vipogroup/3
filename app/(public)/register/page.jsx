@@ -330,8 +330,8 @@ function RegisterPageContent() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-white px-4 py-8">
-      <div className="w-full max-w-md">
+    <main className="min-h-screen flex items-center justify-center bg-white px-4 py-8 lg:bg-gradient-to-br lg:from-blue-50 lg:to-cyan-50">
+      <div className="w-full max-w-md lg:max-w-lg xl:max-w-xl">
         <div
           className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-6 sm:p-8"
           style={{
