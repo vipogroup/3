@@ -22,6 +22,7 @@ function HomePageContent() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [passwordError, setPasswordError] = useState(false);
+  const [showAgentBanner, setShowAgentBanner] = useState(false);
 
   // Fetch featured products from database
   useEffect(() => {
@@ -50,6 +51,16 @@ function HomePageContent() {
       setActiveTestimonial((prev) => (prev + 1) % 3);
     }, 5000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Check if user is customer (show agent banner)
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+    // Show banner only for logged-in customers (not agents)
+    if (token && role === 'customer') {
+      setShowAgentBanner(true);
+    }
   }, []);
 
   // Auto-rotate products carousel - always running, never stops
@@ -653,6 +664,52 @@ function HomePageContent() {
           </div>
         </div>
       </section>
+
+      {/* Agent Banner - Only for logged-in customers */}
+      {showAgentBanner && (
+        <section className="agent-banner reveal-on-scroll" style={{
+          background: 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)',
+          padding: '40px 20px',
+          textAlign: 'center',
+          color: 'white'
+        }}>
+          <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '15px', fontWeight: 'bold' }}>
+              כל יום אתה משתף - למה לא להרוויח מזה?
+            </h2>
+            <p style={{ fontSize: '1.1rem', marginBottom: '20px', opacity: 0.9 }}>
+              החברים שלך קונים בכל מקרה. שתף מוצר אחד ברשתות החברתיות וקבל 10% מכל רכישה!
+            </p>
+            <Link 
+              href="/join" 
+              style={{
+                display: 'inline-block',
+                padding: '14px 32px',
+                background: 'white',
+                color: '#1e3a8a',
+                fontWeight: 'bold',
+                borderRadius: '50px',
+                textDecoration: 'none',
+                fontSize: '1.1rem',
+                transition: 'transform 0.2s, box-shadow 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              הפוך לסוכן עכשיו - חינם!
+            </Link>
+            <p style={{ fontSize: '0.9rem', marginTop: '15px', opacity: 0.8 }}>
+              אלפי משתמשים כבר מרוויחים - אל תפספס!
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* About VIPO Section */}
       <section id="about-vipo" className="about-vipo">

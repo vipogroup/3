@@ -16,8 +16,7 @@ export default async function JoinPage({ searchParams }) {
   const productId = getParam(searchParams?.product) || null;
 
   return (
-    <main className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Join</h1>
+    <main className="min-h-screen bg-gray-50">
       <JoinClient refId={ref} productId={productId} />
     </main>
   );

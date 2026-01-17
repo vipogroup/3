@@ -178,6 +178,7 @@ function RegisterPageContent() {
 
       if (loginRes.ok) {
         const tenantSlug = searchParams.get('tenant');
+        router.refresh();
         setTimeout(() => router.push(tenantSlug ? `/t/${tenantSlug}` : '/'), 500);
       } else {
         setTimeout(() => router.push('/login'), 1500);
@@ -269,6 +270,7 @@ function RegisterPageContent() {
         const ios = isIOSDevice();
         const standalone = isStandaloneMode();
         if (ios && !standalone) {
+          router.refresh();
           setTimeout(() => router.push(tenantSlug ? `/t/${tenantSlug}` : '/'), 500);
           return;
         }
@@ -276,6 +278,7 @@ function RegisterPageContent() {
         const hostname = window.location?.hostname || '';
         const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
         if (!window.isSecureContext && !isLocalhost) {
+          router.refresh();
           setTimeout(() => router.push(tenantSlug ? `/t/${tenantSlug}` : '/'), 500);
           return;
         }
@@ -310,6 +313,7 @@ function RegisterPageContent() {
         console.log('Push notifications enabled successfully');
         setShowNotificationModal(false);
         const tenantSlug = searchParams.get('tenant');
+        router.refresh();
         router.push(tenantSlug ? `/t/${tenantSlug}` : '/');
         return;
       }

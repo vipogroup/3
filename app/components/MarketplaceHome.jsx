@@ -183,6 +183,7 @@ export default function MarketplaceHome() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   
   // פילטרים
   const [selectedTenant, setSelectedTenant] = useState('');
@@ -228,6 +229,27 @@ export default function MarketplaceHome() {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  // Check if user is logged in via API
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth/me', { 
+          credentials: 'include',
+          cache: 'no-store'
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.user) {
+            setIsLoggedIn(true);
+          }
+        }
+      } catch (_) {
+        // User not logged in
+      }
+    };
+    checkAuth();
+  }, []);
 
   const handleShare = (product) => {
     setToast(`הקישור למוצר "${product.name}" הועתק! שתף והרווח 10%`);
@@ -520,21 +542,43 @@ export default function MarketplaceHome() {
         )}
       </main>
 
-      {/* CTA להירשם כסוכן */}
+      {/* CTA להירשם כסוכן / לשתף */}
       <section className="bg-gradient-to-r from-blue-900 to-cyan-600 text-white py-12 mt-8">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
-            רוצה להרוויח מכל שיתוף?
-          </h2>
-          <p className="text-blue-100 mb-6">
-            הירשם כסוכן ותקבל 10% מכל רכישה שנעשית דרך הלינק שלך
-          </p>
-          <Link
-            href="/register"
-            className="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full hover:bg-blue-50 transition-colors"
-          >
-            הירשם עכשיו - חינם!
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                כל יום אתה משתף - למה לא להרוויח מזה?
+              </h2>
+              <p className="text-blue-100 mb-6">
+                החברים שלך קונים בכל מקרה. שתף מוצר אחד ברשתות החברתיות וקבל 10% מכל רכישה!
+              </p>
+              <Link
+                href="/join"
+                className="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full hover:bg-blue-50 transition-colors"
+              >
+                הפוך לסוכן עכשיו
+              </Link>
+              <p className="text-blue-200 text-sm mt-3">
+                אלפי משתמשים כבר מרוויחים - אל תפספס!
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                רוצה להרוויח מכל שיתוף?
+              </h2>
+              <p className="text-blue-100 mb-6">
+                הירשם כסוכן ותקבל 10% מכל רכישה שנעשית דרך הלינק שלך
+              </p>
+              <Link
+                href="/register"
+                className="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full hover:bg-blue-50 transition-colors"
+              >
+                הירשם עכשיו - חינם!
+              </Link>
+            </>
+          )}
         </div>
       </section>
 
