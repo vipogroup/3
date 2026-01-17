@@ -488,15 +488,32 @@ async function GETHandler(request) {
     
     // Apply tenant filter:
     // - If tenant context exists: show only products from that tenant
-    // - If no tenant context: show only global products (no tenantId)
+    // - If no tenant context AND super_admin: show global products (no tenantId)
+    // - If no tenant context AND NOT super_admin: show empty (no products)
     if (hasTenantContext && tenantId) {
       // Support both ObjectId and string format for tenantId using $in
       query.tenantId = { $in: [tenantId, tenantId.toString()] };
       console.log('PRODUCTS_DEBUG: Filtering by tenantId:', tenantId.toString());
     } else {
-      // No tenant context - show only global products (without tenantId)
-      query.tenantId = { $exists: false };
-      console.log('PRODUCTS_DEBUG: Showing global products (no tenantId)');
+      // Check if user is super_admin - only super_admin can see global products
+      let isSuperAdmin = false;
+      try {
+        const { requireAuthApi } = await import('@/lib/auth/server');
+        const currentUser = await requireAuthApi(request);
+        isSuperAdmin = currentUser?.role === 'super_admin' || currentUser?.role === 'admin';
+      } catch {
+        // Not logged in
+      }
+      
+      if (isSuperAdmin) {
+        // Super admin can see global products (without tenantId)
+        query.tenantId = { $exists: false };
+        console.log('PRODUCTS_DEBUG: Super admin - showing global products (no tenantId)');
+      } else {
+        // Regular users without tenant context - show nothing (impossible filter)
+        query.tenantId = { $eq: 'NO_TENANT_NO_PRODUCTS' };
+        console.log('PRODUCTS_DEBUG: No tenant context, not super_admin - showing no products');
+      }
     }
 
     if (catalogSlug) {

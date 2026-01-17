@@ -144,7 +144,7 @@ export default function ForBusinessPage() {
           </div>
 
           <Link
-            href="/register?role=business"
+            href="/register-business"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white font-bold rounded-xl text-sm sm:text-base transition-all hover:shadow-lg hover:-translate-y-1 opacity-0-start animate-fadeInUp delay-400"
             style={{ color: colors.primary }}
           >
@@ -342,7 +342,7 @@ export default function ForBusinessPage() {
           
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/register?role=business"
+              href="/register-business"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white font-bold rounded-xl text-sm transition-all hover:shadow-lg hover:-translate-y-1"
               style={{ color: colors.primary }}
             >
