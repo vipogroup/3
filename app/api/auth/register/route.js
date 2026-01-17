@@ -10,7 +10,7 @@ import { getDb } from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { commissionPerReferral } from '@/app/config/commissions';
 import { rateLimiters } from '@/lib/rateLimit';
-import { generateAgentCoupon } from '@/lib/agents';
+import { generateAgentCoupon, joinAgentToAllTenants } from '@/lib/agents';
 import { sendTemplateNotification } from '@/lib/notifications/dispatcher';
 import { pushToUsers } from '@/lib/pushSender';
 
@@ -184,6 +184,22 @@ async function POSTHandler(req) {
         const nameForCoupon = (doc.fullName || doc.email || doc.phone || 'agent').trim();
         await generateAgentCoupon({ fullName: nameForCoupon, agentId: newUserId });
         console.log('AGENT_COUPON_GENERATED', { userId: String(newUserId), tenantId: tenantId ? String(tenantId) : null });
+        
+        // הצטרפות אוטומטית לכל העסקים הפעילים
+        try {
+          const joinResult = await joinAgentToAllTenants({ 
+            agentId: newUserId, 
+            fullName: nameForCoupon 
+          });
+          console.log('AGENT_JOINED_ALL_TENANTS', { 
+            userId: String(newUserId), 
+            joined: joinResult.joined,
+            tenants: joinResult.coupons.map(c => c.tenantSlug).join(', ')
+          });
+        } catch (joinErr) {
+          console.error('AGENT_JOIN_TENANTS_ERROR', joinErr);
+          // Don't block registration if joining tenants fails
+        }
       } catch (couponErr) {
         console.error('AGENT_COUPON_ERROR', couponErr);
         // Don't block registration if coupon generation fails

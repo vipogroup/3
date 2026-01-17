@@ -34,43 +34,9 @@ async function GETHandler(req, { params }) {
     authUser = await requireAuthApi(req);
   } catch {}
 
-  if (!isSuperAdmin(authUser)) {
-    let tenantId = null;
-    let hasTenantContext = false;
-
-    const tenant = await getCurrentTenant(req);
-    if (tenant?._id) {
-      tenantId = tenant._id?.toString?.() ?? String(tenant._id);
-      hasTenantContext = true;
-    }
-
-    if (!tenantId && authUser?.tenantId) {
-      tenantId = authUser.tenantId?.toString?.() ?? String(authUser.tenantId);
-      hasTenantContext = true;
-    }
-
-    if (!tenantId) {
-      try {
-        const cookieStore = cookies();
-        const refTenantCookie = cookieStore.get('refTenant');
-        if (refTenantCookie?.value && mongoose.Types.ObjectId.isValid(refTenantCookie.value)) {
-          tenantId = refTenantCookie.value;
-          hasTenantContext = true;
-        }
-      } catch {}
-    }
-
-    const docTenantId = doc.tenantId?.toString?.();
-    if (hasTenantContext) {
-      if (!docTenantId || docTenantId !== String(tenantId)) {
-        return NextResponse.json({ error: 'Not found' }, { status: 404 });
-      }
-    } else {
-      if (docTenantId) {
-        return NextResponse.json({ error: 'Not found' }, { status: 404 });
-      }
-    }
-  }
+  // מרקטפלייס פתוח - כל אחד יכול לראות מוצרים מכל העסקים
+  // הגבלת tenant רלוונטית רק לעריכה/מחיקה, לא לצפייה
+  // משתמשים רגילים יכולים לצפות בכל מוצר פעיל
   
   // Multi-Tenant: Products are publicly viewable for customers
   // Anyone can view a product (including via share links from agents)

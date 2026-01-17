@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/db';
 import { verifyJwt, signJwt } from '@/src/lib/auth/createToken.js';
-import { generateAgentCoupon } from '@/lib/agents';
+import { generateAgentCoupon, joinAgentToAllTenants } from '@/lib/agents';
 import { getToken } from 'next-auth/jwt';
 
 async function POSTHandler(req) {
@@ -131,13 +131,30 @@ async function POSTHandler(req) {
     }
 
     let couponInfo = null;
+    const fullNameForCoupon = user.fullName?.trim() || user.email || 'agent';
+    
     if (!user.couponCode) {
-      const fullNameForCoupon = user.fullName?.trim() || user.email || 'agent';
       try {
         couponInfo = await generateAgentCoupon({ fullName: fullNameForCoupon, agentId: user._id });
       } catch (couponError) {
         console.error('USER_UPGRADE_COUPON_ERROR', couponError);
       }
+    }
+
+    // הצטרפות אוטומטית לכל העסקים הפעילים
+    try {
+      const joinResult = await joinAgentToAllTenants({ 
+        agentId: user._id, 
+        fullName: fullNameForCoupon 
+      });
+      console.log('AGENT_JOINED_ALL_TENANTS', { 
+        userId: String(user._id), 
+        joined: joinResult.joined,
+        tenants: joinResult.coupons.map(c => c.tenantSlug).join(', ')
+      });
+    } catch (joinErr) {
+      console.error('AGENT_JOIN_TENANTS_ERROR', joinErr);
+      // Don't block upgrade if joining tenants fails
     }
 
     // Log the upgrade
