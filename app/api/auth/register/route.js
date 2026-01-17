@@ -49,7 +49,7 @@ async function POSTHandler(req) {
 
   try {
     const body = await req.json();
-    const { fullName, phone, email, password, role, referrerId, tenantSlug } = body;
+    const { fullName, phone, email, password, role, referrerId, tenantSlug, tenantId: bodyTenantId } = body;
     const normalizedPhone = normalizePhone(phone);
 
     // Validate required fields
@@ -84,9 +84,28 @@ async function POSTHandler(req) {
     const users = db.collection('users');
     const tenants = db.collection('tenants');
 
-    // Find tenant if tenantSlug provided
+    // Find tenant - support both tenantSlug and tenantId
     let tenantId = null;
-    if (tenantSlug) {
+    if (bodyTenantId) {
+      // Direct tenantId provided - verify it exists and is active
+      try {
+        const tenantObjId = typeof bodyTenantId === 'string' ? new ObjectId(bodyTenantId) : bodyTenantId;
+        const tenant = await tenants.findOne({ _id: tenantObjId, status: 'active' });
+        if (tenant) {
+          tenantId = tenant._id;
+        } else {
+          return NextResponse.json(
+            { ok: false, error: 'tenant not found', message: 'העסק לא נמצא או לא פעיל' },
+            { status: 404 },
+          );
+        }
+      } catch (e) {
+        return NextResponse.json(
+          { ok: false, error: 'invalid tenant id', message: 'מזהה עסק לא תקין' },
+          { status: 400 },
+        );
+      }
+    } else if (tenantSlug) {
       // Normalize slug - remove leading/trailing dashes
       const normalizedSlug = tenantSlug.toLowerCase().trim().replace(/^-+|-+$/g, '');
       const tenant = await tenants.findOne({ slug: normalizedSlug, status: 'active' });
