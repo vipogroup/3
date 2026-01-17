@@ -16,7 +16,7 @@ const formatCurrency = (value = 0) => currencyFormatter.format(Math.max(0, Numbe
  * AgentStatsSection - סטטיסטיקות הסוכן לפי העסק הנבחר
  */
 export default function AgentStatsSection() {
-  const { stats, loading, currentBusiness } = useTenant();
+  const { stats, loading, currentBusiness, businesses, hasMultipleBusinesses } = useTenant();
 
   if (loading) {
     return (
@@ -91,8 +91,56 @@ export default function AgentStatsSection() {
     { label: 'הפניות', value: formatNumber(stats.totalReferrals) },
   ];
 
+  // חישוב סיכום כל העסקים
+  const allBusinessesTotal = hasMultipleBusinesses ? {
+    totalSales: businesses.reduce((sum, b) => sum + (b.totalSales || 0), 0),
+    totalCommission: businesses.reduce((sum, b) => sum + (b.totalCommission || 0), 0),
+    businessCount: businesses.length,
+  } : null;
+
   return (
     <section className="mb-6">
+      {/* כרטיס סיכום כל העסקים - מוצג רק אם יש יותר מעסק אחד */}
+      {hasMultipleBusinesses && allBusinessesTotal && (
+        <div className="mb-4 p-4 rounded-xl bg-gradient-to-l from-[#1e3a8a] to-[#0891b2] text-white">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold text-lg flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              סיכום מכל העסקים
+            </h3>
+            <span className="text-sm bg-white/20 px-2 py-1 rounded-full">
+              {allBusinessesTotal.businessCount} עסקים
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white/10 rounded-lg p-3">
+              <p className="text-sm text-white/70">סה&quot;כ מכירות</p>
+              <p className="text-2xl font-bold">{formatNumber(allBusinessesTotal.totalSales)}</p>
+            </div>
+            <div className="bg-white/10 rounded-lg p-3">
+              <p className="text-sm text-white/70">סה&quot;כ עמלות</p>
+              <p className="text-2xl font-bold">{formatCurrency(allBusinessesTotal.totalCommission)}</p>
+            </div>
+          </div>
+          {/* רשימת עסקים מקוצרת */}
+          <div className="mt-3 pt-3 border-t border-white/20">
+            <p className="text-xs text-white/70 mb-2">פירוט לפי עסק:</p>
+            <div className="flex flex-wrap gap-2">
+              {businesses.map((b) => (
+                <div 
+                  key={b.tenantId} 
+                  className={`text-xs px-2 py-1 rounded-full ${b.isActive ? 'bg-white text-[#1e3a8a]' : 'bg-white/20'}`}
+                >
+                  {b.tenantName}: {formatCurrency(b.totalCommission || 0)}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Business indicator for stats */}
       {currentBusiness && (
         <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">

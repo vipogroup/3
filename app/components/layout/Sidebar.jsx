@@ -10,7 +10,7 @@ export default function Sidebar({ role }) {
 
   const adminMenuItems = [
     { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Products', href: '/shop' },
+    { name: 'Products', href: '/' },
     { name: 'Agents', href: '/agents' },
     { name: 'Sales', href: '/sales' },
     { name: 'Reports', href: '/reports' },

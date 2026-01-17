@@ -205,8 +205,8 @@ export default function UserHeader() {
   }, [showAccountMenu]);
 
   const navItems = useMemo(() => {
-    // Always link to main shop page
-    return [{ href: '/shop', label: 'מוצרים', icon: 'products' }];
+    // Link to marketplace homepage
+    return [{ href: '/', label: 'מוצרים', icon: 'products' }];
   }, []);
 
   // Hide header on clean registration pages

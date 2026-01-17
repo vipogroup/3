@@ -574,15 +574,33 @@ async function POSTHandler(req) {
 
       // 3. If order has agent referral - notify agent about commission
       if (refAgentId && finalCommissionAmount > 0) {
+        // קבלת שם העסק להתראה
+        let businessNameText = '';
+        if (tenantId) {
+          try {
+            const tenantDoc = await db.collection('tenants').findOne(
+              { _id: tenantId },
+              { projection: { name: 1 } }
+            );
+            if (tenantDoc?.name) {
+              businessNameText = ` בעסק "${tenantDoc.name}"`;
+            }
+          } catch (e) {
+            console.warn('Failed to get tenant name for notification:', e.message);
+          }
+        }
+
         await sendTemplateNotification({
           templateType: 'agent_commission_awarded',
           variables: {
             commission_percent: String(commissionPercent || 10),
+            commission_amount: String(finalCommissionAmount.toFixed(2)),
+            business_name: businessNameText,
           },
           audienceUserIds: [String(refAgentId)],
           payloadOverrides: {
             url: '/agent',
-            data: { type: 'agent_commission_awarded', orderId: String(orderId), commission: finalCommissionAmount },
+            data: { type: 'agent_commission_awarded', orderId: String(orderId), commission: finalCommissionAmount, tenantId: tenantId ? String(tenantId) : null },
           },
           tenantId: tenantId ? String(tenantId) : null,
         });

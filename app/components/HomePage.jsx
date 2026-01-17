@@ -346,7 +346,7 @@ function HomePageContent() {
             />
             <div className="cta-buttons">
               <Link 
-                href="/shop" 
+                href="/" 
                 className="btn btn-primary magnetic"
                 ref={magneticBtnRef}
                 onMouseMove={handleMagneticMove}
@@ -760,7 +760,7 @@ function HomePageContent() {
               <EditableTextField textKey="FOOTER_NAV_TITLE" fallback="ניווט מהיר" as="h3" style={{color: 'white', fontSize: '1.1rem', marginBottom: '15px', fontWeight: '700'}} />
               <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
                 <a href="/" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-home"></i> <EditableTextField textKey="FOOTER_NAV_HOME" fallback="דף הבית" as="span" /></a>
-                <a href="/shop" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-store"></i> <EditableTextField textKey="FOOTER_NAV_SHOP" fallback="חנות" as="span" /></a>
+                <a href="/" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-store"></i> <EditableTextField textKey="FOOTER_NAV_SHOP" fallback="חנות" as="span" /></a>
                 <a href="#how-it-works" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-cogs"></i> <EditableTextField textKey="FOOTER_NAV_HOW" fallback="איך זה עובד" as="span" /></a>
                 <a href="#faq" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-question-circle"></i> <EditableTextField textKey="FOOTER_NAV_FAQ" fallback="שאלות נפוצות" as="span" /></a>
                 <a href="#about-vipo" style={{color: 'rgba(255,255,255,0.85)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px'}}><i className="fa-solid fa-users"></i> <EditableTextField textKey="FOOTER_NAV_ABOUT" fallback="מי אנחנו" as="span" /></a>

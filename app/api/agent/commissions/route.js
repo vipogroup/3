@@ -56,11 +56,14 @@ async function GETHandler(req) {
     const userId = new ObjectId(user.id);
 
     // Multi-Tenant: Get tenantId filter from query params
+    // tenantId=all - get commissions from all tenants
+    // tenantId=<id> - get commissions from specific tenant
+    // no tenantId - get commissions from all tenants (default for multi-business agents)
     const { searchParams } = new URL(req.url);
     const tenantIdParam = searchParams.get('tenantId');
-    const tenantFilter = tenantIdParam && ObjectId.isValid(tenantIdParam) 
+    const tenantFilter = (tenantIdParam && tenantIdParam !== 'all' && ObjectId.isValid(tenantIdParam))
       ? { tenantId: new ObjectId(tenantIdParam) } 
-      : {};
+      : {}; // Empty filter = all tenants
 
     const usersCollection = db.collection('users');
     const ordersCollection = db.collection('orders');
