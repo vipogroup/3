@@ -416,103 +416,92 @@ async function GETHandler(request) {
     const catalogSlug = searchParams.get('catalog');
     const includeInactive = searchParams.get('includeInactive') === 'true';
     const featuredOnly = searchParams.get('featured') === 'true';
+    const marketplaceMode = searchParams.get('marketplace') === 'true';
     const query = {};
 
-    // Multi-Tenant: Filter by tenant
-    // Priority order:
-    // 1. Tenant from URL query param (e.g., ?tenant=slug)
-    // 2. Tenant from request headers/subdomain
-    // 3. Tenant from logged-in user (any role - customer, agent, business_admin)
-    // 4. No tenant = show global products only
-    
-    let tenantId = null;
-    let hasTenantContext = false;
-    
-    // 0. Check for tenantId directly in URL query param (for admin/business panels)
-    const tenantIdParam = searchParams.get('tenantId');
-    if (tenantIdParam && ObjectId.isValid(tenantIdParam)) {
-      tenantId = new ObjectId(tenantIdParam);
-      hasTenantContext = true;
-    }
-    
-    // 1. Check for tenant slug in URL query param
-    if (!tenantId) {
-      const tenantSlugParam = searchParams.get('tenant');
-      if (tenantSlugParam) {
-        const { getTenantBySlug } = await import('@/lib/tenant');
-        const tenantFromSlug = await getTenantBySlug(tenantSlugParam);
-        if (tenantFromSlug) {
-          tenantId = tenantFromSlug._id;
-          hasTenantContext = true;
-        }
-      }
-    }
-    
-    // 2. Try to get tenant from request headers/subdomain
-    if (!tenantId) {
-      const tenant = await getCurrentTenant(request);
-      if (tenant) {
-        tenantId = tenant._id;
+    // MARKETPLACE MODE: Show ALL active products from ALL tenants (for homepage)
+    if (marketplaceMode) {
+      // No tenant filter - show all products
+      console.log('PRODUCTS_DEBUG: Marketplace mode - showing all products');
+    } else {
+      // Multi-Tenant: Filter by tenant
+      // Priority order:
+      // 1. Tenant from URL query param (e.g., ?tenant=slug)
+      // 2. Tenant from request headers/subdomain
+      // 3. Tenant from logged-in user (any role - customer, agent, business_admin)
+      // 4. No tenant = show ALL products (marketplace)
+      
+      let tenantId = null;
+      let hasTenantContext = false;
+      
+      // 0. Check for tenantId directly in URL query param (for admin/business panels)
+      const tenantIdParam = searchParams.get('tenantId');
+      if (tenantIdParam && ObjectId.isValid(tenantIdParam)) {
+        tenantId = new ObjectId(tenantIdParam);
         hasTenantContext = true;
       }
-    }
-    
-    // 3. If no tenant from request, try to get from ANY logged-in user
-    if (!tenantId) {
-      try {
-        const { requireAuthApi } = await import('@/lib/auth/server');
-        const loggedInUser = await requireAuthApi(request);
-        if (loggedInUser?.tenantId) {
-          tenantId = new ObjectId(loggedInUser.tenantId);
-          hasTenantContext = true;
+      
+      // 1. Check for tenant slug in URL query param
+      if (!tenantId) {
+        const tenantSlugParam = searchParams.get('tenant');
+        if (tenantSlugParam) {
+          const { getTenantBySlug } = await import('@/lib/tenant');
+          const tenantFromSlug = await getTenantBySlug(tenantSlugParam);
+          if (tenantFromSlug) {
+            tenantId = tenantFromSlug._id;
+            hasTenantContext = true;
+          }
         }
-      } catch {
-        // Not logged in - that's ok, will check cookie next
-      }
-    }
-    
-    // 4. If still no tenant, check refTenant cookie (set by referral links)
-    if (!tenantId) {
-      try {
-        const cookieStore = cookies();
-        const refTenantCookie = cookieStore.get('refTenant');
-        if (refTenantCookie?.value && ObjectId.isValid(refTenantCookie.value)) {
-          tenantId = new ObjectId(refTenantCookie.value);
-          hasTenantContext = true;
-          console.log('Using tenant from refTenant cookie:', refTenantCookie.value);
-        }
-      } catch (err) {
-        // Cookie not available or invalid
-      }
-    }
-    
-    // Apply tenant filter:
-    // - If tenant context exists: show only products from that tenant
-    // - If no tenant context AND super_admin: show global products (no tenantId)
-    // - If no tenant context AND NOT super_admin: show empty (no products)
-    if (hasTenantContext && tenantId) {
-      // Support both ObjectId and string format for tenantId using $in
-      query.tenantId = { $in: [tenantId, tenantId.toString()] };
-      console.log('PRODUCTS_DEBUG: Filtering by tenantId:', tenantId.toString());
-    } else {
-      // Check if user is super_admin - only super_admin can see global products
-      let isSuperAdmin = false;
-      try {
-        const { requireAuthApi } = await import('@/lib/auth/server');
-        const currentUser = await requireAuthApi(request);
-        isSuperAdmin = currentUser?.role === 'super_admin' || currentUser?.role === 'admin';
-      } catch {
-        // Not logged in
       }
       
-      if (isSuperAdmin) {
-        // Super admin can see global products (without tenantId)
-        query.tenantId = { $exists: false };
-        console.log('PRODUCTS_DEBUG: Super admin - showing global products (no tenantId)');
+      // 2. Try to get tenant from request headers/subdomain
+      if (!tenantId) {
+        const tenant = await getCurrentTenant(request);
+        if (tenant) {
+          tenantId = tenant._id;
+          hasTenantContext = true;
+        }
+      }
+      
+      // 3. If no tenant from request, try to get from ANY logged-in user
+      if (!tenantId) {
+        try {
+          const { requireAuthApi } = await import('@/lib/auth/server');
+          const loggedInUser = await requireAuthApi(request);
+          if (loggedInUser?.tenantId) {
+            tenantId = new ObjectId(loggedInUser.tenantId);
+            hasTenantContext = true;
+          }
+        } catch {
+          // Not logged in - that's ok, will check cookie next
+        }
+      }
+      
+      // 4. If still no tenant, check refTenant cookie (set by referral links)
+      if (!tenantId) {
+        try {
+          const cookieStore = cookies();
+          const refTenantCookie = cookieStore.get('refTenant');
+          if (refTenantCookie?.value && ObjectId.isValid(refTenantCookie.value)) {
+            tenantId = new ObjectId(refTenantCookie.value);
+            hasTenantContext = true;
+            console.log('Using tenant from refTenant cookie:', refTenantCookie.value);
+          }
+        } catch (err) {
+          // Cookie not available or invalid
+        }
+      }
+      
+      // Apply tenant filter:
+      // - If tenant context exists: show only products from that tenant
+      // - If no tenant context: show ALL products (marketplace mode)
+      if (hasTenantContext && tenantId) {
+        // Support both ObjectId and string format for tenantId using $in
+        query.tenantId = { $in: [tenantId, tenantId.toString()] };
+        console.log('PRODUCTS_DEBUG: Filtering by tenantId:', tenantId.toString());
       } else {
-        // Regular users without tenant context - show nothing (impossible filter)
-        query.tenantId = { $eq: 'NO_TENANT_NO_PRODUCTS' };
-        console.log('PRODUCTS_DEBUG: No tenant context, not super_admin - showing no products');
+        // No tenant context - show ALL products (marketplace)
+        console.log('PRODUCTS_DEBUG: No tenant context - showing all products (marketplace)');
       }
     }
 

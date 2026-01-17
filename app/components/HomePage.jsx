@@ -27,7 +27,7 @@ function HomePageContent() {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        const res = await fetch('/api/products?featured=true');
+        const res = await fetch('/api/products?featured=true&marketplace=true');
         if (res.ok) {
           const data = await res.json();
           const products = data.products || data;

@@ -36,14 +36,22 @@ export async function GET(request) {
     });
 
     // בניית Query למוצרים
+    // מציג מוצרים מעסקים פעילים + מוצרים ללא tenant (גלובליים)
     const query = {
-      active: true,
-      tenantId: { $in: activeTenantIds },
+      active: { $ne: false }, // מוצרים פעילים או ללא סטטוס
       $or: [
-        { stockCount: { $gt: 0 } },
-        { purchaseType: 'group' },
-        { type: 'group' }
-      ]
+        { tenantId: { $in: activeTenantIds } }, // מוצרים מעסקים פעילים
+        { tenantId: { $exists: false } }, // מוצרים ללא tenant
+        { tenantId: null }, // מוצרים עם tenant null
+      ],
+      $and: [{
+        $or: [
+          { stockCount: { $gt: 0 } },
+          { stockCount: { $exists: false } }, // מוצרים ללא stockCount
+          { purchaseType: 'group' },
+          { type: 'group' }
+        ]
+      }]
     };
 
     // סינון לפי עסק

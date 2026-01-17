@@ -36,6 +36,8 @@ export default function ProductPage() {
   const [viewersCount, setViewersCount] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [loadingRelated, setLoadingRelated] = useState(true);
   const { addItem } = useCartContext();
   const { settings: themeSettings } = useTheme();
 
@@ -147,6 +149,45 @@ export default function ProductPage() {
   }, [params.id, loadProduct]);
 
   useEffect(() => setSelectedMediaIndex(0), [product?._id]);
+
+  // Load related products
+  useEffect(() => {
+    if (!product) return;
+    
+    const loadRelatedProducts = async () => {
+      setLoadingRelated(true);
+      try {
+        const res = await fetch('/api/products?marketplace=true', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          const allProducts = Array.isArray(data?.products) ? data.products : Array.isArray(data) ? data : [];
+          
+          // Filter: same type (group/available), exclude current product
+          const sameType = allProducts.filter(p => 
+            p._id !== product._id && 
+            p.purchaseType === product.purchaseType
+          );
+          
+          // Also get some random products from other types
+          const otherType = allProducts.filter(p => 
+            p._id !== product._id && 
+            p.purchaseType !== product.purchaseType
+          );
+          
+          // Mix: 4 same type + 4 random
+          const shuffled = [...sameType].sort(() => Math.random() - 0.5).slice(0, 4);
+          const randomOthers = [...otherType].sort(() => Math.random() - 0.5).slice(0, 4);
+          
+          setRelatedProducts([...shuffled, ...randomOthers]);
+        }
+      } catch (error) {
+        console.error('Failed to load related products:', error);
+      }
+      setLoadingRelated(false);
+    };
+    
+    loadRelatedProducts();
+  }, [product]);
 
   // Check if product is in favorites
   useEffect(() => {
@@ -1232,6 +1273,94 @@ export default function ProductPage() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Related Products Section */}
+      {relatedProducts.length > 0 && (
+        <div className="max-w-lg mx-auto px-4 py-8 border-t border-gray-100">
+          <h2 className="text-lg font-bold mb-4" style={{ color: 'var(--primary)' }}>
+            מוצרים נוספים שיעניינו אותך
+          </h2>
+          
+          {/* Horizontal Scroll Container */}
+          <div className="overflow-x-auto pb-4 -mx-4 px-4">
+            <div className="flex gap-3" style={{ minWidth: 'max-content' }}>
+              {relatedProducts.map((relProduct) => (
+                <Link
+                  key={relProduct._id}
+                  href={`/products/${relProduct._id}`}
+                  className="flex-shrink-0 w-36 bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200"
+                >
+                  {/* Product Image */}
+                  <div className="relative aspect-square bg-gray-50">
+                    <Image
+                      src={relProduct.image || relProduct.imageUrl || 'https://placehold.co/200x200?text=VIPO'}
+                      alt={relProduct.name}
+                      fill
+                      sizes="144px"
+                      className="object-contain p-2"
+                      unoptimized
+                    />
+                    {/* Type Badge */}
+                    {relProduct.purchaseType === 'group' && (
+                      <div 
+                        className="absolute top-1 right-1 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
+                        style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)' }}
+                      >
+                        קבוצתי
+                      </div>
+                    )}
+                    {/* Discount Badge */}
+                    {relProduct.originalPrice && relProduct.originalPrice > relProduct.price && (
+                      <div 
+                        className="absolute top-1 left-1 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
+                        style={{ background: '#dc2626' }}
+                      >
+                        {Math.round(((relProduct.originalPrice - relProduct.price) / relProduct.originalPrice) * 100)}%-
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Product Info */}
+                  <div className="p-2">
+                    <h3 className="text-xs font-medium text-gray-800 line-clamp-2 leading-tight mb-1" style={{ minHeight: '2.5em' }}>
+                      {relProduct.name}
+                    </h3>
+                    <div className="flex items-center gap-1">
+                      <span 
+                        className="text-sm font-bold"
+                        style={{ color: relProduct.purchaseType === 'group' ? '#d97706' : 'var(--primary)' }}
+                      >
+                        ₪{(relProduct.price || 0).toLocaleString()}
+                      </span>
+                      {relProduct.originalPrice && relProduct.originalPrice > relProduct.price && (
+                        <span className="text-[10px] text-gray-400 line-through">
+                          ₪{relProduct.originalPrice.toLocaleString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+          
+          {/* View All Button */}
+          <Link
+            href="/"
+            className="flex items-center justify-center gap-2 mt-4 py-3 rounded-xl font-medium text-sm transition-all"
+            style={{
+              background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%)',
+              color: 'var(--primary)',
+              border: '1px solid rgba(30, 58, 138, 0.1)',
+            }}
+          >
+            צפה בכל המוצרים
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
         </div>
       )}
 

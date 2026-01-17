@@ -35,7 +35,7 @@ export default function FeaturedCarousel({ darkBackground = true, title = 'מו�
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('/api/products?featured=true');
+        const res = await fetch('/api/products?featured=true&marketplace=true');
         const data = await res.json();
         const productsList = data.products || data;
         if (Array.isArray(productsList)) {
