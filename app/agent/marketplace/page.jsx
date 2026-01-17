@@ -20,11 +20,16 @@ export default function AgentMarketplacePage() {
     try {
       const res = await fetch('/api/agent/marketplace', { credentials: 'include' });
       const data = await res.json();
+      console.log('MARKETPLACE_CLIENT_DEBUG:', { status: res.status, data });
       if (data.ok) {
         setBusinesses(data.businesses || []);
+      } else {
+        console.error('MARKETPLACE_API_ERROR:', data.error);
+        setError(data.error || 'שגיאה בטעינת עסקים');
       }
     } catch (err) {
       console.error('Failed to load marketplace:', err);
+      setError('שגיאה בטעינת עסקים');
     } finally {
       setLoading(false);
     }
@@ -157,7 +162,7 @@ export default function AgentMarketplacePage() {
                   )}
 
                   {/* Stats */}
-                  <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                  <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
                     <div className="flex items-center gap-1">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -171,6 +176,18 @@ export default function AgentMarketplacePage() {
                       <span>{business.commissionPercent}% עמלה</span>
                     </div>
                   </div>
+
+                  {/* View Products Button - links to existing products page */}
+                  <Link
+                    href={`/products?tenantId=${business.id}`}
+                    className="w-full flex items-center justify-center gap-2 py-2 px-4 mb-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <span>צפה במוצרים ({business.productsCount})</span>
+                  </Link>
 
                   {/* Action Button */}
                   {business.isJoined ? (

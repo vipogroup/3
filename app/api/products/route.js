@@ -490,10 +490,13 @@ async function GETHandler(request) {
     // - If tenant context exists: show only products from that tenant
     // - If no tenant context: show only global products (no tenantId)
     if (hasTenantContext && tenantId) {
-      query.tenantId = tenantId;
+      // Support both ObjectId and string format for tenantId using $in
+      query.tenantId = { $in: [tenantId, tenantId.toString()] };
+      console.log('PRODUCTS_DEBUG: Filtering by tenantId:', tenantId.toString());
     } else {
       // No tenant context - show only global products (without tenantId)
       query.tenantId = { $exists: false };
+      console.log('PRODUCTS_DEBUG: Showing global products (no tenantId)');
     }
 
     if (catalogSlug) {

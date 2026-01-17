@@ -8,24 +8,36 @@ import { requireAuthApi } from '@/lib/auth/server';
 /**
  * GET /api/agent/marketplace
  * Get all available businesses an agent can join
+ * Also accessible by admins to view the marketplace
  */
 export async function GET(req) {
   try {
-    const user = await requireAuthApi(req);
+    let user;
+    try {
+      user = await requireAuthApi(req);
+    } catch (authErr) {
+      console.log('MARKETPLACE_AUTH_ERROR:', authErr.message);
+      return NextResponse.json({ error: 'לא מחובר - נא להתחבר למערכת', authError: authErr.message }, { status: 401 });
+    }
     
     if (!user || !user.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    
+    console.log('MARKETPLACE_USER:', { id: user.id, role: user.role, email: user.email });
 
     const db = await getDb();
     const agentId = new ObjectId(user.id);
 
-    // Get all visible tenants (active, pending, or no status for backwards compatibility)
+    // Get ALL tenants first to debug
+    const allTenants = await db.collection('tenants').find({}).toArray();
+    console.log('MARKETPLACE_DEBUG: Total tenants in DB:', allTenants.length);
+    console.log('MARKETPLACE_DEBUG: Tenants:', allTenants.map(t => ({ name: t.name, status: t.status, allowAgentJoin: t.allowAgentJoin })));
+
+    // Get all visible tenants - include active, pending, and those without status
     // Exclude only suspended/inactive businesses
     const tenants = await db.collection('tenants')
-      .find({ 
-        status: { $nin: ['suspended', 'inactive'] }
-      })
+      .find({})  // Get all tenants for now to debug
       .project({ 
         name: 1, 
         slug: 1, 
@@ -33,28 +45,49 @@ export async function GET(req) {
         description: 1,
         defaultCommission: 1,
         allowAgentJoin: 1, // אם העסק מאפשר הצטרפות חופשית
+        status: 1, // Include status for debugging
       })
       .toArray();
+    
+    console.log('MARKETPLACE_DEBUG: Filtered tenants:', tenants.length);
 
-    // Get agent's existing connections
-    const connections = await db.collection('agentbusinesses')
-      .find({ agentId })
-      .project({ tenantId: 1, status: 1 })
-      .toArray();
+    // Get agent's existing connections (with error handling)
+    let connectionMap = new Map();
+    try {
+      const connections = await db.collection('agentbusinesses')
+        .find({ agentId })
+        .project({ tenantId: 1, status: 1 })
+        .toArray();
 
-    const connectionMap = new Map(
-      connections.map(c => [c.tenantId.toString(), c.status])
-    );
+      connectionMap = new Map(
+        connections.map(c => [String(c.tenantId), c.status])
+      );
+    } catch (connErr) {
+      console.error('MARKETPLACE_CONN_ERROR:', connErr);
+      // Continue without connections
+    }
 
-    // Get products count per tenant
-    const productCounts = await db.collection('products').aggregate([
-      { $match: { active: true, tenantId: { $exists: true } } },
-      { $group: { _id: '$tenantId', count: { $sum: 1 } } }
-    ]).toArray();
+    // Get products count per tenant (with error handling)
+    // Support both ObjectId and string tenantId formats
+    let productCountMap = new Map();
+    try {
+      const productCounts = await db.collection('products').aggregate([
+        { $match: { active: true, tenantId: { $exists: true } } },
+        { $group: { _id: '$tenantId', count: { $sum: 1 } } }
+      ]).toArray();
 
-    const productCountMap = new Map(
-      productCounts.map(p => [p._id.toString(), p.count])
-    );
+      // Map both ObjectId and string versions to same key
+      productCounts.forEach(p => {
+        const key = String(p._id);
+        const existing = productCountMap.get(key) || 0;
+        productCountMap.set(key, existing + p.count);
+      });
+      
+      console.log('MARKETPLACE_DEBUG: Product counts:', Object.fromEntries(productCountMap));
+    } catch (aggErr) {
+      console.error('MARKETPLACE_AGG_ERROR:', aggErr);
+      // Continue without product counts
+    }
 
     // Build response
     const businesses = tenants
